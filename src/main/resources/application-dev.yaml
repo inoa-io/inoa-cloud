@@ -1,0 +1,22 @@
+jackson:
+  serialization:
+    indentOutput: true
+
+logger:
+  levels:
+    io.kokuwa: TRACE
+
+registry:
+
+  # set config values
+  config-uri: https://kokuwa.io/consul
+  config-type: consul
+
+  # enable long living tokens based on random RSA key
+  auth:
+    expiration-duration: P1d
+    generate-key: true
+    issuer: ${random.uuid}
+
+  # enable eternal token
+  gateway.token.issued-at-threshold: null
