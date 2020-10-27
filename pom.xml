@@ -197,7 +197,6 @@
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
-
 					<execution>
 						<id>openapi-gateway-generate</id>
 						<phase>generate-sources</phase>
@@ -228,6 +227,7 @@
 				</dependencies>
 			</plugin>
 
+			<!-- configure jar with libs and main class -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -295,6 +295,27 @@
 				</configuration>
 			</plugin>
 
+			<!-- create container -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>dockerBuild</goal>
+						</goals>
+						<configuration>
+							<container>
+								<jvmFlags>
+									<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
+								</jvmFlags>
+							</container>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
@@ -307,7 +328,7 @@
 				</file>
 			</activation>
 			<build>
-				<plugins>	
+				<plugins>
 
 					<!-- validate openapi specs -->
 					<plugin>
