@@ -14,7 +14,6 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<name>GatewayRegistry</name>
-	<description>TODO</description>
 	<url>https://github.com/kokuwaio/gateway-registry</url>
 	<inceptionYear>2020</inceptionYear>
 	<licenses>
@@ -308,10 +307,12 @@
 				</file>
 			</activation>
 			<build>
-				<plugins>
+				<plugins>	
+
+					<!-- validate openapi specs -->
 					<plugin>
 						<groupId>org.openapitools.openapistylevalidator</groupId>
-						<artifactId>openapi-style-validator-maven-plugin </artifactId>
+						<artifactId>openapi-style-validator-maven-plugin</artifactId>
 						<executions>
 							<execution>
 								<id>openapi-gateway-validate</id>
@@ -325,6 +326,7 @@
 							</execution>
 						</executions>
 					</plugin>
+
 				</plugins>
 			</build>
 		</profile>
