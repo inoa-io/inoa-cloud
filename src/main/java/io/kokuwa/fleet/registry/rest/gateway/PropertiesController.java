@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.rest;
+package io.kokuwa.fleet.registry.rest.gateway;
 
 import java.util.Map;
 import java.util.Objects;
@@ -11,8 +11,6 @@ import io.kokuwa.fleet.registry.auth.GatewayAuthentication;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayProperty;
 import io.kokuwa.fleet.registry.domain.GatewayPropertyRepository;
-import io.kokuwa.fleet.registry.rest.gateway.AuthApi;
-import io.kokuwa.fleet.registry.rest.gateway.PropertiesApi;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.context.ServerRequestContext;

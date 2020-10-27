@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.rest;
+package io.kokuwa.fleet.registry.rest.gateway;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -21,6 +21,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import io.kokuwa.fleet.registry.HttpResponseAssertions;
 import io.kokuwa.fleet.registry.auth.AuthTokenService;
 import io.kokuwa.fleet.registry.rest.gateway.AuthApiTestClient;
+import io.kokuwa.fleet.registry.rest.gateway.AuthController;
 import io.kokuwa.fleet.registry.rest.gateway.TokenErrorVO;
 import io.kokuwa.fleet.registry.rest.gateway.TokenRepsonseVO;
 import io.kokuwa.fleet.registry.test.AbstractUnitTest;

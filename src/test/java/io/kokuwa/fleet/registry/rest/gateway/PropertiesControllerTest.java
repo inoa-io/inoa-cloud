@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.rest;
+package io.kokuwa.fleet.registry.rest.gateway;
 
 import static io.kokuwa.fleet.registry.HttpResponseAssertions.assert204;
 import static io.kokuwa.fleet.registry.HttpResponseAssertions.assert401;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import io.kokuwa.fleet.registry.domain.GatewayPropertyRepository;
 import io.kokuwa.fleet.registry.rest.gateway.PropertiesApiTestClient;
 import io.kokuwa.fleet.registry.rest.gateway.PropertiesApiTestSpec;
+import io.kokuwa.fleet.registry.rest.gateway.PropertiesController;
 import io.kokuwa.fleet.registry.test.AbstractUnitTest;
 import io.kokuwa.fleet.registry.test.Data;
 

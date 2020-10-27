@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.rest;
+package io.kokuwa.fleet.registry.rest.gateway;
 
 import java.text.ParseException;
 import java.time.Clock;
@@ -16,9 +16,6 @@ import io.kokuwa.fleet.registry.auth.AuthTokenService;
 import io.kokuwa.fleet.registry.auth.SignatureProvider;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
-import io.kokuwa.fleet.registry.rest.gateway.AuthApi;
-import io.kokuwa.fleet.registry.rest.gateway.TokenErrorVO;
-import io.kokuwa.fleet.registry.rest.gateway.TokenRepsonseVO;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
