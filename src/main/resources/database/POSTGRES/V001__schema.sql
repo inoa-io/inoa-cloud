@@ -1,41 +1,38 @@
 CREATE TABLE tenant (
-	id CHAR(36) NOT NULL,
+	id UUID NOT NULL,
 	name VARCHAR(20) NOT NULL,
 	enabled BOOLEAN NOT NULL,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP NOT NULL,
 	CONSTRAINT pk_tenant PRIMARY KEY (id),
 	CONSTRAINT uq_tenant_name UNIQUE (name),
-	CONSTRAINT chk_tenant_id CHECK (id ~ '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'),
 	CONSTRAINT chk_tenant_name CHECK (name ~ '^[a-zA-Z0-9\-]{3,20}$')
 );
 CREATE TABLE "group" (
-	id CHAR(36) NOT NULL,
-	tenant_id CHAR(36) NOT NULL,
+	id UUID NOT NULL,
+	tenant_id UUID NOT NULL,
 	name VARCHAR(20) NOT NULL,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP NOT NULL,
 	CONSTRAINT pk_group PRIMARY KEY (id),
 	CONSTRAINT uq_group_name UNIQUE (tenant_id,name),
-	CONSTRAINT chk_group_id CHECK (id ~ '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'),
 	CONSTRAINT chk_group_name CHECK (name ~ '^[a-zA-Z0-9\-]{3,20}$'),
 	CONSTRAINT fk_group_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(id) ON DELETE CASCADE
 );
 CREATE TABLE gateway (
-	id CHAR(36) NOT NULL,
-	tenant_id CHAR(36) NOT NULL,
+	id UUID NOT NULL,
+	tenant_id UUID NOT NULL,
 	name VARCHAR(32) NOT NULL,
 	enabled BOOLEAN NOT NULL,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP NOT NULL,
 	CONSTRAINT pk_gateway PRIMARY KEY (id),
 	CONSTRAINT uq_gateway_name UNIQUE (tenant_id,name),
-	CONSTRAINT chk_gateway_id CHECK (id ~ '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'),
 	CONSTRAINT chk_gateway_name CHECK (name ~ '^[a-zA-Z0-9\-]{3,32}$'),
 	CONSTRAINT fk_gateway_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(id)
 );
 CREATE TABLE gateway_property (
-	gateway_id CHAR(36) NOT NULL,
+	gateway_id UUID NOT NULL,
 	key VARCHAR(100) NOT NULL,
 	value VARCHAR(1000) NOT NULL,
 	created TIMESTAMP NOT NULL,
@@ -45,8 +42,8 @@ CREATE TABLE gateway_property (
 	CONSTRAINT fk_gateway_property FOREIGN KEY (gateway_id) REFERENCES gateway(id) ON DELETE CASCADE
 );
 CREATE TABLE gateway_group (
-	gateway_id CHAR(36) NOT NULL,
-	group_id CHAR(36) NOT NULL,
+	gateway_id UUID NOT NULL,
+	group_id UUID NOT NULL,
 	created TIMESTAMP NOT NULL,
 	CONSTRAINT pk_gateway_group PRIMARY KEY (gateway_id,group_id),
 	CONSTRAINT fk_gateway_group_gateway FOREIGN KEY (gateway_id) REFERENCES gateway(id) ON DELETE CASCADE,

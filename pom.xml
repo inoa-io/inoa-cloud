@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.2.1-SNAPSHOT</version>
+		<version>0.2.4</version>
 		<relativePath />
 	</parent>
 
@@ -37,14 +37,23 @@
 	<properties>
 
 		<!-- ===================================================================== -->
-		<!-- ============================= Libaries ============================== -->
+		<!-- =============================== Build =============================== -->
 		<!-- ===================================================================== -->
 
-		<version.io.kokuwa.micronaut.codegen>1.6.0-SNAPSHOT</version.io.kokuwa.micronaut.codegen>
-		<version.io.kokuwa.micronaut.logging>0.0.3</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut>2.1.2</version.io.micronaut>
-		<version.io.micronaut.data>2.1.0</version.io.micronaut.data>
+		<exec.mainClass>io.kokuwa.fleet.registry.Application</exec.mainClass>
+		<docker.postgres.version>13.1</docker.postgres.version>
+		<docker.mysql.version>8.0</docker.mysql.version>
+
+		<!-- ===================================================================== -->
+		<!-- ============================== Libaries ============================= -->
+		<!-- ===================================================================== -->
+
+		<version.io.kokuwa.micronaut.codegen>2.0.0</version.io.kokuwa.micronaut.codegen>
+		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
+		<version.io.micronaut>2.2.3</version.io.micronaut>
+		<version.io.micronaut.data>2.2.3</version.io.micronaut.data>
 		<version.org.mapstruct>1.4.1.Final</version.org.mapstruct>
+		<version.org.testcontainers>1.15.1</version.org.testcontainers>
 
 	</properties>
 
@@ -75,6 +84,13 @@
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct</artifactId>
 				<version>${version.org.mapstruct}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers-bom</artifactId>
+				<version>${version.org.testcontainers}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 
 		</dependencies>
@@ -129,6 +145,16 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
 		<!-- build -->
 		<dependency>
@@ -140,6 +166,21 @@
 		<dependency>
 			<groupId>io.micronaut.test</groupId>
 			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>mysql</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -173,6 +214,7 @@
 						</goals>
 						<configuration>
 							<sources>
+								<source>${project.build.directory}/generated-sources/annotations</source>
 								<source>${project.build.directory}/generated-sources/openapi</source>
 							</sources>
 						</configuration>
@@ -208,14 +250,27 @@
 							<apiPackage>io.kokuwa.fleet.registry.rest.gateway</apiPackage>
 						</configuration>
 					</execution>
+					<execution>
+						<id>openapi-management-generate</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/management.yaml</inputSpec>
+							<apiPackage>io.kokuwa.fleet.registry.rest.management</apiPackage>
+						</configuration>
+					</execution>
 				</executions>
 				<configuration>
 					<generatorName>micronaut</generatorName>
 					<modelNameSuffix>VO</modelNameSuffix>
+					<invokerPackage>io.kokuwa.fleet.registry.rest</invokerPackage>
 					<output>${project.build.directory}</output>
-					<invokerPackage>io.kokuwa.fleet.registry</invokerPackage>
 					<configOptions>
 						<supportAsync>true</supportAsync>
+						<useLombokGenerated>true</useLombokGenerated>
+						<dateTimeRelaxed>false</dateTimeRelaxed>
 					</configOptions>
 				</configuration>
 				<dependencies>
@@ -262,6 +317,64 @@
 				</configuration>
 			</plugin>
 
+			<!-- adjust jacoco excludes -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>**/*MapperImpl.class</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<!-- run surefire tests with multiple configurations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<reportNameSuffix>h2</reportNameSuffix>
+							<skipExec>${maven.test.skip.exec}</skipExec>
+						</configuration>
+					</execution>
+					<execution>
+						<id>postgres-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<environmentVariables>
+								<MICRONAUT_ENVIRONMENTS>postgres</MICRONAUT_ENVIRONMENTS>
+							</environmentVariables>
+							<reportNameSuffix>postgres</reportNameSuffix>
+							<skipExec>${maven.test.skip.exec}</skipExec>
+						</configuration>
+					</execution>
+					<execution>
+						<id>mysql-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<environmentVariables>
+								<MICRONAUT_ENVIRONMENTS>mysql</MICRONAUT_ENVIRONMENTS>
+							</environmentVariables>
+							<reportNameSuffix>mysql</reportNameSuffix>
+							<skipExec>true</skipExec>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<failIfNoTests>true</failIfNoTests>
+				</configuration>
+			</plugin>
+
 			<!-- configure jar with lib and main class -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -271,7 +384,7 @@
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>io.kokuwa.fleet.registry.Application</mainClass>
+							<mainClass>${exec.mainClass}</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -286,13 +399,13 @@
 						<goals>
 							<goal>copy-dependencies</goal>
 						</goals>
+						<configuration>
+							<includeScope>runtime</includeScope>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<silent>true</silent>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<includeScope>runtime</includeScope>
-					<outputDirectory>${project.build.directory}/lib</outputDirectory>
-					<silent>true</silent>
-				</configuration>
 			</plugin>
 
 			<!-- create container -->
@@ -304,6 +417,7 @@
 						<phase>package</phase>
 						<goals>
 							<goal>dockerBuild</goal>
+							<goal>buildTar</goal>
 						</goals>
 						<configuration>
 							<container>
@@ -343,6 +457,16 @@
 								</goals>
 								<configuration>
 									<inputFile>src/main/resources/openapi/gateway.yaml</inputFile>
+								</configuration>
+							</execution>
+							<execution>
+								<id>openapi-management-validate</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>validate</goal>
+								</goals>
+								<configuration>
+									<inputFile>src/main/resources/openapi/management.yaml</inputFile>
 								</configuration>
 							</execution>
 						</executions>

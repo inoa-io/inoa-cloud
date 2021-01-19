@@ -1,24 +1,32 @@
 micronaut:
+
+  ## used for tokens issued/checked at management api
+  security:
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: pleaseChangeThisSecretForANewOne
+
+  ## test client with increased read-timout for debbuging
   http:
     client:
       logger-name: io.kokuwa.TestClient
       read-timeout: 5m
 
+## config for registry
 registry:
+  # example config urls
   config-uri: http://example.org/consul
   config-type: consul
+  # use random key and set issuer
   auth:
     generate-key: true
     issuer: test
 
+## log registry events
 logger:
   levels:
     io.kokuwa: TRACE
-    io.micronaut: INFO
     io.micronaut.data: TRACE
-    io.micronaut.http.client: TRACE
-    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
-    io.micronaut.security: TRACE
-    org.flywaydb: WARN
-    org.testcontainers: WARN
-    com.zaxxer.hikari: WARN

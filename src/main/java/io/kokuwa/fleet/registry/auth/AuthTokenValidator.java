@@ -26,7 +26,7 @@ public class AuthTokenValidator implements TokenValidator {
 	@SuppressWarnings("deprecation")
 	public Publisher<Authentication> validateToken(String token) {
 		return service.validateToken(token)
-				.map(uuid -> gatewayRepository.findByUuid(uuid).toFlowable().map(GatewayAuthentication::new))
+				.map(id -> gatewayRepository.findById(id).toFlowable().map(GatewayAuthentication::new))
 				.orElseGet(Flowable::empty)
 				.cast(Authentication.class);
 	}

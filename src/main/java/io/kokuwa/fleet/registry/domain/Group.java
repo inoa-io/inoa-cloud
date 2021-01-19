@@ -6,18 +6,16 @@ import io.micronaut.data.annotation.Relation;
 import lombok.Data;
 
 /**
- * A gateway.
+ * A group related to a tenant.
  *
  * @author Stephan Schnabel
  */
 @MappedEntity
 @Data
-public class Gateway extends BaseEntity {
+public class Group extends BaseEntity {
 
 	@Relation(Relation.Kind.MANY_TO_ONE)
 	private Tenant tenant;
 	@MappedProperty
 	private String name;
-	@MappedProperty
-	private Boolean enabled;
 }

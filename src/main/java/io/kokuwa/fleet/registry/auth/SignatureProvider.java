@@ -1,5 +1,7 @@
 package io.kokuwa.fleet.registry.auth;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.function.Function;
 
 import javax.inject.Singleton;
@@ -25,9 +27,10 @@ class MockSignatureGeneratorConfigurationProvider implements SignatureProvider {
 
 	@Override
 	public Flowable<SignatureConfiguration> find(Gateway gateway) {
-		Function<String, SignatureConfiguration> s = secret -> {
+		Function<String, SecretSignature> s = secret -> {
 			var configuration = new SecretSignatureConfiguration(secret);
-			configuration.setSecret(secret);
+			configuration.setSecret(Base64.getEncoder().encodeToString(secret.getBytes(StandardCharsets.US_ASCII)));
+			configuration.setBase64(true);
 			return new SecretSignature(configuration);
 		};
 		return Flowable.just(

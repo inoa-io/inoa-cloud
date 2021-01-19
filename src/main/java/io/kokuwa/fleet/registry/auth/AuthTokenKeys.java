@@ -18,14 +18,13 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.inject.Singleton;
 
-import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 
 import io.kokuwa.fleet.registry.ApplicationProperties;
 import io.kokuwa.fleet.registry.ApplicationProperties.RegistryAuthProperties.RegistryAuthRSA;
 import io.micronaut.context.exceptions.BeanInstantiationException;
-import io.micronaut.security.token.jwt.endpoints.JwkProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,10 +36,11 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 @Slf4j
 @RequiredArgsConstructor
-public class AuthTokenKeys implements JwkProvider {
+public class AuthTokenKeys {
 
 	private final ApplicationProperties properties;
 	private final List<RSAKey> keys = new ArrayList<>();
+	private JWKSet jwkSet;
 
 	@PostConstruct
 	public void init() {
@@ -55,6 +55,7 @@ public class AuthTokenKeys implements JwkProvider {
 		} else {
 			auth.getKeys().forEach(key -> keys.add(getKey(key)));
 		}
+		jwkSet = new JWKSet(keys.stream().map(RSAKey::toPublicJWK).collect(Collectors.toList()));
 	}
 
 	public RSAKey getSigningKey() {
@@ -65,9 +66,8 @@ public class AuthTokenKeys implements JwkProvider {
 		return keys.stream().filter(k -> k.getKeyID().equals(keyId)).findAny();
 	}
 
-	@Override
-	public List<JWK> retrieveJsonWebKeys() {
-		return keys.stream().map(RSAKey::toPublicJWK).collect(Collectors.toList());
+	public JWKSet getJwkSet() {
+		return jwkSet;
 	}
 
 	// internal

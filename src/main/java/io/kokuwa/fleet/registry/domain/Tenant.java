@@ -1,7 +1,5 @@
 package io.kokuwa.fleet.registry.domain;
 
-import java.util.UUID;
-
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
 import lombok.Data;
@@ -16,7 +14,7 @@ import lombok.Data;
 public class Tenant extends BaseEntity {
 
 	@MappedProperty
-	private UUID uuid;
-	@MappedProperty
 	private String name;
+	@MappedProperty
+	private Boolean enabled;
 }

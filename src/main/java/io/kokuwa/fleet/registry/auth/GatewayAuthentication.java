@@ -24,7 +24,7 @@ public class GatewayAuthentication implements Authentication {
 
 	public GatewayAuthentication(Gateway gateway) {
 		this.gateway = gateway;
-		this.name = "gateway:" + gateway.getUuid().toString();
+		this.name = "gateway:" + gateway.getId().toString();
 		this.attributes = Map.of();
 	}
 }

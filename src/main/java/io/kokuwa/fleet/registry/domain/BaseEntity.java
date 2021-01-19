@@ -1,15 +1,16 @@
 package io.kokuwa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.util.UUID;
 
+import io.micronaut.data.annotation.AutoPopulated;
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
-import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import lombok.Data;
 
 /**
- * Base for all database entitites.
+ * Base for all database entities referenced by external systems.
  *
  * @author Stephan Schnabel
  */
@@ -17,8 +18,8 @@ import lombok.Data;
 public abstract class BaseEntity {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@AutoPopulated
+	private UUID id;
 	@DateCreated
 	private Instant created;
 	@DateUpdated

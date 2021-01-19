@@ -15,6 +15,20 @@ info:
 security: 
 - BearerAuth: []
 paths:
+  /auth/keys:
+    get:
+      tags:
+      - auth
+      summary: Get public jwks.
+      description: TODO
+      operationId: getKeys
+      security: []
+      responses:
+        200:
+          description: JWKs.
+          content:
+            application/json:
+              schema: {}
   /auth/token:
     post:
       tags:
@@ -166,7 +180,7 @@ components:
           description: Type of config server.
           type: string
           example: consul
-        tenant_uuid:
+        tenant_id:
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
@@ -176,10 +190,10 @@ components:
       - expires_in
       - config_uri
       - config_type
-      - tenant_uuid
+      - tenant_id
     PropertyKey:
       type: string
-      pattern: '^[a-z0-9_\-\.]{3,100}$'
+      pattern: '^[a-z0-9_\-\.]{2,100}$'
       example: test-key
     PropertyValue:
       type: string
