@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.validation.constraints.NotNull;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
+import io.micronaut.context.annotation.Context;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,6 +18,7 @@ import lombok.Setter;
  *
  * @author Stephan Schnabel
  */
+@Context
 @ConfigurationProperties("registry")
 @Getter
 @Setter

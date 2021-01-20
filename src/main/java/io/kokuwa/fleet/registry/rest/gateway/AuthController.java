@@ -23,6 +23,8 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
 import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Stephan Schnabel
  */
+@Secured(SecurityRule.IS_ANONYMOUS)
 @Controller
 @Slf4j
 @RequiredArgsConstructor

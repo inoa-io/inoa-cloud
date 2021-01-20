@@ -3,18 +3,18 @@ micronaut:
   # open management for usage without token
   security:
     intercept-url-map:
-    - pattern: /gateway/properties
-      access: isAuthenticated()
     - pattern: /**
       access: isAnonymous()
 
+  ## see https://docs.micronaut.io/latest/guide/index.html#cors
+  server:
+    cors:
+      enabled: true
+
+## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
   serialization:
     indentOutput: true
-
-logger:
-  levels:
-    io.kokuwa: TRACE
 
 registry:
 
@@ -30,3 +30,7 @@ registry:
 
   # enable eternal token
   gateway.token.issued-at-threshold: null
+
+logger:
+  levels:
+    io.kokuwa: TRACE

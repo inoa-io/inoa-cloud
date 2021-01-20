@@ -1,43 +1,3 @@
-micronaut:
-
-  ## see https://docs.micronaut.io/latest/guide/index.html#staticResources
-  router:
-    static-resources:
-      openapi:
-        paths: classpath:openapi
-        mapping: /openapi/**
-
-  ## see https://docs.micronaut.io/latest/guide/index.html#cors
-  server:
-    cors:
-      enabled: false
-
-  ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/index.html
-  security:
-    intercept-url-map:
-    # endpoints should be available for operations (should not exposed to extern)
-    - pattern: /endpoints/**
-      access: isAnonymous()
-    # openapi should be available for everybody
-    - pattern: /openapi/**
-      access: isAnonymous()
-    # auth endpoints should be available for everybody
-    - pattern: /auth/keys
-      access: isAnonymous()
-    - pattern: /auth/token
-      access: isAnonymous()
-    # secure everything else
-    - pattern: /**
-      access: isAuthenticated()
-
-## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
-endpoints:
-  all:
-    path: /endpoints
-    sensitive: false
-  health:
-    details-visible: ANONYMOUS
-
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
   bean-introspection-module: true
@@ -50,7 +10,7 @@ datasources:
     driverClassName: org.h2.Driver
     url: jdbc:h2:mem:${datasources.default.database};DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;DATABASE_TO_LOWER=TRUE
     database: gateway-registry
-    username: micronaut
+    username: gateway-registry
     password: changeMe
     dialect: H2
 

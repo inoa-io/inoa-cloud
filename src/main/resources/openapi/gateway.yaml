@@ -12,6 +12,7 @@ info:
   contact: 
     name: Kokuwa.io
     url: https://github.com/kokuwaio
+servers: []
 security: 
 - BearerAuth: []
 paths:
