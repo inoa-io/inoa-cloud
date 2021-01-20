@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Clock;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -12,22 +16,26 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 
-import io.kokuwa.fleet.registry.HttpResponseAssertions;
+import io.kokuwa.fleet.registry.AbstractTest;
+import io.kokuwa.fleet.registry.auth.AuthTokenKeys;
 import io.kokuwa.fleet.registry.auth.AuthTokenService;
-import io.kokuwa.fleet.registry.rest.gateway.AuthApiTestClient;
-import io.kokuwa.fleet.registry.rest.gateway.AuthController;
-import io.kokuwa.fleet.registry.rest.gateway.TokenErrorVO;
-import io.kokuwa.fleet.registry.rest.gateway.TokenRepsonseVO;
-import io.kokuwa.fleet.registry.test.AbstractUnitTest;
-import io.kokuwa.fleet.registry.test.Data;
+import io.kokuwa.fleet.registry.domain.Gateway;
+import io.kokuwa.fleet.registry.rest.HttpResponseAssertions;
+import io.micronaut.context.annotation.Primary;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpResponse;
+import lombok.SneakyThrows;
 
 /**
  * Test for {@link AuthController}.
@@ -35,18 +43,29 @@ import io.micronaut.http.HttpResponse;
  * @author Stephan Schnabel
  */
 @DisplayName("gateway: auth")
-public class AuthControllerTest extends AbstractUnitTest {
+public class AuthControllerTest extends AbstractTest {
+
+	private final Instant now = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
 
 	@Inject
 	AuthApiTestClient client;
 	@Inject
 	AuthTokenService authTokenService;
+	@Inject
+	AuthTokenKeys authTokenKeys;
+
+	@DisplayName("keys: get jwkset")
+	@Test
+	void getJwkSet() {
+		var json = assert200(() -> client.getKeys());
+		assertEquals(authTokenKeys.getJwkSet().toJSONObject(), json, "jwk");
+	}
 
 	@DisplayName("error: grant_type invalid")
 	@Test
 	void errorGrantType() {
 		var errorDescription = "grant_type is not urn:ietf:params:oauth:grant-type:jwt-bearer";
-		var jwt = auth.gatewayToken(Data.GATEWAY_1_UUID, Data.GATEWAY_1_SECRET);
+		var jwt = token(UUID.randomUUID(), "pleaseChangeThisSecretForANewOne");
 		assertError(() -> client.getToken("password", jwt), errorDescription);
 	}
 
@@ -139,20 +158,42 @@ public class AuthControllerTest extends AbstractUnitTest {
 	@DisplayName("error: gateway not found")
 	@Test
 	void errorGatewayNotFound() {
-		var gatewayUuid = UUID.randomUUID();
+		var gatewayId = UUID.randomUUID();
 		var gatewaySecret = UUID.randomUUID().toString();
-		var errorDescription = "gateway " + gatewayUuid + " not found";
-		var jwt = auth.gatewayToken(gatewayUuid, gatewaySecret);
+		var errorDescription = "gateway " + gatewayId + " not found";
+		var jwt = token(gatewayId, gatewaySecret);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
 	@DisplayName("error: signature invalid")
 	@Test
 	void errorSignatureInvalid() {
-		var gatewayUuid = Data.GATEWAY_1_UUID;
+		var gatewayId = data.gateway().getId();
 		var gatewaySecret = UUID.randomUUID().toString();
 		var errorDescription = "signature verification failed";
-		var jwt = auth.gatewayToken(gatewayUuid, gatewaySecret);
+		var jwt = token(gatewayId, gatewaySecret);
+		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+	}
+
+	@DisplayName("error: tenant disabled")
+	@Test
+	void errorTenantDisabled() {
+		var tenant = data.tenant(data.tenantName(), false);
+		var gateway = data.gateway(tenant);
+		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var errorDescription = "tenant " + tenant.getId() + " disabled";
+		var jwt = token(gateway.getId(), gatewaySecret);
+		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+	}
+
+	@DisplayName("error: gateway disabled")
+	@Test
+	void errorGatewayDisabled() {
+		var tenant = data.tenant();
+		var gateway = data.gateway(tenant, false);
+		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var errorDescription = "gateway " + gateway.getId() + " disabled";
+		var jwt = token(gateway.getId(), gatewaySecret);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -165,10 +206,10 @@ public class AuthControllerTest extends AbstractUnitTest {
 		assertTrue(properties.getGateway().getToken().isForceIssuedAt(), "iat optional");
 		assertTrue(properties.getGateway().getToken().getIssuedAtThreshold().isPresent(), "iat threshold missing");
 
-		var gatewayUuid = Data.GATEWAY_1_UUID;
-		var gatewaySecret = Data.GATEWAY_1_SECRET;
-		var jwt = auth.gatewayToken(gatewayUuid, gatewaySecret);
-		assertSuccess(gatewayUuid, jwt);
+		var gateway = data.gateway();
+		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var jwt = token(gateway.getId(), gatewaySecret);
+		assertSuccess(gateway, jwt);
 	}
 
 	@DisplayName("success: minimal token")
@@ -180,27 +221,27 @@ public class AuthControllerTest extends AbstractUnitTest {
 		properties.getGateway().getToken().setForceIssuedAt(true);
 		properties.getGateway().getToken().setIssuedAtThreshold(Optional.empty());
 
-		var gatewayUuid = Data.GATEWAY_1_UUID;
-		var gatewaySecret = Data.GATEWAY_1_SECRET;
-		var jwt = auth.gatewayToken(gatewayUuid, gatewaySecret,
-				claims -> claims.notBeforeTime(null).jwtID(null));
-		assertSuccess(gatewayUuid, jwt);
+		var gateway = data.gateway();
+		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var jwt = token(gateway.getId(), gatewaySecret, claims -> claims.notBeforeTime(null).jwtID(null));
+		assertSuccess(gateway, jwt);
 	}
 
 	// internal
 
-	private void assertSuccess(UUID gateway, String jwt) {
+	private void assertSuccess(Gateway gateway, String jwt) {
 		TokenRepsonseVO response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));
-		assertEquals(gateway, authTokenService.validateToken(response.getAccessToken()).orElse(null), "access_token");
+		UUID uuidFromResponse = authTokenService.validateToken(response.getAccessToken()).orElse(null);
+		assertEquals(gateway.getId(), uuidFromResponse, "access_token");
 		assertEquals(response.getTokenType(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, "token_type");
 		assertEquals(properties.getAuth().getExpirationDuration().getSeconds(), response.getExpiresIn(), "expires_in");
 		assertEquals(response.getConfigUri(), properties.getConfigUri(), "config_uri");
 		assertEquals(response.getConfigType(), properties.getConfigType(), "config_type");
-		assertEquals(response.getTenantUuid(), Data.GATEWAY_1_TENANT_UUID, "tenant_uuid");
+		assertEquals(response.getTenantId(), gateway.getTenant().getId(), "tenant_uuid");
 	}
 
 	private void assertError(Consumer<JWTClaimsSet.Builder> claimsManipulator, String errorDescription) {
-		var jwt = auth.gatewayToken(Data.GATEWAY_1_UUID, Data.GATEWAY_1_SECRET, claimsManipulator);
+		var jwt = token(UUID.randomUUID(), UUID.randomUUID().toString(), claimsManipulator);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -212,5 +253,32 @@ public class AuthControllerTest extends AbstractUnitTest {
 		assertNotNull(errorDescription, "error description invalid");
 		assertTrue(errorDescription.startsWith(expectedDescription), () -> "error description invalid, expected ["
 				+ expectedDescription + "] but got [" + errorDescription + "]");
+	}
+
+	private String token(UUID gateway, String secret) {
+		return token(gateway, secret, claims -> {});
+	}
+
+	@SneakyThrows
+	private String token(UUID gateway, String secret, Consumer<JWTClaimsSet.Builder> claimsManipulator) {
+
+		var claims = new JWTClaimsSet.Builder()
+				.audience(properties.getGateway().getToken().getAudience())
+				.jwtID(UUID.randomUUID().toString())
+				.issuer(gateway.toString())
+				.issueTime(Date.from(now))
+				.notBeforeTime(Date.from(now))
+				.expirationTime(Date.from(now.plusSeconds(1)));
+		claimsManipulator.accept(claims);
+
+		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
+		jwt.sign(new MACSigner(secret));
+		return jwt.serialize();
+	}
+
+	@Primary
+	@Singleton
+	Clock clock() {
+		return Clock.fixed(now, ZoneOffset.UTC);
 	}
 }

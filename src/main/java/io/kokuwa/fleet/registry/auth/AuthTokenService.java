@@ -41,24 +41,24 @@ public class AuthTokenService {
 	/**
 	 * Create registry signed JWT for gateway.
 	 *
-	 * @param gatewayUuid Gateway uuid to create JWT for.
+	 * @param gatewayId Gateway id to create JWT for.
 	 * @return Signed JWT.
 	 * @see "https://tools.ietf.org/html/rfc7523#section-4"
 	 */
-	public String createToken(UUID gatewayUuid) {
+	public String createToken(UUID gatewayId) {
 
 		var now = Instant.now(clock);
-		var properties = this.properties.getAuth();
+		var authProperties = this.properties.getAuth();
 
 		// claims for gateway
 
 		var claims = new JWTClaimsSet.Builder()
-				.subject(gatewayUuid.toString())
-				.issuer(properties.getIssuer())
+				.subject(gatewayId.toString())
+				.issuer(authProperties.getIssuer())
 				.issueTime(Date.from(now))
 				.notBeforeTime(Date.from(now))
-				.expirationTime(Date.from(now.plus(properties.getExpirationDuration())))
-				.audience(properties.getAudience())
+				.expirationTime(Date.from(now.plus(authProperties.getExpirationDuration())))
+				.audience(authProperties.getAudience())
 				.jwtID(UUID.randomUUID().toString())
 				.build();
 

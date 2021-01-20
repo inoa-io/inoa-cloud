@@ -1,3 +1,13 @@
+micronaut:
+
+  # open management for usage without token
+  security:
+    intercept-url-map:
+    - pattern: /gateway/properties
+      access: isAuthenticated()
+    - pattern: /**
+      access: isAnonymous()
+
 jackson:
   serialization:
     indentOutput: true

@@ -8,10 +8,12 @@ import java.util.UUID;
 import org.slf4j.MDC;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.kokuwa.fleet.registry.ApplicationProperties;
+import io.kokuwa.fleet.registry.auth.AuthTokenKeys;
 import io.kokuwa.fleet.registry.auth.AuthTokenService;
 import io.kokuwa.fleet.registry.auth.SignatureProvider;
 import io.kokuwa.fleet.registry.domain.Gateway;
@@ -42,7 +44,13 @@ public class AuthController implements AuthApi {
 	private final SignatureProvider signatureProvider;
 	private final GatewayRepository gatewayRepository;
 	private final AuthTokenService authService;
-	private final ApplicationProperties properties;
+	private final AuthTokenKeys keys;
+	private final ApplicationProperties applicationProperties;
+
+	@Override
+	public Single<HttpResponse<Object>> getKeys() {
+		return Single.just(keys.getJwkSet()).map(JWKSet::toJSONObject).map(HttpResponse::ok);
+	}
 
 	@Override
 	public Single<HttpResponse<TokenRepsonseVO>> getToken(String grantType, String token) {
@@ -76,16 +84,24 @@ public class AuthController implements AuthApi {
 
 		// validate claims
 
-		var gatewayUuid = validateClaims(claims);
+		var gatewayId = validateClaims(claims);
 
 		// get gateway and set mdc
 
-		var gatewaySingle = gatewayRepository.findByUuid(gatewayUuid)
+		var gatewaySingle = gatewayRepository.findById(gatewayId)
 				.doOnComplete(() -> {
-					throw error("gateway " + gatewayUuid + " not found");
+					throw error("gateway " + gatewayId + " not found");
 				})
-				.doOnSuccess(gateway -> MDC.put("tenant", gateway.getTenant().getUuid().toString()))
-				.toSingle();
+				.doOnSuccess(gateway -> MDC.put("tenant", gateway.getTenant().getId().toString()))
+				.toSingle().map(gateway -> {
+					if (!gateway.getTenant().getEnabled()) {
+						throw error("tenant " + gateway.getTenant().getId() + " disabled");
+					}
+					if (!gateway.getEnabled()) {
+						throw error("gateway " + gatewayId + " disabled");
+					}
+					return gateway;
+				});
 
 		// filter if signature is invalid
 
@@ -102,7 +118,7 @@ public class AuthController implements AuthApi {
 				})
 				.flatMap(verified -> {
 					if (verified) {
-						log.debug("Got gateway {} from token.", gateway.getSerial());
+						log.debug("Got gateway {} from token.", gateway.getName());
 						return Single.just(gateway);
 					}
 					throw error("signature verification failed");
@@ -119,7 +135,7 @@ public class AuthController implements AuthApi {
 	private UUID validateClaims(JWTClaimsSet claims) {
 
 		var now = Instant.now(clock);
-		var properties = this.properties.getGateway().getToken();
+		var tokenProperties = this.applicationProperties.getGateway().getToken();
 
 		// check issuer
 
@@ -127,9 +143,9 @@ public class AuthController implements AuthApi {
 		if (issuer == null) {
 			throw error("token does not contain claim " + JwtClaims.ISSUER);
 		}
-		UUID gatewayUuid;
+		UUID gatewayId;
 		try {
-			gatewayUuid = UUID.fromString(issuer);
+			gatewayId = UUID.fromString(issuer);
 		} catch (IllegalArgumentException e) {
 			throw error("token does not contain valid claim " + JwtClaims.ISSUER + ": " + issuer);
 		}
@@ -148,7 +164,7 @@ public class AuthController implements AuthApi {
 		// check not before
 
 		var notBefore = claims.getNotBeforeTime();
-		if (notBefore == null && properties.isForceNotBefore()) {
+		if (notBefore == null && tokenProperties.isForceNotBefore()) {
 			throw error("token does not contain claim " + JwtClaims.NOT_BEFORE);
 		}
 		if (notBefore != null && now.isBefore(notBefore.toInstant())) {
@@ -158,10 +174,10 @@ public class AuthController implements AuthApi {
 		// check issued at
 
 		var issueTime = claims.getIssueTime();
-		if (issueTime == null && properties.isForceIssuedAt()) {
+		if (issueTime == null && tokenProperties.isForceIssuedAt()) {
 			throw error("token does not contain claim " + JwtClaims.ISSUED_AT);
 		}
-		var issuedAtThreshold = properties.getIssuedAtThreshold();
+		var issuedAtThreshold = tokenProperties.getIssuedAtThreshold();
 		if (issueTime != null && issuedAtThreshold.map(now::minus)
 				.filter(threshold -> threshold.isAfter(issueTime.toInstant()))
 				.isPresent()) {
@@ -174,17 +190,17 @@ public class AuthController implements AuthApi {
 		if (audienceList.isEmpty()) {
 			throw error("token does not contain claim " + JwtClaims.AUDIENCE);
 		}
-		if (!audienceList.contains(properties.getAudience())) {
-			throw error("token audience expected: " + properties.getAudience());
+		if (!audienceList.contains(tokenProperties.getAudience())) {
+			throw error("token audience expected: " + tokenProperties.getAudience());
 		}
 
 		// check jwt id
 
-		if (claims.getJWTID() == null && properties.isForceJwtId()) {
+		if (claims.getJWTID() == null && tokenProperties.isForceJwtId()) {
 			throw error("token does not contain claim " + JwtClaims.JWT_ID);
 		}
 
-		return gatewayUuid;
+		return gatewayId;
 	}
 
 	/**
@@ -195,12 +211,12 @@ public class AuthController implements AuthApi {
 	 */
 	private HttpResponse<TokenRepsonseVO> getTokenResponse(Gateway gateway) {
 		return HttpResponse.ok(new TokenRepsonseVO()
-				.setAccessToken(authService.createToken(gateway.getUuid()))
+				.setAccessToken(authService.createToken(gateway.getId()))
 				.setTokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
-				.setExpiresIn(properties.getAuth().getExpirationDuration().getSeconds())
-				.setConfigUri(properties.getConfigUri())
-				.setConfigType(properties.getConfigType())
-				.setTenantUuid(gateway.getTenant().getUuid()));
+				.setExpiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
+				.setConfigUri(applicationProperties.getConfigUri())
+				.setConfigType(applicationProperties.getConfigType())
+				.setTenantId(gateway.getTenant().getId()));
 	}
 
 	/**

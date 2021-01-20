@@ -1,0 +1,587 @@
+openapi: 3.0.3
+info:
+  title: "Registry: Management API"
+  description: |
+     * create gateway jwt signed with gateway secret
+     * get registry token with gateway jwt
+     * call endpoints with registry token
+  version: 1.0.0
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact: 
+    name: Kokuwa.io
+    url: https://github.com/kokuwaio
+security: 
+- BearerAuth: []
+paths:
+  /tenant:
+    get:
+      tags:
+      - tenant
+      summary: Get tenants.
+      description: Returns all tenants ordered by name.
+      operationId: getTenants
+      security: []
+      responses:
+        200:
+          description: Returns list of available tenants.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+        401:
+          description: Unauthorized.
+    post:
+      tags:
+      - tenant
+      summary: Create tenant.
+      description: TODO
+      operationId: createTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+      responses:
+        201:
+          description: Tenant created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: Malformed.
+        401:
+          description: Unauthorized.
+        409:
+          description: Tenant with name already exists.
+  /tenant/{id}:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+      - tenant
+      summary: Get tenant.
+      description: TODO
+      operationId: getTenant
+      responses:
+        200:
+          description: Returns tenant.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        401:
+          description: Unauthorized.
+        404:
+          description: Tenant not found.
+    put:
+      tags:
+      - tenant
+      summary: Update tenant.
+      description: TODO
+      operationId: updateTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdate'
+      responses:
+        200:
+          description: Tenant updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: Malformed.
+        401:
+          description: Unauthorized.
+        404:
+          description: Tenant not found.
+        409:
+          description: Tenant with name already exists.
+    delete:
+      tags:
+      - tenant
+      summary: Delete tenant.
+      description: TODO
+      operationId: deleteTenant
+      responses:
+        204:
+          description: Tenant deleted.
+        400:
+          description: Cannot delete because gateways exists.
+        401:
+          description: Unauthorized.
+        404:
+          description: Tenant not found.
+  /group:
+    get:
+      tags:
+      - group
+      summary: Get groups.
+      description: Returns all groups ordered by name. Suports filtering by tenant.
+      operationId: getGroups
+      security: []
+      parameters:
+      - name: tenant
+        in: query
+        schema:
+          $ref: '#/components/schemas/Id'
+        example: 00000000-0000-0000-0000-000000000000
+      responses:
+        200:
+          description: Returns list of available groups.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        401:
+          description: Unauthorized.
+    post:
+      tags:
+      - group
+      summary: Create group with random id.
+      description: TODO
+      operationId: createGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupCreate'
+      responses:
+        201:
+          description: Group created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        400:
+          description: Malformed or tenant not found.
+        401:
+          description: Unauthorized.
+        409:
+          description: Gateway with name already exists.
+  /group/{id}:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+      - group
+      summary: Get group.
+      description: TODO
+      operationId: getGroup
+      responses:
+        200:
+          description: Returns group.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway not found.
+    put:
+      tags:
+      - group
+      summary: Update group.
+      description: TODO
+      operationId: updateGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GroupUpdate'
+      responses:
+        200:
+          description: Tenant updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        400:
+          description: Malformed.
+        401:
+          description: Unauthorized.
+        404:
+          description: Group not found.
+        409:
+          description: Group with name already exists.
+    delete:
+      tags:
+      - group
+      summary: Delete group.
+      description: TODO
+      operationId: deleteGroup
+      responses:
+        204:
+          description: Group deleted.
+        401:
+          description: Unauthorized.
+        404:
+          description: Group not found.
+  /gateway:
+    get:
+      tags:
+      - gateway
+      summary: Get gateways.
+      description: Returns all gateways ordered by name. Suports filtering by tenant or group.
+      operationId: getGateways
+      security: []
+      parameters:
+      - name: tenant
+        in: query
+        schema:
+          $ref: '#/components/schemas/Id'
+        example: 00000000-0000-0000-0000-000000000000
+      - name: group
+        in: query
+        schema:
+          $ref: '#/components/schemas/Id'
+        example: 00000000-0000-0000-0000-000000000000
+      responses:
+        200:
+          description: Returns list of available gateways.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Gateway'
+        401:
+          description: Unauthorized.
+    post:
+      tags:
+      - gateway
+      summary: Create gateway.
+      description: TODO
+      operationId: createGateway
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GatewayCreate'
+      responses:
+        201:
+          description: Gateway created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayDetail'
+        400:
+          description: Malformed or tenant not found.
+        401:
+          description: Unauthorized.
+        409:
+          description: Gateway with name already exists.
+  /gateway/{id}:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    get:
+      tags:
+      - gateway
+      summary: Get gateway.
+      description: TODO
+      operationId: getGateway
+      responses:
+        200:
+          description: Returns gateway.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayDetail'
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway not found.
+    put:
+      tags:
+      - gateway
+      summary: Update gateway.
+      description: TODO
+      operationId: updateGateway
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GatewayUpdate'
+      responses:
+        200:
+          description: Tenant updated.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GatewayDetail'
+        400:
+          description: Malformed or group not found.
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway not found.
+        409:
+          description: Gateway with name already exists.
+    delete:
+      tags:
+      - gateway
+      summary: Delete gateway.
+      description: TODO
+      operationId: deleteGateway
+      responses:
+        204:
+          description: Gateway deleted.
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway not found.
+components:
+  schemas:
+    Id:
+      description: Uuid as technical reference (never changes).
+      type: string
+      format: uuid
+    TenantName:
+      description: Human friendly shortname (can change).
+      type: string
+      minLength: 3
+      maxLength: 20
+      pattern: '^[a-zA-Z0-9\-]*$'
+      example: kokuwa
+    TenantEnabled:
+      description: Flag if tenant is enabled or not.
+      type: boolean
+      example: true
+    Tenant:
+      description: Tenant with name and id.
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          $ref: '#/components/schemas/TenantEnabled'
+        created:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+        updated:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      required:
+      - id
+      - enabled
+      - name
+      - created
+      - updated
+    TenantCreate:
+      description: Tenant to create.
+      type: object
+      properties:
+        enabled:
+          description: Flag if tenant is enabled or not.
+          type: boolean
+          default: true
+          example: true
+        name:
+          $ref: '#/components/schemas/TenantName'
+      required:
+      - name
+    TenantUpdate:
+      description: Tenant to update.
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          $ref: '#/components/schemas/TenantEnabled'
+    GroupName:
+      description: Human friendly shortname (can change).
+      type: string
+      minLength: 3
+      maxLength: 20
+      pattern: '^[a-zA-Z0-9\-]*$'
+      example: production
+    Group:
+      description: Group with common metadata.
+      type: object
+      properties:
+        tenant:
+          $ref: '#/components/schemas/Id'
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/GroupName'
+        created:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+        updated:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      required:
+      - tenant
+      - id
+      - name
+      - created
+      - updated
+    GroupCreate:
+      description: Group to create.
+      type: object
+      properties:
+        tenant:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/GroupName'
+      required:
+      - tenant
+      - name
+    GroupUpdate:
+      description: Group to update.
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/GroupName'
+    GatewayName:
+      description: Human friendly shortname (can change).
+      type: string
+      minLength: 3
+      maxLength: 32
+      pattern: '^[a-zA-Z0-9\-]*$'
+      example: GW-00001
+    GatewayEnabled:
+      description: Flag if gateway is enabled or not.
+      type: boolean
+      example: true
+    Gateway:
+      description: Gateway with common metadata.
+      type: object
+      properties:
+        tenant:
+          $ref: '#/components/schemas/Id'
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/GatewayName'
+        enabled:
+          $ref: '#/components/schemas/GatewayEnabled'
+        created:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+        updated:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      required:
+      - tenant
+      - id
+      - enabled
+      - name
+      - created
+      - updated
+    GatewayDetail:
+      description: Gateway with details.
+      type: object
+      properties:
+        tenant:
+          $ref: '#/components/schemas/Id'
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/GatewayName'
+        enabled:
+          $ref: '#/components/schemas/GatewayEnabled'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Id'
+          example:
+          - 00000000-0000-0000-0000-000000000000
+        properties:
+          type: string
+          maxLength: 100
+          additionalProperties:
+            type: string
+            maxLength: 1000
+          example:
+            test-a: this-is-a
+            test-b: this-is-b
+        created:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+        updated:
+          type: string
+          format: date-time
+          example: 2010-01-01T00:00:00Z
+      required:
+      - tenant
+      - id
+      - enabled
+      - name
+      - groups
+      - properties
+      - created
+      - updated
+    GatewayCreate:
+      description: Gateway to create.
+      type: object
+      properties:
+        tenant:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/GatewayName'
+        enabled:
+          description: Flag if gateway is enabled or not.
+          type: boolean
+          default: true
+          example: true
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Id'
+          example:
+          - 00000000-0000-0000-0000-000000000000
+      required:
+      - tenant
+      - name
+    GatewayUpdate:
+      description: Gateway to update.
+      type: object
+      properties:
+        enabled:
+          $ref: '#/components/schemas/GatewayEnabled'
+        name:
+          $ref: '#/components/schemas/GatewayName'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Id'
+          example:
+          - 00000000-0000-0000-0000-000000000000
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

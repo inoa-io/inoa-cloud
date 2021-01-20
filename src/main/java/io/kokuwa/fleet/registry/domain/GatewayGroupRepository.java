@@ -2,43 +2,31 @@ package io.kokuwa.fleet.registry.domain;
 
 import java.util.UUID;
 
+import io.kokuwa.fleet.registry.domain.GatewayGroup.GatewayGroupPK;
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.reactive.RxJavaCrudRepository;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
 
 /**
- * Repository for {@link Gateway}.
+ * Repository for {@link GatewayGroup}.
  *
  * @author Stephan Schnabel
  */
-public interface GatewayRepository extends RxJavaCrudRepository<Gateway, UUID> {
+public interface GatewayGroupRepository extends RxJavaCrudRepository<GatewayGroup, GatewayGroupPK> {
 
-	@Join("tenant")
-	@Override
-	Maybe<Gateway> findById(UUID id);
-
-	Flowable<Gateway> findAllOrderByName();
-
-	Flowable<Gateway> findByTenantIdOrderByName(UUID tenantId);
-
-	Single<Boolean> existsByTenant(Tenant tenant);
-
-	Single<Boolean> existsByTenantAndName(Tenant tenant, String name);
+	Flowable<UUID> findGroupIdByGatewayIdOrderByGatewayId(UUID gatewayId);
 }
 
 @Requires(property = "datasources.default.dialect", value = "H2")
 @JdbcRepository(dialect = Dialect.H2)
-interface GatewayRepositoryH2 extends GatewayRepository {}
+interface GatewayGroupRepositoryH2 extends GatewayGroupRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "POSTGRES")
 @JdbcRepository(dialect = Dialect.POSTGRES)
-interface GatewayRepositoryPostgres extends GatewayRepository {}
+interface GatewayGroupRepositoryPostgres extends GatewayGroupRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "MYSQL")
 @JdbcRepository(dialect = Dialect.MYSQL)
-interface GatewayRepositoryMysql extends GatewayRepository {}
+interface GatewayGroupRepositoryMysql extends GatewayGroupRepository {}

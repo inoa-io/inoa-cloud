@@ -15,15 +15,20 @@ micronaut:
   ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/index.html
   security:
     intercept-url-map:
+    # endpoints should be available for operations (should not exposed to extern)
+    - pattern: /endpoints/**
+      access: isAnonymous()
+    # openapi should be available for everybody
+    - pattern: /openapi/**
+      access: isAnonymous()
+    # auth endpoints should be available for everybody
     - pattern: /auth/keys
       access: isAnonymous()
     - pattern: /auth/token
       access: isAnonymous()
-    - pattern: /gateway/properties/**
+    # secure everything else
+    - pattern: /**
       access: isAuthenticated()
-    endpoints:
-      keys:
-        path: /auth/keys
 
 ## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
 endpoints:

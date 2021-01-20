@@ -3,42 +3,32 @@ package io.kokuwa.fleet.registry.domain;
 import java.util.UUID;
 
 import io.micronaut.context.annotation.Requires;
-import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.reactive.RxJavaCrudRepository;
 import io.reactivex.Flowable;
-import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 /**
- * Repository for {@link Gateway}.
+ * Repository for {@link Tenant}.
  *
  * @author Stephan Schnabel
  */
-public interface GatewayRepository extends RxJavaCrudRepository<Gateway, UUID> {
+public interface TenantRepository extends RxJavaCrudRepository<Tenant, UUID> {
 
-	@Join("tenant")
-	@Override
-	Maybe<Gateway> findById(UUID id);
+	Flowable<Tenant> findAllOrderByName();
 
-	Flowable<Gateway> findAllOrderByName();
-
-	Flowable<Gateway> findByTenantIdOrderByName(UUID tenantId);
-
-	Single<Boolean> existsByTenant(Tenant tenant);
-
-	Single<Boolean> existsByTenantAndName(Tenant tenant, String name);
+	Single<Boolean> existsByName(String name);
 }
 
 @Requires(property = "datasources.default.dialect", value = "H2")
 @JdbcRepository(dialect = Dialect.H2)
-interface GatewayRepositoryH2 extends GatewayRepository {}
+interface TenantRepositoryH2 extends TenantRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "POSTGRES")
 @JdbcRepository(dialect = Dialect.POSTGRES)
-interface GatewayRepositoryPostgres extends GatewayRepository {}
+interface TenantRepositoryPostgres extends TenantRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "MYSQL")
 @JdbcRepository(dialect = Dialect.MYSQL)
-interface GatewayRepositoryMysql extends GatewayRepository {}
+interface TenantRepositoryMysql extends TenantRepository {}
