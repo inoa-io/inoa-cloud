@@ -17,6 +17,8 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.context.ServerRequestContext;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.micronaut.security.annotation.Secured;
+import io.micronaut.security.rules.SecurityRule;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Stephan Schnabel
  */
+@Secured(SecurityRule.IS_AUTHENTICATED)
 @Controller
 @Slf4j
 @RequiredArgsConstructor
@@ -47,7 +50,7 @@ public class PropertiesController implements PropertiesApi {
 				.flatMap(properties -> Flowable.merge(
 						// not updated properties
 						Flowable.fromIterable(properties.stream()
-								.filter(property -> !body.keySet().contains(property.getPk().getKey()))
+								.filter(property -> !body.containsKey(property.getPk().getKey()))
 								.collect(Collectors.toList())),
 						// created or updated properties
 						Single.concat(body.entrySet().stream()
@@ -104,7 +107,7 @@ public class PropertiesController implements PropertiesApi {
 			return repository.update(property.setValue(newValue));
 		}
 
-		log.trace("Property {} not uzdated with value {}.", key, newValue);
+		log.trace("Property {} not updated with value {}.", key, newValue);
 		return Single.just(property);
 	}
 

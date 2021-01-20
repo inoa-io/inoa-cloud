@@ -2,9 +2,8 @@ openapi: 3.0.3
 info:
   title: "Registry: Management API"
   description: |
-     * create gateway jwt signed with gateway secret
-     * get registry token with gateway jwt
-     * call endpoints with registry token
+     * manage tenants/gateways/groups/credentials
+     * credentials are stored in database/consul/...
   version: 1.0.0
   license:
     name: Apache License 2.0
@@ -12,6 +11,7 @@ info:
   contact: 
     name: Kokuwa.io
     url: https://github.com/kokuwaio
+servers: []
 security: 
 - BearerAuth: []
 paths:
@@ -22,7 +22,6 @@ paths:
       summary: Get tenants.
       description: Returns all tenants ordered by name.
       operationId: getTenants
-      security: []
       responses:
         200:
           description: Returns list of available tenants.
@@ -128,7 +127,6 @@ paths:
       summary: Get groups.
       description: Returns all groups ordered by name. Suports filtering by tenant.
       operationId: getGroups
-      security: []
       parameters:
       - name: tenant
         in: query
@@ -238,7 +236,6 @@ paths:
       summary: Get gateways.
       description: Returns all gateways ordered by name. Suports filtering by tenant or group.
       operationId: getGateways
-      security: []
       parameters:
       - name: tenant
         in: query

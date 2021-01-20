@@ -8,6 +8,9 @@ micronaut:
           secret:
             generator:
               secret: pleaseChangeThisSecretForANewOne
+    intercept-url-map:
+    - pattern: /**
+      access: isAuthenticated()
 
   ## test client with increased read-timout for debbuging
   http:
