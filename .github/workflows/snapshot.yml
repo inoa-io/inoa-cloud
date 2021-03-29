@@ -26,3 +26,11 @@ jobs:
       env:
         SERVER_USERNAME: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
         SERVER_PASSWORD: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GIT_ACTION_TOKEN }}
+    - name: docker push
+        run: docker push ghcr.io/grayc-de/gateway-registry:latest
