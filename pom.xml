@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.2.4</version>
+		<version>0.2.5</version>
 		<relativePath />
 	</parent>
 
@@ -43,7 +43,8 @@
 		<exec.mainClass>io.kokuwa.fleet.registry.Application</exec.mainClass>
 		<docker.postgres.version>13.1</docker.postgres.version>
 		<docker.mysql.version>8.0</docker.mysql.version>
-
+		<!-- TODO: latest for now -->
+		<inoa.imageName>ghcr.io/grayc-de/${project.artifactId}:latest</inoa.imageName>
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
@@ -53,7 +54,7 @@
 		<version.io.micronaut>2.2.3</version.io.micronaut>
 		<version.io.micronaut.data>2.2.3</version.io.micronaut.data>
 		<version.org.mapstruct>1.4.1.Final</version.org.mapstruct>
-		<version.org.testcontainers>1.15.1</version.org.testcontainers>
+		<version.org.testcontainers>1.15.2</version.org.testcontainers>
 
 	</properties>
 
@@ -92,7 +93,26 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>${version.org.testcontainers}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>${version.org.testcontainers}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>mysql</artifactId>
+				<version>${version.org.testcontainers}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testcontainers</groupId>
+				<artifactId>testcontainers</artifactId>
+				<version>${version.org.testcontainers}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
@@ -416,7 +436,7 @@
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>buildTar</goal>
+							<goal>dockerBuild</goal>
 						</goals>
 						<configuration>
 							<container>
@@ -424,6 +444,9 @@
 									<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
 								</jvmFlags>
 							</container>
+							<to>
+								<image>${inoa.imageName}</image>
+							</to>
 						</configuration>
 					</execution>
 				</executions>
