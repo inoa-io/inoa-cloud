@@ -49,15 +49,15 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 
 		var bearer = bearerAdmin();
 		Function<UUID, List<UUID>> filter = tenant -> assert200(() -> client.getGroups(bearer, tenant)).stream()
-				.map(GroupVO::getId).collect(Collectors.toList());
-		Function<List<Group>, List<UUID>> ids = groups -> groups.stream()
-				.map(Group::getId).collect(Collectors.toList());
+				.map(GroupVO::getGroupId).collect(Collectors.toList());
+		Function<List<Group>, List<UUID>> ids = groupIds -> groupIds.stream()
+				.map(Group::getExternalId).collect(Collectors.toList());
 
 		// execute
 
 		assertEquals(ids.apply(List.of(group3, group2, group1)), filter.apply(null), "empty");
-		assertEquals(ids.apply(List.of(group2, group1)), filter.apply(tenant1.getId()), "tenant1");
-		assertEquals(ids.apply(List.of(group3)), filter.apply(tenant2.getId()), "tenant2");
+		assertEquals(ids.apply(List.of(group2, group1)), filter.apply(tenant1.getExternalId()), "tenant1");
+		assertEquals(ids.apply(List.of(group3)), filter.apply(tenant2.getExternalId()), "tenant2");
 	}
 
 	@DisplayName("getGroups(401): no token")
@@ -72,8 +72,8 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void getGroup200() {
 		var expected = data.group();
-		var actual = assert200(() -> client.getGroup(bearerAdmin(), expected.getId()));
-		assertEquals(expected.getId(), actual.getId(), "id");
+		var actual = assert200(() -> client.getGroup(bearerAdmin(), expected.getExternalId()));
+		assertEquals(expected.getExternalId(), actual.getGroupId(), "groupId");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
 		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
@@ -83,7 +83,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void getGroup401() {
-		assert401(() -> client.getGroup(null, data.group().getId()));
+		assert401(() -> client.getGroup(null, data.group().getExternalId()));
 	}
 
 	@DisplayName("getGroup(404): not found")
@@ -98,21 +98,21 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void createGroup201() {
 		var tenant = data.tenant();
-		var vo = new GroupCreateVO().setTenant(tenant.getId()).setName(data.groupName());
+		var vo = new GroupCreateVO().setTenantId(tenant.getExternalId()).setName(data.groupName());
 		var created = assert201(() -> client.createGroup(bearerAdmin(), vo));
-		assertEquals(tenant.getId(), created.getTenant(), "tenant");
-		assertNotNull(created.getId(), "id");
+		assertEquals(tenant.getExternalId(), created.getTenantId(), "tenantId");
+		assertNotNull(created.getGroupId(), "groupId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
-		assertEquals(created, assert200(() -> client.getGroup(bearerAdmin(), created.getId())), "vo");
+		assertEquals(created, assert200(() -> client.getGroup(bearerAdmin(), created.getGroupId())), "vo");
 	}
 
 	@DisplayName("createGroup(400): check bean validation")
 	@Test
 	@Override
 	public void createGroup400() {
-		var vo = new GroupCreateVO().setTenant(data.tenant().getId()).setName("");
+		var vo = new GroupCreateVO().setTenantId(data.tenant().getExternalId()).setName("");
 		assert400(() -> client.createGroup(bearerAdmin(), vo));
 		assertEquals(0, data.countGroups(), "created");
 	}
@@ -120,7 +120,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@DisplayName("createGroup(400): tenant not exists")
 	@Test
 	public void createGroup400TenantNotExists() {
-		var vo = new GroupCreateVO().setTenant(UUID.randomUUID()).setName(data.tenantName());
+		var vo = new GroupCreateVO().setTenantId(UUID.randomUUID()).setName(data.tenantName());
 		var error = assert400(() -> client.createGroup(bearerAdmin(), vo));
 		assertEquals("Tenant not found.", error.getMessage());
 		assertEquals(0, data.countGroups(), "created");
@@ -130,7 +130,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void createGroup401() {
-		var vo = new GroupCreateVO().setTenant(data.tenant().getId()).setName(data.groupName());
+		var vo = new GroupCreateVO().setTenantId(data.tenant().getExternalId()).setName(data.groupName());
 		assert401(() -> client.createGroup(null, vo));
 		assertEquals(0, data.countGroups(), "created");
 	}
@@ -140,7 +140,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void createGroup409() {
 		var existing = data.group();
-		var vo = new GroupCreateVO().setTenant(existing.getTenant().getId()).setName(existing.getName());
+		var vo = new GroupCreateVO().setTenantId(existing.getTenant().getExternalId()).setName(existing.getName());
 		assert409(() -> client.createGroup(bearerAdmin(), vo));
 		assertEquals(1, data.countGroups(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
@@ -152,9 +152,9 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	public void updateGroup200() {
 		var existing = data.group();
 		var vo = new GroupUpdateVO().setName(null);
-		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getId(), vo));
-		assertEquals(existing.getTenant().getId(), updated.getTenant(), "tenant");
-		assertEquals(existing.getId(), updated.getId(), "id");
+		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), vo));
+		assertEquals(existing.getTenant().getExternalId(), updated.getTenantId(), "tenantId");
+		assertEquals(existing.getExternalId(), updated.getGroupId(), "groupId");
 		assertEquals(existing.getName(), updated.getName(), "name");
 		assertEquals(existing.getCreated(), updated.getCreated(), "created");
 		assertEquals(existing.getUpdated(), updated.getUpdated(), "updated");
@@ -165,9 +165,9 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	public void updateGroup200Name() {
 		var existing = data.group();
 		var vo = new GroupUpdateVO().setName(data.groupName());
-		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getId(), vo));
-		assertEquals(existing.getTenant().getId(), updated.getTenant(), "tenant");
-		assertEquals(existing.getId(), updated.getId(), "id");
+		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), vo));
+		assertEquals(existing.getTenant().getExternalId(), updated.getTenantId(), "tenantId");
+		assertEquals(existing.getExternalId(), updated.getGroupId(), "groupId");
 		assertEquals(vo.getName(), updated.getName(), "name");
 		assertEquals(existing.getCreated(), updated.getCreated(), "created");
 		assertTrue(updated.getUpdated().isAfter(existing.getUpdated()), "updated");
@@ -178,9 +178,9 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	public void updateGroup200Unchanged() {
 		var existing = data.group();
 		var vo = new GroupUpdateVO().setName(existing.getName());
-		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getId(), vo));
-		assertEquals(existing.getTenant().getId(), updated.getTenant(), "tenant");
-		assertEquals(existing.getId(), updated.getId(), "id");
+		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), vo));
+		assertEquals(existing.getTenant().getExternalId(), updated.getTenantId(), "tenantId");
+		assertEquals(existing.getExternalId(), updated.getGroupId(), "groupId");
 		assertEquals(existing.getName(), updated.getName(), "name");
 		assertEquals(existing.getCreated(), updated.getCreated(), "created");
 		assertEquals(existing.getUpdated(), updated.getUpdated(), "updated");
@@ -191,7 +191,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void updateGroup400() {
 		var existing = data.group();
-		assert400(() -> client.updateGroup(bearerAdmin(), existing.getId(), new GroupUpdateVO().setName("")));
+		assert400(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), new GroupUpdateVO().setName("")));
 		assertEquals(existing, data.find(existing), "entity changed");
 	}
 
@@ -200,7 +200,8 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void updateGroup401() {
 		var existing = data.group();
-		assert401(() -> client.updateGroup(null, existing.getId(), new GroupUpdateVO().setName(data.groupName())));
+		assert401(() -> client.updateGroup(null, existing.getExternalId(),
+				new GroupUpdateVO().setName(data.groupName())));
 		assertEquals(existing, data.find(existing), "entity changed");
 	}
 
@@ -218,7 +219,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		var group = data.group();
 		var other = data.group(group.getTenant());
 		var vo = new GroupUpdateVO().setName(other.getName());
-		assert409(() -> client.updateGroup(bearerAdmin(), group.getId(), vo));
+		assert409(() -> client.updateGroup(bearerAdmin(), group.getExternalId(), vo));
 		assertEquals(group, data.find(group), "group changed");
 		assertEquals(other, data.find(other), "other changed");
 	}
@@ -228,7 +229,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void deleteGroup204() {
 		var group = data.group();
-		assert204(() -> client.deleteGroup(bearerAdmin(), group.getId()));
+		assert204(() -> client.deleteGroup(bearerAdmin(), group.getExternalId()));
 		assertEquals(0, data.countGroups(), "not deleted");
 	}
 
@@ -237,7 +238,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	public void deleteGroup204WithGateway() {
 		var group = data.group();
 		data.gateway(group);
-		assert204(() -> client.deleteGroup(bearerAdmin(), group.getId()));
+		assert204(() -> client.deleteGroup(bearerAdmin(), group.getExternalId()));
 		assertEquals(0, data.countGroups(), "not deleted");
 	}
 
@@ -246,7 +247,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void deleteGroup401() {
 		var group = data.group();
-		assert401(() -> client.deleteGroup(null, group.getId()));
+		assert401(() -> client.deleteGroup(null, group.getExternalId()));
 		assertEquals(1, data.countGroups(), "deleted");
 	}
 

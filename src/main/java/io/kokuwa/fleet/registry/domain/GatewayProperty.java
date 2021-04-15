@@ -1,7 +1,6 @@
 package io.kokuwa.fleet.registry.domain;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
@@ -34,7 +33,7 @@ public class GatewayProperty {
 	public static class GatewayPropertyPK {
 
 		@MappedProperty("gateway_id")
-		private final UUID gatewayId;
+		private final Long gatewayId;
 
 		@MappedProperty("key")
 		private final String key;

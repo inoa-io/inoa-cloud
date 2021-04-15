@@ -58,9 +58,9 @@ paths:
           description: Unauthorized.
         409:
           description: Tenant with name already exists.
-  /tenant/{id}:
+  /tenant/{tenant_id}:
     parameters:
-    - $ref: '#/components/parameters/Id'
+    - $ref: '#/components/parameters/TenantId'
     get:
       tags:
       - tenant
@@ -169,9 +169,9 @@ paths:
           description: Unauthorized.
         409:
           description: Gateway with name already exists.
-  /group/{id}:
+  /group/{group_id}:
     parameters:
-    - $ref: '#/components/parameters/Id'
+    - $ref: '#/components/parameters/GroupId'
     get:
       tags:
       - group
@@ -283,9 +283,9 @@ paths:
           description: Unauthorized.
         409:
           description: Gateway with name already exists.
-  /gateway/{id}:
+  /gateway/{gateway_id}:
     parameters:
-    - $ref: '#/components/parameters/Id'
+    - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
       - gateway
@@ -346,7 +346,7 @@ paths:
 components:
   schemas:
     Id:
-      description: Uuid as technical reference (never changes).
+      description: Id as technical reference (never changes).
       type: string
       format: uuid
     TenantName:
@@ -364,7 +364,7 @@ components:
       description: Tenant with name and id.
       type: object
       properties:
-        id:
+        tenant_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/TenantName'
@@ -379,7 +379,7 @@ components:
           format: date-time
           example: 2010-01-01T00:00:00Z
       required:
-      - id
+      - tenant_id
       - enabled
       - name
       - created
@@ -416,9 +416,9 @@ components:
       description: Group with common metadata.
       type: object
       properties:
-        tenant:
+        tenant_id:
           $ref: '#/components/schemas/Id'
-        id:
+        group_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GroupName'
@@ -431,8 +431,8 @@ components:
           format: date-time
           example: 2010-01-01T00:00:00Z
       required:
-      - tenant
-      - id
+      - tenant_id
+      - group_id
       - name
       - created
       - updated
@@ -440,12 +440,12 @@ components:
       description: Group to create.
       type: object
       properties:
-        tenant:
+        tenant_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GroupName'
       required:
-      - tenant
+      - tenant_id
       - name
     GroupUpdate:
       description: Group to update.
@@ -468,9 +468,9 @@ components:
       description: Gateway with common metadata.
       type: object
       properties:
-        tenant:
+        tenant_id:
           $ref: '#/components/schemas/Id'
-        id:
+        gateway_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GatewayName'
@@ -485,8 +485,8 @@ components:
           format: date-time
           example: 2010-01-01T00:00:00Z
       required:
-      - tenant
-      - id
+      - tenant_id
+      - gateway_id
       - enabled
       - name
       - created
@@ -495,15 +495,15 @@ components:
       description: Gateway with details.
       type: object
       properties:
-        tenant:
+        tenant_id:
           $ref: '#/components/schemas/Id'
-        id:
+        gateway_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GatewayName'
         enabled:
           $ref: '#/components/schemas/GatewayEnabled'
-        groups:
+        group_ids:
           type: array
           items:
             $ref: '#/components/schemas/Id'
@@ -528,11 +528,11 @@ components:
           format: date-time
           example: 2010-01-01T00:00:00Z
       required:
-      - tenant
-      - id
+      - tenant_id
+      - gateway_id
       - enabled
       - name
-      - groups
+      - group_ids
       - properties
       - created
       - updated
@@ -540,7 +540,7 @@ components:
       description: Gateway to create.
       type: object
       properties:
-        tenant:
+        tenant_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GatewayName'
@@ -549,7 +549,7 @@ components:
           type: boolean
           default: true
           example: true
-        groups:
+        group_ids:
           type: array
           items:
             $ref: '#/components/schemas/Id'
@@ -557,7 +557,7 @@ components:
           example:
           - 00000000-0000-0000-0000-000000000000
       required:
-      - tenant
+      - tenant_id
       - name
     GatewayUpdate:
       description: Gateway to update.
@@ -567,7 +567,7 @@ components:
           $ref: '#/components/schemas/GatewayEnabled'
         name:
           $ref: '#/components/schemas/GatewayName'
-        groups:
+        group_ids:
           type: array
           items:
             $ref: '#/components/schemas/Id'
@@ -575,8 +575,20 @@ components:
           example:
           - 00000000-0000-0000-0000-000000000000
   parameters:
-    Id:
-      name: id
+    TenantId:
+      name: tenant_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    GroupId:
+      name: group_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    GatewayId:
+      name: gateway_id
       in: path
       required: true
       schema:

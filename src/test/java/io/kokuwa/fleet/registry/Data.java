@@ -167,7 +167,7 @@ public class Data {
 	}
 
 	public Gateway find(Gateway gateway) {
-		return gatewayRepository.findById(gateway.getId()).blockingGet();
+		return gatewayRepository.findByExternalId(gateway.getExternalId()).blockingGet();
 	}
 
 	public List<GatewayProperty> findProperties(Gateway gateway) {

@@ -64,7 +64,9 @@ public abstract class AbstractTest {
 	}
 
 	public String bearer(Gateway gateway) {
-		return HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + authTokenService.createToken(gateway.getId());
+		return HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER
+				+ " "
+				+ authTokenService.createToken(gateway.getExternalId());
 	}
 
 	public String bearerAdmin() {

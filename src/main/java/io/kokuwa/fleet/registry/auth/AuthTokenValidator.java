@@ -26,8 +26,8 @@ public class AuthTokenValidator implements TokenValidator {
 	@Override
 	public Publisher<Authentication> validateToken(String token) {
 		return service.validateToken(token)
-				.map(id -> gatewayRepository.findById(id).toFlowable().map(GatewayAuthentication::new))
+				.map(gatewayId -> gatewayRepository.findByExternalId(gatewayId).toFlowable())
 				.orElseGet(Flowable::empty)
-				.cast(Authentication.class);
+				.map(GatewayAuthentication::new);
 	}
 }

@@ -3,10 +3,12 @@ package io.kokuwa.fleet.registry.domain;
 import java.util.UUID;
 
 import io.micronaut.context.annotation.Requires;
+import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.reactive.RxJavaCrudRepository;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 /**
@@ -14,11 +16,16 @@ import io.reactivex.Single;
  *
  * @author Stephan Schnabel
  */
-public interface GroupRepository extends RxJavaCrudRepository<Group, UUID> {
+public interface GroupRepository extends RxJavaCrudRepository<Group, Long> {
 
+	@Join("tenant")
 	Flowable<Group> findAllOrderByName();
 
-	Flowable<Group> findByTenantIdOrderByName(UUID tenantId);
+	@Join("tenant")
+	Flowable<Group> findByTenantExternalIdOrderByName(UUID tenantExternalId);
+
+	@Join("tenant")
+	Maybe<Group> findByExternalId(UUID externalId);
 
 	Single<Boolean> existsByTenantAndName(Tenant tenant, String name);
 }

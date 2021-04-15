@@ -32,15 +32,15 @@ public class GroupController implements GroupApi {
 	private final GroupRepository groupRepository;
 
 	@Override
-	public Single<HttpResponse<List<GroupVO>>> getGroups(Optional<UUID> tenant) {
-		return tenant
-				.map(groupRepository::findByTenantIdOrderByName).orElseGet(groupRepository::findAllOrderByName)
+	public Single<HttpResponse<List<GroupVO>>> getGroups(Optional<UUID> tenantId) {
+		return tenantId
+				.map(groupRepository::findByTenantExternalIdOrderByName).orElseGet(groupRepository::findAllOrderByName)
 				.map(mapper::toGroup).toList().map(HttpResponse::ok);
 	}
 
 	@Override
-	public Single<HttpResponse<GroupVO>> getGroup(UUID id) {
-		return groupRepository.findById(id)
+	public Single<HttpResponse<GroupVO>> getGroup(UUID groupId) {
+		return groupRepository.findByExternalId(groupId)
 				.doOnComplete(() -> {
 					log.trace("Group not found.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
@@ -53,7 +53,7 @@ public class GroupController implements GroupApi {
 
 		// get tenant
 
-		var tenantSingle = tenantRepository.findById(vo.getTenant())
+		var tenantSingle = tenantRepository.findByExternalId(vo.getTenantId())
 				.doOnComplete(() -> {
 					log.trace("Tenant not found.");
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Tenant not found.");
@@ -73,7 +73,9 @@ public class GroupController implements GroupApi {
 		// create group
 
 		var groupSingle = tenantSingle
-				.map(tenant -> new Group().setTenant(tenant).setName(vo.getName()))
+				.map(tenant -> new Group()
+						.setTenant(tenant)
+						.setName(vo.getName()))
 				.flatMap(groupRepository::save)
 				.doOnSuccess(group -> log.info("Created group: {}", group));
 
@@ -83,12 +85,12 @@ public class GroupController implements GroupApi {
 	}
 
 	@Override
-	public Single<HttpResponse<GroupVO>> updateGroup(UUID id, GroupUpdateVO vo) {
+	public Single<HttpResponse<GroupVO>> updateGroup(UUID groupId, GroupUpdateVO vo) {
 
 		// get tenant from database
 
 		var changed = new AtomicBoolean(false);
-		var groupSingle = groupRepository.findById(id)
+		var groupSingle = groupRepository.findByExternalId(groupId)
 				.doOnComplete(() -> {
 					log.trace("Skip update of non existing group.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
@@ -123,8 +125,8 @@ public class GroupController implements GroupApi {
 	}
 
 	@Override
-	public Single<HttpResponse<Object>> deleteGroup(UUID id) {
-		return groupRepository.findById(id)
+	public Single<HttpResponse<Object>> deleteGroup(UUID groupId) {
+		return groupRepository.findByExternalId(groupId)
 				.doOnComplete(() -> {
 					log.trace("Skip deletion of non existing group.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");

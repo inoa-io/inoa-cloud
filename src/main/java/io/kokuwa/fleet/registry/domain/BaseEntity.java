@@ -6,7 +6,9 @@ import java.util.UUID;
 import io.micronaut.data.annotation.AutoPopulated;
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
+import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
+import io.micronaut.data.annotation.MappedProperty;
 import lombok.Data;
 
 /**
@@ -18,8 +20,11 @@ import lombok.Data;
 public abstract class BaseEntity {
 
 	@Id
+	@GeneratedValue
+	private Long id;
+	@MappedProperty
 	@AutoPopulated
-	private UUID id;
+	private UUID externalId;
 	@DateCreated
 	private Instant created;
 	@DateUpdated
