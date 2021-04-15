@@ -60,9 +60,10 @@ public class Data {
 
 	public Tenant tenant(String name, boolean enabled) {
 		return tenantRepository
-				.save(new Tenant()
+				.save((Tenant) new Tenant()
 						.setName(name)
-						.setEnabled(enabled))
+						.setEnabled(enabled)
+						.setExternalId(UUID.randomUUID()))
 				.blockingGet();
 	}
 
@@ -80,9 +81,10 @@ public class Data {
 
 	public Group group(Tenant tenant, String name) {
 		return groupRepository
-				.save(new Group()
+				.save((Group) new Group()
 						.setTenant(tenant)
-						.setName(name))
+						.setName(name)
+						.setExternalId(UUID.randomUUID()))
 				.blockingGet();
 	}
 
@@ -122,10 +124,11 @@ public class Data {
 
 	public Gateway gateway(Tenant tenant, String name, boolean enabled, List<Group> groups) {
 		Gateway gateway = gatewayRepository
-				.save(new Gateway()
+				.save((Gateway) new Gateway()
 						.setTenant(tenant)
 						.setName(name)
-						.setEnabled(enabled))
+						.setEnabled(enabled)
+						.setExternalId(UUID.randomUUID()))
 				.blockingGet();
 		gatewayGroupRepository
 				.saveAll(groups.stream()

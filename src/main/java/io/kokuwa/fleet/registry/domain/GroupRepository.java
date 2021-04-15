@@ -27,6 +27,8 @@ public interface GroupRepository extends RxJavaCrudRepository<Group, Long> {
 	@Join("tenant")
 	Maybe<Group> findByExternalId(UUID externalId);
 
+	Single<Boolean> existsByExternalId(UUID externalId);
+
 	Single<Boolean> existsByTenantAndName(Tenant tenant, String name);
 }
 

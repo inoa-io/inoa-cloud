@@ -155,13 +155,14 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		var group2 = data.group(tenant);
 		var vo = new GatewayCreateVO()
 				.setTenantId(tenant.getExternalId())
+				.setGatewayId(UUID.randomUUID())
 				.setName(data.gatewayName())
 				.setEnabled(false)
 				.setGroupIds(Set.of(group1.getExternalId(), group2.getExternalId()));
 		var created = assert201(() -> client.createGateway(bearerAdmin(), vo));
 
 		assertEquals(tenant.getExternalId(), created.getTenantId(), "tenantId");
-		assertNotNull(created.getGatewayId(), "gatewayId");
+		assertEquals(vo.getGatewayId(), created.getGatewayId(), "gatewayId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
 		assertEquals(Set.of(group1.getExternalId(), group2.getExternalId()), created.getGroupIds(), "groupIds");
@@ -226,12 +227,27 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(0, data.countGateways(), "created");
 	}
 
+	@DisplayName("createGateway(409): id exists")
+	@Test
+	public void createGateway409Id() {
+		var existing = data.gateway();
+		var vo = new GatewayCreateVO()
+				.setTenantId(existing.getTenant().getExternalId())
+				.setGatewayId(existing.getExternalId())
+				.setName(data.gatewayName());
+		assert409(() -> client.createGateway(bearerAdmin(), vo));
+		assertEquals(1, data.countGateways(), "created");
+		assertEquals(existing, data.find(existing), "entity changed");
+	}
+
 	@DisplayName("createGateway(409): name exists")
 	@Test
 	@Override
 	public void createGateway409() {
 		var existing = data.gateway();
-		var vo = new GatewayCreateVO().setTenantId(existing.getTenant().getExternalId()).setName(existing.getName());
+		var vo = new GatewayCreateVO()
+				.setTenantId(existing.getTenant().getExternalId())
+				.setName(existing.getName());
 		assert409(() -> client.createGateway(bearerAdmin(), vo));
 		assertEquals(1, data.countGateways(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");

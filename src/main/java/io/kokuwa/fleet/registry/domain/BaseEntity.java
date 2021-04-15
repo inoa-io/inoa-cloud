@@ -3,7 +3,6 @@ package io.kokuwa.fleet.registry.domain;
 import java.time.Instant;
 import java.util.UUID;
 
-import io.micronaut.data.annotation.AutoPopulated;
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
 import io.micronaut.data.annotation.GeneratedValue;
@@ -23,7 +22,6 @@ public abstract class BaseEntity {
 	@GeneratedValue
 	private Long id;
 	@MappedProperty
-	@AutoPopulated
 	private UUID externalId;
 	@DateCreated
 	private Instant created;

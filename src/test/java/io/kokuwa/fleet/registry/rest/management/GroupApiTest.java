@@ -93,7 +93,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		assert404(() -> client.getGroup(bearerAdmin(), UUID.randomUUID()));
 	}
 
-	@DisplayName("createGroup(201): success")
+	@DisplayName("createGroup(201): with mandatory properties")
 	@Test
 	@Override
 	public void createGroup201() {
@@ -102,6 +102,23 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		var created = assert201(() -> client.createGroup(bearerAdmin(), vo));
 		assertEquals(tenant.getExternalId(), created.getTenantId(), "tenantId");
 		assertNotNull(created.getGroupId(), "groupId");
+		assertEquals(vo.getName(), created.getName(), "name");
+		assertNotNull(created.getCreated(), "created");
+		assertNotNull(created.getUpdated(), "updated");
+		assertEquals(created, assert200(() -> client.getGroup(bearerAdmin(), created.getGroupId())), "vo");
+	}
+
+	@DisplayName("createGroup(201): with optional properties")
+	@Test
+	public void createGroup201All() {
+		var tenant = data.tenant();
+		var vo = new GroupCreateVO()
+				.setTenantId(tenant.getExternalId())
+				.setGroupId(UUID.randomUUID())
+				.setName(data.groupName());
+		var created = assert201(() -> client.createGroup(bearerAdmin(), vo));
+		assertEquals(tenant.getExternalId(), created.getTenantId(), "tenantId");
+		assertEquals(vo.getGroupId(), created.getGroupId(), "groupId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
@@ -135,12 +152,27 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		assertEquals(0, data.countGroups(), "created");
 	}
 
+	@DisplayName("createGroup(409): id exists")
+	@Test
+	public void createGroup409Id() {
+		var existing = data.group();
+		var vo = new GroupCreateVO()
+				.setTenantId(existing.getTenant().getExternalId())
+				.setGroupId(existing.getExternalId())
+				.setName(data.groupName());
+		assert409(() -> client.createGroup(bearerAdmin(), vo));
+		assertEquals(1, data.countGroups(), "created");
+		assertEquals(existing, data.find(existing), "entity changed");
+	}
+
 	@DisplayName("createGroup(409): name exists")
 	@Test
 	@Override
 	public void createGroup409() {
 		var existing = data.group();
-		var vo = new GroupCreateVO().setTenantId(existing.getTenant().getExternalId()).setName(existing.getName());
+		var vo = new GroupCreateVO()
+				.setTenantId(existing.getTenant().getExternalId())
+				.setName(existing.getName());
 		assert409(() -> client.createGroup(bearerAdmin(), vo));
 		assertEquals(1, data.countGroups(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");

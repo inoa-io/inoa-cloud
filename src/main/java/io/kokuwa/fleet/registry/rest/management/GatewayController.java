@@ -76,19 +76,31 @@ public class GatewayController implements GatewayApi {
 				})
 				.toSingle();
 
-		// check name for uniqueness
+		// check id/name for uniqueness
 
-		tenantSingle = tenantSingle.flatMap(tenant -> gatewayRepository.existsByTenantAndName(tenant, vo.getName())
+		var uniqueIdCompletable = vo.getGatewayId() == null ? Completable.complete()
+				: gatewayRepository
+						.existsByExternalId(vo.getGatewayId())
+						.doOnSuccess(exists -> {
+							if (exists) {
+								throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+							}
+						})
+						.ignoreElement();
+		var uniqueNameCompletable = tenantSingle.flatMap(tenant -> gatewayRepository
+				.existsByTenantAndName(tenant, vo.getName())
 				.flatMap(exists -> {
 					if (exists) {
 						throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 					}
 					return Single.just(tenant);
-				}));
+				}))
+				.ignoreElement();
+		tenantSingle = Completable.mergeArray(uniqueNameCompletable, uniqueIdCompletable).andThen(tenantSingle);
 
 		// check groups for existence
 
-		var groupIds = Optional.ofNullable(vo.getGroupIds()).map(Set::copyOf).orElseGet(Set::of);
+		var groupIds = Optional.ofNullable(vo.getGroupIds()).orElseGet(Set::of);
 		var groupsSingle = groupIds.isEmpty()
 				? Single.just(List.<Group>of())
 				: tenantSingle.flatMap(tenant -> getGroups(tenant, groupIds));
@@ -96,11 +108,12 @@ public class GatewayController implements GatewayApi {
 		// create gateway
 
 		var gatewaySingle = Single
-				.zip(tenantSingle, groupsSingle, (tenant, groups) -> new Gateway()
+				.zip(tenantSingle, groupsSingle, (tenant, groups) -> (Gateway) new Gateway()
 						.setTenant(tenant)
 						.setName(vo.getName())
 						.setEnabled(vo.getEnabled())
-						.setGroups(groups))
+						.setGroups(groups)
+						.setExternalId(vo.getGatewayId() == null ? UUID.randomUUID() : vo.getGatewayId()))
 				.flatMap(gatewayRepository::save)
 				.doOnSuccess(gateway -> log.info("Created gateway: {}", gateway));
 

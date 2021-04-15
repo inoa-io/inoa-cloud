@@ -13,6 +13,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,22 +61,34 @@ public class GroupController implements GroupApi {
 				})
 				.toSingle();
 
-		// check name for uniqueness
+		// check id/name for uniqueness
 
-		tenantSingle = tenantSingle.flatMap(tenant -> groupRepository.existsByTenantAndName(tenant, vo.getName())
+		var uniqueIdCompletable = vo.getGroupId() == null ? Completable.complete() : groupRepository
+				.existsByExternalId(vo.getGroupId())
+				.doOnSuccess(exists -> {
+					if (exists) {
+						throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+					}
+				})
+				.ignoreElement();
+		var uniqueNameCompletable = tenantSingle.flatMap(tenant -> groupRepository
+				.existsByTenantAndName(tenant, vo.getName())
 				.flatMap(exists -> {
 					if (exists) {
 						throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 					}
 					return Single.just(tenant);
-				}));
+				}))
+				.ignoreElement();
+		var uniqueCompletable = Completable.mergeArray(uniqueNameCompletable, uniqueIdCompletable);
 
 		// create group
 
-		var groupSingle = tenantSingle
-				.map(tenant -> new Group()
+		var groupSingle = uniqueCompletable.andThen(tenantSingle)
+				.map(tenant -> (Group) new Group()
 						.setTenant(tenant)
-						.setName(vo.getName()))
+						.setName(vo.getName())
+						.setExternalId(vo.getGroupId() == null ? UUID.randomUUID() : vo.getGroupId()))
 				.flatMap(groupRepository::save)
 				.doOnSuccess(group -> log.info("Created group: {}", group));
 

@@ -57,7 +57,7 @@ paths:
         401:
           description: Unauthorized.
         409:
-          description: Tenant with name already exists.
+          description: Tenant with id or name already exists.
   /tenant/{tenant_id}:
     parameters:
     - $ref: '#/components/parameters/TenantId'
@@ -168,7 +168,7 @@ paths:
         401:
           description: Unauthorized.
         409:
-          description: Gateway with name already exists.
+          description: Group with id or name already exists.
   /group/{group_id}:
     parameters:
     - $ref: '#/components/parameters/GroupId'
@@ -188,7 +188,7 @@ paths:
         401:
           description: Unauthorized.
         404:
-          description: Gateway not found.
+          description: Group not found.
     put:
       tags:
       - group
@@ -282,7 +282,7 @@ paths:
         401:
           description: Unauthorized.
         409:
-          description: Gateway with name already exists.
+          description: Gateway with id or name already exists.
   /gateway/{gateway_id}:
     parameters:
     - $ref: '#/components/parameters/GatewayId'
@@ -388,6 +388,8 @@ components:
       description: Tenant to create.
       type: object
       properties:
+        tenant_id:
+          $ref: '#/components/schemas/Id'
         enabled:
           description: Flag if tenant is enabled or not.
           type: boolean
@@ -441,6 +443,8 @@ components:
       type: object
       properties:
         tenant_id:
+          $ref: '#/components/schemas/Id'
+        group_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GroupName'
@@ -541,6 +545,8 @@ components:
       type: object
       properties:
         tenant_id:
+          $ref: '#/components/schemas/Id'
+        gateway_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GatewayName'

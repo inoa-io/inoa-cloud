@@ -27,6 +27,8 @@ public interface GatewayRepository extends RxJavaCrudRepository<Gateway, Long> {
 	@Join("tenant")
 	Maybe<Gateway> findByExternalId(UUID externalId);
 
+	Single<Boolean> existsByExternalId(UUID externalId);
+
 	Single<Boolean> existsByTenant(Tenant tenant);
 
 	Single<Boolean> existsByTenantAndName(Tenant tenant, String name);

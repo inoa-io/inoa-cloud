@@ -12,6 +12,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
+import io.reactivex.Completable;
 import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,22 +49,33 @@ public class TenantController implements TenantApi {
 	@Override
 	public Single<HttpResponse<TenantVO>> createTenant(TenantCreateVO vo) {
 
-		// check name for uniqueness
+		// check id/name for uniqueness
 
-		var uniqueCompletable = tenantRepository.existsByName(vo.getName())
+		var uniqueIdCompletable = vo.getTenantId() == null ? Completable.complete() : tenantRepository
+				.existsByExternalId(vo.getTenantId())
 				.doOnSuccess(exists -> {
 					if (exists) {
 						throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 					}
 				})
 				.ignoreElement();
+		var uniqueNameCompletable = tenantRepository
+				.existsByName(vo.getName())
+				.doOnSuccess(exists -> {
+					if (exists) {
+						throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+					}
+				})
+				.ignoreElement();
+		var uniqueCompletable = Completable.mergeArray(uniqueNameCompletable, uniqueIdCompletable);
 
 		// create tenant
 
 		var tenantSingle = uniqueCompletable.andThen(Single
-				.just(new Tenant()
+				.just((Tenant) new Tenant()
 						.setName(vo.getName())
-						.setEnabled(vo.getEnabled())))
+						.setEnabled(vo.getEnabled())
+						.setExternalId(vo.getTenantId() == null ? UUID.randomUUID() : vo.getTenantId())))
 				.flatMap(tenantRepository::save)
 				.doOnSuccess(tenant -> log.info("Created tenant: {}", tenant));
 
