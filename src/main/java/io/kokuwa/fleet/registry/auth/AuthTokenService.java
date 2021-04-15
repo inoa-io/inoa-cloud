@@ -48,7 +48,7 @@ public class AuthTokenService {
 	public String createToken(UUID gatewayId) {
 
 		var now = Instant.now(clock);
-		var authProperties = this.properties.getAuth();
+		var authProperties = properties.getAuth();
 
 		// claims for gateway
 
