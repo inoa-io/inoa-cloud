@@ -210,7 +210,7 @@ public class GatewayController implements GatewayApi {
 					log.trace("Skip deletion of non existing gateway.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
 				})
-				.flatMapSingle(gateway -> gatewayRepository.deleteById(id).toSingle(() -> {
+				.flatMapSingle(gateway -> gatewayRepository.delete(gateway).toSingle(() -> {
 					log.info("Gateway {} deleted.", gateway.getName());
 					return HttpResponse.noContent();
 				}));

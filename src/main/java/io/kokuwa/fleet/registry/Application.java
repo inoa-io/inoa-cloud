@@ -9,7 +9,6 @@ import io.micronaut.runtime.Micronaut;
  */
 public class Application {
 
-	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		Micronaut.build(args)
 				.mainClass(Application.class)

@@ -129,7 +129,7 @@ public class GroupController implements GroupApi {
 					log.trace("Skip deletion of non existing group.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
 				})
-				.flatMapSingle(group -> groupRepository.deleteById(id).toSingle(() -> {
+				.flatMapSingle(group -> groupRepository.delete(group).toSingle(() -> {
 					log.info("Group {} deleted.", group.getName());
 					return HttpResponse.noContent();
 				}));

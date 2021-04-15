@@ -133,7 +133,7 @@ public class TenantController implements TenantApi {
 					if (exists) {
 						throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Gateways exists.");
 					}
-					return tenantRepository.deleteById(id).toSingle(() -> {
+					return tenantRepository.delete(tenant).toSingle(() -> {
 						log.info("Tenant {} deleted.", tenant.getName());
 						return HttpResponse.noContent();
 					});
