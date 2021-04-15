@@ -83,7 +83,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void getGroup401() {
-		assert401(() -> client.getGroup(null, UUID.randomUUID()));
+		assert401(() -> client.getGroup(null, data.group().getId()));
 	}
 
 	@DisplayName("getGroup(404): not found")

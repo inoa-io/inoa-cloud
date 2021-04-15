@@ -81,7 +81,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(expected.getId(), actual.getId(), "uuid");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
-		assertEqualsSet(Set.of(), actual.getGroups(), "groups");
+		assertEquals(Set.of(), actual.getGroups(), "groups");
 		assertEquals(Map.of(), actual.getProperties(), "properties");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
 		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
@@ -99,7 +99,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 
 		assertEquals(expected.getId(), actual.getId(), "uuid");
 		assertEquals(expected.getName(), actual.getName(), "name");
-		assertEqualsSet(Set.of(group), actual.getGroups(), "groups");
+		assertEquals(Set.of(group.getId()), actual.getGroups(), "groups");
 		assertEquals(expectedProperties, actual.getProperties(), "properties");
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
@@ -137,7 +137,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertNotNull(created.getId(), "uuid");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(true, created.getEnabled(), "enabled");
-		assertEqualsSet(Set.of(), created.getGroups(), "groups");
+		assertEquals(Set.of(), created.getGroups(), "groups");
 		assertEquals(Map.of(), created.getProperties(), "properties");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
@@ -155,14 +155,14 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 				.setTenant(tenant.getId())
 				.setName(data.gatewayName())
 				.setEnabled(false)
-				.setGroups(List.of(group1.getId(), group2.getId(), group2.getId()));
+				.setGroups(Set.of(group1.getId(), group2.getId()));
 		var created = assert201(() -> client.createGateway(bearerAdmin(), vo));
 
 		assertEquals(tenant.getId(), created.getTenant(), "tenant");
 		assertNotNull(created.getId(), "uuid");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
-		assertEqualsSet(Set.of(group1, group2), created.getGroups(), "groups");
+		assertEquals(Set.of(group1.getId(), group2.getId()), created.getGroups(), "groups");
 		assertEquals(Map.of(), created.getProperties(), "properties");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
@@ -192,24 +192,26 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	public void createGateway400GroupNotExists() {
 		var tenant = data.tenant();
 		var group = data.group(tenant);
+		var notExistingGroupUuid = UUID.randomUUID();
 		var vo = new GatewayCreateVO()
 				.setTenant(tenant.getId())
 				.setName(data.tenantName())
-				.setGroups(List.of(group.getId(), UUID.randomUUID()));
+				.setGroups(Set.of(group.getId(), notExistingGroupUuid));
 		var error = assert400(() -> client.createGateway(bearerAdmin(), vo));
-		assertEquals("Group " + vo.getGroups().get(1) + " not found.", error.getMessage());
+		assertEquals("Group " + notExistingGroupUuid + " not found.", error.getMessage());
 		assertEquals(0, data.countGateways(), "created");
 	}
 
 	@DisplayName("createGateway(400): group from other tenant")
 	@Test
 	public void createGateway400GroupFromOtherTenant() {
+		var groupUuidFromOtherTenant = data.group().getId();
 		var vo = new GatewayCreateVO()
 				.setTenant(data.tenant().getId())
 				.setName(data.tenantName())
-				.setGroups(List.of(data.group().getId()));
+				.setGroups(Set.of(groupUuidFromOtherTenant));
 		var error = assert400(() -> client.createGateway(bearerAdmin(), vo));
-		assertEquals("Group " + vo.getGroups().get(0) + " not found.", error.getMessage());
+		assertEquals("Group " + groupUuidFromOtherTenant + " not found.", error.getMessage());
 		assertEquals(0, data.countGateways(), "created");
 	}
 
@@ -250,7 +252,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(gateway.getName(), updated.getName(), "name");
 		assertEquals(gateway.getEnabled(), updated.getEnabled(), "enabled");
 		assertEquals(expectedProperties, updated.getProperties(), "properties");
-		assertEqualsSet(Set.of(group), updated.getGroups(), "groups");
+		assertEquals(Set.of(group.getId()), updated.getGroups(), "groups");
 		assertEquals(gateway.getCreated(), updated.getCreated(), "created");
 		assertEquals(gateway.getUpdated(), updated.getUpdated(), "updated");
 		assertEquals(updated, assert200(() -> client.getGateway(bearerAdmin(), gateway.getId())), "vo");
@@ -267,7 +269,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		var vo = new GatewayUpdateVO()
 				.setName(gateway.getName())
 				.setEnabled(gateway.getEnabled())
-				.setGroups(List.of(group.getId()));
+				.setGroups(Set.of(group.getId()));
 		var updated = assert200(() -> client.updateGateway(bearerAdmin(), gateway.getId(), vo));
 
 		assertEquals(gateway.getTenant().getId(), updated.getTenant(), "tenant");
@@ -275,7 +277,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(gateway.getName(), updated.getName(), "name");
 		assertEquals(gateway.getEnabled(), updated.getEnabled(), "enabled");
 		assertEquals(expectedProperties, updated.getProperties(), "properties");
-		assertEqualsSet(Set.of(group), updated.getGroups(), "groups");
+		assertEquals(Set.of(group.getId()), updated.getGroups(), "groups");
 		assertEquals(gateway.getCreated(), updated.getCreated(), "created");
 		assertEquals(gateway.getUpdated(), updated.getUpdated(), "updated");
 		assertEquals(updated, assert200(() -> client.getGateway(bearerAdmin(), gateway.getId())), "vo");
@@ -297,7 +299,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(vo.getName(), updated.getName(), "name");
 		assertEquals(gateway.getEnabled(), updated.getEnabled(), "enabled");
 		assertEquals(expectedProperties, updated.getProperties(), "properties");
-		assertEqualsSet(Set.of(group), updated.getGroups(), "groups");
+		assertEquals(Set.of(group.getId()), updated.getGroups(), "groups");
 		assertEquals(gateway.getCreated(), updated.getCreated(), "created");
 		assertTrue(updated.getUpdated().isAfter(gateway.getUpdated()), "updated");
 		assertEquals(updated, assert200(() -> client.getGateway(bearerAdmin(), gateway.getId())), "vo");
@@ -316,7 +318,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		var vo = new GatewayUpdateVO()
 				.setName(null)
 				.setEnabled(null)
-				.setGroups(List.of(group2.getId(), group3.getId()));
+				.setGroups(Set.of(group2.getId(), group3.getId()));
 		var updated = assert200(() -> client.updateGateway(bearerAdmin(), gateway.getId(), vo));
 
 		assertEquals(gateway.getTenant().getId(), updated.getTenant(), "tenant");
@@ -324,7 +326,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(gateway.getName(), updated.getName(), "name");
 		assertEquals(gateway.getEnabled(), updated.getEnabled(), "enabled");
 		assertEquals(expectedProperties, updated.getProperties(), "properties");
-		assertEqualsSet(Set.of(group2, group3), updated.getGroups(), "groups");
+		assertEquals(Set.of(group2.getId(), group3.getId()), updated.getGroups(), "groups");
 		assertEquals(gateway.getCreated(), updated.getCreated(), "created");
 		assertTrue(updated.getUpdated().isAfter(gateway.getUpdated()), "updated");
 		assertEquals(updated, assert200(() -> client.getGateway(bearerAdmin(), gateway.getId())), "vo");
@@ -339,7 +341,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		var group2 = data.group(tenant);
 		var expectedProperties = Map.of("aaa", "a");
 		var gateway = data.gateway(tenant, List.of(group1), expectedProperties);
-		var vo = new GatewayUpdateVO().setName(data.gatewayName()).setEnabled(false).setGroups(List.of(group2.getId()));
+		var vo = new GatewayUpdateVO().setName(data.gatewayName()).setEnabled(false).setGroups(Set.of(group2.getId()));
 		var updated = assert200(() -> client.updateGateway(bearerAdmin(), gateway.getId(), vo));
 
 		assertEquals(gateway.getTenant().getId(), updated.getTenant(), "tenant");
@@ -347,7 +349,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(vo.getName(), updated.getName(), "name");
 		assertEquals(vo.getEnabled(), updated.getEnabled(), "enabled");
 		assertEquals(expectedProperties, updated.getProperties(), "properties");
-		assertEqualsSet(Set.of(group2), updated.getGroups(), "groups");
+		assertEquals(Set.of(group2.getId()), updated.getGroups(), "groups");
 		assertEquals(gateway.getCreated(), updated.getCreated(), "created");
 		assertTrue(updated.getUpdated().isAfter(gateway.getUpdated()), "updated");
 		assertEquals(updated, assert200(() -> client.getGateway(bearerAdmin(), gateway.getId())), "vo");
@@ -366,9 +368,10 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	@Test
 	public void updateGateway400GroupNotExists() {
 		var gateway = data.gateway();
-		var vo = new GatewayUpdateVO().setGroups(List.of(UUID.randomUUID()));
+		var notExistingGroupUuid = UUID.randomUUID();
+		var vo = new GatewayUpdateVO().setGroups(Set.of(notExistingGroupUuid));
 		var error = assert400(() -> client.updateGateway(bearerAdmin(), gateway.getId(), vo));
-		assertEquals("Group " + vo.getGroups().get(0) + " not found.", error.getMessage());
+		assertEquals("Group " + notExistingGroupUuid + " not found.", error.getMessage());
 		assertEquals(gateway, data.find(gateway), "entity changed");
 	}
 
@@ -376,9 +379,10 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	@Test
 	public void updateGateway400GroupFromOtherTenant() {
 		var gateway = data.gateway();
-		var vo = new GatewayUpdateVO().setGroups(List.of(data.group().getId()));
+		var groupUuidFromOtherTenant = data.group().getId();
+		var vo = new GatewayUpdateVO().setGroups(Set.of(groupUuidFromOtherTenant));
 		var error = assert400(() -> client.updateGateway(bearerAdmin(), gateway.getId(), vo));
-		assertEquals("Group " + vo.getGroups().get(0) + " not found.", error.getMessage());
+		assertEquals("Group " + groupUuidFromOtherTenant + " not found.", error.getMessage());
 		assertEquals(gateway, data.find(gateway), "entity changed");
 	}
 

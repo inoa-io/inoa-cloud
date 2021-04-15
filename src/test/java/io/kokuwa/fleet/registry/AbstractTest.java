@@ -1,12 +1,9 @@
 package io.kokuwa.fleet.registry;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -18,7 +15,6 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 
 import io.kokuwa.fleet.registry.auth.AuthTokenService;
-import io.kokuwa.fleet.registry.domain.BaseEntity;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.rest.HttpResponseAssertions;
 import io.kokuwa.fleet.registry.rest.JwtProvider;
@@ -87,10 +83,6 @@ public abstract class AbstractTest {
 
 	public <T> JsonError assert400(Supplier<HttpResponse<T>> executeable) {
 		return assertValid(HttpResponseAssertions.assert400(executeable)).getBody(JsonError.class).get();
-	}
-
-	public static void assertEqualsSet(Set<? extends BaseEntity> expected, List<UUID> actual, String message) {
-		assertEquals(expected.stream().map(BaseEntity::getId).collect(Collectors.toSet()), Set.copyOf(actual), message);
 	}
 
 	private <T> T assertValid(T object) {
