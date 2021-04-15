@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import io.kokuwa.fleet.registry.auth.GatewayAuthentication;
@@ -84,7 +83,7 @@ public class PropertiesController implements PropertiesApi {
 	// internal
 
 	private Single<GatewayProperty> updatedProperty(
-			UUID gatewayId,
+			Long gatewayId,
 			List<GatewayProperty> properties,
 			String key,
 			String newValue) {
@@ -111,10 +110,11 @@ public class PropertiesController implements PropertiesApi {
 		return Single.just(property);
 	}
 
-	private UUID getGatewayId() {
+	private Long getGatewayId() {
 		return ServerRequestContext
 				.currentRequest().get()
 				.getUserPrincipal(GatewayAuthentication.class).get()
-				.getGateway().getId();
+				.getGateway()
+				.getId();
 	}
 }

@@ -1,7 +1,5 @@
 package io.kokuwa.fleet.registry.domain;
 
-import java.util.UUID;
-
 import io.kokuwa.fleet.registry.domain.GatewayProperty.GatewayPropertyPK;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
@@ -17,9 +15,9 @@ import io.reactivex.Maybe;
  */
 public interface GatewayPropertyRepository extends RxJavaCrudRepository<GatewayProperty, GatewayPropertyPK> {
 
-	Flowable<GatewayProperty> findByGatewayId(UUID gatewayId);
+	Flowable<GatewayProperty> findByGatewayId(Long gatewayId);
 
-	Maybe<GatewayProperty> findByGatewayIdAndKey(UUID gatewayId, String key);
+	Maybe<GatewayProperty> findByGatewayIdAndKey(Long gatewayId, String key);
 }
 
 @Requires(property = "datasources.default.dialect", value = "H2")

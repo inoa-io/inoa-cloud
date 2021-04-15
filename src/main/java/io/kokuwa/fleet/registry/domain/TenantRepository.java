@@ -7,6 +7,7 @@ import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.reactive.RxJavaCrudRepository;
 import io.reactivex.Flowable;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 
 /**
@@ -14,9 +15,11 @@ import io.reactivex.Single;
  *
  * @author Stephan Schnabel
  */
-public interface TenantRepository extends RxJavaCrudRepository<Tenant, UUID> {
+public interface TenantRepository extends RxJavaCrudRepository<Tenant, Long> {
 
 	Flowable<Tenant> findAllOrderByName();
+
+	Maybe<Tenant> findByExternalId(UUID externalId);
 
 	Single<Boolean> existsByName(String name);
 }

@@ -36,8 +36,8 @@ public class TenantController implements TenantApi {
 	}
 
 	@Override
-	public Single<HttpResponse<TenantVO>> getTenant(UUID id) {
-		return tenantRepository.findById(id)
+	public Single<HttpResponse<TenantVO>> getTenant(UUID tenantId) {
+		return tenantRepository.findByExternalId(tenantId)
 				.doOnComplete(() -> {
 					log.trace("Tenant not found.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
@@ -61,7 +61,9 @@ public class TenantController implements TenantApi {
 		// create tenant
 
 		var tenantSingle = uniqueCompletable.andThen(Single
-				.just(new Tenant().setName(vo.getName()).setEnabled(vo.getEnabled())))
+				.just(new Tenant()
+						.setName(vo.getName())
+						.setEnabled(vo.getEnabled())))
 				.flatMap(tenantRepository::save)
 				.doOnSuccess(tenant -> log.info("Created tenant: {}", tenant));
 
@@ -71,12 +73,12 @@ public class TenantController implements TenantApi {
 	}
 
 	@Override
-	public Single<HttpResponse<TenantVO>> updateTenant(UUID id, TenantUpdateVO vo) {
+	public Single<HttpResponse<TenantVO>> updateTenant(UUID tenantId, TenantUpdateVO vo) {
 
 		// get tenant from database
 
 		var changed = new AtomicBoolean(false);
-		var tenantSingle = tenantRepository.findById(id)
+		var tenantSingle = tenantRepository.findByExternalId(tenantId)
 				.doOnComplete(() -> {
 					log.trace("Skip update of non existing tenant.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
@@ -123,8 +125,8 @@ public class TenantController implements TenantApi {
 	}
 
 	@Override
-	public Single<HttpResponse<Object>> deleteTenant(UUID id) {
-		return tenantRepository.findById(id)
+	public Single<HttpResponse<Object>> deleteTenant(UUID tenantId) {
+		return tenantRepository.findByExternalId(tenantId)
 				.doOnComplete(() -> {
 					log.trace("Skip deletion of non existing tenant.");
 					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");

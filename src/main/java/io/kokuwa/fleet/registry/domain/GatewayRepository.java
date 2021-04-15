@@ -16,15 +16,16 @@ import io.reactivex.Single;
  *
  * @author Stephan Schnabel
  */
-public interface GatewayRepository extends RxJavaCrudRepository<Gateway, UUID> {
+public interface GatewayRepository extends RxJavaCrudRepository<Gateway, Long> {
 
 	@Join("tenant")
-	@Override
-	Maybe<Gateway> findById(UUID id);
-
 	Flowable<Gateway> findAllOrderByName();
 
-	Flowable<Gateway> findByTenantIdOrderByName(UUID tenantId);
+	@Join("tenant")
+	Flowable<Gateway> findByTenantExternalIdOrderByName(UUID tenantExternalId);
+
+	@Join("tenant")
+	Maybe<Gateway> findByExternalId(UUID externalId);
 
 	Single<Boolean> existsByTenant(Tenant tenant);
 

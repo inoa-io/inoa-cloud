@@ -91,14 +91,14 @@ public class AuthController implements AuthApi {
 
 		// get gateway and set mdc
 
-		var gatewaySingle = gatewayRepository.findById(gatewayId)
+		var gatewaySingle = gatewayRepository.findByExternalId(gatewayId)
 				.doOnComplete(() -> {
 					throw error("gateway " + gatewayId + " not found");
 				})
-				.doOnSuccess(gateway -> MDC.put("tenant", gateway.getTenant().getId().toString()))
+				.doOnSuccess(gateway -> MDC.put("tenant", gateway.getTenant().getExternalId().toString()))
 				.toSingle().map(gateway -> {
 					if (!gateway.getTenant().getEnabled()) {
-						throw error("tenant " + gateway.getTenant().getId() + " disabled");
+						throw error("tenant " + gateway.getTenant().getExternalId() + " disabled");
 					}
 					if (!gateway.getEnabled()) {
 						throw error("gateway " + gatewayId + " disabled");
@@ -214,12 +214,12 @@ public class AuthController implements AuthApi {
 	 */
 	private HttpResponse<TokenRepsonseVO> getTokenResponse(Gateway gateway) {
 		return HttpResponse.ok(new TokenRepsonseVO()
-				.setAccessToken(authService.createToken(gateway.getId()))
+				.setAccessToken(authService.createToken(gateway.getExternalId()))
 				.setTokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
 				.setExpiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
 				.setConfigUri(applicationProperties.getConfigUri())
 				.setConfigType(applicationProperties.getConfigType())
-				.setTenantId(gateway.getTenant().getId()));
+				.setTenantId(gateway.getTenant().getExternalId()));
 	}
 
 	/**

@@ -168,7 +168,7 @@ public class AuthControllerTest extends AbstractTest {
 	@DisplayName("error: signature invalid")
 	@Test
 	void errorSignatureInvalid() {
-		var gatewayId = data.gateway().getId();
+		var gatewayId = data.gateway().getExternalId();
 		var gatewaySecret = UUID.randomUUID().toString();
 		var errorDescription = "signature verification failed";
 		var jwt = token(gatewayId, gatewaySecret);
@@ -181,8 +181,8 @@ public class AuthControllerTest extends AbstractTest {
 		var tenant = data.tenant(data.tenantName(), false);
 		var gateway = data.gateway(tenant);
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
-		var errorDescription = "tenant " + tenant.getId() + " disabled";
-		var jwt = token(gateway.getId(), gatewaySecret);
+		var errorDescription = "tenant " + tenant.getExternalId() + " disabled";
+		var jwt = token(gateway.getExternalId(), gatewaySecret);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -192,8 +192,8 @@ public class AuthControllerTest extends AbstractTest {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant, false);
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
-		var errorDescription = "gateway " + gateway.getId() + " disabled";
-		var jwt = token(gateway.getId(), gatewaySecret);
+		var errorDescription = "gateway " + gateway.getExternalId() + " disabled";
+		var jwt = token(gateway.getExternalId(), gatewaySecret);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -208,7 +208,7 @@ public class AuthControllerTest extends AbstractTest {
 
 		var gateway = data.gateway();
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
-		var jwt = token(gateway.getId(), gatewaySecret);
+		var jwt = token(gateway.getExternalId(), gatewaySecret);
 		assertSuccess(gateway, jwt);
 	}
 
@@ -223,7 +223,7 @@ public class AuthControllerTest extends AbstractTest {
 
 		var gateway = data.gateway();
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
-		var jwt = token(gateway.getId(), gatewaySecret, claims -> claims.notBeforeTime(null).jwtID(null));
+		var jwt = token(gateway.getExternalId(), gatewaySecret, claims -> claims.notBeforeTime(null).jwtID(null));
 		assertSuccess(gateway, jwt);
 	}
 
@@ -232,12 +232,12 @@ public class AuthControllerTest extends AbstractTest {
 	private void assertSuccess(Gateway gateway, String jwt) {
 		TokenRepsonseVO response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));
 		UUID uuidFromResponse = authTokenService.validateToken(response.getAccessToken()).orElse(null);
-		assertEquals(gateway.getId(), uuidFromResponse, "access_token");
+		assertEquals(gateway.getExternalId(), uuidFromResponse, "access_token");
 		assertEquals(response.getTokenType(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, "token_type");
 		assertEquals(properties.getAuth().getExpirationDuration().getSeconds(), response.getExpiresIn(), "expires_in");
 		assertEquals(response.getConfigUri(), properties.getConfigUri(), "config_uri");
 		assertEquals(response.getConfigType(), properties.getConfigType(), "config_type");
-		assertEquals(response.getTenantId(), gateway.getTenant().getId(), "tenant_uuid");
+		assertEquals(response.getTenantId(), gateway.getTenant().getExternalId(), "tenant_id");
 	}
 
 	private void assertError(Consumer<JWTClaimsSet.Builder> claimsManipulator, String errorDescription) {
