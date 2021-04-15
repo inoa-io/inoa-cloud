@@ -507,6 +507,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Id'
+          uniqueItems: true
           example:
           - 00000000-0000-0000-0000-000000000000
         properties:
@@ -552,6 +553,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Id'
+          uniqueItems: true
           example:
           - 00000000-0000-0000-0000-000000000000
       required:
@@ -569,6 +571,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Id'
+          uniqueItems: true
           example:
           - 00000000-0000-0000-0000-000000000000
   parameters:
