@@ -197,7 +197,7 @@ public class AuthControllerTest extends AbstractTest {
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
-	@DisplayName("success: full token")
+	@DisplayName("success: full token with hmac")
 	@Test
 	void successFullToken() {
 
@@ -213,7 +213,7 @@ public class AuthControllerTest extends AbstractTest {
 		assertSuccess(gateway, jwt);
 	}
 
-	@DisplayName("success: minimal token")
+	@DisplayName("success: minimal token with rsa")
 	@Test
 	void successMinimalToken() {
 
@@ -226,6 +226,18 @@ public class AuthControllerTest extends AbstractTest {
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
 		data.secretHmac(gateway, data.secretName(), gatewaySecret);
 		var jwt = token(gateway.getExternalId(), gatewaySecret, claims -> claims.notBeforeTime(null).jwtID(null));
+		assertSuccess(gateway, jwt);
+	}
+
+	@DisplayName("success: with rsa")
+	@Test
+	void successRsa() {
+
+		var gateway = data.gateway();
+		var rsaKeys = data.generateKeyPair();
+		data.secretRSA(gateway, data.secretName(), rsaKeys);
+		var tokenClaims = data.tokenClaims(gateway.getExternalId(), now);
+		var jwt = data.token(tokenClaims, rsaKeys);
 		assertSuccess(gateway, jwt);
 	}
 

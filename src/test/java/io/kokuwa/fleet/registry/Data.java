@@ -1,5 +1,9 @@
 package io.kokuwa.fleet.registry;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -8,6 +12,13 @@ import java.util.stream.Collectors;
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
+
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.JWSHeader;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayGroup;
@@ -25,6 +36,7 @@ import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.domain.TenantRepository;
 import io.kokuwa.fleet.registry.rest.management.SecretTypeVO;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 /**
  * Class to create testdata.
@@ -42,10 +54,50 @@ public class Data {
 	private final GatewayGroupRepository gatewayGroupRepository;
 	private final GatewayPropertyRepository gatewayPropertyRepository;
 	private final SecretRepository secretRepository;
+	private final ApplicationProperties applicationProperties;
 
 	void deleteAll() {
 		gatewayRepository.deleteAll().blockingAwait();
 		tenantRepository.deleteAll().blockingAwait();
+	}
+
+	// jwt
+
+	@SneakyThrows
+	public KeyPair generateKeyPair() {
+		return KeyPairGenerator.getInstance("RSA").generateKeyPair();
+	}
+
+	@SneakyThrows
+	public String token(UUID gateway, String hmacSecret) {
+		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), tokenClaims(gateway));
+		jwt.sign(new MACSigner(hmacSecret));
+		return jwt.serialize();
+	}
+
+	public String token(UUID gateway, KeyPair rsaKeys) {
+		return token(tokenClaims(gateway), rsaKeys);
+	}
+
+	@SneakyThrows
+	public String token(JWTClaimsSet claims, KeyPair rsaKeys) {
+		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claims);
+		jwt.sign(new RSASSASigner(rsaKeys.getPrivate()));
+		return jwt.serialize();
+	}
+
+	public JWTClaimsSet tokenClaims(UUID gateway) {
+		return tokenClaims(gateway, Instant.now());
+	}
+
+	public JWTClaimsSet tokenClaims(UUID gateway, Instant now) {
+		return new JWTClaimsSet.Builder()
+				.audience(applicationProperties.getGateway().getToken().getAudience())
+				.jwtID(UUID.randomUUID().toString())
+				.issuer(gateway.toString())
+				.issueTime(Date.from(now))
+				.notBeforeTime(Date.from(now))
+				.expirationTime(Date.from(now)).build();
 	}
 
 	// manipulation
@@ -166,14 +218,18 @@ public class Data {
 				.blockingGet();
 	}
 
-	public Secret secretRSA(Gateway gateway, String name, String publicKey, String privateKey) {
+	public Secret secretRSA(Gateway gateway, String name, KeyPair keyPair) {
+		return secretRSA(gateway, name, keyPair.getPublic().getEncoded(), keyPair.getPrivate().getEncoded());
+	}
+
+	public Secret secretRSA(Gateway gateway, String name, byte[] publicKey, byte[] privateKey) {
 		return secretRepository.save(new Secret()
 				.setGateway(gateway)
 				.setName(name)
 				.setEnabled(true)
 				.setType(SecretTypeVO.RSA)
-				.setPublicKey(publicKey.getBytes())
-				.setPrivateKey(privateKey == null ? null : privateKey.getBytes()))
+				.setPublicKey(publicKey)
+				.setPrivateKey(privateKey))
 				.blockingGet();
 	}
 
