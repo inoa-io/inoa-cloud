@@ -58,4 +58,27 @@ CREATE TABLE gateway_group (
 	CONSTRAINT fk_gateway_group_gateway FOREIGN KEY (gateway_id) REFERENCES gateway(id) ON DELETE CASCADE,
 	CONSTRAINT fk_gateway_group_group FOREIGN KEY (group_id) REFERENCES "group"(id) ON DELETE CASCADE
 );
+CREATE TABLE gateway_secret (
+	id INTEGER auto_increment NOT NULL,
+	gateway_id INTEGER NOT NULL,
+	external_id CHAR(36) NOT NULL,
+	name VARCHAR(32) NOT NULL,
+	enabled BOOLEAN NOT NULL,
+	type VARCHAR(4) NOT NULL,
+	hmac BINARY NULL,
+	public_key BINARY NULL,
+	private_key BINARY NULL,
+	created TIMESTAMP NOT NULL,
+	updated TIMESTAMP NOT NULL,
+	CONSTRAINT pk_gateway_secret PRIMARY KEY (id),
+	CONSTRAINT uq_gateway_secret_external_id UNIQUE (external_id),
+	CONSTRAINT uq_gateway_secret_name UNIQUE (gateway_id,name),
+	CONSTRAINT chk_gateway_secret_external_id CHECK (external_id ~ '^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'),
+	CONSTRAINT chk_gateway_secret_name CHECK (name ~ '^[a-zA-Z0-9\-]{3,32}$'),
+	CONSTRAINT chk_gateway_secret_type CHECK (type ~ '^HMAC|RSA$'),
+	CONSTRAINT chk_gateway_secret_hmac CHECK ((type = 'HMAC' AND hmac IS NOT NULL) OR (type <> 'HMAC' AND hmac IS NULL)),
+	CONSTRAINT chk_gateway_secret_public_key CHECK ((type = 'RSA' AND public_key IS NOT NULL) OR (type <> 'RSA' AND public_key IS NULL)),
+	CONSTRAINT chk_gateway_secret_private_key CHECK ((type = 'RSA' AND private_key IS NOT NULL) OR private_key IS NULL),
+	CONSTRAINT fk_gateway_secret FOREIGN KEY (gateway_id) REFERENCES gateway(id) ON DELETE CASCADE
+);
 

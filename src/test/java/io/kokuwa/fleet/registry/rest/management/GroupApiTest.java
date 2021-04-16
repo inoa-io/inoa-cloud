@@ -224,13 +224,13 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		assertEquals(other, data.find(other), "other changed");
 	}
 
-	@DisplayName("deleteGroup(204): without gateway")
+	@DisplayName("deleteGroup(204): without related objects")
 	@Test
 	@Override
 	public void deleteGroup204() {
 		var group = data.group();
 		assert204(() -> client.deleteGroup(bearerAdmin(), group.getExternalId()));
-		assertEquals(0, data.countGroups(), "not deleted");
+		assertEquals(0, data.countGroups(), "group not deleted");
 	}
 
 	@DisplayName("deleteGroup(204): with gateway")
@@ -239,7 +239,8 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		var group = data.group();
 		data.gateway(group);
 		assert204(() -> client.deleteGroup(bearerAdmin(), group.getExternalId()));
-		assertEquals(0, data.countGroups(), "not deleted");
+		assertEquals(0, data.countGroups(), "group not deleted");
+		assertEquals(1, data.countGateways(), "gateway deleted");
 	}
 
 	@DisplayName("deleteGroup(401): no token")
@@ -248,7 +249,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	public void deleteGroup401() {
 		var group = data.group();
 		assert401(() -> client.deleteGroup(null, group.getExternalId()));
-		assertEquals(1, data.countGroups(), "deleted");
+		assertEquals(1, data.countGroups(), "group deleted");
 	}
 
 	@DisplayName("deleteGroup(404): group not found")

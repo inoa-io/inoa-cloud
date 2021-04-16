@@ -19,8 +19,11 @@ import io.kokuwa.fleet.registry.domain.GatewayPropertyRepository;
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
 import io.kokuwa.fleet.registry.domain.Group;
 import io.kokuwa.fleet.registry.domain.GroupRepository;
+import io.kokuwa.fleet.registry.domain.Secret;
+import io.kokuwa.fleet.registry.domain.SecretRepository;
 import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.domain.TenantRepository;
+import io.kokuwa.fleet.registry.rest.management.SecretTypeVO;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -38,6 +41,7 @@ public class Data {
 	private final GatewayRepository gatewayRepository;
 	private final GatewayGroupRepository gatewayGroupRepository;
 	private final GatewayPropertyRepository gatewayPropertyRepository;
+	private final SecretRepository secretRepository;
 
 	void deleteAll() {
 		gatewayRepository.deleteAll().blockingAwait();
@@ -144,6 +148,35 @@ public class Data {
 				.blockingGet();
 	}
 
+	public String secretName() {
+		return UUID.randomUUID().toString().substring(0, 32);
+	}
+
+	public Secret secret(Gateway gateway) {
+		return secretHmac(gateway, secretName(), UUID.randomUUID().toString());
+	}
+
+	public Secret secretHmac(Gateway gateway, String name, String hmac) {
+		return secretRepository.save(new Secret()
+				.setGateway(gateway)
+				.setName(name)
+				.setEnabled(true)
+				.setType(SecretTypeVO.HMAC)
+				.setHmac(hmac.getBytes()))
+				.blockingGet();
+	}
+
+	public Secret secretRSA(Gateway gateway, String name, String publicKey, String privateKey) {
+		return secretRepository.save(new Secret()
+				.setGateway(gateway)
+				.setName(name)
+				.setEnabled(true)
+				.setType(SecretTypeVO.RSA)
+				.setPublicKey(publicKey.getBytes())
+				.setPrivateKey(privateKey == null ? null : privateKey.getBytes()))
+				.blockingGet();
+	}
+
 	// read
 
 	public Long countTenants() {
@@ -156,6 +189,10 @@ public class Data {
 
 	public Long countGateways() {
 		return gatewayRepository.count().blockingGet();
+	}
+
+	public Long countSecrets(Gateway gateway) {
+		return (long) secretRepository.findByGatewayOrderByName(gateway).toList().blockingGet().size();
 	}
 
 	public Tenant find(Tenant tenant) {
