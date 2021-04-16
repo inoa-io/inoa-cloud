@@ -99,7 +99,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	@Test
 	public void getSecret200Rsa() {
 		var gateway = data.gateway();
-		var expected = data.secretRSA(gateway, data.secretName(), "public", "private");
+		var expected = data.secretRSA(gateway, data.secretName(), "public".getBytes(), "private".getBytes());
 		var actual = assert200(
 				() -> client.getSecret(bearerAdmin(), gateway.getExternalId(), expected.getExternalId()));
 		assertEquals(expected.getExternalId(), actual.getSecretId(), "secretId");
