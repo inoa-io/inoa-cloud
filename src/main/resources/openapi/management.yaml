@@ -343,6 +343,89 @@ paths:
           description: Unauthorized.
         404:
           description: Gateway not found.
+  /gateway/{gateway_id}/secret:
+    parameters:
+    - $ref: '#/components/parameters/GatewayId'
+    get:
+      tags:
+      - secret
+      summary: Get secrets.
+      description: Get secrets for gateway.
+      operationId: getSecrets
+      responses:
+        200:
+          description: Returns list of secrets.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Secret'
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway not found.
+    post:
+      tags:
+      - secret
+      summary: Create secret.
+      description: TODO
+      operationId: createSecret
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SecretCreate'
+      responses:
+        201:
+          description: Secret created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretDetail'
+        400:
+          description: Malformed.
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway not found.
+        409:
+          description: Secret with name already exists for gateway.
+  /gateway/{gateway_id}/secret/{secret_id}:
+    parameters:
+    - $ref: '#/components/parameters/GatewayId'
+    - $ref: '#/components/parameters/SecretId'
+    get:
+      tags:
+      - secret
+      summary: Get secret.
+      description: TODO
+      operationId: getSecret
+      responses:
+        200:
+          description: Returns secret.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SecretDetail'
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway or secret not found.
+    delete:
+      tags:
+      - secret
+      summary: Delete secret.
+      description: TODO
+      operationId: deleteSecret
+      responses:
+        204:
+          description: Secret deleted.
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway or secret not found.
 components:
   schemas:
     Id:
@@ -576,6 +659,154 @@ components:
           uniqueItems: true
           example:
           - 00000000-0000-0000-0000-000000000000
+    SecretEnabled:
+      description: Flag if secret for or not.
+      type: boolean
+      example: true
+    SecretName:
+      description: Human friendly shortname (can change).
+      type: string
+      minLength: 3
+      maxLength: 32
+      pattern: '^[a-zA-Z0-9\-]*$'
+      example: auth
+    SecretType:
+      type: string
+      enum:
+      - hmac
+      - rsa
+    Secret:
+      description: Secret of a gateway.
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/SecretType'
+        gateway_id:
+          $ref: '#/components/schemas/Id'
+        secret_id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/SecretName'
+        enabled:
+          $ref: '#/components/schemas/SecretEnabled'
+        created:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+        updated:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+      required:
+      - type
+      - gateway_id
+      - secret_id
+      - name
+      - enabled
+      - created
+      - updated
+    SecretDetail:
+      description: Secret of a gateway.
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/SecretType'
+        gateway_id:
+          $ref: '#/components/schemas/Id'
+        secret_id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/SecretName'
+        enabled:
+          $ref: '#/components/schemas/SecretEnabled'
+        created:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+        updated:
+          type: string
+          format: date-time
+          example: 2000-01-01T00:00:00Z
+      discriminator:
+        propertyName: type
+        mapping:
+          rsa: '#/components/schemas/SecretDetailRSA'
+          hmac: '#/components/schemas/SecretDetailHmac'
+      required:
+      - type
+      - gateway_id
+      - secret_id
+      - name
+      - enabled
+      - created
+      - updated
+    SecretDetailHmac:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SecretDetail'
+      - properties:
+          hmac:
+            type: string
+            format: byte
+      required:
+      - hmac
+    SecretDetailRSA:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SecretDetail'
+      - properties:
+          public_key:
+            type: string
+            format: byte
+          private_key:
+            type: string
+            format: byte
+      required:
+      - public_key
+    SecretCreate:
+      description: Secret of a gateway.
+      type: object
+      properties:
+        type:
+          $ref: '#/components/schemas/SecretType'
+        name:
+          $ref: '#/components/schemas/SecretName'
+        enabled:
+          description: Flag if gateway is enabled or not.
+          type: boolean
+          default: true
+          example: true
+      discriminator:
+        propertyName: type
+        mapping:
+          rsa: '#/components/schemas/SecretCreateRSA'
+          hmac: '#/components/schemas/SecretCreateHmac'
+      required:
+      - type
+      - name
+    SecretCreateHmac:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SecretCreate'
+      - properties:
+          hmac:
+            type: string
+            format: byte
+      required:
+      - hmac
+    SecretCreateRSA:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/SecretCreate'
+      - properties:
+          public_key:
+            type: string
+            format: byte
+          private_key:
+            type: string
+            format: byte
+      required:
+      - public_key
   parameters:
     TenantId:
       name: tenant_id
@@ -591,6 +822,12 @@ components:
         $ref: '#/components/schemas/Id'
     GatewayId:
       name: gateway_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    SecretId:
+      name: secret_id
       in: path
       required: true
       schema:

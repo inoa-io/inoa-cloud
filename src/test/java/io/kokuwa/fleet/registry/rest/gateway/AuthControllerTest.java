@@ -208,6 +208,7 @@ public class AuthControllerTest extends AbstractTest {
 
 		var gateway = data.gateway();
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		data.secretHmac(gateway, data.secretName(), gatewaySecret);
 		var jwt = token(gateway.getExternalId(), gatewaySecret);
 		assertSuccess(gateway, jwt);
 	}
@@ -223,6 +224,7 @@ public class AuthControllerTest extends AbstractTest {
 
 		var gateway = data.gateway();
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		data.secretHmac(gateway, data.secretName(), gatewaySecret);
 		var jwt = token(gateway.getExternalId(), gatewaySecret, claims -> claims.notBeforeTime(null).jwtID(null));
 		assertSuccess(gateway, jwt);
 	}

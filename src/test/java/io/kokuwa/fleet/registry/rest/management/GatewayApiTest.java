@@ -421,13 +421,39 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertEquals(other, data.find(other), "other changed");
 	}
 
-	@DisplayName("deleteGateway(204): success")
+	@DisplayName("deleteGateway(204): without related objects")
 	@Test
 	@Override
 	public void deleteGateway204() {
 		var gateway = data.gateway();
 		assert204(() -> client.deleteGateway(bearerAdmin(), gateway.getExternalId()));
-		assertEquals(0, data.countGateways(), "not deleted");
+		assertEquals(0, data.countGateways(), "gateway not deleted");
+	}
+
+	@DisplayName("deleteGateway(204): with group")
+	@Test
+	public void deleteGateway204WithGroup() {
+
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		var gateway = data.gateway(group);
+
+		assert204(() -> client.deleteGateway(bearerAdmin(), gateway.getExternalId()));
+		assertEquals(0, data.countGateways(), "gateway not deleted");
+		assertEquals(1, data.countGroups(), "group deleted");
+	}
+
+	@DisplayName("deleteGateway(204): with secret")
+	@Test
+	public void deleteGateway204WithSecret() {
+
+		var tenant = data.tenant();
+		var gateway = data.gateway(tenant);
+		data.secret(gateway);
+
+		assert204(() -> client.deleteGateway(bearerAdmin(), gateway.getExternalId()));
+		assertEquals(0, data.countGateways(), "gateway not deleted");
+		assertEquals(0, data.countSecrets(gateway), "secret not deleted");
 	}
 
 	@DisplayName("deleteGateway(401): no token")
