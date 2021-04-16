@@ -57,7 +57,7 @@ paths:
         401:
           description: Unauthorized.
         409:
-          description: Tenant with name already exists.
+          description: Tenant with id or name already exists.
   /tenant/{tenant_id}:
     parameters:
     - $ref: '#/components/parameters/TenantId'
@@ -188,7 +188,7 @@ paths:
         401:
           description: Unauthorized.
         404:
-          description: Gateway not found.
+          description: Group not found.
     put:
       tags:
       - group
@@ -388,6 +388,8 @@ components:
       description: Tenant to create.
       type: object
       properties:
+        tenant_id:
+          $ref: '#/components/schemas/Id'
         enabled:
           description: Flag if tenant is enabled or not.
           type: boolean

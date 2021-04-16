@@ -82,13 +82,26 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 		assert404(() -> client.getTenant(bearerAdmin(), UUID.randomUUID()));
 	}
 
-	@DisplayName("createTenant(201): create disabled")
+	@DisplayName("createTenant(201): with mandatory properties")
 	@Test
 	@Override
 	public void createTenant201() {
-		var vo = new TenantCreateVO().setEnabled(false).setName(data.tenantName());
+		var vo = new TenantCreateVO().setName(data.tenantName());
 		var created = assert201(() -> client.createTenant(bearerAdmin(), vo));
 		assertNotNull(created.getTenantId(), "tenantId");
+		assertEquals(true, created.getEnabled(), "enabled");
+		assertEquals(vo.getName(), created.getName(), "name");
+		assertNotNull(created.getCreated(), "created");
+		assertNotNull(created.getUpdated(), "updated");
+		assertEquals(created, assert200(() -> client.getTenant(bearerAdmin(), created.getTenantId())), "vo");
+	}
+
+	@DisplayName("createTenant(201): with optional properties")
+	@Test
+	public void createTenant201All() {
+		var vo = new TenantCreateVO().setTenantId(UUID.randomUUID()).setEnabled(false).setName(data.tenantName());
+		var created = assert201(() -> client.createTenant(bearerAdmin(), vo));
+		assertEquals(vo.getTenantId(), created.getTenantId(), "tenantId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
 		assertNotNull(created.getCreated(), "created");
@@ -112,12 +125,35 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 		assertEquals(0, data.countTenants(), "created");
 	}
 
-	@DisplayName("createTenant(409): name exists")
+	@DisplayName("createTenant(409): id & name exists")
 	@Test
 	@Override
 	public void createTenant409() {
 		var existing = data.tenant();
-		assert409(() -> client.createTenant(bearerAdmin(), new TenantCreateVO().setName(existing.getName())));
+		assert409(() -> client.createTenant(bearerAdmin(), new TenantCreateVO()
+				.setTenantId(existing.getExternalId())
+				.setName(existing.getName())));
+		assertEquals(1, data.countTenants(), "created");
+		assertEquals(existing, data.find(existing), "entity changed");
+	}
+
+	@DisplayName("createTenant(409): id exists")
+	@Test
+	public void createTenant409Id() {
+		var existing = data.tenant();
+		assert409(() -> client.createTenant(bearerAdmin(), new TenantCreateVO()
+				.setTenantId(existing.getExternalId())
+				.setName(data.tenantName())));
+		assertEquals(1, data.countTenants(), "created");
+		assertEquals(existing, data.find(existing), "entity changed");
+	}
+
+	@DisplayName("createTenant(409): name exists")
+	@Test
+	public void createTenant409Name() {
+		var existing = data.tenant();
+		assert409(() -> client.createTenant(bearerAdmin(), new TenantCreateVO()
+				.setName(existing.getName())));
 		assertEquals(1, data.countTenants(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
 	}

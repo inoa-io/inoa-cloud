@@ -93,7 +93,7 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		assert404(() -> client.getGroup(bearerAdmin(), UUID.randomUUID()));
 	}
 
-	@DisplayName("createGroup(201): success")
+	@DisplayName("createGroup(201): with mandatory properties")
 	@Test
 	@Override
 	public void createGroup201() {

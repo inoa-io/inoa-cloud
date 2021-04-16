@@ -48,9 +48,12 @@ public class TenantController implements TenantApi {
 	@Override
 	public Single<HttpResponse<TenantVO>> createTenant(TenantCreateVO vo) {
 
-		// check name for uniqueness
+		// check id/name for uniqueness
 
-		var uniqueCompletable = tenantRepository.existsByName(vo.getName())
+		var uniqueSingle = vo.getTenantId() == null
+				? tenantRepository.existsByName(vo.getName())
+				: tenantRepository.existsByNameOrExternalId(vo.getName(), vo.getTenantId());
+		var uniqueCompletable = uniqueSingle
 				.doOnSuccess(exists -> {
 					if (exists) {
 						throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
@@ -61,9 +64,10 @@ public class TenantController implements TenantApi {
 		// create tenant
 
 		var tenantSingle = uniqueCompletable.andThen(Single
-				.just(new Tenant()
+				.just((Tenant) new Tenant()
 						.setName(vo.getName())
-						.setEnabled(vo.getEnabled())))
+						.setEnabled(vo.getEnabled())
+						.setExternalId(vo.getTenantId())))
 				.flatMap(tenantRepository::save)
 				.doOnSuccess(tenant -> log.info("Created tenant: {}", tenant));
 

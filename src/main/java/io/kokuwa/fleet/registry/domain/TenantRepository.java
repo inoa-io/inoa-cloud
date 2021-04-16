@@ -21,6 +21,8 @@ public interface TenantRepository extends RxJavaCrudRepository<Tenant, Long> {
 
 	Maybe<Tenant> findByExternalId(UUID externalId);
 
+	Single<Boolean> existsByNameOrExternalId(String name, UUID externalId);
+
 	Single<Boolean> existsByName(String name);
 }
 
