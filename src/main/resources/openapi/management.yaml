@@ -748,8 +748,8 @@ components:
           hmac:
             type: string
             format: byte
-      required:
-      - hmac
+        required:
+        - hmac
     SecretDetailRSA:
       type: object
       allOf:
@@ -761,8 +761,8 @@ components:
           private_key:
             type: string
             format: byte
-      required:
-      - public_key
+        required:
+        - public_key
     SecretCreate:
       description: Secret of a gateway.
       type: object
@@ -792,8 +792,8 @@ components:
           hmac:
             type: string
             format: byte
-      required:
-      - hmac
+        required:
+        - hmac
     SecretCreateRSA:
       type: object
       allOf:
@@ -805,8 +805,8 @@ components:
           private_key:
             type: string
             format: byte
-      required:
-      - public_key
+        required:
+        - public_key
   parameters:
     TenantId:
       name: tenant_id

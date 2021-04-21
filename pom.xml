@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.2.5</version>
+		<version>0.2.6</version>
 		<relativePath />
 	</parent>
 
@@ -49,12 +49,12 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.io.kokuwa.micronaut.codegen>2.1.3</version.io.kokuwa.micronaut.codegen>
+		<version.io.kokuwa.micronaut.codegen>2.1.4</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>2.4.2</version.io.micronaut>
 		<version.io.micronaut.data>2.3.1</version.io.micronaut.data>
 		<version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
-		<version.org.testcontainers>1.15.2</version.org.testcontainers>
+		<version.org.testcontainers>1.15.3</version.org.testcontainers>
 
 	</properties>
 
