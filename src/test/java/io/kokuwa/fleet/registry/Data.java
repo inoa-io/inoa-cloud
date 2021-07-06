@@ -57,8 +57,8 @@ public class Data {
 	private final ApplicationProperties applicationProperties;
 
 	void deleteAll() {
-		gatewayRepository.deleteAll().blockingAwait();
-		tenantRepository.deleteAll().blockingAwait();
+		gatewayRepository.deleteAll();
+		tenantRepository.deleteAll();
 	}
 
 	// jwt
@@ -118,8 +118,7 @@ public class Data {
 		return tenantRepository
 				.save(new Tenant()
 						.setName(name)
-						.setEnabled(enabled))
-				.blockingGet();
+						.setEnabled(enabled));
 	}
 
 	public String groupName() {
@@ -138,8 +137,7 @@ public class Data {
 		return groupRepository
 				.save(new Group()
 						.setTenant(tenant)
-						.setName(name))
-				.blockingGet();
+						.setName(name));
 	}
 
 	public String gatewayName() {
@@ -181,14 +179,11 @@ public class Data {
 				.save(new Gateway()
 						.setTenant(tenant)
 						.setName(name)
-						.setEnabled(enabled))
-				.blockingGet();
+						.setEnabled(enabled));
 		gatewayGroupRepository
 				.saveAll(groups.stream()
 						.map(group -> new GatewayGroup().setPk(new GatewayGroupPK(gateway.getId(), group.getId())))
-						.collect(Collectors.toSet()))
-				.ignoreElements()
-				.blockingGet();
+						.collect(Collectors.toSet()));
 		return gateway;
 	}
 
@@ -196,8 +191,7 @@ public class Data {
 		return gatewayPropertyRepository
 				.save(new GatewayProperty()
 						.setPk(new GatewayPropertyPK(gateway.getId(), key))
-						.setValue(value))
-				.blockingGet();
+						.setValue(value));
 	}
 
 	public String secretName() {
@@ -214,8 +208,7 @@ public class Data {
 				.setName(name)
 				.setEnabled(true)
 				.setType(SecretTypeVO.HMAC)
-				.setHmac(hmac.getBytes()))
-				.blockingGet();
+				.setHmac(hmac.getBytes()));
 	}
 
 	public Secret secretRSA(Gateway gateway, String name, KeyPair keyPair) {
@@ -229,41 +222,40 @@ public class Data {
 				.setEnabled(true)
 				.setType(SecretTypeVO.RSA)
 				.setPublicKey(publicKey)
-				.setPrivateKey(privateKey))
-				.blockingGet();
+				.setPrivateKey(privateKey));
 	}
 
 	// read
 
 	public Long countTenants() {
-		return tenantRepository.count().blockingGet();
+		return tenantRepository.count();
 	}
 
 	public Long countGroups() {
-		return groupRepository.count().blockingGet();
+		return groupRepository.count();
 	}
 
 	public Long countGateways() {
-		return gatewayRepository.count().blockingGet();
+		return gatewayRepository.count();
 	}
 
 	public Long countSecrets(Gateway gateway) {
-		return (long) secretRepository.findByGatewayOrderByName(gateway).toList().blockingGet().size();
+		return (long) secretRepository.findByGatewayOrderByName(gateway).size();
 	}
 
 	public Tenant find(Tenant tenant) {
-		return tenantRepository.findById(tenant.getId()).blockingGet();
+		return tenantRepository.findById(tenant.getId()).get();
 	}
 
 	public Group find(Group group) {
-		return groupRepository.findById(group.getId()).blockingGet().setTenant(group.getTenant());
+		return groupRepository.findById(group.getId()).get().setTenant(group.getTenant());
 	}
 
 	public Gateway find(Gateway gateway) {
-		return gatewayRepository.findByExternalId(gateway.getExternalId()).blockingGet();
+		return gatewayRepository.findByExternalId(gateway.getExternalId()).get();
 	}
 
 	public List<GatewayProperty> findProperties(Gateway gateway) {
-		return gatewayPropertyRepository.findByGatewayId(gateway.getId()).toList().blockingGet();
+		return gatewayPropertyRepository.findByGatewayId(gateway.getId());
 	}
 }

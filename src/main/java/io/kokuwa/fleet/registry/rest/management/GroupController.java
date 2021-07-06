@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import io.kokuwa.fleet.registry.domain.Group;
 import io.kokuwa.fleet.registry.domain.GroupRepository;
@@ -13,7 +14,6 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
-import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,108 +32,96 @@ public class GroupController implements GroupApi {
 	private final GroupRepository groupRepository;
 
 	@Override
-	public Single<HttpResponse<List<GroupVO>>> getGroups(Optional<UUID> tenantId) {
-		return tenantId
-				.map(groupRepository::findByTenantExternalIdOrderByName).orElseGet(groupRepository::findAllOrderByName)
-				.map(mapper::toGroup).toList().map(HttpResponse::ok);
+	public HttpResponse<List<GroupVO>> getGroups(Optional<UUID> tenantId) {
+		List<Group> groups;
+		if (tenantId.isPresent()) {
+			groups = groupRepository.findByTenantExternalIdOrderByName(tenantId.get());
+		} else {
+			groups = groupRepository.findAllOrderByName();
+		}
+		return HttpResponse.ok(groups.stream().map(mapper::toGroup).collect(Collectors.toList()));
 	}
 
 	@Override
-	public Single<HttpResponse<GroupVO>> getGroup(UUID groupId) {
-		return groupRepository.findByExternalId(groupId)
-				.doOnComplete(() -> {
-					log.trace("Group not found.");
-					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
-				})
-				.toSingle().map(mapper::toGroup).map(HttpResponse::ok);
+	public HttpResponse<GroupVO> getGroup(UUID groupId) {
+		Optional<Group> optionalGroup = groupRepository.findByExternalId(groupId);
+		if (optionalGroup.isEmpty()) {
+			log.trace("Group not found.");
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
+		}
+		return HttpResponse.ok(mapper.toGroup(optionalGroup.get()));
 	}
 
 	@Override
-	public Single<HttpResponse<GroupVO>> createGroup(GroupCreateVO vo) {
+	public HttpResponse<GroupVO> createGroup(GroupCreateVO vo) {
 
 		// get tenant
-
-		var tenantSingle = tenantRepository.findByExternalId(vo.getTenantId())
-				.doOnComplete(() -> {
-					log.trace("Tenant not found.");
-					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Tenant not found.");
-				})
-				.toSingle();
+		var optionalTenant = tenantRepository.findByExternalId(vo.getTenantId());
+		if (optionalTenant.isEmpty()) {
+			log.trace("Tenant not found.");
+			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Tenant not found.");
+		}
 
 		// check name for uniqueness
-
-		tenantSingle = tenantSingle.flatMap(tenant -> groupRepository.existsByTenantAndName(tenant, vo.getName())
-				.flatMap(exists -> {
-					if (exists) {
-						throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
-					}
-					return Single.just(tenant);
-				}));
+		Boolean existsByTenantAndName = groupRepository.existsByTenantAndName(optionalTenant.get(), vo.getName());
+		if (existsByTenantAndName) {
+			throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+		}
 
 		// create group
 
-		var groupSingle = tenantSingle
-				.map(tenant -> new Group()
-						.setTenant(tenant)
-						.setName(vo.getName()))
-				.flatMap(groupRepository::save)
-				.doOnSuccess(group -> log.info("Created group: {}", group));
+		var group = new Group().setTenant(optionalTenant.get()).setName(vo.getName());
+		groupRepository.save(group);
+		log.info("Created group: {}", group.getName());
 
 		// return
-
-		return groupSingle.map(mapper::toGroup).map(HttpResponse::created);
+		return HttpResponse.created(mapper.toGroup(group));
 	}
 
 	@Override
-	public Single<HttpResponse<GroupVO>> updateGroup(UUID groupId, GroupUpdateVO vo) {
+	public HttpResponse<GroupVO> updateGroup(UUID groupId, GroupUpdateVO vo) {
 
 		// get tenant from database
 
 		var changed = new AtomicBoolean(false);
-		var groupSingle = groupRepository.findByExternalId(groupId)
-				.doOnComplete(() -> {
-					log.trace("Skip update of non existing group.");
-					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
-				})
-				.toSingle();
+		var optionalGroup = groupRepository.findByExternalId(groupId);
+		if (optionalGroup.isEmpty()) {
+			log.trace("Skip update of non existing group.");
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
+		}
 
 		// update fields
-
+		var group = optionalGroup.get();
 		if (vo.getName() != null) {
-			groupSingle = groupSingle.flatMap(group -> {
-				if (group.getName().equals(vo.getName())) {
-					log.trace("Group {}: skip update of name ecause not changed.", group.getName());
-					return Single.just(group);
-				} else {
-					return groupRepository.existsByTenantAndName(group.getTenant(), vo.getName()).flatMap(exists -> {
-						if (exists) {
-							throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
-						}
-						log.info("Group {}: updated name to {}.", group.getName(), vo.getName());
-						changed.set(true);
-						return Single.just(group.setName(vo.getName()));
-					});
+			if (group.getName().equals(vo.getName())) {
+				log.trace("Group {}: skip update of name ecause not changed.", group.getName());
+			} else {
+				Boolean existsByTenantAndName = groupRepository.existsByTenantAndName(group.getTenant(), vo.getName());
+				if (existsByTenantAndName) {
+					throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 				}
-			});
+				log.info("Group {}: updated name to {}.", group.getName(), vo.getName());
+				changed.set(true);
+				group.setName(vo.getName());
+			}
 		}
 
 		// return updated
-
-		return groupSingle
-				.flatMap(group -> changed.get() ? groupRepository.update(group) : Single.just(group))
-				.map(mapper::toGroup).map(HttpResponse::ok);
+		if (changed.get()) {
+			group = groupRepository.update(group);
+		}
+		return HttpResponse.ok(mapper.toGroup(group));
 	}
 
 	@Override
-	public Single<HttpResponse<Object>> deleteGroup(UUID groupId) {
-		return groupRepository.findByExternalId(groupId)
-				.doOnComplete(() -> {
-					log.trace("Skip deletion of non existing group.");
-					throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
-				})
-				.flatMapSingle(group -> groupRepository.delete(group).toSingle(() -> {
-					log.info("Group {} deleted.", group.getName());
-					return HttpResponse.noContent();
-				}));
+	public HttpResponse<Object> deleteGroup(UUID groupId) {
+		Optional<Group> optionalGroup = groupRepository.findByExternalId(groupId);
+		if (optionalGroup.isEmpty()) {
+			log.trace("Skip deletion of non existing group.");
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
+		}
+		groupRepository.delete(optionalGroup.get());
+		log.info("Group {} deleted.", optionalGroup.get().getName());
+		return HttpResponse.noContent();
 	}
 }
