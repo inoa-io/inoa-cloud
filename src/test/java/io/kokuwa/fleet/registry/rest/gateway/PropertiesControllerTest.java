@@ -32,7 +32,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Override
 	public void getProperties200() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		var actualProperties = assert200(() -> client.getProperties(bearer(gateway)));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
@@ -41,7 +41,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Test
 	public void getProperties200Without() {
 		var expectedProperties = Map.<String, String>of();
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		var actualProperties = assert200(() -> client.getProperties(bearer(gateway)));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
@@ -57,7 +57,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Test
 	@Override
 	public void setProperties200() {
-		var gateway = data.gateway(Map.of("aaa", "a", "ccc", "c"));
+		var gateway = data.gateway(data.tenant(), Map.of("aaa", "a", "ccc", "c"));
 		var expectedProperties = Map.of("aaa", "x", "bbb", "b", "ccc", "c");
 		var actualProperties = assert200(
 				() -> client.setProperties(bearer(gateway), Map.of("aaa", "x", "bbb", "b")));
@@ -68,7 +68,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Test
 	public void setProperties200EmptyPayload() {
 		var expectedProperties = Map.of("aaa", "a");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		var actualProperties = assert200(() -> client.setProperties(bearer(gateway), Map.of()));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
@@ -77,7 +77,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Test
 	public void setProperties200NoChange() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		var actualProperties = assert200(() -> client.setProperties(bearer(gateway), expectedProperties));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
@@ -86,7 +86,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Test
 	@Override
 	public void setProperties401() {
-		var gateway = data.gateway();
+		var gateway = data.gateway(data.tenant());
 		assert401(() -> client.setProperties(null, Map.of("aaa", "a")));
 		assertProperties(gateway, Map.of());
 	}
@@ -95,7 +95,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Test
 	@Override
 	public void setProperty204() {
-		var gateway = data.gateway(Map.of("aaa", "a", "ccc", "c"));
+		var gateway = data.gateway(data.tenant(), Map.of("aaa", "a", "ccc", "c"));
 		var expectedProperties = Map.of("aaa", "a", "bbb", "b", "ccc", "c");
 		assert204(() -> client.setProperty(bearer(gateway), "bbb", "b"));
 		assertProperties(gateway, expectedProperties);
@@ -104,7 +104,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@DisplayName("setProperty(204): update key")
 	@Test
 	public void setProperty204Update() {
-		var gateway = data.gateway(Map.of("aaa", "a", "ccc", "c"));
+		var gateway = data.gateway(data.tenant(), Map.of("aaa", "a", "ccc", "c"));
 		var expectedProperties = Map.of("aaa", "x", "ccc", "c");
 		assert204(() -> client.setProperty(bearer(gateway), "aaa", "x"));
 		assertProperties(gateway, expectedProperties);
@@ -114,7 +114,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Test
 	public void setProperty204NoChange() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		assert204(() -> client.setProperty(bearer(gateway), "aaa", "a"));
 		assertProperties(gateway, expectedProperties);
 	}
@@ -124,7 +124,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Override
 	public void setProperty401() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		assert401(() -> client.setProperty(null, "aaa", "x"));
 		assertProperties(gateway, expectedProperties);
 	}
@@ -134,7 +134,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Override
 	public void deleteProperty204() {
 		var expectedProperties = Map.of("aaa", "a", "bbb", "b", "ccc", "c");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		assert204(() -> client.deleteProperty(bearer(gateway), "bbb"));
 		assertProperties(gateway, Map.of("aaa", "a", "ccc", "c"));
 	}
@@ -144,7 +144,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Override
 	public void deleteProperty401() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		assert401(() -> client.deleteProperty(null, "aaa"));
 		assertProperties(gateway, expectedProperties);
 	}
@@ -154,7 +154,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	@Override
 	public void deleteProperty404() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
-		var gateway = data.gateway(expectedProperties);
+		var gateway = data.gateway(data.tenant(), expectedProperties);
 		assert404(() -> client.deleteProperty(bearer(gateway), "bbb"));
 		assertProperties(gateway, expectedProperties);
 	}

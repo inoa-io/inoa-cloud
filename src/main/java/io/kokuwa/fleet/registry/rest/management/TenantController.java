@@ -39,7 +39,7 @@ public class TenantController implements TenantApi {
 
 	@Override
 	public HttpResponse<TenantVO> getTenant(UUID tenantId) {
-		Optional<Tenant> tenant = tenantRepository.findByExternalId(tenantId);
+		Optional<Tenant> tenant = tenantRepository.findByTenantId(tenantId);
 		if (tenant.isEmpty()) {
 			log.trace("Tenant not found.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
@@ -54,14 +54,14 @@ public class TenantController implements TenantApi {
 
 		var uniqueSingle = vo.getTenantId() == null
 				? tenantRepository.existsByName(vo.getName())
-				: tenantRepository.existsByNameOrExternalId(vo.getName(), vo.getTenantId());
+				: tenantRepository.existsByNameOrTenantId(vo.getName(), vo.getTenantId());
 		if (uniqueSingle) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 		}
 
 		// create tenant
-		var tenant = tenantRepository.save((Tenant) new Tenant().setName(vo.getName()).setEnabled(vo.getEnabled())
-				.setExternalId(vo.getTenantId()));
+		var tenant = tenantRepository.save(new Tenant().setName(vo.getName()).setEnabled(vo.getEnabled())
+				.setTenantId(vo.getTenantId() == null ? UUID.randomUUID() : vo.getTenantId()));
 
 		// return
 		return HttpResponse.created(mapper.toTenant(tenant));
@@ -73,7 +73,7 @@ public class TenantController implements TenantApi {
 		// get tenant from database
 
 		var changed = new AtomicBoolean(false);
-		var optionalTenant = tenantRepository.findByExternalId(tenantId);
+		var optionalTenant = tenantRepository.findByTenantId(tenantId);
 
 		if (optionalTenant.isEmpty()) {
 			log.trace("Skip update of non existing tenant.");
@@ -114,7 +114,7 @@ public class TenantController implements TenantApi {
 
 	@Override
 	public HttpResponse<Object> deleteTenant(UUID tenantId) {
-		var t = tenantRepository.findByExternalId(tenantId);
+		var t = tenantRepository.findByTenantId(tenantId);
 		if (t.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}

@@ -17,17 +17,17 @@ import io.micronaut.data.repository.CrudRepository;
  */
 public interface GatewayRepository extends CrudRepository<Gateway, Long> {
 
-	@Join("tenant")
-	List<Gateway> findAllOrderByName();
+	List<Gateway> findByTenantOrderByName(Tenant tenant);
 
 	@Join("tenant")
-	List<Gateway> findByTenantExternalIdOrderByName(UUID tenantExternalId);
+	Optional<Gateway> findByGatewayId(UUID gatewayId);
 
 	@Join("tenant")
-	Optional<Gateway> findByExternalId(UUID externalId);
+	Optional<Gateway> findByTenantTenantIdAndGatewayId(UUID tenantId, UUID gatewayId);
 
 	Boolean existsByTenant(Tenant tenant);
 
+	@Join("tenant")
 	Boolean existsByTenantAndName(Tenant tenant, String name);
 }
 

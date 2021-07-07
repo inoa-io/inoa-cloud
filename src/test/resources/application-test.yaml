@@ -20,9 +20,6 @@ micronaut:
 
 ## config for registry
 registry:
-  # example config urls
-  config-uri: http://example.org/consul
-  config-type: consul
   # use random key and set issuer
   auth:
     generate-key: true

@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import io.kokuwa.fleet.registry.domain.BaseEntity;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayProperty;
 import io.kokuwa.fleet.registry.domain.Group;
@@ -28,32 +27,22 @@ import io.kokuwa.fleet.registry.rest.management.TenantVO;
 @Mapper(componentModel = "jsr330")
 public interface RestMapper {
 
-	@Mapping(target = "tenantId", source = "externalId")
 	TenantVO toTenant(Tenant tenant);
 
-	@Mapping(target = "tenantId", source = "tenant.externalId")
-	@Mapping(target = "groupId", source = "externalId")
 	GroupVO toGroup(Group group);
 
-	@Mapping(target = "tenantId", source = "tenant.externalId")
-	@Mapping(target = "gatewayId", source = "externalId")
 	GatewayVO toGateway(Gateway gateway);
 
-	@Mapping(target = "tenantId", source = "gateway.tenant.externalId")
-	@Mapping(target = "gatewayId", source = "externalId")
 	@Mapping(target = "groupIds", source = "groups")
 	GatewayDetailVO toGatewayDetail(Gateway gateway);
 
-	@Mapping(target = "gatewayId", source = "gateway.externalId")
-	@Mapping(target = "secretId", source = "externalId")
+	@Mapping(target = "gatewayId", source = "secret.gateway.gatewayId")
 	SecretVO toSecret(Secret secret);
 
-	@Mapping(target = "gatewayId", source = "gateway.externalId")
-	@Mapping(target = "secretId", source = "externalId")
+	@Mapping(target = "gatewayId", source = "secret.gateway.gatewayId")
 	SecretDetailHmacVO toSecretDetailHmac(Secret secret);
 
-	@Mapping(target = "gatewayId", source = "gateway.externalId")
-	@Mapping(target = "secretId", source = "externalId")
+	@Mapping(target = "gatewayId", source = "secret.gateway.gatewayId")
 	SecretDetailRSAVO toSecretDetailRSA(Secret secret);
 
 	default SecretDetailVO toSecretDetail(Secret secret) {
@@ -62,8 +51,8 @@ public interface RestMapper {
 				: toSecretDetailRSA(secret);
 	}
 
-	default UUID toId(BaseEntity entity) {
-		return entity.getExternalId();
+	default UUID toGroupId(Group group) {
+		return group.getGroupId();
 	}
 
 	default Map<String, String> toMap(List<GatewayProperty> properties) {

@@ -91,13 +91,9 @@ public class Data {
 	}
 
 	public JWTClaimsSet tokenClaims(UUID gateway, Instant now) {
-		return new JWTClaimsSet.Builder()
-				.audience(applicationProperties.getGateway().getToken().getAudience())
-				.jwtID(UUID.randomUUID().toString())
-				.issuer(gateway.toString())
-				.issueTime(Date.from(now))
-				.notBeforeTime(Date.from(now))
-				.expirationTime(Date.from(now)).build();
+		return new JWTClaimsSet.Builder().audience(applicationProperties.getGateway().getToken().getAudience())
+				.jwtID(UUID.randomUUID().toString()).issuer(gateway.toString()).issueTime(Date.from(now))
+				.notBeforeTime(Date.from(now)).expirationTime(Date.from(now)).build();
 	}
 
 	// manipulation
@@ -115,18 +111,11 @@ public class Data {
 	}
 
 	public Tenant tenant(String name, boolean enabled) {
-		return tenantRepository
-				.save(new Tenant()
-						.setName(name)
-						.setEnabled(enabled));
+		return tenantRepository.save(new Tenant().setTenantId(UUID.randomUUID()).setName(name).setEnabled(enabled));
 	}
 
 	public String groupName() {
 		return UUID.randomUUID().toString().substring(0, 20);
-	}
-
-	public Group group() {
-		return group(tenant(), groupName());
 	}
 
 	public Group group(Tenant tenant) {
@@ -134,10 +123,7 @@ public class Data {
 	}
 
 	public Group group(Tenant tenant, String name) {
-		return groupRepository
-				.save(new Group()
-						.setTenant(tenant)
-						.setName(name));
+		return groupRepository.save(new Group().setGroupId(UUID.randomUUID()).setTenant(tenant).setName(name));
 	}
 
 	public String gatewayName() {
@@ -148,8 +134,8 @@ public class Data {
 		return gateway(tenant());
 	}
 
-	public Gateway gateway(Map<String, String> properties) {
-		return gateway(tenant(), List.of(), properties);
+	public Gateway gateway(Tenant tenant, Map<String, String> properties) {
+		return gateway(tenant, List.of(), properties);
 	}
 
 	public Gateway gateway(Group group) {
@@ -175,23 +161,19 @@ public class Data {
 	}
 
 	public Gateway gateway(Tenant tenant, String name, boolean enabled, List<Group> groups) {
-		Gateway gateway = gatewayRepository
-				.save(new Gateway()
-						.setTenant(tenant)
-						.setName(name)
-						.setEnabled(enabled));
-		gatewayGroupRepository
-				.saveAll(groups.stream()
-						.map(group -> new GatewayGroup().setPk(new GatewayGroupPK(gateway.getId(), group.getId())))
-						.collect(Collectors.toSet()));
+		Gateway gateway = gatewayRepository.save(
+				new Gateway().setGatewayId(UUID.randomUUID()).setTenant(tenant).setName(name).setEnabled(enabled));
+		if (!groups.isEmpty()) {
+			gatewayGroupRepository.saveAll(groups.stream()
+					.map(group -> new GatewayGroup().setPk(new GatewayGroupPK(gateway.getId(), group.getId())))
+					.collect(Collectors.toSet()));
+		}
 		return gateway;
 	}
 
 	public GatewayProperty property(Gateway gateway, String key, String value) {
 		return gatewayPropertyRepository
-				.save(new GatewayProperty()
-						.setPk(new GatewayPropertyPK(gateway.getId(), key))
-						.setValue(value));
+				.save(new GatewayProperty().setPk(new GatewayPropertyPK(gateway.getId(), key)).setValue(value));
 	}
 
 	public String secretName() {
@@ -203,12 +185,8 @@ public class Data {
 	}
 
 	public Secret secretHmac(Gateway gateway, String name, String hmac) {
-		return secretRepository.save(new Secret()
-				.setGateway(gateway)
-				.setName(name)
-				.setEnabled(true)
-				.setType(SecretTypeVO.HMAC)
-				.setHmac(hmac.getBytes()));
+		return secretRepository.save(new Secret().setSecretId(UUID.randomUUID()).setGateway(gateway).setName(name)
+				.setEnabled(true).setType(SecretTypeVO.HMAC).setHmac(hmac.getBytes()));
 	}
 
 	public Secret secretRSA(Gateway gateway, String name, KeyPair keyPair) {
@@ -216,13 +194,8 @@ public class Data {
 	}
 
 	public Secret secretRSA(Gateway gateway, String name, byte[] publicKey, byte[] privateKey) {
-		return secretRepository.save(new Secret()
-				.setGateway(gateway)
-				.setName(name)
-				.setEnabled(true)
-				.setType(SecretTypeVO.RSA)
-				.setPublicKey(publicKey)
-				.setPrivateKey(privateKey));
+		return secretRepository.save(new Secret().setSecretId(UUID.randomUUID()).setGateway(gateway).setName(name)
+				.setEnabled(true).setType(SecretTypeVO.RSA).setPublicKey(publicKey).setPrivateKey(privateKey));
 	}
 
 	// read
@@ -252,7 +225,7 @@ public class Data {
 	}
 
 	public Gateway find(Gateway gateway) {
-		return gatewayRepository.findByExternalId(gateway.getExternalId()).get();
+		return gatewayRepository.findByGatewayId(gateway.getGatewayId()).get();
 	}
 
 	public List<GatewayProperty> findProperties(Gateway gateway) {

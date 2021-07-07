@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import io.kokuwa.fleet.registry.domain.Group;
 import io.kokuwa.fleet.registry.domain.GroupRepository;
+import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.domain.TenantRepository;
 import io.kokuwa.fleet.registry.rest.RestMapper;
 import io.micronaut.http.HttpResponse;
@@ -32,19 +33,20 @@ public class GroupController implements GroupApi {
 	private final GroupRepository groupRepository;
 
 	@Override
-	public HttpResponse<List<GroupVO>> getGroups(Optional<UUID> tenantId) {
+	public HttpResponse<List<GroupVO>> getGroups(UUID tenantId) {
 		List<Group> groups;
-		if (tenantId.isPresent()) {
-			groups = groupRepository.findByTenantExternalIdOrderByName(tenantId.get());
+		Optional<Tenant> optionalTenant = tenantRepository.findByTenantId(tenantId);
+		if (optionalTenant.isPresent()) {
+			groups = groupRepository.findByTenantOrderByName(optionalTenant.get());
 		} else {
-			groups = groupRepository.findAllOrderByName();
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "groups not found.");
 		}
 		return HttpResponse.ok(groups.stream().map(mapper::toGroup).collect(Collectors.toList()));
 	}
 
 	@Override
-	public HttpResponse<GroupVO> getGroup(UUID groupId) {
-		Optional<Group> optionalGroup = groupRepository.findByExternalId(groupId);
+	public HttpResponse<GroupVO> getGroup(UUID tenantId, UUID groupId) {
+		Optional<Group> optionalGroup = groupRepository.findByTenantTenantIdAndGroupId(tenantId, groupId);
 		if (optionalGroup.isEmpty()) {
 			log.trace("Group not found.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
@@ -53,13 +55,13 @@ public class GroupController implements GroupApi {
 	}
 
 	@Override
-	public HttpResponse<GroupVO> createGroup(GroupCreateVO vo) {
+	public HttpResponse<GroupVO> createGroup(UUID tenantId, GroupCreateVO vo) {
 
 		// get tenant
-		var optionalTenant = tenantRepository.findByExternalId(vo.getTenantId());
+		var optionalTenant = tenantRepository.findByTenantId(tenantId);
 		if (optionalTenant.isEmpty()) {
 			log.trace("Tenant not found.");
-			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Tenant not found.");
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}
 
 		// check name for uniqueness
@@ -67,10 +69,17 @@ public class GroupController implements GroupApi {
 		if (existsByTenantAndName) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 		}
-
+		if (vo.getGroupId() != null) {
+			Boolean existsByTenantAndGroupId = groupRepository.existsByTenantAndGroupId(optionalTenant.get(),
+					vo.getGroupId());
+			if (existsByTenantAndGroupId) {
+				throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+			}
+		}
 		// create group
 
-		var group = new Group().setTenant(optionalTenant.get()).setName(vo.getName());
+		var group = new Group().setTenant(optionalTenant.get()).setName(vo.getName())
+				.setGroupId(vo.getGroupId() == null ? UUID.randomUUID() : vo.getGroupId());
 		groupRepository.save(group);
 		log.info("Created group: {}", group.getName());
 
@@ -79,12 +88,12 @@ public class GroupController implements GroupApi {
 	}
 
 	@Override
-	public HttpResponse<GroupVO> updateGroup(UUID groupId, GroupUpdateVO vo) {
+	public HttpResponse<GroupVO> updateGroup(UUID tenantId, UUID groupId, GroupUpdateVO vo) {
 
 		// get tenant from database
 
 		var changed = new AtomicBoolean(false);
-		var optionalGroup = groupRepository.findByExternalId(groupId);
+		var optionalGroup = groupRepository.findByTenantTenantIdAndGroupId(tenantId, groupId);
 		if (optionalGroup.isEmpty()) {
 			log.trace("Skip update of non existing group.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
@@ -114,8 +123,8 @@ public class GroupController implements GroupApi {
 	}
 
 	@Override
-	public HttpResponse<Object> deleteGroup(UUID groupId) {
-		Optional<Group> optionalGroup = groupRepository.findByExternalId(groupId);
+	public HttpResponse<Object> deleteGroup(UUID tenantId, UUID groupId) {
+		Optional<Group> optionalGroup = groupRepository.findByTenantTenantIdAndGroupId(tenantId, groupId);
 		if (optionalGroup.isEmpty()) {
 			log.trace("Skip deletion of non existing group.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");

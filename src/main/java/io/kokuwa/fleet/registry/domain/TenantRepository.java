@@ -21,13 +21,9 @@ public interface TenantRepository extends CrudRepository<Tenant, Long> {
 
 	List<Tenant> findAllOrderByName();
 
-	@NonNull
-	@Override
-	Optional<Tenant> findById(@NonNull @NotNull Long aLong);
+	Optional<Tenant> findByTenantId(UUID tenantId);
 
-	Optional<Tenant> findByExternalId(UUID externalId);
-
-	Boolean existsByNameOrExternalId(String name, UUID externalId);
+	Boolean existsByNameOrTenantId(String name, UUID tenantId);
 
 	Boolean existsByName(String name);
 }

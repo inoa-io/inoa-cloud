@@ -43,7 +43,7 @@ class DatabaseSignatureGeneratorConfigurationProvider implements SignatureProvid
 		for (var secret : secrets) {
 			switch (secret.getType()) {
 				case HMAC :
-					var configuration = new SecretSignatureConfiguration(secret.getExternalId().toString());
+					var configuration = new SecretSignatureConfiguration(secret.getSecretId().toString());
 					configuration.setSecret(Base64.getEncoder().encodeToString(secret.getHmac()));
 					configuration.setBase64(true);
 					return new SecretSignature(configuration);

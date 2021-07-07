@@ -33,7 +33,7 @@ public class AuthTokenValidator implements TokenValidator {
 		if (uuid.isEmpty()) {
 			return Flowable.empty();
 		}
-		Optional<Gateway> optionalGateway = gatewayRepository.findByExternalId(uuid.get());
+		Optional<Gateway> optionalGateway = gatewayRepository.findByGatewayId(uuid.get());
 		if (optionalGateway.isEmpty()) {
 			return Flowable.empty();
 		}

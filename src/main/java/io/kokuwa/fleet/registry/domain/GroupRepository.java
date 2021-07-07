@@ -17,16 +17,16 @@ import io.micronaut.data.repository.CrudRepository;
  */
 public interface GroupRepository extends CrudRepository<Group, Long> {
 
-	@Join("tenant")
-	List<Group> findAllOrderByName();
+	List<Group> findByTenantOrderByName(Tenant tenant);
 
 	@Join("tenant")
-	List<Group> findByTenantExternalIdOrderByName(UUID tenantExternalId);
+	Optional<Group> findByTenantAndGroupId(Tenant tenant, UUID groupId);
 
-	@Join("tenant")
-	Optional<Group> findByExternalId(UUID externalId);
+	Optional<Group> findByTenantTenantIdAndGroupId(UUID tenantId, UUID groupId);
 
 	Boolean existsByTenantAndName(Tenant tenant, String name);
+
+	Boolean existsByTenantAndGroupId(Tenant tenant, UUID groupId);
 }
 
 @Requires(property = "datasources.default.dialect", value = "H2")

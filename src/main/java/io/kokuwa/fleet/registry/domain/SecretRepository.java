@@ -14,11 +14,11 @@ import io.micronaut.data.repository.CrudRepository;
  *
  * @author Stephan Schnabel
  */
-public interface SecretRepository extends CrudRepository<Secret, UUID> {
+public interface SecretRepository extends CrudRepository<Secret, Long> {
 
 	List<Secret> findByGatewayOrderByName(Gateway gateway);
 
-	Optional<Secret> findByGatewayAndExternalId(Gateway gateway, UUID externalId);
+	Optional<Secret> findByGatewayAndSecretId(Gateway gateway, UUID externalId);
 
 	Boolean existsByGatewayAndName(Gateway gateway, String name);
 }

@@ -90,14 +90,14 @@ public class AuthController implements AuthApi {
 
 		// get gateway and set mdc
 
-		var optionalGateway = gatewayRepository.findByExternalId(gatewayId);
+		var optionalGateway = gatewayRepository.findByGatewayId(gatewayId);
 		if (optionalGateway.isEmpty()) {
 			throw error("gateway " + gatewayId + " not found");
 		}
 		var gateway = optionalGateway.get();
-		MDC.put("tenant", gateway.getTenant().getExternalId().toString());
+		MDC.put("tenant", gateway.getTenant().getTenantId().toString());
 		if (!gateway.getTenant().getEnabled()) {
-			throw error("tenant " + gateway.getTenant().getExternalId() + " disabled");
+			throw error("tenant " + gateway.getTenant().getTenantId() + " disabled");
 		}
 		if (!gateway.getEnabled()) {
 			throw error("gateway " + gatewayId + " disabled");
@@ -209,11 +209,10 @@ public class AuthController implements AuthApi {
 	 * @return Response with payload.
 	 */
 	private HttpResponse<TokenRepsonseVO> getTokenResponse(Gateway gateway) {
-		return HttpResponse.ok(new TokenRepsonseVO().setAccessToken(authService.createToken(gateway.getExternalId()))
+		return HttpResponse.ok(new TokenRepsonseVO().setAccessToken(authService.createToken(gateway.getGatewayId()))
 				.setTokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
 				.setExpiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
-				.setConfigUri(applicationProperties.getConfigUri()).setConfigType(applicationProperties.getConfigType())
-				.setTenantId(gateway.getTenant().getExternalId()));
+				.setTenantId(gateway.getTenant().getTenantId()));
 	}
 
 	/**

@@ -66,10 +66,10 @@ public abstract class AbstractTest {
 	public String bearer(Gateway gateway) {
 		return HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER
 				+ " "
-				+ authTokenService.createToken(gateway.getExternalId());
+				+ authTokenService.createToken(gateway.getGatewayId());
 	}
 
-	public String bearerAdmin() {
+	public String bearer() {
 		return new JwtProvider(signature).bearer("admin");
 	}
 

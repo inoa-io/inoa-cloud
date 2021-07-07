@@ -18,10 +18,6 @@ jackson:
 
 registry:
 
-  # set config values
-  config-uri: https://kokuwa.io/consul
-  config-type: consul
-
   # enable long living tokens based on random RSA key
   auth:
     expiration-duration: P1d

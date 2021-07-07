@@ -46,19 +46,20 @@ public class GatewayController implements GatewayApi {
 	private final GatewayPropertyRepository gatewayPropertyRepository;
 
 	@Override
-	public HttpResponse<List<GatewayVO>> getGateways(Optional<UUID> tenantId, Optional<UUID> group) {
+	public HttpResponse<List<GatewayVO>> getGateways(UUID tenantId, Optional<UUID> groupId) {
 		List<Gateway> gateways;
-		if (tenantId.isPresent()) {
-			gateways = gatewayRepository.findByTenantExternalIdOrderByName(tenantId.get());
+		Optional<Tenant> optionalTenant = tenantRepository.findByTenantId(tenantId);
+		if (optionalTenant.isPresent()) {
+			gateways = gatewayRepository.findByTenantOrderByName(optionalTenant.get());
 		} else {
-			gateways = gatewayRepository.findAllOrderByName();
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
 		}
 		return HttpResponse.ok(gateways.stream().map(mapper::toGateway).collect(Collectors.toList()));
 	}
 
 	@Override
-	public HttpResponse<GatewayDetailVO> getGateway(UUID gatewayId) {
-		var optionalGateway = gatewayRepository.findByExternalId(gatewayId);
+	public HttpResponse<GatewayDetailVO> getGateway(UUID tenantId, UUID gatewayId) {
+		var optionalGateway = gatewayRepository.findByTenantTenantIdAndGatewayId(tenantId, gatewayId);
 		if (optionalGateway.isEmpty()) {
 			log.trace("Gateway not found.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
@@ -67,14 +68,14 @@ public class GatewayController implements GatewayApi {
 	}
 
 	@Override
-	public HttpResponse<GatewayDetailVO> createGateway(GatewayCreateVO vo) {
+	public HttpResponse<GatewayDetailVO> createGateway(UUID tenantId, GatewayCreateVO vo) {
 
 		// get tenant
 
-		var optionalTenant = tenantRepository.findByExternalId(vo.getTenantId());
+		var optionalTenant = tenantRepository.findByTenantId(tenantId);
 		if (optionalTenant.isEmpty()) {
 			log.trace("Tenant not found.");
-			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Tenant not found.");
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}
 
 		// check name for uniqueness
@@ -91,12 +92,10 @@ public class GatewayController implements GatewayApi {
 
 		// create gateway
 
-		var gateway = new Gateway().setTenant(optionalTenant.get()).setName(vo.getName()).setEnabled(vo.getEnabled())
-				.setGroups(groups);
+		var gateway = new Gateway().setGatewayId(UUID.randomUUID()).setTenant(optionalTenant.get())
+				.setName(vo.getName()).setEnabled(vo.getEnabled()).setGroups(groups);
 
 		gateway = gatewayRepository.save(gateway);
-
-		// .doOnSuccess(gateway -> log.info("Created gateway: {}", gateway));
 
 		// create group assignments
 
@@ -112,12 +111,12 @@ public class GatewayController implements GatewayApi {
 	}
 
 	@Override
-	public HttpResponse<GatewayDetailVO> updateGateway(UUID gatewayId, GatewayUpdateVO vo) {
+	public HttpResponse<GatewayDetailVO> updateGateway(UUID tenantId, UUID gatewayId, GatewayUpdateVO vo) {
 
 		// get tenant from database
 
 		var changed = new AtomicBoolean(false);
-		var optionalGateway = gatewayRepository.findByExternalId(gatewayId);
+		var optionalGateway = gatewayRepository.findByTenantTenantIdAndGatewayId(tenantId, gatewayId);
 
 		if (optionalGateway.isEmpty()) {
 			log.trace("Skip update of non existing gateway.");
@@ -155,19 +154,19 @@ public class GatewayController implements GatewayApi {
 			var oldGroups = gatewayGroupRepository.findGroupsByGatewayId(gateway.getId());
 			var newGroups = getGroups(gateway.getTenant(), vo.getGroupIds());
 
-			var oldGroupIds = oldGroups.stream().map(Group::getExternalId).collect(Collectors.toSet());
+			var oldGroupIds = oldGroups.stream().map(Group::getGroupId).collect(Collectors.toSet());
 			var newGroupIds = vo.getGroupIds();
 
 			// remove group
 
 			Gateway finalGateway = gateway;
-			var removedGroups = oldGroups.stream().filter(oldGroup -> !newGroupIds.contains(oldGroup.getExternalId()))
+			var removedGroups = oldGroups.stream().filter(oldGroup -> !newGroupIds.contains(oldGroup.getGroupId()))
 					.map(oldGroup -> new GatewayGroupPK(finalGateway, oldGroup)).collect(Collectors.toSet());
 			removedGroups.forEach(gatewayGroupRepository::deleteById);
 
 			// add group
 
-			var addedGroups = newGroups.stream().filter(newGroup -> !oldGroupIds.contains(newGroup.getExternalId()))
+			var addedGroups = newGroups.stream().filter(newGroup -> !oldGroupIds.contains(newGroup.getGroupId()))
 					.map(newGroup -> new GatewayGroup().setPk(new GatewayGroupPK(finalGateway, newGroup)))
 					.collect(Collectors.toSet());
 			if (!addedGroups.isEmpty()) {
@@ -185,8 +184,8 @@ public class GatewayController implements GatewayApi {
 	}
 
 	@Override
-	public HttpResponse<Object> deleteGateway(UUID gatewayId) {
-		var optionalGateway = gatewayRepository.findByExternalId(gatewayId);
+	public HttpResponse<Object> deleteGateway(UUID tenantId, UUID gatewayId) {
+		var optionalGateway = gatewayRepository.findByTenantTenantIdAndGatewayId(tenantId, gatewayId);
 		if (optionalGateway.isEmpty()) {
 			log.trace("Skip deletion of non existing gateway.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
@@ -200,11 +199,11 @@ public class GatewayController implements GatewayApi {
 
 		var result = new ArrayList<Group>();
 		for (var groupId : groupIds) {
-			Optional<Group> optionalGroup = groupRepository.findByExternalId(groupId);
+			Optional<Group> optionalGroup = groupRepository.findByTenantAndGroupId(tenant, groupId);
 			if (optionalGroup.isEmpty()) {
 				throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Group " + groupId + " not found.");
 			}
-			if (!Objects.equals(tenant.getExternalId(), optionalGroup.get().getTenant().getExternalId())) {
+			if (!Objects.equals(tenant.getTenantId(), optionalGroup.get().getTenant().getTenantId())) {
 				throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Group " + groupId + " not found.");
 			}
 			result.add(optionalGroup.get());

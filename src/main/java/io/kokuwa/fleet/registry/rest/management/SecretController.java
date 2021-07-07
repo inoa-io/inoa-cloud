@@ -42,7 +42,7 @@ public class SecretController implements SecretApi {
 	@Override
 	public HttpResponse<SecretDetailVO> getSecret(UUID gatewayId, UUID secretId) {
 		Gateway gateway = toGateway(gatewayId);
-		Optional<Secret> optionalSecret = secretRepository.findByGatewayAndExternalId(gateway, secretId);
+		Optional<Secret> optionalSecret = secretRepository.findByGatewayAndSecretId(gateway, secretId);
 		if (optionalSecret.isEmpty()) {
 			log.trace("Secret not found.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Secret not found.");
@@ -67,7 +67,8 @@ public class SecretController implements SecretApi {
 
 		// create secret
 
-		var entity = new Secret().setEnabled(vo.getEnabled()).setName(vo.getName()).setType(vo.getType());
+		var entity = new Secret().setSecretId(UUID.randomUUID()).setEnabled(vo.getEnabled()).setName(vo.getName())
+				.setType(vo.getType());
 		switch (vo.getType()) {
 			case RSA :
 				var rsa = (SecretCreateRSAVO) vo;
@@ -91,7 +92,7 @@ public class SecretController implements SecretApi {
 
 	@Override
 	public HttpResponse<Object> deleteSecret(UUID gatewayId, UUID secretId) {
-		Optional<Secret> optionalSecret = secretRepository.findByGatewayAndExternalId(toGateway(gatewayId), secretId);
+		Optional<Secret> optionalSecret = secretRepository.findByGatewayAndSecretId(toGateway(gatewayId), secretId);
 		if (optionalSecret.isEmpty()) {
 			log.trace("Skip deletion of non existing secret.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Secret not found.");
@@ -102,7 +103,7 @@ public class SecretController implements SecretApi {
 	}
 
 	private Gateway toGateway(UUID gatewayId) {
-		Optional<Gateway> optionalGateway = gatewayRepository.findByExternalId(gatewayId);
+		Optional<Gateway> optionalGateway = gatewayRepository.findByGatewayId(gatewayId);
 		if (optionalGateway.isEmpty()) {
 			log.trace("Gateway not found.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
