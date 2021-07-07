@@ -1,5 +1,6 @@
 package io.kokuwa.fleet.registry.rest.gateway;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,8 +19,6 @@ import io.micronaut.http.context.ServerRequestContext;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
-import io.reactivex.Flowable;
-import io.reactivex.Single;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,60 +37,51 @@ public class PropertiesController implements PropertiesApi {
 	private final GatewayPropertyRepository repository;
 
 	@Override
-	public Single<HttpResponse<Map<String, String>>> getProperties() {
-		return repository.findByGatewayId(getGatewayId()).toList().map(mapper::toMap).map(HttpResponse::ok);
+	public HttpResponse<Map<String, String>> getProperties() {
+		return HttpResponse.ok(mapper.toMap(repository.findByGatewayId(getGatewayId())));
 	}
 
 	@Override
-	public Single<HttpResponse<Map<String, String>>> setProperties(Map<String, String> body) {
+	public HttpResponse<Map<String, String>> setProperties(Map<String, String> body) {
 		var gatewayId = getGatewayId();
-		return repository.findByGatewayId(getGatewayId()).toList()
-				.flatMap(properties -> Flowable.merge(
-						// not updated properties
-						Flowable.fromIterable(properties.stream()
-								.filter(property -> !body.containsKey(property.getPk().getKey()))
-								.collect(Collectors.toList())),
-						// created or updated properties
-						Single.concat(body.entrySet().stream()
-								.map(entry -> updatedProperty(gatewayId, properties, entry.getKey(), entry.getValue()))
-								.collect(Collectors.toList())))
-						.toList())
-				.map(properties -> HttpResponse.ok(mapper.toMap(properties)));
+		List<GatewayProperty> properties = repository.findByGatewayId(getGatewayId());
+		// not updated properties
+		List<GatewayProperty> notUpdated = properties.stream()
+				.filter(property -> !body.containsKey(property.getPk().getKey())).collect(Collectors.toList());
+		List<GatewayProperty> collect = body.entrySet().stream()
+				.map(entry -> updatedProperty(gatewayId, properties, entry.getKey(), entry.getValue()))
+				.collect(Collectors.toList());
+		return HttpResponse.ok(mapper.toMap(properties));
 	}
 
 	@Override
-	public Single<HttpResponse<Object>> setProperty(String key, String newValue) {
+	public HttpResponse<Object> setProperty(String key, String newValue) {
 		var gatewayId = getGatewayId();
-		return repository.findByGatewayIdAndKey(getGatewayId(), key).toFlowable().toList()
-				.flatMap(properties -> updatedProperty(gatewayId, properties, key, newValue))
-				.ignoreElement().toSingle(HttpResponse::noContent);
+		Optional<GatewayProperty> optionalProperty = repository.findByGatewayIdAndKey(getGatewayId(), key);
+		updatedProperty(gatewayId, optionalProperty.isEmpty() ? new ArrayList<>() : List.of(optionalProperty.get()),
+				key, newValue);
+		return HttpResponse.noContent();
 	}
 
 	@Override
-	public Single<HttpResponse<Object>> deleteProperty(String key) {
-		return repository.findByGatewayIdAndKey(getGatewayId(), key)
-				.doOnComplete(() -> {
-					log.trace("Property {} not found.", key);
-					throw new HttpStatusException(HttpStatus.NOT_FOUND, null);
-				})
-				.flatMapSingle(property -> {
-					log.trace("Property {} with value {} deleted.", key, property.getValue());
-					return repository.deleteById(property.getPk()).toSingle(HttpResponse::noContent);
-				});
+	public HttpResponse<Object> deleteProperty(String key) {
+		Optional<GatewayProperty> optionalProperty = repository.findByGatewayIdAndKey(getGatewayId(), key);
+		if (optionalProperty.isEmpty()) {
+			log.trace("Property {} not found.", key);
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, null);
+		}
+		log.trace("Property {} with value {} deleted.", key, optionalProperty.get().getValue());
+		repository.deleteById(optionalProperty.get().getPk());
+		return HttpResponse.noContent();
 	}
 
 	// internal
-
-	private Single<GatewayProperty> updatedProperty(
-			Long gatewayId,
-			List<GatewayProperty> properties,
-			String key,
+	private GatewayProperty updatedProperty(Long gatewayId, List<GatewayProperty> properties, String key,
 			String newValue) {
 
 		GatewayPropertyPK pk = new GatewayPropertyPK(gatewayId, key);
 		Optional<GatewayProperty> optionalProperty = properties.stream()
-				.filter(property -> property.getPk().getKey().equals(key))
-				.findAny();
+				.filter(property -> property.getPk().getKey().equals(key)).findAny();
 		if (optionalProperty.isEmpty()) {
 			log.debug("Property {} set to {}.", key, newValue);
 			GatewayProperty property = new GatewayProperty().setPk(pk).setValue(newValue);
@@ -107,14 +97,11 @@ public class PropertiesController implements PropertiesApi {
 		}
 
 		log.trace("Property {} not updated with value {}.", key, newValue);
-		return Single.just(property);
+		return property;
 	}
 
 	private Long getGatewayId() {
-		return ServerRequestContext
-				.currentRequest().get()
-				.getUserPrincipal(GatewayAuthentication.class).get()
-				.getGateway()
-				.getId();
+		return ServerRequestContext.currentRequest().get().getUserPrincipal(GatewayAuthentication.class).get()
+				.getGateway().getId();
 	}
 }

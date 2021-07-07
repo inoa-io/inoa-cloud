@@ -8,7 +8,6 @@ import java.util.UUID;
 import org.slf4j.MDC;
 
 import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
@@ -26,7 +25,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
-import io.reactivex.Single;
+import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,28 +50,28 @@ public class AuthController implements AuthApi {
 	private final ApplicationProperties applicationProperties;
 
 	@Override
-	public Single<HttpResponse<Object>> getKeys() {
-		return Single.just(keys.getJwkSet()).map(JWKSet::toJSONObject).map(HttpResponse::ok);
+	public HttpResponse<Object> getKeys() {
+		var set = keys.getJwkSet();
+		return HttpResponse.ok(set.toJSONObject());
 	}
 
 	@Override
-	public Single<HttpResponse<TokenRepsonseVO>> getToken(String grantType, String token) {
+	public HttpResponse<TokenRepsonseVO> getToken(String grantType, String token) {
 		if (!GRANT_TYPE.equals(grantType)) {
 			throw error("grant_type is not " + GRANT_TYPE);
 		}
 		log.trace("Token: {}", token);
-		return getGatewayFromToken(token)
-				.map(this::getTokenResponse)
-				.doOnTerminate(() -> MDC.remove("gateway"));
+		return this.getTokenResponse(getGatewayFromToken(token));
 	}
 
 	/**
 	 * Parse token, validate claims, verify signature and return gateway.
 	 *
-	 * @param token JWT token.
+	 * @param token
+	 *            JWT token.
 	 * @return Maybe with gateway from token.
 	 */
-	private Single<Gateway> getGatewayFromToken(String token) {
+	private Gateway getGatewayFromToken(String token) {
 
 		// parse token and get claim set
 
@@ -91,47 +90,44 @@ public class AuthController implements AuthApi {
 
 		// get gateway and set mdc
 
-		var gatewaySingle = gatewayRepository.findByExternalId(gatewayId)
-				.doOnComplete(() -> {
-					throw error("gateway " + gatewayId + " not found");
-				})
-				.doOnSuccess(gateway -> MDC.put("tenant", gateway.getTenant().getExternalId().toString()))
-				.toSingle().map(gateway -> {
-					if (!gateway.getTenant().getEnabled()) {
-						throw error("tenant " + gateway.getTenant().getExternalId() + " disabled");
-					}
-					if (!gateway.getEnabled()) {
-						throw error("gateway " + gatewayId + " disabled");
-					}
-					return gateway;
-				});
+		var optionalGateway = gatewayRepository.findByExternalId(gatewayId);
+		if (optionalGateway.isEmpty()) {
+			throw error("gateway " + gatewayId + " not found");
+		}
+		var gateway = optionalGateway.get();
+		MDC.put("tenant", gateway.getTenant().getExternalId().toString());
+		if (!gateway.getTenant().getEnabled()) {
+			throw error("tenant " + gateway.getTenant().getExternalId() + " disabled");
+		}
+		if (!gateway.getEnabled()) {
+			throw error("gateway " + gatewayId + " disabled");
+		}
 
 		// filter if signature is invalid
-
-		return gatewaySingle.flatMap(gateway -> signatureProvider.find(gateway)
-				.any(signature -> {
-					var verified = false;
-					try {
-						verified = signature.verify(jwt);
-						log.debug("Token signature valid with {}: {}", signature, verified);
-					} catch (JOSEException e) {
-						log.debug("Failed to verify signature with {}: {}", signature, e.getMessage());
-					}
-					return verified;
-				})
-				.flatMap(verified -> {
-					if (verified) {
-						log.debug("Got gateway {} from token.", gateway.getName());
-						return Single.just(gateway);
-					}
-					throw error("signature verification failed");
-				}));
+		SignatureConfiguration signature = signatureProvider.find(gateway);
+		if (signature == null) {
+			throw error("signature verification failed");
+		}
+		var verified = false;
+		try {
+			verified = signature.verify(jwt);
+			log.debug("Token signature valid with {}: {}", signature, verified);
+		} catch (JOSEException e) {
+			log.debug("Failed to verify signature with {}: {}", signature, e.getMessage());
+		}
+		if (verified) {
+			log.debug("Got gateway {} from token.", gateway.getName());
+			return gateway;
+		} else {
+			throw error("signature verification failed");
+		}
 	}
 
 	/**
 	 * Validate claims
 	 *
-	 * @param token JWT token.
+	 * @param token
+	 *            JWT token.
 	 * @return Maybe with gateway from token.
 	 * @see "https://tools.ietf.org/html/rfc7523#section-3"
 	 */
@@ -182,8 +178,7 @@ public class AuthController implements AuthApi {
 		}
 		var issuedAtThreshold = tokenProperties.getIssuedAtThreshold();
 		if (issueTime != null && issuedAtThreshold.map(now::minus)
-				.filter(threshold -> threshold.isAfter(issueTime.toInstant()))
-				.isPresent()) {
+				.filter(threshold -> threshold.isAfter(issueTime.toInstant())).isPresent()) {
 			throw error("token is too old (older than " + issuedAtThreshold.get() + "): " + issueTime.toInstant());
 		}
 
@@ -209,29 +204,28 @@ public class AuthController implements AuthApi {
 	/**
 	 * Create response with access token for gateway.
 	 *
-	 * @param gateway Gateway.
+	 * @param gateway
+	 *            Gateway.
 	 * @return Response with payload.
 	 */
 	private HttpResponse<TokenRepsonseVO> getTokenResponse(Gateway gateway) {
-		return HttpResponse.ok(new TokenRepsonseVO()
-				.setAccessToken(authService.createToken(gateway.getExternalId()))
+		return HttpResponse.ok(new TokenRepsonseVO().setAccessToken(authService.createToken(gateway.getExternalId()))
 				.setTokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
 				.setExpiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
-				.setConfigUri(applicationProperties.getConfigUri())
-				.setConfigType(applicationProperties.getConfigType())
+				.setConfigUri(applicationProperties.getConfigUri()).setConfigType(applicationProperties.getConfigType())
 				.setTenantId(gateway.getTenant().getExternalId()));
 	}
 
 	/**
 	 * Construct error with description.
 	 *
-	 * @param errorDescription Human readable error description.
+	 * @param errorDescription
+	 *            Human readable error description.
 	 * @return RFC conform response.
 	 */
 	private HttpStatusException error(String errorDescription) {
 		log.debug("Failure: {}", errorDescription);
-		return new HttpStatusException(HttpStatus.BAD_REQUEST, new TokenErrorVO()
-				.setError("invalid_grant")
-				.setErrorDescription(errorDescription));
+		return new HttpStatusException(HttpStatus.BAD_REQUEST,
+				new TokenErrorVO().setError("invalid_grant").setErrorDescription(errorDescription));
 	}
 }
