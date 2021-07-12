@@ -1,33 +1,32 @@
 package io.kokuwa.fleet.registry.domain;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
-import io.micronaut.data.repository.reactive.RxJavaCrudRepository;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.micronaut.data.repository.CrudRepository;
 
 /**
  * Repository for {@link Group}.
  *
  * @author Stephan Schnabel
  */
-public interface GroupRepository extends RxJavaCrudRepository<Group, Long> {
+public interface GroupRepository extends CrudRepository<Group, Long> {
+
+	List<Group> findByTenantOrderByName(Tenant tenant);
 
 	@Join("tenant")
-	Flowable<Group> findAllOrderByName();
+	Optional<Group> findByTenantAndGroupId(Tenant tenant, UUID groupId);
 
-	@Join("tenant")
-	Flowable<Group> findByTenantExternalIdOrderByName(UUID tenantExternalId);
+	Optional<Group> findByTenantTenantIdAndGroupId(UUID tenantId, UUID groupId);
 
-	@Join("tenant")
-	Maybe<Group> findByExternalId(UUID externalId);
+	Boolean existsByTenantAndName(Tenant tenant, String name);
 
-	Single<Boolean> existsByTenantAndName(Tenant tenant, String name);
+	Boolean existsByTenantAndGroupId(Tenant tenant, UUID groupId);
 }
 
 @Requires(property = "datasources.default.dialect", value = "H2")

@@ -172,15 +172,6 @@ components:
           type: integer
           format: int64
           example: 300
-        config_uri:
-          description: Where config server lives.
-          type: string
-          format: uri
-          example: https://kokuwa.io/consul
-        config_type:
-          description: Type of config server.
-          type: string
-          example: consul
         tenant_id:
           type: string
           format: uuid
@@ -189,8 +180,6 @@ components:
       - access_token
       - token_type
       - expires_in
-      - config_uri
-      - config_type
       - tenant_id
     PropertyKey:
       type: string

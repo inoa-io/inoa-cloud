@@ -57,8 +57,8 @@ public class Data {
 	private final ApplicationProperties applicationProperties;
 
 	void deleteAll() {
-		gatewayRepository.deleteAll().blockingAwait();
-		tenantRepository.deleteAll().blockingAwait();
+		gatewayRepository.deleteAll();
+		tenantRepository.deleteAll();
 	}
 
 	// jwt
@@ -91,13 +91,9 @@ public class Data {
 	}
 
 	public JWTClaimsSet tokenClaims(UUID gateway, Instant now) {
-		return new JWTClaimsSet.Builder()
-				.audience(applicationProperties.getGateway().getToken().getAudience())
-				.jwtID(UUID.randomUUID().toString())
-				.issuer(gateway.toString())
-				.issueTime(Date.from(now))
-				.notBeforeTime(Date.from(now))
-				.expirationTime(Date.from(now)).build();
+		return new JWTClaimsSet.Builder().audience(applicationProperties.getGateway().getToken().getAudience())
+				.jwtID(UUID.randomUUID().toString()).issuer(gateway.toString()).issueTime(Date.from(now))
+				.notBeforeTime(Date.from(now)).expirationTime(Date.from(now)).build();
 	}
 
 	// manipulation
@@ -115,19 +111,11 @@ public class Data {
 	}
 
 	public Tenant tenant(String name, boolean enabled) {
-		return tenantRepository
-				.save(new Tenant()
-						.setName(name)
-						.setEnabled(enabled))
-				.blockingGet();
+		return tenantRepository.save(new Tenant().setTenantId(UUID.randomUUID()).setName(name).setEnabled(enabled));
 	}
 
 	public String groupName() {
 		return UUID.randomUUID().toString().substring(0, 20);
-	}
-
-	public Group group() {
-		return group(tenant(), groupName());
 	}
 
 	public Group group(Tenant tenant) {
@@ -135,11 +123,7 @@ public class Data {
 	}
 
 	public Group group(Tenant tenant, String name) {
-		return groupRepository
-				.save(new Group()
-						.setTenant(tenant)
-						.setName(name))
-				.blockingGet();
+		return groupRepository.save(new Group().setGroupId(UUID.randomUUID()).setTenant(tenant).setName(name));
 	}
 
 	public String gatewayName() {
@@ -150,8 +134,8 @@ public class Data {
 		return gateway(tenant());
 	}
 
-	public Gateway gateway(Map<String, String> properties) {
-		return gateway(tenant(), List.of(), properties);
+	public Gateway gateway(Tenant tenant, Map<String, String> properties) {
+		return gateway(tenant, List.of(), properties);
 	}
 
 	public Gateway gateway(Group group) {
@@ -177,27 +161,19 @@ public class Data {
 	}
 
 	public Gateway gateway(Tenant tenant, String name, boolean enabled, List<Group> groups) {
-		Gateway gateway = gatewayRepository
-				.save(new Gateway()
-						.setTenant(tenant)
-						.setName(name)
-						.setEnabled(enabled))
-				.blockingGet();
-		gatewayGroupRepository
-				.saveAll(groups.stream()
-						.map(group -> new GatewayGroup().setPk(new GatewayGroupPK(gateway.getId(), group.getId())))
-						.collect(Collectors.toSet()))
-				.ignoreElements()
-				.blockingGet();
+		Gateway gateway = gatewayRepository.save(
+				new Gateway().setGatewayId(UUID.randomUUID()).setTenant(tenant).setName(name).setEnabled(enabled));
+		if (!groups.isEmpty()) {
+			gatewayGroupRepository.saveAll(groups.stream()
+					.map(group -> new GatewayGroup().setPk(new GatewayGroupPK(gateway.getId(), group.getId())))
+					.collect(Collectors.toSet()));
+		}
 		return gateway;
 	}
 
 	public GatewayProperty property(Gateway gateway, String key, String value) {
 		return gatewayPropertyRepository
-				.save(new GatewayProperty()
-						.setPk(new GatewayPropertyPK(gateway.getId(), key))
-						.setValue(value))
-				.blockingGet();
+				.save(new GatewayProperty().setPk(new GatewayPropertyPK(gateway.getId(), key)).setValue(value));
 	}
 
 	public String secretName() {
@@ -209,13 +185,8 @@ public class Data {
 	}
 
 	public Secret secretHmac(Gateway gateway, String name, String hmac) {
-		return secretRepository.save(new Secret()
-				.setGateway(gateway)
-				.setName(name)
-				.setEnabled(true)
-				.setType(SecretTypeVO.HMAC)
-				.setHmac(hmac.getBytes()))
-				.blockingGet();
+		return secretRepository.save(new Secret().setSecretId(UUID.randomUUID()).setGateway(gateway).setName(name)
+				.setEnabled(true).setType(SecretTypeVO.HMAC).setHmac(hmac.getBytes()));
 	}
 
 	public Secret secretRSA(Gateway gateway, String name, KeyPair keyPair) {
@@ -223,47 +194,41 @@ public class Data {
 	}
 
 	public Secret secretRSA(Gateway gateway, String name, byte[] publicKey, byte[] privateKey) {
-		return secretRepository.save(new Secret()
-				.setGateway(gateway)
-				.setName(name)
-				.setEnabled(true)
-				.setType(SecretTypeVO.RSA)
-				.setPublicKey(publicKey)
-				.setPrivateKey(privateKey))
-				.blockingGet();
+		return secretRepository.save(new Secret().setSecretId(UUID.randomUUID()).setGateway(gateway).setName(name)
+				.setEnabled(true).setType(SecretTypeVO.RSA).setPublicKey(publicKey).setPrivateKey(privateKey));
 	}
 
 	// read
 
 	public Long countTenants() {
-		return tenantRepository.count().blockingGet();
+		return tenantRepository.count();
 	}
 
 	public Long countGroups() {
-		return groupRepository.count().blockingGet();
+		return groupRepository.count();
 	}
 
 	public Long countGateways() {
-		return gatewayRepository.count().blockingGet();
+		return gatewayRepository.count();
 	}
 
 	public Long countSecrets(Gateway gateway) {
-		return (long) secretRepository.findByGatewayOrderByName(gateway).toList().blockingGet().size();
+		return (long) secretRepository.findByGatewayOrderByName(gateway).size();
 	}
 
 	public Tenant find(Tenant tenant) {
-		return tenantRepository.findById(tenant.getId()).blockingGet();
+		return tenantRepository.findById(tenant.getId()).get();
 	}
 
 	public Group find(Group group) {
-		return groupRepository.findById(group.getId()).blockingGet().setTenant(group.getTenant());
+		return groupRepository.findById(group.getId()).get().setTenant(group.getTenant());
 	}
 
 	public Gateway find(Gateway gateway) {
-		return gatewayRepository.findByExternalId(gateway.getExternalId()).blockingGet();
+		return gatewayRepository.findByGatewayId(gateway.getGatewayId()).get();
 	}
 
 	public List<GatewayProperty> findProperties(Gateway gateway) {
-		return gatewayPropertyRepository.findByGatewayId(gateway.getId()).toList().blockingGet();
+		return gatewayPropertyRepository.findByGatewayId(gateway.getId());
 	}
 }

@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.2.6</version>
+		<version>0.3.1</version>
 		<relativePath />
 	</parent>
 
@@ -49,10 +49,10 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.io.kokuwa.micronaut.codegen>2.1.4</version.io.kokuwa.micronaut.codegen>
+		<version.io.kokuwa.micronaut.codegen>2.1.6</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut>2.4.2</version.io.micronaut>
-		<version.io.micronaut.data>2.3.1</version.io.micronaut.data>
+		<version.io.micronaut>2.5.8</version.io.micronaut>
+		<version.io.micronaut.data>2.4.7</version.io.micronaut.data>
 		<version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
 		<version.org.testcontainers>1.15.3</version.org.testcontainers>
 
@@ -288,7 +288,6 @@
 					<invokerPackage>io.kokuwa.fleet.registry.rest</invokerPackage>
 					<output>${project.build.directory}</output>
 					<configOptions>
-						<supportAsync>true</supportAsync>
 						<useLombokGenerated>true</useLombokGenerated>
 						<dateTimeRelaxed>false</dateTimeRelaxed>
 					</configOptions>

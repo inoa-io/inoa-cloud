@@ -7,7 +7,6 @@ import io.micronaut.data.annotation.Embeddable;
 import io.micronaut.data.annotation.EmbeddedId;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -28,13 +27,17 @@ public class GatewayGroup {
 
 	@Embeddable
 	@Data
-	@AllArgsConstructor
 	public static class GatewayGroupPK {
 
 		@MappedProperty("gateway_id")
 		private final Long gatewayId;
 		@MappedProperty("group_id")
 		private final Long groupId;
+
+		public GatewayGroupPK(Long gatewayId, Long groupId) {
+			this.gatewayId = gatewayId;
+			this.groupId = groupId;
+		}
 
 		public GatewayGroupPK(Gateway gateway, Group group) {
 			this.gatewayId = gateway.getId();

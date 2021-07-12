@@ -1,6 +1,5 @@
 package io.kokuwa.fleet.registry;
 
-import java.net.URI;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +25,6 @@ public class ApplicationProperties {
 
 	private GatewayProperties gateway = new GatewayProperties();
 	private RegistryAuthProperties auth = new RegistryAuthProperties();
-
-	/** URI of configuration server. */
-	@NotNull
-	private URI configUri;
-
-	/** Type of configuration server. */
-	@NotNull
-	private String configType;
 
 	/** Configuration for issuing registry jwt's. */
 	@ConfigurationProperties("auth")

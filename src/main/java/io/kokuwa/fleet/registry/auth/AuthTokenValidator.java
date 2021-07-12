@@ -22,12 +22,14 @@ public class AuthTokenValidator implements TokenValidator {
 	private final AuthTokenService service;
 	private final GatewayRepository gatewayRepository;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public Publisher<Authentication> validateToken(String token) {
-		return service.validateToken(token)
-				.map(gatewayId -> gatewayRepository.findByExternalId(gatewayId).toFlowable())
-				.orElseGet(Flowable::empty)
-				.map(GatewayAuthentication::new);
+		return service
+				.validateToken(token)
+				.flatMap(gatewayRepository::findByGatewayId)
+				.map(GatewayAuthentication::new)
+				.map(Authentication.class::cast)
+				.map(Flowable::just)
+				.orElseGet(Flowable::empty);
 	}
 }

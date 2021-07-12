@@ -1,27 +1,26 @@
 package io.kokuwa.fleet.registry.domain;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.query.builder.sql.Dialect;
-import io.micronaut.data.repository.reactive.RxJavaCrudRepository;
-import io.reactivex.Flowable;
-import io.reactivex.Maybe;
-import io.reactivex.Single;
+import io.micronaut.data.repository.CrudRepository;
 
 /**
  * Repository for {@link Secret}.
  *
  * @author Stephan Schnabel
  */
-public interface SecretRepository extends RxJavaCrudRepository<Secret, UUID> {
+public interface SecretRepository extends CrudRepository<Secret, Long> {
 
-	Flowable<Secret> findByGatewayOrderByName(Gateway gateway);
+	List<Secret> findByGatewayOrderByName(Gateway gateway);
 
-	Maybe<Secret> findByGatewayAndExternalId(Gateway gateway, UUID externalId);
+	Optional<Secret> findByGatewayAndSecretId(Gateway gateway, UUID externalId);
 
-	Single<Boolean> existsByGatewayAndName(Gateway gateway, String name);
+	Boolean existsByGatewayAndName(Gateway gateway, String name);
 }
 
 @Requires(property = "datasources.default.dialect", value = "H2")

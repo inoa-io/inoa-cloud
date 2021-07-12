@@ -41,23 +41,24 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 
 		var tenant1 = data.tenant();
 		var tenant2 = data.tenant();
+		var tenant3 = data.tenant();
 		var group1 = data.group(tenant1, "abc2");
 		var group2 = data.group(tenant1, "abc1");
 		var group3 = data.group(tenant2, "aaa");
 
 		// test helper
 
-		var bearer = bearerAdmin();
+		var bearer = bearer();
 		Function<UUID, List<UUID>> filter = tenant -> assert200(() -> client.getGroups(bearer, tenant)).stream()
 				.map(GroupVO::getGroupId).collect(Collectors.toList());
 		Function<List<Group>, List<UUID>> ids = groupIds -> groupIds.stream()
-				.map(Group::getExternalId).collect(Collectors.toList());
+				.map(Group::getGroupId).collect(Collectors.toList());
 
 		// execute
 
-		assertEquals(ids.apply(List.of(group3, group2, group1)), filter.apply(null), "empty");
-		assertEquals(ids.apply(List.of(group2, group1)), filter.apply(tenant1.getExternalId()), "tenant1");
-		assertEquals(ids.apply(List.of(group3)), filter.apply(tenant2.getExternalId()), "tenant2");
+		assertEquals(ids.apply(List.of(group2, group1)), filter.apply(tenant1.getTenantId()), "tenant1");
+		assertEquals(ids.apply(List.of(group3)), filter.apply(tenant2.getTenantId()), "tenant2");
+		assertEquals(List.of(), filter.apply(tenant3.getTenantId()), "tenant3");
 	}
 
 	@DisplayName("getGroups(401): no token")
@@ -67,13 +68,21 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 		assert401(() -> client.getGroups(null));
 	}
 
+	@DisplayName("getGroups(404): tenant not found")
+	@Test
+	@Override
+	public void getGroups404() {
+		assert404(() -> client.getGroups(bearer(), UUID.randomUUID()));
+	}
+
 	@DisplayName("getGroup(200): success")
 	@Test
 	@Override
 	public void getGroup200() {
-		var expected = data.group();
-		var actual = assert200(() -> client.getGroup(bearerAdmin(), expected.getExternalId()));
-		assertEquals(expected.getExternalId(), actual.getGroupId(), "groupId");
+		var tenant = data.tenant();
+		var expected = data.group(tenant);
+		var actual = assert200(() -> client.getGroup(bearer(), tenant.getTenantId(), expected.getGroupId()));
+		assertEquals(expected.getGroupId(), actual.getGroupId(), "groupId");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
 		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
@@ -83,14 +92,19 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void getGroup401() {
-		assert401(() -> client.getGroup(null, data.group().getExternalId()));
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		assert401(() -> client.getGroup(null, tenant.getTenantId(), group.getGroupId()));
 	}
 
 	@DisplayName("getGroup(404): not found")
 	@Test
 	@Override
 	public void getGroup404() {
-		assert404(() -> client.getGroup(bearerAdmin(), UUID.randomUUID()));
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		assert404(() -> client.getGroup(bearer(), tenant.getTenantId(), UUID.randomUUID()));
+		assert404(() -> client.getGroup(bearer(), UUID.randomUUID(), group.getGroupId()));
 	}
 
 	@DisplayName("createGroup(201): with mandatory properties")
@@ -98,31 +112,67 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Override
 	public void createGroup201() {
 		var tenant = data.tenant();
-		var vo = new GroupCreateVO().setTenantId(tenant.getExternalId()).setName(data.groupName());
-		var created = assert201(() -> client.createGroup(bearerAdmin(), vo));
-		assertEquals(tenant.getExternalId(), created.getTenantId(), "tenantId");
+		var vo = new GroupCreateVO().setName(data.groupName());
+		var created = assert201(() -> client.createGroup(bearer(), tenant.getTenantId(), vo));
 		assertNotNull(created.getGroupId(), "groupId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
-		assertEquals(created, assert200(() -> client.getGroup(bearerAdmin(), created.getGroupId())), "vo");
+		var group = assert200(() -> client.getGroup(bearer(), tenant.getTenantId(), created.getGroupId()));
+		assertEquals(created, group, "vo");
+	}
+
+	@DisplayName("createGroup(201): with optional properties")
+	@Test
+	public void createGroup201All() {
+		var tenant = data.tenant();
+		var vo = new GroupCreateVO().setName(data.groupName()).setGroupId(UUID.randomUUID());
+		var created = assert201(() -> client.createGroup(bearer(), tenant.getTenantId(), vo));
+		assertEquals(vo.getGroupId(), created.getGroupId(), "groupId");
+		assertEquals(vo.getName(), created.getName(), "name");
+		assertNotNull(created.getCreated(), "created");
+		assertNotNull(created.getUpdated(), "updated");
+		var group = assert200(() -> client.getGroup(bearer(), tenant.getTenantId(), created.getGroupId()));
+		assertEquals(created, group, "vo");
+	}
+
+	@DisplayName("createGroup(201): with id from other tenant")
+	@Test
+	public void createGroup201WithIdFromOtherTenant() {
+		var otherGroup = data.group(data.tenant());
+		var tenant = data.tenant();
+		var vo = new GroupCreateVO().setName(data.groupName()).setGroupId(otherGroup.getGroupId());
+		var created = assert201(() -> client.createGroup(bearer(), tenant.getTenantId(), vo));
+		assertEquals(vo.getGroupId(), created.getGroupId(), "groupId");
+		assertEquals(vo.getName(), created.getName(), "name");
+		assertNotNull(created.getCreated(), "created");
+		assertNotNull(created.getUpdated(), "updated");
+		var group = assert200(() -> client.getGroup(bearer(), tenant.getTenantId(), created.getGroupId()));
+		assertEquals(created, group, "vo");
+	}
+
+	@DisplayName("createGroup(201): with name from other tenant")
+	@Test
+	public void createGroup201WithNameFromOtherTenant() {
+		var otherGroup = data.group(data.tenant());
+		var tenant = data.tenant();
+		var vo = new GroupCreateVO().setName(otherGroup.getName());
+		var created = assert201(() -> client.createGroup(bearer(), tenant.getTenantId(), vo));
+		assertNotNull(created.getGroupId(), "groupId");
+		assertEquals(vo.getName(), created.getName(), "name");
+		assertNotNull(created.getCreated(), "created");
+		assertNotNull(created.getUpdated(), "updated");
+		var group = assert200(() -> client.getGroup(bearer(), tenant.getTenantId(), created.getGroupId()));
+		assertEquals(created, group, "vo");
 	}
 
 	@DisplayName("createGroup(400): check bean validation")
 	@Test
 	@Override
 	public void createGroup400() {
-		var vo = new GroupCreateVO().setTenantId(data.tenant().getExternalId()).setName("");
-		assert400(() -> client.createGroup(bearerAdmin(), vo));
-		assertEquals(0, data.countGroups(), "created");
-	}
-
-	@DisplayName("createGroup(400): tenant not exists")
-	@Test
-	public void createGroup400TenantNotExists() {
-		var vo = new GroupCreateVO().setTenantId(UUID.randomUUID()).setName(data.tenantName());
-		var error = assert400(() -> client.createGroup(bearerAdmin(), vo));
-		assertEquals("Tenant not found.", error.getMessage());
+		var tenant = data.tenant();
+		var vo = new GroupCreateVO().setName("");
+		assert400(() -> client.createGroup(bearer(), tenant.getTenantId(), vo));
 		assertEquals(0, data.countGroups(), "created");
 	}
 
@@ -130,18 +180,40 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void createGroup401() {
-		var vo = new GroupCreateVO().setTenantId(data.tenant().getExternalId()).setName(data.groupName());
-		assert401(() -> client.createGroup(null, vo));
+		var tenant = data.tenant();
+		var vo = new GroupCreateVO().setName(data.groupName());
+		assert401(() -> client.createGroup(null, tenant.getTenantId(), vo));
 		assertEquals(0, data.countGroups(), "created");
+	}
+
+	@DisplayName("createGroup(404): tenant not found")
+	@Test
+	@Override
+	public void createGroup404() {
+		var vo = new GroupCreateVO().setName(data.groupName());
+		assert404(() -> client.createGroup(bearer(), UUID.randomUUID(), vo));
+		assertEquals(0, data.countGroups(), "created");
+	}
+
+	@DisplayName("createGroup(409): id exists")
+	@Test
+	@Override
+	public void createGroup409() {
+		var tenant = data.tenant();
+		var existing = data.group(tenant);
+		var vo = new GroupCreateVO().setName(data.groupName()).setGroupId(existing.getGroupId());
+		assert409(() -> client.createGroup(bearer(), tenant.getTenantId(), vo));
+		assertEquals(1, data.countGroups(), "created");
+		assertEquals(existing, data.find(existing), "entity changed");
 	}
 
 	@DisplayName("createGroup(409): name exists")
 	@Test
-	@Override
-	public void createGroup409() {
-		var existing = data.group();
-		var vo = new GroupCreateVO().setTenantId(existing.getTenant().getExternalId()).setName(existing.getName());
-		assert409(() -> client.createGroup(bearerAdmin(), vo));
+	public void createGroup409Name() {
+		var tenant = data.tenant();
+		var existing = data.group(tenant);
+		var vo = new GroupCreateVO().setName(existing.getName());
+		assert409(() -> client.createGroup(bearer(), tenant.getTenantId(), vo));
 		assertEquals(1, data.countGroups(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
 	}
@@ -150,76 +222,85 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void updateGroup200() {
-		var existing = data.group();
+		var tenant = data.tenant();
+		var group = data.group(tenant);
 		var vo = new GroupUpdateVO().setName(null);
-		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), vo));
-		assertEquals(existing.getTenant().getExternalId(), updated.getTenantId(), "tenantId");
-		assertEquals(existing.getExternalId(), updated.getGroupId(), "groupId");
-		assertEquals(existing.getName(), updated.getName(), "name");
-		assertEquals(existing.getCreated(), updated.getCreated(), "created");
-		assertEquals(existing.getUpdated(), updated.getUpdated(), "updated");
+		var updated = assert200(() -> client.updateGroup(bearer(), tenant.getTenantId(), group.getGroupId(), vo));
+		assertEquals(group.getGroupId(), updated.getGroupId(), "groupId");
+		assertEquals(group.getName(), updated.getName(), "name");
+		assertEquals(group.getCreated(), updated.getCreated(), "created");
+		assertEquals(group.getUpdated(), updated.getUpdated(), "updated");
 	}
 
 	@DisplayName("updateGroup(200): update name")
 	@Test
 	public void updateGroup200Name() {
-		var existing = data.group();
+		var tenant = data.tenant();
+		var group = data.group(tenant);
 		var vo = new GroupUpdateVO().setName(data.groupName());
-		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), vo));
-		assertEquals(existing.getTenant().getExternalId(), updated.getTenantId(), "tenantId");
-		assertEquals(existing.getExternalId(), updated.getGroupId(), "groupId");
+		var updated = assert200(() -> client.updateGroup(bearer(), tenant.getTenantId(), group.getGroupId(), vo));
+		assertEquals(group.getGroupId(), updated.getGroupId(), "groupId");
 		assertEquals(vo.getName(), updated.getName(), "name");
-		assertEquals(existing.getCreated(), updated.getCreated(), "created");
-		assertTrue(updated.getUpdated().isAfter(existing.getUpdated()), "updated");
+		assertEquals(group.getCreated(), updated.getCreated(), "created");
+		assertTrue(updated.getUpdated().isAfter(group.getUpdated()), "updated");
 	}
 
 	@DisplayName("updateGroup(200): update unchanged")
 	@Test
 	public void updateGroup200Unchanged() {
-		var existing = data.group();
-		var vo = new GroupUpdateVO().setName(existing.getName());
-		var updated = assert200(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), vo));
-		assertEquals(existing.getTenant().getExternalId(), updated.getTenantId(), "tenantId");
-		assertEquals(existing.getExternalId(), updated.getGroupId(), "groupId");
-		assertEquals(existing.getName(), updated.getName(), "name");
-		assertEquals(existing.getCreated(), updated.getCreated(), "created");
-		assertEquals(existing.getUpdated(), updated.getUpdated(), "updated");
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		var vo = new GroupUpdateVO().setName(group.getName());
+		var updated = assert200(() -> client.updateGroup(bearer(), tenant.getTenantId(), group.getGroupId(), vo));
+		assertEquals(group.getGroupId(), updated.getGroupId(), "groupId");
+		assertEquals(group.getName(), updated.getName(), "name");
+		assertEquals(group.getCreated(), updated.getCreated(), "created");
+		assertEquals(group.getUpdated(), updated.getUpdated(), "updated");
 	}
 
 	@DisplayName("updateGroup(400): check bean validation")
 	@Test
 	@Override
 	public void updateGroup400() {
-		var existing = data.group();
-		assert400(() -> client.updateGroup(bearerAdmin(), existing.getExternalId(), new GroupUpdateVO().setName("")));
-		assertEquals(existing, data.find(existing), "entity changed");
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		var vo = new GroupUpdateVO().setName("");
+		assert400(() -> client.updateGroup(bearer(), tenant.getTenantId(), group.getGroupId(), vo));
+		assertEquals(group, data.find(group), "entity changed");
 	}
 
 	@DisplayName("updateGroup(401): no token")
 	@Test
 	@Override
 	public void updateGroup401() {
-		var existing = data.group();
-		assert401(() -> client.updateGroup(null, existing.getExternalId(),
-				new GroupUpdateVO().setName(data.groupName())));
-		assertEquals(existing, data.find(existing), "entity changed");
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		var vo = new GroupUpdateVO().setName(data.groupName());
+		assert401(() -> client.updateGroup(null, tenant.getTenantId(), group.getGroupId(), vo));
+		assertEquals(group, data.find(group), "entity changed");
 	}
 
 	@DisplayName("updateGroup(404): not found")
 	@Test
 	@Override
 	public void updateGroup404() {
-		assert404(() -> client.updateGroup(bearerAdmin(), UUID.randomUUID(), new GroupUpdateVO()));
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		var vo = new GroupUpdateVO();
+		assert404(() -> client.updateGroup(bearer(), tenant.getTenantId(), UUID.randomUUID(), vo));
+		assert404(() -> client.updateGroup(bearer(), UUID.randomUUID(), group.getGroupId(), vo));
+		assertEquals(group, data.find(group), "group changed");
 	}
 
 	@DisplayName("updateGroup(409): name exists")
 	@Test
 	@Override
 	public void updateGroup409() {
-		var group = data.group();
-		var other = data.group(group.getTenant());
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		var other = data.group(tenant);
 		var vo = new GroupUpdateVO().setName(other.getName());
-		assert409(() -> client.updateGroup(bearerAdmin(), group.getExternalId(), vo));
+		assert409(() -> client.updateGroup(bearer(), tenant.getTenantId(), group.getGroupId(), vo));
 		assertEquals(group, data.find(group), "group changed");
 		assertEquals(other, data.find(other), "other changed");
 	}
@@ -228,17 +309,19 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void deleteGroup204() {
-		var group = data.group();
-		assert204(() -> client.deleteGroup(bearerAdmin(), group.getExternalId()));
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		assert204(() -> client.deleteGroup(bearer(), tenant.getTenantId(), group.getGroupId()));
 		assertEquals(0, data.countGroups(), "group not deleted");
 	}
 
 	@DisplayName("deleteGroup(204): with gateway")
 	@Test
 	public void deleteGroup204WithGateway() {
-		var group = data.group();
+		var tenant = data.tenant();
+		var group = data.group(tenant);
 		data.gateway(group);
-		assert204(() -> client.deleteGroup(bearerAdmin(), group.getExternalId()));
+		assert204(() -> client.deleteGroup(bearer(), tenant.getTenantId(), group.getGroupId()));
 		assertEquals(0, data.countGroups(), "group not deleted");
 		assertEquals(1, data.countGateways(), "gateway deleted");
 	}
@@ -247,8 +330,9 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void deleteGroup401() {
-		var group = data.group();
-		assert401(() -> client.deleteGroup(null, group.getExternalId()));
+		var tenant = data.tenant();
+		var group = data.group(tenant);
+		assert401(() -> client.deleteGroup(null, tenant.getTenantId(), group.getGroupId()));
 		assertEquals(1, data.countGroups(), "group deleted");
 	}
 
@@ -256,6 +340,12 @@ public class GroupApiTest extends AbstractTest implements GroupApiTestSpec {
 	@Test
 	@Override
 	public void deleteGroup404() {
-		assert404(() -> client.deleteGroup(bearerAdmin(), UUID.randomUUID()));
+		var tenant = data.tenant();
+		var otherTenant = data.tenant();
+		var group = data.group(tenant);
+		assert404(() -> client.deleteGroup(bearer(), tenant.getTenantId(), UUID.randomUUID()));
+		assert404(() -> client.deleteGroup(bearer(), otherTenant.getTenantId(), group.getGroupId()));
+		assert404(() -> client.deleteGroup(bearer(), UUID.randomUUID(), group.getGroupId()));
+		assertEquals(1, data.countGroups(), "group deleted");
 	}
 }

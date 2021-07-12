@@ -42,10 +42,10 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 
 		// execute
 
-		var secrets = assert200(() -> client.getSecrets(bearerAdmin(), gateway.getExternalId()));
-		assertTrue(secrets.stream().anyMatch(s -> s.getSecretId().equals(secret1.getExternalId())), "secrets 1");
-		assertTrue(secrets.stream().anyMatch(s -> s.getSecretId().equals(secret2.getExternalId())), "secrets 2");
-		assertTrue(secrets.stream().noneMatch(s -> s.getSecretId().equals(secret3.getExternalId())), "secrets 3");
+		var secrets = assert200(() -> client.getSecrets(bearer(), gateway.getGatewayId()));
+		assertTrue(secrets.stream().anyMatch(s -> s.getSecretId().equals(secret1.getSecretId())), "secrets 1");
+		assertTrue(secrets.stream().anyMatch(s -> s.getSecretId().equals(secret2.getSecretId())), "secrets 2");
+		assertTrue(secrets.stream().noneMatch(s -> s.getSecretId().equals(secret3.getSecretId())), "secrets 3");
 		assertEquals(2, secrets.size(), "secret list");
 	}
 
@@ -60,7 +60,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 
 		// execute
 
-		var secrets = assert200(() -> client.getSecrets(bearerAdmin(), gateway.getExternalId()));
+		var secrets = assert200(() -> client.getSecrets(bearer(), gateway.getGatewayId()));
 		assertTrue(secrets.isEmpty(), "secrets found");
 	}
 
@@ -68,14 +68,14 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	@Test
 	@Override
 	public void getSecrets401() {
-		assert401(() -> client.getSecrets(null, data.gateway().getExternalId()));
+		assert401(() -> client.getSecrets(null, data.gateway().getGatewayId()));
 	}
 
 	@DisplayName("getSecrets(404): gateway not exists")
 	@Test
 	@Override
 	public void getSecrets404() {
-		assert404(() -> client.getSecrets(bearerAdmin(), UUID.randomUUID()));
+		assert404(() -> client.getSecrets(bearer(), UUID.randomUUID()));
 	}
 
 	@DisplayName("getSecret(200): hmac")
@@ -84,9 +84,8 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void getSecret200() {
 		var gateway = data.gateway();
 		var expected = data.secretHmac(gateway, data.secretName(), "foo");
-		var actual = assert200(
-				() -> client.getSecret(bearerAdmin(), gateway.getExternalId(), expected.getExternalId()));
-		assertEquals(expected.getExternalId(), actual.getSecretId(), "secretId");
+		var actual = assert200(() -> client.getSecret(bearer(), gateway.getGatewayId(), expected.getSecretId()));
+		assertEquals(expected.getSecretId(), actual.getSecretId(), "secretId");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
@@ -100,9 +99,8 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void getSecret200Rsa() {
 		var gateway = data.gateway();
 		var expected = data.secretRSA(gateway, data.secretName(), "public".getBytes(), "private".getBytes());
-		var actual = assert200(
-				() -> client.getSecret(bearerAdmin(), gateway.getExternalId(), expected.getExternalId()));
-		assertEquals(expected.getExternalId(), actual.getSecretId(), "secretId");
+		var actual = assert200(() -> client.getSecret(bearer(), gateway.getGatewayId(), expected.getSecretId()));
+		assertEquals(expected.getSecretId(), actual.getSecretId(), "secretId");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
@@ -118,7 +116,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void getSecret401() {
 		var gateway = data.gateway();
 		var secret = data.secret(gateway);
-		assert401(() -> client.getSecret(null, gateway.getExternalId(), secret.getExternalId()));
+		assert401(() -> client.getSecret(null, gateway.getGatewayId(), secret.getSecretId()));
 
 	}
 
@@ -126,7 +124,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	@Test
 	@Override
 	public void getSecret404() {
-		assert404(() -> client.getSecret(bearerAdmin(), UUID.randomUUID(), UUID.randomUUID()));
+		assert404(() -> client.getSecret(bearer(), UUID.randomUUID(), UUID.randomUUID()));
 
 	}
 
@@ -134,7 +132,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	@Test
 	public void getSecret40Secret() {
 		var gateway = data.gateway();
-		assert404(() -> client.getSecret(bearerAdmin(), gateway.getExternalId(), UUID.randomUUID()));
+		assert404(() -> client.getSecret(bearer(), gateway.getGatewayId(), UUID.randomUUID()));
 	}
 
 	@DisplayName("createSecret(201): hmac")
@@ -146,9 +144,9 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 		var vo = new SecretCreateHmacVO()
 				.setHmac("foo".getBytes())
 				.setName(data.secretName());
-		var created = assert201(() -> client.createSecret(bearerAdmin(), gateway.getExternalId(), vo));
+		var created = assert201(() -> client.createSecret(bearer(), gateway.getGatewayId(), vo));
 
-		assertEquals(gateway.getExternalId(), created.getGatewayId(), "gatewayId");
+		assertEquals(gateway.getGatewayId(), created.getGatewayId(), "gatewayId");
 		assertNotNull(created.getSecretId(), "secretId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
@@ -157,7 +155,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
 		assertEquals(created,
-				assert200(() -> client.getSecret(bearerAdmin(), gateway.getExternalId(), created.getSecretId())), "vo");
+				assert200(() -> client.getSecret(bearer(), gateway.getGatewayId(), created.getSecretId())), "vo");
 	}
 
 	@DisplayName("createSecret(201): rsa with public key")
@@ -169,9 +167,9 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 				.setPublicKey("public".getBytes())
 				.setPrivateKey(null)
 				.setName(data.secretName());
-		var created = assert201(() -> client.createSecret(bearerAdmin(), gateway.getExternalId(), vo));
+		var created = assert201(() -> client.createSecret(bearer(), gateway.getGatewayId(), vo));
 
-		assertEquals(gateway.getExternalId(), created.getGatewayId(), "gatewayId");
+		assertEquals(gateway.getGatewayId(), created.getGatewayId(), "gatewayId");
 		assertNotNull(created.getSecretId(), "secretId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
@@ -181,7 +179,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
 		assertEquals(created,
-				assert200(() -> client.getSecret(bearerAdmin(), gateway.getExternalId(), created.getSecretId())), "vo");
+				assert200(() -> client.getSecret(bearer(), gateway.getGatewayId(), created.getSecretId())), "vo");
 	}
 
 	@DisplayName("createSecret(201): rsa with public/private key")
@@ -193,9 +191,9 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 				.setPublicKey("public".getBytes())
 				.setPrivateKey("private".getBytes())
 				.setName(data.secretName());
-		var created = assert201(() -> client.createSecret(bearerAdmin(), gateway.getExternalId(), vo));
+		var created = assert201(() -> client.createSecret(bearer(), gateway.getGatewayId(), vo));
 
-		assertEquals(gateway.getExternalId(), created.getGatewayId(), "gatewayId");
+		assertEquals(gateway.getGatewayId(), created.getGatewayId(), "gatewayId");
 		assertNotNull(created.getSecretId(), "secretId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
@@ -204,7 +202,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 		assertEquals("private", new String(((SecretDetailRSAVO) created).getPrivateKey()), "private");
 		assertNotNull(created.getCreated(), "created");
 		assertEquals(created,
-				assert200(() -> client.getSecret(bearerAdmin(), gateway.getExternalId(), created.getSecretId())), "vo");
+				assert200(() -> client.getSecret(bearer(), gateway.getGatewayId(), created.getSecretId())), "vo");
 	}
 
 	@DisplayName("createSecret(400): check bean validation")
@@ -213,7 +211,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void createSecret400() {
 		var gateway = data.gateway();
 		var vo = new SecretCreateHmacVO().setHmac("foo".getBytes()).setName("");
-		assert400(() -> client.createSecret(bearerAdmin(), gateway.getExternalId(), vo));
+		assert400(() -> client.createSecret(bearer(), gateway.getGatewayId(), vo));
 		assertEquals(0, data.countSecrets(gateway), "created");
 	}
 
@@ -222,7 +220,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void createSecret400Hmac() {
 		var gateway = data.gateway();
 		var vo = new SecretCreateHmacVO().setHmac(null).setName(data.secretName());
-		assert400(() -> client.createSecret(bearerAdmin(), gateway.getExternalId(), vo));
+		assert400(() -> client.createSecret(bearer(), gateway.getGatewayId(), vo));
 		assertEquals(0, data.countSecrets(gateway), "created");
 	}
 
@@ -232,7 +230,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void createSecret401() {
 		var gateway = data.gateway();
 		var vo = new SecretCreateHmacVO().setHmac("foo".getBytes()).setName(data.secretName());
-		assert401(() -> client.createSecret(null, gateway.getExternalId(), vo));
+		assert401(() -> client.createSecret(null, gateway.getGatewayId(), vo));
 		assertEquals(0, data.countSecrets(gateway), "created");
 	}
 
@@ -241,7 +239,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	@Override
 	public void createSecret404() {
 		var vo = new SecretCreateHmacVO().setHmac("foo".getBytes()).setName(data.secretName());
-		assert404(() -> client.createSecret(bearerAdmin(), UUID.randomUUID(), vo));
+		assert404(() -> client.createSecret(bearer(), UUID.randomUUID(), vo));
 	}
 
 	@DisplayName("createSecret(409): name exists")
@@ -250,7 +248,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void createSecret409() {
 		var gateway = data.gateway();
 		var existing = data.secret(gateway);
-		assert409(() -> client.createSecret(bearerAdmin(), gateway.getExternalId(), new SecretCreateRSAVO()
+		assert409(() -> client.createSecret(bearer(), gateway.getGatewayId(), new SecretCreateRSAVO()
 				.setPublicKey("".getBytes())
 				.setName(existing.getName())));
 		assertEquals(1, data.countSecrets(gateway), "created");
@@ -264,7 +262,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 		var gateway = data.gateway();
 		var secret = data.secret(gateway);
 
-		assert204(() -> client.deleteSecret(bearerAdmin(), gateway.getExternalId(), secret.getExternalId()));
+		assert204(() -> client.deleteSecret(bearer(), gateway.getGatewayId(), secret.getSecretId()));
 		assertEquals(0, data.countSecrets(gateway), "secret not deleted");
 		assertEquals(1, data.countGateways(), "gateway deleted");
 	}
@@ -275,7 +273,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	public void deleteSecret401() {
 		var gateway = data.gateway();
 		var secret = data.secret(gateway);
-		assert401(() -> client.deleteSecret(null, gateway.getExternalId(), secret.getExternalId()));
+		assert401(() -> client.deleteSecret(null, gateway.getGatewayId(), secret.getSecretId()));
 		assertEquals(1, data.countSecrets(gateway), "secret deleted");
 		assertEquals(1, data.countGateways(), "gateway deleted");
 	}
@@ -285,7 +283,7 @@ public class SecretApiTest extends AbstractTest implements SecretApiTestSpec {
 	@Override
 	public void deleteSecret404() {
 		var gateway = data.gateway();
-		assert404(() -> client.deleteSecret(bearerAdmin(), gateway.getExternalId(), UUID.randomUUID()));
-		assert404(() -> client.deleteSecret(bearerAdmin(), UUID.randomUUID(), UUID.randomUUID()));
+		assert404(() -> client.deleteSecret(bearer(), gateway.getGatewayId(), UUID.randomUUID()));
+		assert404(() -> client.deleteSecret(bearer(), UUID.randomUUID(), UUID.randomUUID()));
 	}
 }

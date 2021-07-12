@@ -56,12 +56,11 @@ public class GatewayTest extends AbstractTest {
 
 		// create tenant with gateway
 
-		var userToken = bearerAdmin();
+		var userToken = bearer();
 		var tenantId = assert201(() -> tenantClient.createTenant(userToken, new TenantCreateVO()
 				.setName("kokuwa")
 				.setEnabled(true))).getTenantId();
-		var gatewayId = assert201(() -> gatewayClient.createGateway(userToken, new GatewayCreateVO()
-				.setTenantId(tenantId)
+		var gatewayId = assert201(() -> gatewayClient.createGateway(userToken, tenantId, new GatewayCreateVO()
 				.setName("device-1")
 				.setEnabled(true))).getGatewayId();
 		var hmac = UUID.randomUUID().toString();
@@ -82,7 +81,7 @@ public class GatewayTest extends AbstractTest {
 
 		// get properties
 
-		var gateway = assert200(() -> gatewayClient.getGateway(userToken, gatewayId));
+		var gateway = assert200(() -> gatewayClient.getGateway(userToken, tenantId, gatewayId));
 		assertEquals(gatewayProperties, gateway.getProperties());
 	}
 

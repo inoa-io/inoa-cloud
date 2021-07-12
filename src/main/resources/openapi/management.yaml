@@ -15,7 +15,7 @@ servers: []
 security: 
 - BearerAuth: []
 paths:
-  /tenant:
+  /tenants:
     get:
       tags:
       - tenant
@@ -58,7 +58,7 @@ paths:
           description: Unauthorized.
         409:
           description: Tenant with id or name already exists.
-  /tenant/{tenant_id}:
+  /tenants/{tenant_id}:
     parameters:
     - $ref: '#/components/parameters/TenantId'
     get:
@@ -120,19 +120,15 @@ paths:
           description: Unauthorized.
         404:
           description: Tenant not found.
-  /group:
+  /tenants/{tenant_id}/groups:
+    parameters:
+    - $ref: '#/components/parameters/TenantId'
     get:
       tags:
       - group
       summary: Get groups.
       description: Returns all groups ordered by name. Suports filtering by tenant.
       operationId: getGroups
-      parameters:
-      - name: tenant
-        in: query
-        schema:
-          $ref: '#/components/schemas/Id'
-        example: 00000000-0000-0000-0000-000000000000
       responses:
         200:
           description: Returns list of available groups.
@@ -144,6 +140,8 @@ paths:
                   $ref: '#/components/schemas/Group'
         401:
           description: Unauthorized.
+        404:
+          description: Tenant not found.
     post:
       tags:
       - group
@@ -164,13 +162,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/Group'
         400:
-          description: Malformed or tenant not found.
+          description: Malformed.
         401:
           description: Unauthorized.
+        404:
+          description: Tenant not found.
         409:
           description: Gateway with name already exists.
-  /group/{group_id}:
+  /tenants/{tenant_id}/groups/{group_id}:
     parameters:
+    - $ref: '#/components/parameters/TenantId'
     - $ref: '#/components/parameters/GroupId'
     get:
       tags:
@@ -229,19 +230,16 @@ paths:
           description: Unauthorized.
         404:
           description: Group not found.
-  /gateway:
+  /tenants/{tenant_id}/gateways:
+    parameters:
+    - $ref: '#/components/parameters/TenantId'
     get:
       tags:
       - gateway
       summary: Get gateways.
-      description: Returns all gateways ordered by name. Suports filtering by tenant or group.
+      description: Returns all gateways ordered by name. Suports filtering by group.
       operationId: getGateways
       parameters:
-      - name: tenant
-        in: query
-        schema:
-          $ref: '#/components/schemas/Id'
-        example: 00000000-0000-0000-0000-000000000000
       - name: group
         in: query
         schema:
@@ -258,6 +256,8 @@ paths:
                   $ref: '#/components/schemas/Gateway'
         401:
           description: Unauthorized.
+        404:
+          description: Tenant not found.
     post:
       tags:
       - gateway
@@ -281,10 +281,13 @@ paths:
           description: Malformed or tenant not found.
         401:
           description: Unauthorized.
+        404:
+          description: Tenant not found.
         409:
           description: Gateway with name already exists.
-  /gateway/{gateway_id}:
+  /tenants/{tenant_id}/gateways/{gateway_id}:
     parameters:
+    - $ref: '#/components/parameters/TenantId'
     - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
@@ -343,7 +346,7 @@ paths:
           description: Unauthorized.
         404:
           description: Gateway not found.
-  /gateway/{gateway_id}/secret:
+  /gateways/{gateway_id}/secret:
     parameters:
     - $ref: '#/components/parameters/GatewayId'
     get:
@@ -392,7 +395,7 @@ paths:
           description: Gateway not found.
         409:
           description: Secret with name already exists for gateway.
-  /gateway/{gateway_id}/secret/{secret_id}:
+  /gateways/{gateway_id}/secrets/{secret_id}:
     parameters:
     - $ref: '#/components/parameters/GatewayId'
     - $ref: '#/components/parameters/SecretId'
@@ -501,8 +504,6 @@ components:
       description: Group with common metadata.
       type: object
       properties:
-        tenant_id:
-          $ref: '#/components/schemas/Id'
         group_id:
           $ref: '#/components/schemas/Id'
         name:
@@ -516,7 +517,6 @@ components:
           format: date-time
           example: 2010-01-01T00:00:00Z
       required:
-      - tenant_id
       - group_id
       - name
       - created
@@ -525,12 +525,11 @@ components:
       description: Group to create.
       type: object
       properties:
-        tenant_id:
+        group_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GroupName'
       required:
-      - tenant_id
       - name
     GroupUpdate:
       description: Group to update.
@@ -553,8 +552,6 @@ components:
       description: Gateway with common metadata.
       type: object
       properties:
-        tenant_id:
-          $ref: '#/components/schemas/Id'
         gateway_id:
           $ref: '#/components/schemas/Id'
         name:
@@ -570,7 +567,6 @@ components:
           format: date-time
           example: 2010-01-01T00:00:00Z
       required:
-      - tenant_id
       - gateway_id
       - enabled
       - name
@@ -580,8 +576,6 @@ components:
       description: Gateway with details.
       type: object
       properties:
-        tenant_id:
-          $ref: '#/components/schemas/Id'
         gateway_id:
           $ref: '#/components/schemas/Id'
         name:
@@ -613,7 +607,6 @@ components:
           format: date-time
           example: 2010-01-01T00:00:00Z
       required:
-      - tenant_id
       - gateway_id
       - enabled
       - name
@@ -625,7 +618,7 @@ components:
       description: Gateway to create.
       type: object
       properties:
-        tenant_id:
+        gateway_id:
           $ref: '#/components/schemas/Id'
         name:
           $ref: '#/components/schemas/GatewayName'
@@ -642,7 +635,6 @@ components:
           example:
           - 00000000-0000-0000-0000-000000000000
       required:
-      - tenant_id
       - name
     GatewayUpdate:
       description: Gateway to update.
