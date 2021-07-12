@@ -25,7 +25,6 @@ import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
-import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,8 +50,7 @@ public class AuthController implements AuthApi {
 
 	@Override
 	public HttpResponse<Object> getKeys() {
-		var set = keys.getJwkSet();
-		return HttpResponse.ok(set.toJSONObject());
+		return HttpResponse.ok(keys.getJwkSet().toJSONObject());
 	}
 
 	@Override
@@ -67,8 +65,7 @@ public class AuthController implements AuthApi {
 	/**
 	 * Parse token, validate claims, verify signature and return gateway.
 	 *
-	 * @param token
-	 *            JWT token.
+	 * @param token JWT token.
 	 * @return Maybe with gateway from token.
 	 */
 	private Gateway getGatewayFromToken(String token) {
@@ -84,18 +81,18 @@ public class AuthController implements AuthApi {
 			throw error("failed to parse token: " + e.getMessage());
 		}
 
-		// validate claims
+		// validate claims and get gateway
 
 		var gatewayId = validateClaims(claims);
-
-		// get gateway and set mdc
-
 		var optionalGateway = gatewayRepository.findByGatewayId(gatewayId);
 		if (optionalGateway.isEmpty()) {
 			throw error("gateway " + gatewayId + " not found");
 		}
 		var gateway = optionalGateway.get();
 		MDC.put("tenant", gateway.getTenant().getTenantId().toString());
+
+		// check enabled
+
 		if (!gateway.getTenant().getEnabled()) {
 			throw error("tenant " + gateway.getTenant().getTenantId() + " disabled");
 		}
@@ -104,30 +101,28 @@ public class AuthController implements AuthApi {
 		}
 
 		// filter if signature is invalid
-		SignatureConfiguration signature = signatureProvider.find(gateway);
-		if (signature == null) {
-			throw error("signature verification failed");
-		}
+
 		var verified = false;
-		try {
-			verified = signature.verify(jwt);
-			log.debug("Token signature valid with {}: {}", signature, verified);
-		} catch (JOSEException e) {
-			log.debug("Failed to verify signature with {}: {}", signature, e.getMessage());
+		for (var signature : signatureProvider.find(gateway)) {
+			try {
+				verified |= signature.verify(jwt);
+				log.debug("Token signature valid with {}: {}", signature, verified);
+			} catch (JOSEException e) {
+				log.debug("Failed to verify signature with {}: {}", signature, e.getMessage());
+			}
 		}
-		if (verified) {
-			log.debug("Got gateway {} from token.", gateway.getName());
-			return gateway;
-		} else {
+		if (!verified) {
 			throw error("signature verification failed");
 		}
+
+		log.debug("Got gateway {} from token.", gateway.getName());
+		return gateway;
 	}
 
 	/**
 	 * Validate claims
 	 *
-	 * @param token
-	 *            JWT token.
+	 * @param token JWT token.
 	 * @return Maybe with gateway from token.
 	 * @see "https://tools.ietf.org/html/rfc7523#section-3"
 	 */
@@ -178,7 +173,8 @@ public class AuthController implements AuthApi {
 		}
 		var issuedAtThreshold = tokenProperties.getIssuedAtThreshold();
 		if (issueTime != null && issuedAtThreshold.map(now::minus)
-				.filter(threshold -> threshold.isAfter(issueTime.toInstant())).isPresent()) {
+				.filter(threshold -> threshold.isAfter(issueTime.toInstant()))
+				.isPresent()) {
 			throw error("token is too old (older than " + issuedAtThreshold.get() + "): " + issueTime.toInstant());
 		}
 
@@ -204,12 +200,12 @@ public class AuthController implements AuthApi {
 	/**
 	 * Create response with access token for gateway.
 	 *
-	 * @param gateway
-	 *            Gateway.
+	 * @param gateway Gateway.
 	 * @return Response with payload.
 	 */
 	private HttpResponse<TokenRepsonseVO> getTokenResponse(Gateway gateway) {
-		return HttpResponse.ok(new TokenRepsonseVO().setAccessToken(authService.createToken(gateway.getGatewayId()))
+		return HttpResponse.ok(new TokenRepsonseVO()
+				.setAccessToken(authService.createToken(gateway.getGatewayId()))
 				.setTokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
 				.setExpiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
 				.setTenantId(gateway.getTenant().getTenantId()));
@@ -218,13 +214,13 @@ public class AuthController implements AuthApi {
 	/**
 	 * Construct error with description.
 	 *
-	 * @param errorDescription
-	 *            Human readable error description.
+	 * @param errorDescription Human readable error description.
 	 * @return RFC conform response.
 	 */
 	private HttpStatusException error(String errorDescription) {
 		log.debug("Failure: {}", errorDescription);
-		return new HttpStatusException(HttpStatus.BAD_REQUEST,
-				new TokenErrorVO().setError("invalid_grant").setErrorDescription(errorDescription));
+		return new HttpStatusException(HttpStatus.BAD_REQUEST, new TokenErrorVO()
+				.setError("invalid_grant")
+				.setErrorDescription(errorDescription));
 	}
 }

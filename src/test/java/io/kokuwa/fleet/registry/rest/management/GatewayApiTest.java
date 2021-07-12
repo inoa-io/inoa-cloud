@@ -60,7 +60,6 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 
 		// execute
 
-		assertEquals(uuids.apply(List.of(gateway3, gateway2, gateway1)), filter.apply(null, null), "empty");
 		assertEquals(uuids.apply(List.of(gateway2, gateway1)), filter.apply(tenant1.getTenantId(), null), "tenant1");
 		assertEquals(uuids.apply(List.of(gateway3)), filter.apply(tenant2.getTenantId(), null), "tenant2");
 	}

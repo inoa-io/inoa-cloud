@@ -25,15 +25,12 @@ public interface SecretRepository extends CrudRepository<Secret, Long> {
 
 @Requires(property = "datasources.default.dialect", value = "H2")
 @JdbcRepository(dialect = Dialect.H2)
-interface SecretRepositoryH2 extends SecretRepository {
-}
+interface SecretRepositoryH2 extends SecretRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "POSTGRES")
 @JdbcRepository(dialect = Dialect.POSTGRES)
-interface SecretRepositoryPostgres extends SecretRepository {
-}
+interface SecretRepositoryPostgres extends SecretRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "MYSQL")
 @JdbcRepository(dialect = Dialect.MYSQL)
-interface SecretRepositoryMysql extends SecretRepository {
-}
+interface SecretRepositoryMysql extends SecretRepository {}

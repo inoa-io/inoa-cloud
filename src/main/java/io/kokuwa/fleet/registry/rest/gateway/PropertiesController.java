@@ -1,11 +1,10 @@
 package io.kokuwa.fleet.registry.rest.gateway;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.kokuwa.fleet.registry.auth.GatewayAuthentication;
 import io.kokuwa.fleet.registry.domain.GatewayProperty;
@@ -44,28 +43,30 @@ public class PropertiesController implements PropertiesApi {
 	@Override
 	public HttpResponse<Map<String, String>> setProperties(Map<String, String> body) {
 		var gatewayId = getGatewayId();
-		List<GatewayProperty> properties = repository.findByGatewayId(getGatewayId());
-		// not updated properties
-		List<GatewayProperty> notUpdated = properties.stream()
-				.filter(property -> !body.containsKey(property.getPk().getKey())).collect(Collectors.toList());
-		List<GatewayProperty> collect = body.entrySet().stream()
-				.map(entry -> updatedProperty(gatewayId, properties, entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList());
-		return HttpResponse.ok(mapper.toMap(properties));
+		var properties = repository.findByGatewayId(getGatewayId());
+		return HttpResponse.ok(mapper.toMap(Stream
+				.concat(
+						properties
+								.stream()
+								.filter(property -> !body.containsKey(property.getPk().getKey())),
+						body
+								.entrySet()
+								.stream()
+								.map(entry -> updatedProperty(gatewayId, properties, entry.getKey(), entry.getValue())))
+				.collect(Collectors.toList())));
 	}
 
 	@Override
 	public HttpResponse<Object> setProperty(String key, String newValue) {
 		var gatewayId = getGatewayId();
-		Optional<GatewayProperty> optionalProperty = repository.findByGatewayIdAndKey(getGatewayId(), key);
-		updatedProperty(gatewayId, optionalProperty.isEmpty() ? new ArrayList<>() : List.of(optionalProperty.get()),
-				key, newValue);
+		var properties = repository.findByGatewayIdAndKey(getGatewayId(), key).stream().collect(Collectors.toList());
+		updatedProperty(gatewayId, properties, key, newValue);
 		return HttpResponse.noContent();
 	}
 
 	@Override
 	public HttpResponse<Object> deleteProperty(String key) {
-		Optional<GatewayProperty> optionalProperty = repository.findByGatewayIdAndKey(getGatewayId(), key);
+		var optionalProperty = repository.findByGatewayIdAndKey(getGatewayId(), key);
 		if (optionalProperty.isEmpty()) {
 			log.trace("Property {} not found.", key);
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, null);
@@ -76,23 +77,26 @@ public class PropertiesController implements PropertiesApi {
 	}
 
 	// internal
-	private GatewayProperty updatedProperty(Long gatewayId, List<GatewayProperty> properties, String key,
+
+	private GatewayProperty updatedProperty(
+			Long gatewayId,
+			List<GatewayProperty> properties,
+			String key,
 			String newValue) {
 
-		GatewayPropertyPK pk = new GatewayPropertyPK(gatewayId, key);
-		Optional<GatewayProperty> optionalProperty = properties.stream()
-				.filter(property -> property.getPk().getKey().equals(key)).findAny();
+		var optionalProperty = properties.stream()
+				.filter(property -> property.getPk().getKey().equals(key))
+				.findAny();
 		if (optionalProperty.isEmpty()) {
 			log.debug("Property {} set to {}.", key, newValue);
-			GatewayProperty property = new GatewayProperty().setPk(pk).setValue(newValue);
+			var property = new GatewayProperty().setPk(new GatewayPropertyPK(gatewayId, key)).setValue(newValue);
 			properties.add(property);
 			return repository.save(property);
 		}
 
-		GatewayProperty property = optionalProperty.get();
+		var property = optionalProperty.get();
 		if (!Objects.equals(property.getValue(), newValue)) {
 			log.debug("Property {} set from {} to {}.", key, property.getValue(), newValue);
-
 			return repository.update(property.setValue(newValue));
 		}
 
@@ -101,7 +105,10 @@ public class PropertiesController implements PropertiesApi {
 	}
 
 	private Long getGatewayId() {
-		return ServerRequestContext.currentRequest().get().getUserPrincipal(GatewayAuthentication.class).get()
-				.getGateway().getId();
+		return ServerRequestContext
+				.currentRequest().get()
+				.getUserPrincipal(GatewayAuthentication.class).get()
+				.getGateway()
+				.getId();
 	}
 }

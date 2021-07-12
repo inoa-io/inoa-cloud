@@ -1,13 +1,9 @@
 package io.kokuwa.fleet.registry.auth;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import javax.inject.Singleton;
 
 import org.reactivestreams.Publisher;
 
-import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.token.validator.TokenValidator;
@@ -26,17 +22,14 @@ public class AuthTokenValidator implements TokenValidator {
 	private final AuthTokenService service;
 	private final GatewayRepository gatewayRepository;
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public Publisher<Authentication> validateToken(String token) {
-		Optional<UUID> uuid = service.validateToken(token);
-		if (uuid.isEmpty()) {
-			return Flowable.empty();
-		}
-		Optional<Gateway> optionalGateway = gatewayRepository.findByGatewayId(uuid.get());
-		if (optionalGateway.isEmpty()) {
-			return Flowable.empty();
-		}
-		return Flowable.just(new GatewayAuthentication(optionalGateway.get()));
+		return service
+				.validateToken(token)
+				.flatMap(gatewayRepository::findByGatewayId)
+				.map(GatewayAuthentication::new)
+				.map(Authentication.class::cast)
+				.map(Flowable::just)
+				.orElseGet(Flowable::empty);
 	}
 }

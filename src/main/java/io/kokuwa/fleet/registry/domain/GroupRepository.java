@@ -31,15 +31,12 @@ public interface GroupRepository extends CrudRepository<Group, Long> {
 
 @Requires(property = "datasources.default.dialect", value = "H2")
 @JdbcRepository(dialect = Dialect.H2)
-interface GroupRepositoryH2 extends GroupRepository {
-}
+interface GroupRepositoryH2 extends GroupRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "POSTGRES")
 @JdbcRepository(dialect = Dialect.POSTGRES)
-interface GroupRepositoryPostgres extends GroupRepository {
-}
+interface GroupRepositoryPostgres extends GroupRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "MYSQL")
 @JdbcRepository(dialect = Dialect.MYSQL)
-interface GroupRepositoryMysql extends GroupRepository {
-}
+interface GroupRepositoryMysql extends GroupRepository {}

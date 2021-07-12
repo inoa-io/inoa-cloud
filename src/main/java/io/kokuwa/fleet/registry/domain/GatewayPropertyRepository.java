@@ -23,15 +23,12 @@ public interface GatewayPropertyRepository extends CrudRepository<GatewayPropert
 
 @Requires(property = "datasources.default.dialect", value = "H2")
 @JdbcRepository(dialect = Dialect.H2)
-interface GatewayPropertyRepositoryH2 extends GatewayPropertyRepository {
-}
+interface GatewayPropertyRepositoryH2 extends GatewayPropertyRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "POSTGRES")
 @JdbcRepository(dialect = Dialect.POSTGRES)
-interface GatewayPropertyRepositoryPostgres extends GatewayPropertyRepository {
-}
+interface GatewayPropertyRepositoryPostgres extends GatewayPropertyRepository {}
 
 @Requires(property = "datasources.default.dialect", value = "MYSQL")
 @JdbcRepository(dialect = Dialect.MYSQL)
-interface GatewayPropertyRepositoryMysql extends GatewayPropertyRepository {
-}
+interface GatewayPropertyRepositoryMysql extends GatewayPropertyRepository {}

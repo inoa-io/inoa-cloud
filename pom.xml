@@ -51,8 +51,8 @@
 
 		<version.io.kokuwa.micronaut.codegen>2.1.6</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut>2.5.7</version.io.micronaut>
-		<version.io.micronaut.data>2.4.4</version.io.micronaut.data>
+		<version.io.micronaut>2.5.8</version.io.micronaut>
+		<version.io.micronaut.data>2.4.7</version.io.micronaut.data>
 		<version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
 		<version.org.testcontainers>1.15.3</version.org.testcontainers>
 
