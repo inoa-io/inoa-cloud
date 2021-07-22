@@ -12,6 +12,7 @@
 	<groupId>io.kokuwa.fleet</groupId>
 	<artifactId>gateway-registry</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
 
 	<name>GatewayRegistry</name>
 	<url>https://github.com/kokuwaio/gateway-registry</url>
@@ -22,6 +23,10 @@
 			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
 		</license>
 	</licenses>
+
+	<modules>
+		<module>service</module>
+	</modules>
 
 	<scm>
 		<url>https://github.com/kokuwaio/gateway-registry</url>
@@ -52,6 +57,7 @@
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>2.5.9</version.io.micronaut>
 		<version.io.micronaut.data>2.4.7</version.io.micronaut.data>
+		<version.org.keycloak>14.0.0</version.org.keycloak>
 		<version.org.mapstruct>1.5.0.Beta1</version.org.mapstruct>
 		<version.org.testcontainers>1.16.0</version.org.testcontainers>
 
@@ -79,7 +85,14 @@
 				<version>${version.io.kokuwa.micronaut.logging}</version>
 			</dependency>
 
-			<!-- build -->
+			<!-- libraries -->
+			<dependency>
+				<groupId>org.keycloak.bom</groupId>
+				<artifactId>keycloak-bom-parent</artifactId>
+				<version>${version.org.keycloak}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct</artifactId>
@@ -107,166 +120,17 @@
 				<artifactId>testcontainers</artifactId>
 				<version>${version.org.testcontainers}</version>
 			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
-	<dependencies>
-
-		<!-- micronaut -->
-		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-runtime</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-http-server-netty</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-http-client</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.security</groupId>
-			<artifactId>micronaut-security-jwt</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.kokuwa.micronaut</groupId>
-			<artifactId>micronaut-logging</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<!-- persistence -->
-		<dependency>
-			<groupId>io.micronaut.data</groupId>
-			<artifactId>micronaut-data-jdbc</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.sql</groupId>
-			<artifactId>micronaut-jdbc-hikari</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.flyway</groupId>
-			<artifactId>micronaut-flyway</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
-		<!-- build -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-		</dependency>
-
-		<!-- test -->
-		<dependency>
-			<groupId>io.micronaut.test</groupId>
-			<artifactId>micronaut-test-junit5</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>test</scope>
-		</dependency>
-
-	</dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-			</testResource>
-		</testResources>
 		<plugins>
-
-			<!-- add generated sources -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>openapi-sources</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-sources/annotations</source>
-								<source>${project.build.directory}/generated-sources/openapi</source>
-							</sources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>openapi-test-sources</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-test-sources/openapi</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 
 			<!-- generate sources from openapi spec -->
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>openapi-gateway-generate</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi/gateway.yaml</inputSpec>
-							<apiPackage>io.kokuwa.fleet.registry.rest.gateway</apiPackage>
-							<generateSupportingFiles>false</generateSupportingFiles>
-						</configuration>
-					</execution>
-					<execution>
-						<id>openapi-management-generate</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi/management.yaml</inputSpec>
-							<apiPackage>io.kokuwa.fleet.registry.rest.management</apiPackage>
-						</configuration>
-					</execution>
-				</executions>
 				<configuration>
 					<generatorName>micronaut</generatorName>
 					<modelNameSuffix>VO</modelNameSuffix>
@@ -276,13 +140,12 @@
 						<useLombokGenerated>true</useLombokGenerated>
 						<dateTimeRelaxed>false</dateTimeRelaxed>
 						<visitable>false</visitable>
-						<pageable>true</pageable>
 					</configOptions>
 					<typeMappings>
 						<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
 						<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
 					</typeMappings>
-					<ignoreFileOverride>${project.basedir}/.openapi-ignore</ignoreFileOverride>
+					<ignoreFileOverride>${project.basedir}/../.openapi-ignore</ignoreFileOverride>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -291,41 +154,6 @@
 						<version>${version.io.kokuwa.micronaut.codegen}</version>
 					</dependency>
 				</dependencies>
-			</plugin>
-
-			<!-- configure jar with libs and main class -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${version.org.projectlombok}</version>
-						</path>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${version.org.mapstruct}</version>
-						</path>
-						<path>
-							<groupId>io.micronaut</groupId>
-							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut}</version>
-						</path>
-						<path>
-							<groupId>io.micronaut</groupId>
-							<artifactId>micronaut-validation</artifactId>
-							<version>${version.io.micronaut}</version>
-						</path>
-						<path>
-							<groupId>io.micronaut.data</groupId>
-							<artifactId>micronaut-data-processor</artifactId>
-							<version>${version.io.micronaut.data}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
 			</plugin>
 
 			<!-- adjust jacoco excludes -->
@@ -339,110 +167,6 @@
 				</configuration>
 			</plugin>
 
-			<!-- run tests with multiple database configurations -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-test</id>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<reportNameSuffix>h2</reportNameSuffix>
-							<skipExec>${maven.test.skip.exec}</skipExec>
-						</configuration>
-					</execution>
-					<execution>
-						<id>postgres-test</id>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<environmentVariables>
-								<MICRONAUT_ENVIRONMENTS>postgres</MICRONAUT_ENVIRONMENTS>
-							</environmentVariables>
-							<reportNameSuffix>postgres</reportNameSuffix>
-							<skipExec>${maven.test.skip.exec}</skipExec>
-						</configuration>
-					</execution>
-				</executions>
-				<configuration>
-					<runOrder>alphabetical</runOrder>
-					<failIfNoTests>true</failIfNoTests>
-				</configuration>
-			</plugin>
-
-			<!-- create container -->
-			<plugin>
-				<groupId>com.google.cloud.tools</groupId>
-				<artifactId>jib-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>dockerBuild</goal>
-						</goals>
-						<configuration>
-							<container>
-								<mainClass>io.kokuwa.fleet.registry.Application</mainClass>
-								<jvmFlags>
-									<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
-								</jvmFlags>
-							</container>
-							<to>
-								<image>${docker.image.repository}/${project.artifactId}:${docker.image.version}</image>
-							</to>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>check</id>
-			<activation>
-				<file>
-					<exists>pom.xml</exists>
-				</file>
-			</activation>
-			<build>
-				<plugins>
-
-					<!-- validate openapi specs -->
-					<plugin>
-						<groupId>org.openapitools.openapistylevalidator</groupId>
-						<artifactId>openapi-style-validator-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>openapi-gateway-validate</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>validate</goal>
-								</goals>
-								<configuration>
-									<inputFile>src/main/resources/openapi/gateway.yaml</inputFile>
-								</configuration>
-							</execution>
-							<execution>
-								<id>openapi-management-validate</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>validate</goal>
-								</goals>
-								<configuration>
-									<inputFile>src/main/resources/openapi/management.yaml</inputFile>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>

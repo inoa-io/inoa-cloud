@@ -1,0 +1,11 @@
+version: '2.3'
+services:
+
+  keycloak:
+    ports:
+    - 9000:9000
+
+  burner-selector-service:
+    ports:
+    - 8080:8080
+    - 8090:8090

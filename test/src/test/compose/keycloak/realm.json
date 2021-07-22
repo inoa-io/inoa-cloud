@@ -1,0 +1,52 @@
+
+{
+	"enabled": true,
+	"realm": "kokuwa",
+	"users": [
+		{
+			"enabled": true,
+			"username": "admin",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password"
+				}
+			]
+		},{
+			"enabled": true,
+			"username": "user1",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password"
+				}
+			]
+		},{
+			"enabled": true,
+			"username": "user2",
+			"credentials": [
+				{
+					"type": "password",
+					"value": "password"
+				}
+			]
+		}
+	],
+	"clients": [
+		{
+			"enabled": true,
+			"clientId": "gateway-registry-ui", 
+			"secret": "changeMe",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"protocol": "openid-connect",
+			"protocolMappers": [],
+			"redirectUris": [],
+			"webOrigins": [],
+			"defaultClientScopes": [],
+			"optionalClientScopes": []
+		}
+	]
+}

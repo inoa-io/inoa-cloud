@@ -1,0 +1,23 @@
+micronaut:
+  http:
+    services:
+      keycloak:
+        url: http://localhost:${docker.keycloak.9000:9000}
+        logger-name: net.burnerselector.rest.Keycloak
+      gateway-registry-service:
+        url: http://localhost:${docker.gateway-registry-service.8080:8080}
+        logger-name: net.burnerselector.rest.Client
+      gateway-registry-service-management:
+        url: http://localhost:${docker.gateway-registry-service.8090:8090}
+        logger-name: net.burnerselector.rest.Management
+
+## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
+jackson:
+  serialization:
+    indentOutput: true
+
+## custom log configuration
+logger:
+  levels:
+    io.micronaut.retry.intercept.RecoveryInterceptor: OFF
+    io.kokuwa: DEBUG
