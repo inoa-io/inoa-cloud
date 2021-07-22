@@ -23,8 +23,19 @@ import lombok.Setter;
 @Setter
 public class ApplicationProperties {
 
-	private GatewayProperties gateway = new GatewayProperties();
+	private SecurityProperties security = new SecurityProperties();
 	private RegistryAuthProperties auth = new RegistryAuthProperties();
+	private GatewayProperties gateway = new GatewayProperties();
+
+	/** Micronaut security related properties. */
+	@ConfigurationProperties("security")
+	@Getter
+	@Setter
+	public static class SecurityProperties {
+
+		/** Claim for tenant. */
+		private String claimTenant = "tenant";
+	}
 
 	/** Configuration for issuing registry jwt's. */
 	@ConfigurationProperties("auth")
@@ -70,6 +81,10 @@ public class ApplicationProperties {
 	public static class GatewayProperties {
 
 		private GatewayTokenProperties token = new GatewayTokenProperties();
+
+		/** Credentials authId to use for checking gateway jwt's. */
+		@NotNull
+		private String credentialAuthId = "registry";
 
 		/**
 		 * Configuration for verifying gateway jwt's.

@@ -2,4 +2,3 @@ datasources:
   default:
     driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql:${docker.postgres.version}:///${datasources.default.database}
-    dialect: POSTGRES

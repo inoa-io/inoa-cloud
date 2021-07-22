@@ -1,5 +1,11 @@
 micronaut:
 
+  ## test client with increased read-timeout for debbuging
+  http:
+    client:
+      logger-name: net.burnerselector.Test
+      read-timeout: 5m
+
   ## used for tokens issued/checked at management api
   security:
     token:
@@ -8,15 +14,16 @@ micronaut:
           secret:
             generator:
               secret: pleaseChangeThisSecretForANewOne
-    intercept-url-map:
-    - pattern: /**
-      access: isAuthenticated()
 
-  ## test client with increased read-timout for debbuging
-  http:
-    client:
-      logger-name: io.kokuwa.TestClient
-      read-timeout: 5m
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    enabled: false
+
+## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
+jackson:
+  serialization:
+    indentOutput: true
 
 ## config for registry
 registry:
@@ -25,7 +32,7 @@ registry:
     generate-key: true
     issuer: test
 
-## log registry events
+## custom log configuration
 logger:
   levels:
     io.kokuwa: TRACE

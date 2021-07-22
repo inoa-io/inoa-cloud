@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -21,9 +23,11 @@ import javax.inject.Singleton;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
@@ -32,6 +36,7 @@ import io.kokuwa.fleet.registry.auth.AuthTokenKeys;
 import io.kokuwa.fleet.registry.auth.AuthTokenService;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.rest.HttpResponseAssertions;
+import io.kokuwa.fleet.registry.rest.management.CredentialTypeVO;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpResponse;
@@ -197,7 +202,7 @@ public class AuthControllerTest extends AbstractTest {
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
-	@DisplayName("success: full token with hmac")
+	@DisplayName("success: full token with PSK")
 	@Test
 	void successFullToken() {
 
@@ -208,40 +213,64 @@ public class AuthControllerTest extends AbstractTest {
 
 		var gateway = data.gateway(data.tenant());
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
-		data.secretHmac(gateway, data.secretName(), gatewaySecret);
+		createAuthSecret(gateway, CredentialTypeVO.PSK, gatewaySecret.getBytes());
 		var jwt = token(gateway.getGatewayId(), gatewaySecret);
 		assertSuccess(gateway, jwt);
 	}
 
-	@DisplayName("success: minimal token with rsa")
+	@DisplayName("success: minimal token with RSA")
 	@Test
-	void successMinimalToken() {
+	void successMinimalToken() throws NoSuchAlgorithmException, JOSEException {
 
 		properties.getGateway().getToken().setForceJwtId(false);
 		properties.getGateway().getToken().setForceNotBefore(false);
-		properties.getGateway().getToken().setForceIssuedAt(true);
+		properties.getGateway().getToken().setForceIssuedAt(false);
 		properties.getGateway().getToken().setIssuedAtThreshold(Optional.empty());
 
+		var generator = KeyPairGenerator.getInstance("RSA");
+		var keyPair = generator.generateKeyPair();
 		var gateway = data.gateway(data.tenant());
-		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
-		data.secretHmac(gateway, data.secretName(), gatewaySecret);
-		var jwt = token(gateway.getGatewayId(), gatewaySecret, claims -> claims.notBeforeTime(null).jwtID(null));
-		assertSuccess(gateway, jwt);
+		createAuthSecret(gateway, CredentialTypeVO.RSA, keyPair.getPublic().getEncoded());
+
+		var claims = new JWTClaimsSet.Builder()
+				.audience(properties.getGateway().getToken().getAudience())
+				.issuer(gateway.getGatewayId().toString())
+				.expirationTime(Date.from(now.plusSeconds(1)));
+		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.RS512), claims.build());
+		jwt.sign(new RSASSASigner(keyPair.getPrivate()));
+		assertSuccess(gateway, jwt.serialize());
 	}
 
-	@DisplayName("success: with rsa")
+	@DisplayName("error: with password")
 	@Test
-	void successRsa() {
-
+	void errorPassword() {
 		var gateway = data.gateway(data.tenant());
-		var rsaKeys = data.generateKeyPair();
-		data.secretRSA(gateway, data.secretName(), rsaKeys);
-		var tokenClaims = data.tokenClaims(gateway.getGatewayId(), now);
-		var jwt = data.token(tokenClaims, rsaKeys);
-		assertSuccess(gateway, jwt);
+		var gatewaySecret = UUID.randomUUID().toString();
+		createAuthSecret(gateway, CredentialTypeVO.PASSWORD, gatewaySecret.getBytes());
+		var errorDescription = "signature verification failed";
+		var jwt = token(gateway.getGatewayId(), gatewaySecret);
+		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
 	// internal
+
+	private void createAuthSecret(Gateway gateway, CredentialTypeVO type, byte[] bytes) {
+		var authId = properties.getGateway().getCredentialAuthId();
+		var credential = data.credential(gateway, type, c -> c.setAuthId(authId));
+		switch (type) {
+			case PSK:
+				data.secret(credential, s -> s.setSecret(bytes));
+				break;
+			case RSA:
+				data.secret(credential, s -> s.setPublicKey(bytes));
+				break;
+			case PASSWORD:
+				data.secret(credential, s -> s.setPassword(bytes));
+				break;
+			default:
+				break;
+		}
+	}
 
 	private void assertSuccess(Gateway gateway, String jwt) {
 		TokenRepsonseVO response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));

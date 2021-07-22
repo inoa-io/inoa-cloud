@@ -1,7 +1,6 @@
 package io.kokuwa.fleet.registry.rest.management;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -18,30 +17,31 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Implementation of {@link TenantApi}.
+ * Implementation of {@link TenantsApi}.
  *
  * @author Stephan Schnabel
  */
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class TenantController implements TenantApi {
+public class TenantsController implements TenantsApi {
 
 	private final RestMapper mapper;
 	private final TenantRepository tenantRepository;
 	private final GatewayRepository gatewayRepository;
 
 	@Override
-	public HttpResponse<List<TenantVO>> getTenants() {
-		return HttpResponse
-				.ok(tenantRepository.findAllOrderByName().stream().map(mapper::toTenant).collect(Collectors.toList()));
+	public HttpResponse<List<TenantVO>> findTenants() {
+		return HttpResponse.ok(tenantRepository
+				.findAllOrderByName().stream()
+				.map(mapper::toTenant)
+				.collect(Collectors.toList()));
 	}
 
 	@Override
-	public HttpResponse<TenantVO> getTenant(UUID tenantId) {
-		Optional<Tenant> tenant = tenantRepository.findByTenantId(tenantId);
+	public HttpResponse<TenantVO> findTenant(UUID tenantId) {
+		var tenant = tenantRepository.findByTenantId(tenantId);
 		if (tenant.isEmpty()) {
-			log.trace("Tenant not found.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}
 		return HttpResponse.ok(mapper.toTenant(tenant.get()));
@@ -60,7 +60,9 @@ public class TenantController implements TenantApi {
 		}
 
 		// create tenant
-		var tenant = tenantRepository.save(new Tenant().setName(vo.getName()).setEnabled(vo.getEnabled())
+		var tenant = tenantRepository.save(new Tenant()
+				.setName(vo.getName())
+				.setEnabled(vo.getEnabled())
 				.setTenantId(vo.getTenantId() == null ? UUID.randomUUID() : vo.getTenantId()));
 
 		// return
@@ -72,15 +74,14 @@ public class TenantController implements TenantApi {
 
 		// get tenant from database
 
-		var changed = new AtomicBoolean(false);
 		var optionalTenant = tenantRepository.findByTenantId(tenantId);
-
 		if (optionalTenant.isEmpty()) {
-			log.trace("Skip update of non existing tenant.");
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}
+
 		// update fields
 
+		var changed = new AtomicBoolean(false);
 		var tenant = optionalTenant.get();
 		if (vo.getName() != null) {
 			if (tenant.getName().equals(vo.getName())) {
@@ -106,23 +107,24 @@ public class TenantController implements TenantApi {
 		}
 
 		// return updated
+
 		if (changed.get()) {
 			tenant = tenantRepository.update(tenant);
 		}
+
 		return HttpResponse.ok(mapper.toTenant(tenant));
 	}
 
 	@Override
 	public HttpResponse<Object> deleteTenant(UUID tenantId) {
-		var t = tenantRepository.findByTenantId(tenantId);
-		if (t.isEmpty()) {
+		var tenant = tenantRepository.findByTenantId(tenantId);
+		if (tenant.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}
-		Boolean gatewaysExists = gatewayRepository.existsByTenant(t.get());
-		if (gatewaysExists) {
+		if (gatewayRepository.existsByTenant(tenant.get())) {
 			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Gateways exists.");
 		}
-		tenantRepository.delete(t.get());
+		tenantRepository.delete(tenant.get());
 		return HttpResponse.noContent();
 	}
 }

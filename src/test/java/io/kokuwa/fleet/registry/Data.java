@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
@@ -20,6 +21,8 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import io.kokuwa.fleet.registry.domain.Credential;
+import io.kokuwa.fleet.registry.domain.CredentialRepository;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayGroup;
 import io.kokuwa.fleet.registry.domain.GatewayGroup.GatewayGroupPK;
@@ -34,7 +37,7 @@ import io.kokuwa.fleet.registry.domain.Secret;
 import io.kokuwa.fleet.registry.domain.SecretRepository;
 import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.domain.TenantRepository;
-import io.kokuwa.fleet.registry.rest.management.SecretTypeVO;
+import io.kokuwa.fleet.registry.rest.management.CredentialTypeVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -53,6 +56,7 @@ public class Data {
 	private final GatewayRepository gatewayRepository;
 	private final GatewayGroupRepository gatewayGroupRepository;
 	private final GatewayPropertyRepository gatewayPropertyRepository;
+	private final CredentialRepository credentialRepository;
 	private final SecretRepository secretRepository;
 	private final ApplicationProperties applicationProperties;
 
@@ -176,26 +180,44 @@ public class Data {
 				.save(new GatewayProperty().setPk(new GatewayPropertyPK(gateway.getId(), key)).setValue(value));
 	}
 
-	public String secretName() {
+	public String credentialAuthId() {
 		return UUID.randomUUID().toString().substring(0, 32);
 	}
 
-	public Secret secret(Gateway gateway) {
-		return secretHmac(gateway, secretName(), UUID.randomUUID().toString());
+	public Credential credential(Gateway gateway, CredentialTypeVO type) {
+		return credential(gateway, type, credential -> {});
 	}
 
-	public Secret secretHmac(Gateway gateway, String name, String hmac) {
-		return secretRepository.save(new Secret().setSecretId(UUID.randomUUID()).setGateway(gateway).setName(name)
-				.setEnabled(true).setType(SecretTypeVO.HMAC).setHmac(hmac.getBytes()));
+	public Credential credential(Gateway gateway, CredentialTypeVO type, Consumer<Credential> consumer) {
+		var credential = new Credential()
+				.setGateway(gateway)
+				.setCredentialId(UUID.randomUUID())
+				.setAuthId(credentialAuthId())
+				.setEnabled(true)
+				.setType(type);
+		consumer.accept(credential);
+		return credentialRepository.save(credential);
 	}
 
-	public Secret secretRSA(Gateway gateway, String name, KeyPair keyPair) {
-		return secretRSA(gateway, name, keyPair.getPublic().getEncoded(), keyPair.getPrivate().getEncoded());
+	public Secret secret(Credential credential) {
+		return secret(credential, secret -> {});
 	}
 
-	public Secret secretRSA(Gateway gateway, String name, byte[] publicKey, byte[] privateKey) {
-		return secretRepository.save(new Secret().setSecretId(UUID.randomUUID()).setGateway(gateway).setName(name)
-				.setEnabled(true).setType(SecretTypeVO.RSA).setPublicKey(publicKey).setPrivateKey(privateKey));
+	public Secret secret(Credential credential, Consumer<Secret> consumer) {
+		var secret = new Secret().setSecretId(UUID.randomUUID()).setCredential(credential);
+		switch (credential.getType()) {
+			case PASSWORD:
+				secret.setPassword("password".getBytes());
+				break;
+			case PSK:
+				secret.setSecret("secret".getBytes());
+				break;
+			case RSA:
+				secret.setPublicKey("public".getBytes()).setPrivateKey("private".getBytes());
+				break;
+		}
+		consumer.accept(secret);
+		return secretRepository.save(secret);
 	}
 
 	// read
@@ -212,8 +234,12 @@ public class Data {
 		return gatewayRepository.count();
 	}
 
-	public Long countSecrets(Gateway gateway) {
-		return (long) secretRepository.findByGatewayOrderByName(gateway).size();
+	public Long countCredentials(Gateway gateway) {
+		return (long) credentialRepository.findByGateway(gateway).size();
+	}
+
+	public Long countSecrets(Credential credential) {
+		return (long) secretRepository.findByCredential(credential).size();
 	}
 
 	public Tenant find(Tenant tenant) {
