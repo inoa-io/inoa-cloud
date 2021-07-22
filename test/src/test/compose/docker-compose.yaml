@@ -1,0 +1,36 @@
+version: '2.3'
+services:
+
+  keycloak:
+    build: ${project.build.directory}/compose/keycloak
+    environment:
+    - KC_HTTP_ENABLED=true
+    - KC_HTTP_PORT=9000
+    - KC_CLUSTER=local
+    - KEYCLOAK_ADMIN=admin
+    - KEYCLOAK_ADMIN_PASSWORD=password
+    healthcheck:
+      test: curl -sf http://localhost:9000/realms/elco/protocol/openid-connect/certs
+      interval: 5s
+
+  postgres:
+    image: postgres:${docker.postgres.version}
+    environment:
+    - POSTGRES_USER=burnerselector
+    - POSTGRES_PASSWORD=changeMe
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U burnerselector"]
+      interval: 5s
+
+  burner-selector-service:
+    image: ${docker.image.repository}/burner-selector-service:${docker.image.version}
+    environment:
+    - MICRONAUT_ENVIRONMENTS=postgres
+    healthcheck:
+      test: curl -sf http://localhost:8090/endpoints/health
+      interval: 5s
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
