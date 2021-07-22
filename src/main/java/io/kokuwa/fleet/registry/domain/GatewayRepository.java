@@ -4,10 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import io.micronaut.context.annotation.Requires;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
-import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
 /**
@@ -15,6 +13,7 @@ import io.micronaut.data.repository.CrudRepository;
  *
  * @author Stephan Schnabel
  */
+@JdbcRepository
 public interface GatewayRepository extends CrudRepository<Gateway, Long> {
 
 	List<Gateway> findByTenantOrderByName(Tenant tenant);
@@ -22,29 +21,9 @@ public interface GatewayRepository extends CrudRepository<Gateway, Long> {
 	@Join("tenant")
 	Optional<Gateway> findByGatewayId(UUID gatewayId);
 
-	@Join("tenant")
-	Optional<Gateway> findByTenantTenantIdAndGatewayId(UUID tenantId, UUID gatewayId);
+	Optional<Gateway> findByTenantAndGatewayId(Tenant tenant, UUID gatewayId);
 
 	Boolean existsByTenant(Tenant tenant);
 
-	@Join("tenant")
 	Boolean existsByTenantAndName(Tenant tenant, String name);
-}
-
-@Requires(property = "datasources.default.dialect", value = "H2")
-@JdbcRepository(dialect = Dialect.H2)
-interface GatewayRepositoryH2 extends GatewayRepository {
-
-}
-
-@Requires(property = "datasources.default.dialect", value = "POSTGRES")
-@JdbcRepository(dialect = Dialect.POSTGRES)
-interface GatewayRepositoryPostgres extends GatewayRepository {
-
-}
-
-@Requires(property = "datasources.default.dialect", value = "MYSQL")
-@JdbcRepository(dialect = Dialect.MYSQL)
-interface GatewayRepositoryMysql extends GatewayRepository {
-
 }

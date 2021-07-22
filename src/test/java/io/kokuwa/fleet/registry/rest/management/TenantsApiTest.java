@@ -2,7 +2,6 @@ package io.kokuwa.fleet.registry.rest.management;
 
 import static io.kokuwa.fleet.registry.rest.HttpResponseAssertions.assert204;
 import static io.kokuwa.fleet.registry.rest.HttpResponseAssertions.assert401;
-import static io.kokuwa.fleet.registry.rest.HttpResponseAssertions.assert404;
 import static io.kokuwa.fleet.registry.rest.HttpResponseAssertions.assert409;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,20 +19,20 @@ import org.junit.jupiter.api.Test;
 import io.kokuwa.fleet.registry.AbstractTest;
 
 /**
- * Test for {@link TenantApi}.
+ * Test for {@link TenantsApi}.
  *
  * @author Stephan Schnabel
  */
-@DisplayName("management: tenant")
-public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
+@DisplayName("management: tenants")
+public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 
 	@Inject
-	TenantApiTestClient client;
+	TenantsApiTestClient client;
 
-	@DisplayName("getTenants(200): success")
+	@DisplayName("findTenants(200): success")
 	@Test
 	@Override
-	public void getTenants200() {
+	public void findTenants200() {
 
 		// create tenants
 
@@ -44,23 +43,23 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 		// execute
 
 		var expected = List.of(tenant3.getTenantId(), tenant2.getTenantId(), tenant1.getTenantId());
-		var actual = assert200(() -> client.getTenants(bearer()));
+		var actual = assert200(() -> client.findTenants(auth()));
 		assertEquals(expected, actual.stream().map(TenantVO::getTenantId).collect(Collectors.toList()), "ordering");
 	}
 
-	@DisplayName("getTenants(401): no token")
+	@DisplayName("findTenants(401): no token")
 	@Test
 	@Override
-	public void getTenants401() {
-		assert401(() -> client.getTenants(null));
+	public void findTenants401() {
+		assert401(() -> client.findTenants(null));
 	}
 
-	@DisplayName("getTenant(200): success")
+	@DisplayName("findTenant(200): success")
 	@Test
 	@Override
-	public void getTenant200() {
+	public void findTenant200() {
 		var expected = data.tenant();
-		var actual = assert200(() -> client.getTenant(bearer(), expected.getTenantId()));
+		var actual = assert200(() -> client.findTenant(auth(), expected.getTenantId()));
 		assertEquals(expected.getTenantId(), actual.getTenantId(), "tenantId");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
@@ -68,18 +67,18 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
 	}
 
-	@DisplayName("getTenant(401): no token")
+	@DisplayName("findTenant(401): no token")
 	@Test
 	@Override
-	public void getTenant401() {
-		assert401(() -> client.getTenant(null, UUID.randomUUID()));
+	public void findTenant401() {
+		assert401(() -> client.findTenant(null, UUID.randomUUID()));
 	}
 
-	@DisplayName("getTenant(404): not found")
+	@DisplayName("findTenant(404): not found")
 	@Test
 	@Override
-	public void getTenant404() {
-		assert404(() -> client.getTenant(bearer(), UUID.randomUUID()));
+	public void findTenant404() {
+		assert404("Tenant not found.", () -> client.findTenant(auth(), UUID.randomUUID()));
 	}
 
 	@DisplayName("createTenant(201): with mandatory properties")
@@ -87,33 +86,33 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	@Override
 	public void createTenant201() {
 		var vo = new TenantCreateVO().setName(data.tenantName());
-		var created = assert201(() -> client.createTenant(bearer(), vo));
+		var created = assert201(() -> client.createTenant(auth(), vo));
 		assertNotNull(created.getTenantId(), "tenantId");
 		assertEquals(true, created.getEnabled(), "enabled");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
-		assertEquals(created, assert200(() -> client.getTenant(bearer(), created.getTenantId())), "vo");
+		assertEquals(created, assert200(() -> client.findTenant(auth(), created.getTenantId())), "vo");
 	}
 
 	@DisplayName("createTenant(201): with optional properties")
 	@Test
 	public void createTenant201All() {
 		var vo = new TenantCreateVO().setTenantId(UUID.randomUUID()).setEnabled(false).setName(data.tenantName());
-		var created = assert201(() -> client.createTenant(bearer(), vo));
+		var created = assert201(() -> client.createTenant(auth(), vo));
 		assertEquals(vo.getTenantId(), created.getTenantId(), "tenantId");
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
-		assertEquals(created, assert200(() -> client.getTenant(bearer(), created.getTenantId())), "vo");
+		assertEquals(created, assert200(() -> client.findTenant(auth(), created.getTenantId())), "vo");
 	}
 
 	@DisplayName("createTenant(400): check bean validation")
 	@Test
 	@Override
 	public void createTenant400() {
-		assert400(() -> client.createTenant(bearer(), new TenantCreateVO()));
+		assert400(() -> client.createTenant(auth(), new TenantCreateVO()));
 		assertEquals(0, data.countTenants(), "created");
 	}
 
@@ -130,7 +129,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	@Override
 	public void createTenant409() {
 		var existing = data.tenant();
-		assert409(() -> client.createTenant(bearer(), new TenantCreateVO()
+		assert409(() -> client.createTenant(auth(), new TenantCreateVO()
 				.setTenantId(existing.getTenantId())
 				.setName(existing.getName())));
 		assertEquals(1, data.countTenants(), "created");
@@ -141,7 +140,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	@Test
 	public void createTenant409Id() {
 		var existing = data.tenant();
-		assert409(() -> client.createTenant(bearer(), new TenantCreateVO()
+		assert409(() -> client.createTenant(auth(), new TenantCreateVO()
 				.setTenantId(existing.getTenantId())
 				.setName(data.tenantName())));
 		assertEquals(1, data.countTenants(), "created");
@@ -152,7 +151,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	@Test
 	public void createTenant409Name() {
 		var existing = data.tenant();
-		assert409(() -> client.createTenant(bearer(), new TenantCreateVO()
+		assert409(() -> client.createTenant(auth(), new TenantCreateVO()
 				.setName(existing.getName())));
 		assertEquals(1, data.countTenants(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
@@ -164,7 +163,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	public void updateTenant200() {
 		var existing = data.tenant();
 		var vo = new TenantUpdateVO().setName(null).setEnabled(null);
-		var updated = assert200(() -> client.updateTenant(bearer(), existing.getTenantId(), vo));
+		var updated = assert200(() -> client.updateTenant(auth(), existing.getTenantId(), vo));
 		assertEquals(existing.getTenantId(), updated.getTenantId(), "tenantId");
 		assertEquals(existing.getName(), updated.getName(), "name");
 		assertEquals(existing.getEnabled(), updated.getEnabled(), "enabled");
@@ -177,7 +176,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	public void updateTenant200Name() {
 		var existing = data.tenant();
 		var vo = new TenantUpdateVO().setName(data.tenantName()).setEnabled(null);
-		var updated = assert200(() -> client.updateTenant(bearer(), existing.getTenantId(), vo));
+		var updated = assert200(() -> client.updateTenant(auth(), existing.getTenantId(), vo));
 		assertEquals(existing.getTenantId(), updated.getTenantId(), "tenantId");
 		assertEquals(vo.getName(), updated.getName(), "name");
 		assertEquals(existing.getEnabled(), updated.getEnabled(), "enabled");
@@ -190,7 +189,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	public void updateTenant200Unchanged() {
 		var existing = data.tenant();
 		var vo = new TenantUpdateVO().setName(existing.getName()).setEnabled(existing.getEnabled());
-		var updated = assert200(() -> client.updateTenant(bearer(), existing.getTenantId(), vo));
+		var updated = assert200(() -> client.updateTenant(auth(), existing.getTenantId(), vo));
 		assertEquals(existing.getTenantId(), updated.getTenantId(), "tenantId");
 		assertEquals(existing.getName(), updated.getName(), "name");
 		assertEquals(existing.getEnabled(), updated.getEnabled(), "enabled");
@@ -203,7 +202,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	public void updateTenant200All() {
 		var tenant = data.tenant();
 		var vo = new TenantUpdateVO().setName(data.tenantName()).setEnabled(false);
-		var updated = assert200(() -> client.updateTenant(bearer(), tenant.getTenantId(), vo));
+		var updated = assert200(() -> client.updateTenant(auth(), tenant.getTenantId(), vo));
 		assertEquals(tenant.getTenantId(), updated.getTenantId(), "tenantId");
 		assertEquals(vo.getName(), updated.getName(), "name");
 		assertEquals(vo.getEnabled(), updated.getEnabled(), "enabled");
@@ -211,12 +210,12 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 		assertTrue(updated.getUpdated().isAfter(tenant.getUpdated()), "updated");
 	}
 
-	@DisplayName("updateTenant(400): check bean validation")
+	@DisplayName("updateTenant(400): is beanvalidation active")
 	@Test
 	@Override
 	public void updateTenant400() {
 		var existing = data.tenant();
-		assert400(() -> client.updateTenant(bearer(), existing.getTenantId(), new TenantUpdateVO().setName("")));
+		assert400(() -> client.updateTenant(auth(), existing.getTenantId(), new TenantUpdateVO().setName("")));
 		assertEquals(existing, data.find(existing), "entity changed");
 	}
 
@@ -234,7 +233,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	@Test
 	@Override
 	public void updateTenant404() {
-		assert404(() -> client.updateTenant(bearer(), UUID.randomUUID(), new TenantUpdateVO()));
+		assert404("Tenant not found.", () -> client.updateTenant(auth(), UUID.randomUUID(), new TenantUpdateVO()));
 	}
 
 	@DisplayName("updateTenant(409): name exists")
@@ -244,7 +243,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 		var tenant = data.tenant();
 		var other = data.tenant();
 		var vo = new TenantUpdateVO().setName(other.getName()).setEnabled(null);
-		assert409(() -> client.updateTenant(bearer(), tenant.getTenantId(), vo));
+		assert409(() -> client.updateTenant(auth(), tenant.getTenantId(), vo));
 		assertEquals(tenant, data.find(tenant), "tenant changed");
 		assertEquals(other, data.find(other), "other changed");
 	}
@@ -254,7 +253,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	@Override
 	public void deleteTenant204() {
 		var tenant = data.tenant();
-		assert204(() -> client.deleteTenant(bearer(), tenant.getTenantId()));
+		assert204(() -> client.deleteTenant(auth(), tenant.getTenantId()));
 		assertEquals(0, data.countTenants(), "not deleted");
 	}
 
@@ -264,7 +263,7 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	public void deleteTenant400() {
 		var tenant = data.tenant();
 		data.gateway(tenant);
-		assert400(() -> client.deleteTenant(bearer(), tenant.getTenantId()));
+		assert400(() -> client.deleteTenant(auth(), tenant.getTenantId()));
 		assertEquals(1, data.countTenants(), "deleted");
 		assertEquals(1, data.countGateways(), "deleted");
 	}
@@ -282,6 +281,6 @@ public class TenantApiTest extends AbstractTest implements TenantApiTestSpec {
 	@Test
 	@Override
 	public void deleteTenant404() {
-		assert404(() -> client.deleteTenant(bearer(), UUID.randomUUID()));
+		assert404("Tenant not found.", () -> client.deleteTenant(auth(), UUID.randomUUID()));
 	}
 }

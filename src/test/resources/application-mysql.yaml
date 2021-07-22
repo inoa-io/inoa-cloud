@@ -1,5 +1,0 @@
-datasources:
-  default:
-    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mysql:${docker.mysql.version}:///${datasources.default.database}
-    dialect: MYSQL

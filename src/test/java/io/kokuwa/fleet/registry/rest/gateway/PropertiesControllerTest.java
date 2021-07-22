@@ -2,7 +2,6 @@ package io.kokuwa.fleet.registry.rest.gateway;
 
 import static io.kokuwa.fleet.registry.rest.HttpResponseAssertions.assert204;
 import static io.kokuwa.fleet.registry.rest.HttpResponseAssertions.assert401;
-import static io.kokuwa.fleet.registry.rest.HttpResponseAssertions.assert404;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Map;
@@ -155,7 +154,7 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 	public void deleteProperty404() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		assert404(() -> client.deleteProperty(bearer(gateway), "bbb"));
+		assert404("Property not found.", () -> client.deleteProperty(bearer(gateway), "bbb"));
 		assertProperties(gateway, expectedProperties);
 	}
 

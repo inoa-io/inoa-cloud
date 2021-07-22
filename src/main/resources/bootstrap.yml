@@ -2,3 +2,8 @@ micronaut:
   application:
     name: ${project.artifactId}
     version: ${project.version}
+
+## custom log configuration
+logger:
+  levels:
+    org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor: WARN

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -19,15 +20,18 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.kokuwa.fleet.registry.AbstractTest;
+import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.rest.gateway.AuthApiTestClient;
 import io.kokuwa.fleet.registry.rest.gateway.AuthController;
 import io.kokuwa.fleet.registry.rest.gateway.PropertiesApiTestClient;
-import io.kokuwa.fleet.registry.rest.management.GatewayApiTestClient;
+import io.kokuwa.fleet.registry.rest.management.CredentialCreateVO;
+import io.kokuwa.fleet.registry.rest.management.CredentialTypeVO;
+import io.kokuwa.fleet.registry.rest.management.CredentialsApiTestClient;
 import io.kokuwa.fleet.registry.rest.management.GatewayCreateVO;
-import io.kokuwa.fleet.registry.rest.management.SecretApiTestClient;
-import io.kokuwa.fleet.registry.rest.management.SecretCreateHmacVO;
-import io.kokuwa.fleet.registry.rest.management.TenantApiTestClient;
+import io.kokuwa.fleet.registry.rest.management.GatewaysApiTestClient;
+import io.kokuwa.fleet.registry.rest.management.SecretCreatePSKVO;
 import io.kokuwa.fleet.registry.rest.management.TenantCreateVO;
+import io.kokuwa.fleet.registry.rest.management.TenantsApiTestClient;
 import io.micronaut.http.HttpHeaderValues;
 import lombok.SneakyThrows;
 
@@ -40,11 +44,11 @@ import lombok.SneakyThrows;
 public class GatewayTest extends AbstractTest {
 
 	@Inject
-	TenantApiTestClient tenantClient;
+	TenantsApiTestClient tenantsClient;
 	@Inject
-	GatewayApiTestClient gatewayClient;
+	GatewaysApiTestClient gatewaysClient;
 	@Inject
-	SecretApiTestClient secretClient;
+	CredentialsApiTestClient credentialsClient;
 	@Inject
 	AuthApiTestClient authClient;
 	@Inject
@@ -56,22 +60,21 @@ public class GatewayTest extends AbstractTest {
 
 		// create tenant with gateway
 
-		var userToken = bearer();
-		var tenantId = assert201(() -> tenantClient.createTenant(userToken, new TenantCreateVO()
+		var tenantId = assert201(() -> tenantsClient.createTenant(auth(), new TenantCreateVO()
 				.setName("kokuwa")
 				.setEnabled(true))).getTenantId();
-		var gatewayId = assert201(() -> gatewayClient.createGateway(userToken, tenantId, new GatewayCreateVO()
+		var gatewayId = assert201(() -> gatewaysClient.createGateway(auth(tenantId), new GatewayCreateVO()
 				.setName("device-1")
 				.setEnabled(true))).getGatewayId();
-		var hmac = UUID.randomUUID().toString();
-		assert201(() -> secretClient.createSecret(userToken, gatewayId, new SecretCreateHmacVO()
-				.setHmac(hmac.getBytes())
-				.setName("hmac-1")
-				.setEnabled(true)));
+		var secret = UUID.randomUUID().toString();
+		assert201(() -> credentialsClient.createCredential(auth(tenantId), gatewayId, new CredentialCreateVO()
+				.setAuthId("registry")
+				.setType(CredentialTypeVO.PSK)
+				.setSecrets(List.of(new SecretCreatePSKVO().setSecret(secret.getBytes())))));
 
 		// get token
 
-		var response = assert200(() -> authClient.getToken(AuthController.GRANT_TYPE, gatewayToken(gatewayId, hmac)));
+		var response = assert200(() -> authClient.getToken(AuthController.GRANT_TYPE, gatewayToken(gatewayId, secret)));
 		var gatewayToken = HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + response.getAccessToken();
 
 		// set properties
@@ -81,8 +84,12 @@ public class GatewayTest extends AbstractTest {
 
 		// get properties
 
-		var gateway = assert200(() -> gatewayClient.getGateway(userToken, tenantId, gatewayId));
+		var gateway = assert200(() -> gatewaysClient.findGateway(auth(tenantId), gatewayId));
 		assertEquals(gatewayProperties, gateway.getProperties());
+	}
+
+	public String auth(UUID tenantId) {
+		return auth(new Tenant().setTenantId(tenantId));
 	}
 
 	@SneakyThrows

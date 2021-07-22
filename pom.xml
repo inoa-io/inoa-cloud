@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.3.1</version>
+		<version>0.3.2</version>
 		<relativePath />
 	</parent>
 
@@ -40,21 +40,20 @@
 		<!-- =============================== Build =============================== -->
 		<!-- ===================================================================== -->
 
-		<exec.mainClass>io.kokuwa.fleet.registry.Application</exec.mainClass>
 		<docker.postgres.version>13.1</docker.postgres.version>
-		<docker.mysql.version>8.0</docker.mysql.version>
-		<inoa.imageName>ghcr.io/grayc-de/${project.artifactId}:latest</inoa.imageName>
+		<docker.image.repository>ghcr.io/grayc-de</docker.image.repository>
+		<docker.image.version>latest</docker.image.version>
 
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.io.kokuwa.micronaut.codegen>2.1.6</version.io.kokuwa.micronaut.codegen>
+		<version.io.kokuwa.micronaut.codegen>2.1.8</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut>2.5.8</version.io.micronaut>
+		<version.io.micronaut>2.5.9</version.io.micronaut>
 		<version.io.micronaut.data>2.4.7</version.io.micronaut.data>
-		<version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
-		<version.org.testcontainers>1.15.3</version.org.testcontainers>
+		<version.org.mapstruct>1.5.0.Beta1</version.org.mapstruct>
+		<version.org.testcontainers>1.16.0</version.org.testcontainers>
 
 	</properties>
 
@@ -101,11 +100,6 @@
 			<dependency>
 				<groupId>org.testcontainers</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>${version.org.testcontainers}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>mysql</artifactId>
 				<version>${version.org.testcontainers}</version>
 			</dependency>
 			<dependency>
@@ -166,11 +160,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
@@ -196,11 +185,6 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>mysql</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -268,6 +252,7 @@
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/openapi/gateway.yaml</inputSpec>
 							<apiPackage>io.kokuwa.fleet.registry.rest.gateway</apiPackage>
+							<generateSupportingFiles>false</generateSupportingFiles>
 						</configuration>
 					</execution>
 					<execution>
@@ -290,11 +275,14 @@
 					<configOptions>
 						<useLombokGenerated>true</useLombokGenerated>
 						<dateTimeRelaxed>false</dateTimeRelaxed>
+						<visitable>false</visitable>
+						<pageable>true</pageable>
 					</configOptions>
 					<typeMappings>
 						<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
 						<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
 					</typeMappings>
+					<ignoreFileOverride>${project.basedir}/.openapi-ignore</ignoreFileOverride>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -351,7 +339,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- run surefire tests with multiple configurations -->
+			<!-- run tests with multiple database configurations -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -379,56 +367,11 @@
 							<skipExec>${maven.test.skip.exec}</skipExec>
 						</configuration>
 					</execution>
-					<execution>
-						<id>mysql-test</id>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<environmentVariables>
-								<MICRONAUT_ENVIRONMENTS>mysql</MICRONAUT_ENVIRONMENTS>
-							</environmentVariables>
-							<reportNameSuffix>mysql</reportNameSuffix>
-							<skipExec>true</skipExec>
-						</configuration>
-					</execution>
 				</executions>
 				<configuration>
+					<runOrder>alphabetical</runOrder>
 					<failIfNoTests>true</failIfNoTests>
 				</configuration>
-			</plugin>
-
-			<!-- configure jar with lib and main class -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>${exec.mainClass}</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<!-- copy project dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>runtime</includeScope>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<silent>true</silent>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 
 			<!-- create container -->
@@ -443,12 +386,13 @@
 						</goals>
 						<configuration>
 							<container>
+								<mainClass>io.kokuwa.fleet.registry.Application</mainClass>
 								<jvmFlags>
 									<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
 								</jvmFlags>
 							</container>
 							<to>
-								<image>${inoa.imageName}</image>
+								<image>${docker.image.repository}/${project.artifactId}:${docker.image.version}</image>
 							</to>
 						</configuration>
 					</execution>

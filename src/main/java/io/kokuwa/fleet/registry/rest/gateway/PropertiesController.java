@@ -69,7 +69,7 @@ public class PropertiesController implements PropertiesApi {
 		var optionalProperty = repository.findByGatewayIdAndKey(getGatewayId(), key);
 		if (optionalProperty.isEmpty()) {
 			log.trace("Property {} not found.", key);
-			throw new HttpStatusException(HttpStatus.NOT_FOUND, null);
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Property not found.");
 		}
 		log.trace("Property {} with value {} deleted.", key, optionalProperty.get().getValue());
 		repository.deleteById(optionalProperty.get().getPk());

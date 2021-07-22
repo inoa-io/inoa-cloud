@@ -1,5 +1,6 @@
 package io.kokuwa.fleet.registry;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import io.kokuwa.fleet.registry.auth.AuthTokenService;
 import io.kokuwa.fleet.registry.domain.Gateway;
+import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.rest.HttpResponseAssertions;
 import io.kokuwa.fleet.registry.rest.JwtProvider;
 import io.micronaut.http.HttpHeaderValues;
@@ -69,8 +71,15 @@ public abstract class AbstractTest {
 				+ authTokenService.createToken(gateway.getGatewayId());
 	}
 
-	public String bearer() {
+	public String auth() {
 		return new JwtProvider(signature).bearer("admin");
+	}
+
+	public String auth(Tenant tenant) {
+		return new JwtProvider(signature).builder()
+				.subject("admin")
+				.claim(properties.getSecurity().getClaimTenant(), tenant.getTenantId().toString())
+				.toBearer();
 	}
 
 	// asserts
@@ -85,6 +94,11 @@ public abstract class AbstractTest {
 
 	public <T> JsonError assert400(Supplier<HttpResponse<T>> executeable) {
 		return assertValid(HttpResponseAssertions.assert400(executeable)).getBody(JsonError.class).get();
+	}
+
+	public <T> void assert404(String message, Supplier<HttpResponse<T>> executeable) {
+		var error = assertValid(HttpResponseAssertions.assert404(executeable)).getBody(JsonError.class).get();
+		assertEquals(message, error.getMessage(), "json error message");
 	}
 
 	private <T> T assertValid(T object) {
