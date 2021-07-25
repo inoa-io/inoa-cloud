@@ -382,7 +382,7 @@ paths:
     get:
       tags:
       - credentials
-      summary: 'Get credentials.'
+      summary: 'Find credentials.'
       description: TODO
       operationId: findCredential
       responses:
