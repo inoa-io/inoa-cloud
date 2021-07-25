@@ -146,8 +146,8 @@ public interface RestMapper {
 	default Map<String, String> toMap(List<GatewayProperty> properties) {
 		return properties == null ? Map.of()
 				: properties.stream().collect(Collectors.toMap(
-						property -> property.getPk().getKey(),
-						property -> property.getValue(),
+						GatewayProperty::getKey,
+						GatewayProperty::getValue,
 						(property1, property2) -> property1, TreeMap::new));
 	}
 }

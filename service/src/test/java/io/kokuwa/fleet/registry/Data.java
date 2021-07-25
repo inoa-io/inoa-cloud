@@ -25,10 +25,8 @@ import io.kokuwa.fleet.registry.domain.Credential;
 import io.kokuwa.fleet.registry.domain.CredentialRepository;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayGroup;
-import io.kokuwa.fleet.registry.domain.GatewayGroup.GatewayGroupPK;
 import io.kokuwa.fleet.registry.domain.GatewayGroupRepository;
 import io.kokuwa.fleet.registry.domain.GatewayProperty;
-import io.kokuwa.fleet.registry.domain.GatewayProperty.GatewayPropertyPK;
 import io.kokuwa.fleet.registry.domain.GatewayPropertyRepository;
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
 import io.kokuwa.fleet.registry.domain.Group;
@@ -169,15 +167,17 @@ public class Data {
 				new Gateway().setGatewayId(UUID.randomUUID()).setTenant(tenant).setName(name).setEnabled(enabled));
 		if (!groups.isEmpty()) {
 			gatewayGroupRepository.saveAll(groups.stream()
-					.map(group -> new GatewayGroup().setPk(new GatewayGroupPK(gateway.getId(), group.getId())))
+					.map(group -> new GatewayGroup().setGateway(gateway).setGroup(group))
 					.collect(Collectors.toSet()));
 		}
 		return gateway;
 	}
 
 	public GatewayProperty property(Gateway gateway, String key, String value) {
-		return gatewayPropertyRepository
-				.save(new GatewayProperty().setPk(new GatewayPropertyPK(gateway.getId(), key)).setValue(value));
+		return gatewayPropertyRepository.save(new GatewayProperty()
+				.setGateway(gateway)
+				.setKey(key)
+				.setValue(value));
 	}
 
 	public String credentialAuthId() {
@@ -255,6 +255,6 @@ public class Data {
 	}
 
 	public List<GatewayProperty> findProperties(Gateway gateway) {
-		return gatewayPropertyRepository.findByGatewayId(gateway.getId());
+		return gatewayPropertyRepository.findByGateway(gateway);
 	}
 }

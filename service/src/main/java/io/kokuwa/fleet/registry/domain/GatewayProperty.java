@@ -4,10 +4,9 @@ import java.time.Instant;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
-import io.micronaut.data.annotation.Embeddable;
-import io.micronaut.data.annotation.EmbeddedId;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
+import io.micronaut.data.annotation.Relation;
 import lombok.Data;
 
 /**
@@ -19,23 +18,15 @@ import lombok.Data;
 @Data
 public class GatewayProperty {
 
-	@EmbeddedId
-	private GatewayPropertyPK pk;
+	@Relation(Relation.Kind.MANY_TO_ONE)
+	private Gateway gateway;
+	@MappedProperty("key")
+	private String key;
+
 	@MappedProperty
 	private String value;
 	@DateCreated
 	private Instant created;
 	@DateUpdated
 	private Instant updated;
-
-	@Embeddable
-	@Data
-	public static class GatewayPropertyPK {
-
-		@MappedProperty("gateway_id")
-		private final Long gatewayId;
-
-		@MappedProperty("key")
-		private final String key;
-	}
 }

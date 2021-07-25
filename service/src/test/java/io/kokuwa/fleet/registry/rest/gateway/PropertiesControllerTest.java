@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import io.kokuwa.fleet.registry.AbstractTest;
 import io.kokuwa.fleet.registry.domain.Gateway;
+import io.kokuwa.fleet.registry.domain.GatewayProperty;
 
 /**
  * Test for {@link PropertiesController}.
@@ -162,8 +163,8 @@ public class PropertiesControllerTest extends AbstractTest implements Properties
 
 	private void assertProperties(Gateway gateway, Map<String, String> expected) {
 		var actual = data.findProperties(gateway).stream().collect(Collectors.toMap(
-				p -> p.getPk().getKey(),
-				p -> p.getValue()));
+				GatewayProperty::getKey,
+				GatewayProperty::getValue));
 		assertEquals(expected, actual, "database");
 	}
 

@@ -3,9 +3,9 @@ package io.kokuwa.fleet.registry.domain;
 import java.util.List;
 import java.util.Optional;
 
-import io.kokuwa.fleet.registry.domain.GatewayProperty.GatewayPropertyPK;
+import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
-import io.micronaut.data.repository.CrudRepository;
+import io.micronaut.data.repository.GenericRepository;
 
 /**
  * Repository for {@link GatewayProperty}.
@@ -13,9 +13,16 @@ import io.micronaut.data.repository.CrudRepository;
  * @author Stephan Schnabel
  */
 @JdbcRepository
-public interface GatewayPropertyRepository extends CrudRepository<GatewayProperty, GatewayPropertyPK> {
+public interface GatewayPropertyRepository extends GenericRepository<GatewayProperty, Void> {
 
-	List<GatewayProperty> findByGatewayId(Long gatewayId);
+	List<GatewayProperty> findByGateway(Gateway gateway);
 
-	Optional<GatewayProperty> findByGatewayIdAndKey(Long gatewayId, String key);
+	Optional<GatewayProperty> findByGatewayAndKey(Gateway gateway, String key);
+
+	GatewayProperty save(GatewayProperty gatewayProperty);
+
+	@Query("UPDATE gateway_property SET value = :value WHERE gateway_id = :gatewayId AND key = :key")
+	void update(Long gatewayId, String key, String value);
+
+	void deleteByGatewayAndKey(Gateway gateway, String key);
 }
