@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayGroup;
-import io.kokuwa.fleet.registry.domain.GatewayGroup.GatewayGroupPK;
 import io.kokuwa.fleet.registry.domain.GatewayGroupRepository;
 import io.kokuwa.fleet.registry.domain.GatewayPropertyRepository;
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
@@ -78,7 +77,7 @@ public class GatewaysController implements GatewaysApi {
 
 		if (!groupIds.isEmpty()) {
 			gatewayGroupRepository.saveAll(gateway.getGroups().stream()
-					.map(group -> new GatewayGroup().setPk(new GatewayGroupPK(gateway, group)))
+					.map(group -> new GatewayGroup().setGateway(gateway).setGroup(group))
 					.collect(Collectors.toSet()));
 		}
 
@@ -116,9 +115,9 @@ public class GatewaysController implements GatewaysApi {
 		}
 
 		if (vo.getGroupIds() != null) {
-			var oldGroups = gatewayGroupRepository.findGroupsByGatewayId(gateway.getId());
-			var newGroups = getGroups(gateway.getTenant(), vo.getGroupIds());
 
+			var oldGroups = gatewayGroupRepository.findGroupByGateway(gateway);
+			var newGroups = getGroups(gateway.getTenant(), vo.getGroupIds());
 			var oldGroupIds = oldGroups.stream().map(Group::getGroupId).collect(Collectors.toSet());
 			var newGroupIds = vo.getGroupIds();
 
@@ -126,15 +125,14 @@ public class GatewaysController implements GatewaysApi {
 
 			var removedGroups = oldGroups.stream()
 					.filter(oldGroup -> !newGroupIds.contains(oldGroup.getGroupId()))
-					.map(oldGroup -> new GatewayGroupPK(gateway, oldGroup))
 					.collect(Collectors.toSet());
-			removedGroups.forEach(gatewayGroupRepository::deleteById);
+			removedGroups.forEach(group -> gatewayGroupRepository.deleteByGatewayAndGroup(gateway, group));
 
 			// add group
 
 			var addedGroups = newGroups.stream()
 					.filter(newGroup -> !oldGroupIds.contains(newGroup.getGroupId()))
-					.map(newGroup -> new GatewayGroup().setPk(new GatewayGroupPK(gateway, newGroup)))
+					.map(newGroup -> new GatewayGroup().setGateway(gateway).setGroup(newGroup))
 					.collect(Collectors.toSet());
 			if (!addedGroups.isEmpty()) {
 				gatewayGroupRepository.saveAll(addedGroups);
@@ -176,7 +174,7 @@ public class GatewaysController implements GatewaysApi {
 
 	private GatewayDetailVO toGatewayDetail(Gateway gateway) {
 		return mapper.toGatewayDetail(gateway
-				.setProperties(gatewayPropertyRepository.findByGatewayId(gateway.getId()))
-				.setGroups(gatewayGroupRepository.findGroupsByGatewayId(gateway.getId())));
+				.setProperties(gatewayPropertyRepository.findByGateway(gateway))
+				.setGroups(gatewayGroupRepository.findGroupByGateway(gateway)));
 	}
 }
