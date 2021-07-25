@@ -10,7 +10,7 @@ import io.kokuwa.fleet.registry.auth.GatewayAuthentication;
 import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayProperty;
 import io.kokuwa.fleet.registry.domain.GatewayPropertyRepository;
-import io.kokuwa.fleet.registry.rest.RestMapper;
+import io.kokuwa.fleet.registry.rest.mapper.GatewayMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class PropertiesController implements PropertiesApi {
 
-	private final RestMapper mapper;
+	private final GatewayMapper mapper;
 	private final GatewayPropertyRepository repository;
 
 	@Override

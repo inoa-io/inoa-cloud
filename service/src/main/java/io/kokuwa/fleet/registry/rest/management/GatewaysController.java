@@ -14,7 +14,7 @@ import io.kokuwa.fleet.registry.domain.GatewayRepository;
 import io.kokuwa.fleet.registry.domain.Group;
 import io.kokuwa.fleet.registry.domain.GroupRepository;
 import io.kokuwa.fleet.registry.domain.Tenant;
-import io.kokuwa.fleet.registry.rest.RestMapper;
+import io.kokuwa.fleet.registry.rest.mapper.GatewayMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
@@ -33,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GatewaysController implements GatewaysApi {
 
 	private final SecurityManagement security;
-	private final RestMapper mapper;
+	private final GatewayMapper mapper;
 	private final GroupRepository groupRepository;
 	private final GatewayRepository gatewayRepository;
 	private final GatewayGroupRepository gatewayGroupRepository;

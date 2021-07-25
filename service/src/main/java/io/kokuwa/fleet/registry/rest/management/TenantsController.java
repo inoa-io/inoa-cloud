@@ -3,12 +3,11 @@ package io.kokuwa.fleet.registry.rest.management;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
 import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.domain.TenantRepository;
-import io.kokuwa.fleet.registry.rest.RestMapper;
+import io.kokuwa.fleet.registry.rest.mapper.TenantMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
@@ -26,16 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TenantsController implements TenantsApi {
 
-	private final RestMapper mapper;
+	private final TenantMapper mapper;
 	private final TenantRepository tenantRepository;
 	private final GatewayRepository gatewayRepository;
 
 	@Override
 	public HttpResponse<List<TenantVO>> findTenants() {
-		return HttpResponse.ok(tenantRepository
-				.findAllOrderByName().stream()
-				.map(mapper::toTenant)
-				.collect(Collectors.toList()));
+		return HttpResponse.ok(mapper.toTenants(tenantRepository.findAllOrderByName()));
 	}
 
 	@Override

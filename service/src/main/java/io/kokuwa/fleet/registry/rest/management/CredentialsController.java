@@ -9,7 +9,7 @@ import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
 import io.kokuwa.fleet.registry.domain.Secret;
 import io.kokuwa.fleet.registry.domain.SecretRepository;
-import io.kokuwa.fleet.registry.rest.RestMapper;
+import io.kokuwa.fleet.registry.rest.mapper.CredentialMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CredentialsController implements CredentialsApi {
 
 	private final SecurityManagement security;
-	private final RestMapper mapper;
+	private final CredentialMapper mapper;
 	private final GatewayRepository gatewayRepository;
 	private final CredentialRepository credentialRepository;
 	private final SecretRepository secretRepository;

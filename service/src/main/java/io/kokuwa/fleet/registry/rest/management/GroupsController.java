@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import io.kokuwa.fleet.registry.domain.Group;
 import io.kokuwa.fleet.registry.domain.GroupRepository;
-import io.kokuwa.fleet.registry.rest.RestMapper;
+import io.kokuwa.fleet.registry.rest.mapper.GroupMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
@@ -24,12 +24,12 @@ import lombok.extern.slf4j.Slf4j;
 public class GroupsController implements GroupsApi {
 
 	private final SecurityManagement security;
-	private final RestMapper mapper;
-	private final GroupRepository groupRepository;
+	private final GroupMapper mapper;
+	private final GroupRepository repository;
 
 	@Override
 	public HttpResponse<List<GroupVO>> findGroups() {
-		return HttpResponse.ok(mapper.toGroups(groupRepository.findByTenantOrderByName(security.getTenant())));
+		return HttpResponse.ok(mapper.toGroups(repository.findByTenantOrderByName(security.getTenant())));
 	}
 
 	@Override
@@ -41,14 +41,14 @@ public class GroupsController implements GroupsApi {
 	public HttpResponse<GroupVO> createGroup(GroupCreateVO vo) {
 		var tenant = security.getTenant();
 
-		if (groupRepository.existsByTenantAndName(tenant, vo.getName())) {
+		if (repository.existsByTenantAndName(tenant, vo.getName())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
 		}
-		if (vo.getGroupId() != null && groupRepository.existsByTenantAndGroupId(tenant, vo.getGroupId())) {
+		if (vo.getGroupId() != null && repository.existsByTenantAndGroupId(tenant, vo.getGroupId())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "GroupId already exists.");
 		}
 
-		var group = groupRepository.save(new Group()
+		var group = repository.save(new Group()
 				.setTenant(tenant)
 				.setName(vo.getName())
 				.setGroupId(vo.getGroupId() == null ? UUID.randomUUID() : vo.getGroupId()));
@@ -67,7 +67,7 @@ public class GroupsController implements GroupsApi {
 			if (group.getName().equals(vo.getName())) {
 				log.trace("Group {}: skip update of name ecause not changed.", group.getName());
 			} else {
-				if (groupRepository.existsByTenantAndName(group.getTenant(), vo.getName())) {
+				if (repository.existsByTenantAndName(group.getTenant(), vo.getName())) {
 					throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 				}
 				log.info("Group {}: updated name to {}.", group.getName(), vo.getName());
@@ -77,7 +77,7 @@ public class GroupsController implements GroupsApi {
 		}
 
 		if (changed) {
-			group = groupRepository.update(group);
+			group = repository.update(group);
 		}
 
 		return HttpResponse.ok(mapper.toGroup(group));
@@ -86,13 +86,13 @@ public class GroupsController implements GroupsApi {
 	@Override
 	public HttpResponse<Object> deleteGroup(UUID groupId) {
 		var group = getGroup(groupId);
-		groupRepository.delete(group);
+		repository.delete(group);
 		log.info("Group {} deleted.", group.getName());
 		return HttpResponse.noContent();
 	}
 
 	private Group getGroup(UUID groupId) {
-		var optional = groupRepository.findByTenantAndGroupId(security.getTenant(), groupId);
+		var optional = repository.findByTenantAndGroupId(security.getTenant(), groupId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
 		}
