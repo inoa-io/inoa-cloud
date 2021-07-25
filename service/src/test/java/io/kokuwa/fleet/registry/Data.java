@@ -21,6 +21,8 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import io.kokuwa.fleet.registry.domain.ConfigurationDefinition;
+import io.kokuwa.fleet.registry.domain.ConfigurationDefinitionRepository;
 import io.kokuwa.fleet.registry.domain.Credential;
 import io.kokuwa.fleet.registry.domain.CredentialRepository;
 import io.kokuwa.fleet.registry.domain.Gateway;
@@ -35,6 +37,7 @@ import io.kokuwa.fleet.registry.domain.Secret;
 import io.kokuwa.fleet.registry.domain.SecretRepository;
 import io.kokuwa.fleet.registry.domain.Tenant;
 import io.kokuwa.fleet.registry.domain.TenantRepository;
+import io.kokuwa.fleet.registry.rest.management.ConfigurationTypeVO;
 import io.kokuwa.fleet.registry.rest.management.CredentialTypeVO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -56,6 +59,7 @@ public class Data {
 	private final GatewayPropertyRepository gatewayPropertyRepository;
 	private final CredentialRepository credentialRepository;
 	private final SecretRepository secretRepository;
+	private final ConfigurationDefinitionRepository configurationDefinitionRepository;
 	private final ApplicationProperties applicationProperties;
 
 	void deleteAll() {
@@ -220,6 +224,26 @@ public class Data {
 		return secretRepository.save(secret);
 	}
 
+	public ConfigurationDefinition definition(
+			Tenant tenant,
+			String key,
+			ConfigurationTypeVO type) {
+		return definition(tenant, key, type, d -> {});
+	}
+
+	public ConfigurationDefinition definition(
+			Tenant tenant,
+			String key,
+			ConfigurationTypeVO type,
+			Consumer<ConfigurationDefinition> consumer) {
+		var definition = new ConfigurationDefinition()
+				.setTenant(tenant)
+				.setKey(key)
+				.setType(type);
+		consumer.accept(definition);
+		return configurationDefinitionRepository.save(definition);
+	}
+
 	// read
 
 	public Long countTenants() {
@@ -240,6 +264,10 @@ public class Data {
 
 	public Long countSecrets(Credential credential) {
 		return (long) secretRepository.findByCredential(credential).size();
+	}
+
+	public Long countDefinitions(Tenant tenant) {
+		return (long) configurationDefinitionRepository.findByTenantOrderByKey(tenant).size();
 	}
 
 	public Tenant find(Tenant tenant) {

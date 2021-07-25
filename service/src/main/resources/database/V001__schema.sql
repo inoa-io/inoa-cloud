@@ -84,3 +84,21 @@ CREATE TABLE secret (
 	CONSTRAINT uq_secret UNIQUE (credential_id,secret_id),
 	CONSTRAINT fk_secret FOREIGN KEY (credential_id) REFERENCES credential(id) ON DELETE CASCADE
 );
+CREATE TABLE configuration_definition (
+	id SERIAL NOT NULL,
+	tenant_id INTEGER NOT NULL,
+	key VARCHAR(48) NOT NULL,
+	type VARCHAR(7) NOT NULL,
+	description VARCHAR(200) NULL,
+	minimum INTEGER NULL,
+	maximum INTEGER NULL,
+	pattern VARCHAR(1000) NULL,
+	CONSTRAINT pk_configuration_definition PRIMARY KEY (id),
+	CONSTRAINT uq_configuration_definition UNIQUE (tenant_id,key),
+	CONSTRAINT chk_configuration_definition_key CHECK (key ~ '^[a-zA-Z0-9\-\.\_]{3,48}$'),
+	CONSTRAINT chk_configuration_definition_type CHECK (type ~ '^INTEGER|BOOLEAN|STRING|URL$'),
+	CONSTRAINT chk_configuration_definition_minimum CHECK (minimum IS NULL OR type = 'STRING' OR type = 'INTEGER'),
+	CONSTRAINT chk_configuration_definition_maximum CHECK (maximum IS NULL OR type = 'STRING' OR type = 'INTEGER'),
+	CONSTRAINT chk_configuration_definition_pattern CHECK (pattern IS NULL OR type = 'STRING'),
+	CONSTRAINT fk_configuration_definition FOREIGN KEY (tenant_id) REFERENCES tenant(id) ON DELETE CASCADE
+);

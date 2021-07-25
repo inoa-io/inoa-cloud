@@ -473,6 +473,66 @@ paths:
           description: 'Unauthorized.'
         404:
           description: 'Gateway or credential or secret not found.'
+  /configuration/definition:
+    get:
+      tags:
+      - configuration
+      summary: 'Find configuration definitions.'
+      description: 'Find configurations definitions.'
+      operationId: findConfigurationDefinitions
+      responses:
+        200:
+          description: 'Configuration definitions found.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConfigurationDefinition'
+        401:
+          description: 'Unauthorized.'
+  /configuration/definition/{configuration_key}:
+    parameters:
+    - $ref: '#/components/parameters/ConfigurationKey'
+    post:
+      tags:
+      - configuration
+      summary: 'Save configuration definition.'
+      description: TODO
+      operationId: createConfigurationDefinition
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigurationDefinition'
+      responses:
+        201:
+          description: 'Configuration created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigurationDefinition'
+        401:
+          description: 'Unauthorized.'
+        400:
+          description: 'Malformed.'
+        409:
+          description: 'Key already in use.'
+    delete:
+      tags:
+      - configuration
+      summary: 'Delete configuration definition.'
+      description: TODO
+      operationId: deleteConfigurationDefinition
+      responses:
+        204:
+          description: 'Configuration definition deleted.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Configuration definition not found.'
+
 components:
   schemas:
   
@@ -876,6 +936,84 @@ components:
         required:
         - password
 
+    ###
+    ### Configuration
+    ###
+
+    ConfigurationKey:
+      description: 'Key for configuration.'
+      type: string
+      minLength: 3
+      maxLength: 48
+      pattern: '^[a-zA-Z0-9\-\.\_]*$'
+      example: kokuwa
+    ConfigurationType:
+      description: 'Possible types of configuration values.'
+      enum:
+      - INTEGER
+      - BOOLEAN
+      - STRING
+      - URL
+    ConfigurationDescription:
+      description: 'Describes a configuration.'
+      type: string
+      maxLength: 200
+    ConfigurationDefinition:
+      description: 'Defines a configuration.'
+      type: object
+      properties:
+        key:
+          $ref: '#/components/schemas/ConfigurationKey'
+        type:
+          $ref: '#/components/schemas/ConfigurationType'
+        description:
+          $ref: '#/components/schemas/ConfigurationDescription'
+      discriminator:
+        propertyName: type
+        mapping:
+          INTEGER: '#/components/schemas/ConfigurationDefinitionInteger'
+          BOOLEAN: '#/components/schemas/ConfigurationDefinitionBoolean'
+          STRING: '#/components/schemas/ConfigurationDefinitionString'
+          URL: '#/components/schemas/ConfigurationDefinitionUrl'
+      required:
+      - key
+      - type
+    ConfigurationDefinitionBoolean:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ConfigurationDefinition'
+    ConfigurationDefinitionUrl:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ConfigurationDefinition'
+    ConfigurationDefinitionInteger:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ConfigurationDefinition'
+      - properties:
+          minimum:
+            type: integer
+            format: int32
+          maximum:
+            type: integer
+            format: int32
+    ConfigurationDefinitionString:
+      type: object
+      allOf:
+      - $ref: '#/components/schemas/ConfigurationDefinition'
+      - properties:
+          minLength:
+            type: integer
+            format: int32
+            minimum: 1
+          maxLength:
+            type: integer
+            format: int32
+            maximum: 1000
+          pattern:
+            type: string
+            maxLength: 1000
+
   parameters:
     TenantId:
       name: tenant_id
@@ -907,6 +1045,12 @@ components:
       required: true
       schema:
         $ref: '#/components/schemas/Id'
+    ConfigurationKey:
+      name: configuration_key
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ConfigurationKey'
 
   securitySchemes:
     BearerAuth:
