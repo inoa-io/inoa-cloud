@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -111,5 +114,11 @@ public abstract class AbstractTest {
 					.collect(Collectors.joining()));
 		}
 		return object;
+	}
+
+	public static <T> void assertSorted(List<T> content, Function<T, String> toKeyFunction, Comparator<T> comparator) {
+		var actual = content.stream().map(toKeyFunction).collect(Collectors.toList());
+		var expected = content.stream().sorted(comparator).map(toKeyFunction).collect(Collectors.toList());
+		assertEquals(expected, actual, "unsorted");
 	}
 }

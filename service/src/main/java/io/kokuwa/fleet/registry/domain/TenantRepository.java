@@ -19,6 +19,8 @@ public interface TenantRepository extends CrudRepository<Tenant, Long> {
 
 	Optional<Tenant> findByTenantId(UUID tenantId);
 
+	Optional<UUID> findTenantIdByName(String name);
+
 	Boolean existsByNameOrTenantId(String name, UUID tenantId);
 
 	Boolean existsByName(String name);

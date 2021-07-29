@@ -32,7 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class GatewaysController implements GatewaysApi {
 
-	private final SecurityManagement security;
+	private final Security security;
 	private final GatewayMapper mapper;
 	private final GroupRepository groupRepository;
 	private final GatewayRepository gatewayRepository;

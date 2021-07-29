@@ -2,8 +2,21 @@ package io.kokuwa.fleet.registry.rest.management;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
+import io.kokuwa.fleet.registry.domain.ConfigurationDefinition;
 import io.kokuwa.fleet.registry.domain.ConfigurationDefinitionRepository;
+import io.kokuwa.fleet.registry.domain.Gateway;
+import io.kokuwa.fleet.registry.domain.GatewayConfiguration;
+import io.kokuwa.fleet.registry.domain.GatewayConfigurationRepository;
+import io.kokuwa.fleet.registry.domain.GatewayRepository;
+import io.kokuwa.fleet.registry.domain.Group;
+import io.kokuwa.fleet.registry.domain.GroupConfiguration;
+import io.kokuwa.fleet.registry.domain.GroupConfigurationRepository;
+import io.kokuwa.fleet.registry.domain.GroupRepository;
+import io.kokuwa.fleet.registry.domain.Tenant;
+import io.kokuwa.fleet.registry.domain.TenantConfiguration;
+import io.kokuwa.fleet.registry.domain.TenantConfigurationRepository;
 import io.kokuwa.fleet.registry.rest.mapper.ConfigurationMapper;
 import io.kokuwa.fleet.registry.rest.validation.ConfigurationDefinitionValid;
 import io.micronaut.http.HttpResponse;
@@ -21,9 +34,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ConfigurationController implements ConfigurationApi {
 
-	private final SecurityManagement security;
+	private final Security security;
 	private final ConfigurationMapper mapper;
 	private final ConfigurationDefinitionRepository definitionRepository;
+	private final TenantConfigurationRepository tenantConfigurationRepository;
+	private final GroupRepository groupRepository;
+	private final GroupConfigurationRepository groupConfigurationRepository;
+	private final GatewayRepository gatewayRepository;
+	private final GatewayConfigurationRepository gatewayConfigurationRepository;
+
+	// definition
 
 	@Override
 	public HttpResponse<List<ConfigurationDefinitionVO>> findConfigurationDefinitions() {
@@ -52,5 +72,136 @@ public class ConfigurationController implements ConfigurationApi {
 		}
 		definitionRepository.delete(optional.get());
 		return HttpResponse.noContent();
+	}
+
+	// configuration
+
+	@Override
+	public HttpResponse<List<ConfigurationVO>> findConfigurations() {
+		var tenant = security.getTenant();
+		var configurations = tenantConfigurationRepository.findByDefinitionTenant(tenant);
+		return HttpResponse.ok(mapper.toConfigurations(configurations));
+	}
+
+	@Override
+	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGroup(UUID groupId) {
+		var tenant = security.getTenant();
+		var group = getGroup(tenant, groupId);
+		var configurations = groupConfigurationRepository.findByGroup(group);
+		return HttpResponse.ok(mapper.toConfigurations(configurations));
+	}
+
+	@Override
+	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGateway(UUID gatewayId) {
+		var tenant = security.getTenant();
+		var gateway = getGateway(tenant, gatewayId);
+		var configurations = gatewayConfigurationRepository.findByGateway(gateway);
+		return HttpResponse.ok(mapper.toConfigurations(configurations));
+	}
+
+	@Override
+	public HttpResponse<Object> setConfiguration(String key, ConfigurationSetVO vo) {
+		var tenant = security.getTenant();
+		var definition = getConfigurationDefinition(tenant, key);
+		var value = mapper.toString(definition, vo.getValue());
+		tenantConfigurationRepository.findByDefinition(definition).ifPresentOrElse(
+				c -> tenantConfigurationRepository.updateByDefinition(definition.getId(), value),
+				() -> tenantConfigurationRepository.save(new TenantConfiguration()
+						.setDefinition(definition)
+						.setValue(value)));
+		return HttpResponse.noContent();
+	}
+
+	@Override
+	public HttpResponse<Object> setConfigurationByGroup(UUID groupId, String key, ConfigurationSetVO vo) {
+		var tenant = security.getTenant();
+		var group = getGroup(tenant, groupId);
+		var definition = getConfigurationDefinition(tenant, key);
+		var value = mapper.toString(definition, vo.getValue());
+		groupConfigurationRepository.findByGroupAndDefinition(group, definition).ifPresentOrElse(
+				c -> groupConfigurationRepository.updateByGroupAndDefinition(group.getId(), definition.getId(), value),
+				() -> groupConfigurationRepository.save(new GroupConfiguration()
+						.setGroup(group)
+						.setDefinition(definition)
+						.setValue(value)));
+		return HttpResponse.noContent();
+	}
+
+	@Override
+	public HttpResponse<Object> setConfigurationByGateway(UUID gatewayId, String key, ConfigurationSetVO vo) {
+		var tenant = security.getTenant();
+		var gateway = getGateway(tenant, gatewayId);
+		var definition = getConfigurationDefinition(tenant, key);
+		var value = mapper.toString(definition, vo.getValue());
+		gatewayConfigurationRepository.findByGatewayAndDefinition(gateway, definition).ifPresentOrElse(
+				c -> gatewayConfigurationRepository.updateByGatewayAndDefinition(gateway.getId(), definition.getId(),
+						value),
+				() -> gatewayConfigurationRepository.save(new GatewayConfiguration()
+						.setGateway(gateway)
+						.setDefinition(definition)
+						.setValue(value)));
+		return HttpResponse.noContent();
+	}
+
+	@Override
+	public HttpResponse<Object> resetConfiguration(String key) {
+		var tenant = security.getTenant();
+		var definition = getConfigurationDefinition(tenant, key);
+		var configuration = tenantConfigurationRepository.findByDefinition(definition);
+		if (configuration.isEmpty()) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Configuration not found.");
+		}
+		tenantConfigurationRepository.deleteByDefinition(definition);
+		return HttpResponse.noContent();
+	}
+
+	@Override
+	public HttpResponse<Object> resetConfigurationByGroup(UUID groupId, String key) {
+		var tenant = security.getTenant();
+		var group = getGroup(tenant, groupId);
+		var definition = getConfigurationDefinition(tenant, key);
+		var configuration = groupConfigurationRepository.findByGroupAndDefinition(group, definition);
+		if (configuration.isEmpty()) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Configuration not found.");
+		}
+		groupConfigurationRepository.deleteByGroupAndDefinition(group, definition);
+		return HttpResponse.noContent();
+	}
+
+	@Override
+	public HttpResponse<Object> resetConfigurationByGateway(UUID gatewayId, String key) {
+		var tenant = security.getTenant();
+		var gateway = getGateway(tenant, gatewayId);
+		var definition = getConfigurationDefinition(tenant, key);
+		var configuration = gatewayConfigurationRepository.findByGatewayAndDefinition(gateway, definition);
+		if (configuration.isEmpty()) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Configuration not found.");
+		}
+		gatewayConfigurationRepository.deleteByGatewayAndDefinition(gateway, definition);
+		return HttpResponse.noContent();
+	}
+
+	private ConfigurationDefinition getConfigurationDefinition(Tenant tenant, String key) {
+		var optional = definitionRepository.findByTenantAndKey(tenant, key);
+		if (optional.isEmpty()) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Definition not found.");
+		}
+		return optional.get();
+	}
+
+	private Group getGroup(Tenant tenant, UUID groupId) {
+		var optional = groupRepository.findByTenantAndGroupId(tenant, groupId);
+		if (optional.isEmpty()) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
+		}
+		return optional.get();
+	}
+
+	private Gateway getGateway(Tenant tenant, UUID gatewayId) {
+		var optional = gatewayRepository.findByTenantAndGatewayId(tenant, gatewayId);
+		if (optional.isEmpty()) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
+		}
+		return optional.get();
 	}
 }

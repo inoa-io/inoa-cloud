@@ -1,6 +1,13 @@
 package io.kokuwa.fleet.registry.rest.mapper;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
@@ -8,12 +15,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants.ComponentModel;
 import org.mapstruct.Named;
 
+import io.kokuwa.fleet.registry.domain.Configuration;
 import io.kokuwa.fleet.registry.domain.ConfigurationDefinition;
 import io.kokuwa.fleet.registry.rest.management.ConfigurationDefinitionBooleanVO;
 import io.kokuwa.fleet.registry.rest.management.ConfigurationDefinitionIntegerVO;
 import io.kokuwa.fleet.registry.rest.management.ConfigurationDefinitionStringVO;
 import io.kokuwa.fleet.registry.rest.management.ConfigurationDefinitionUrlVO;
 import io.kokuwa.fleet.registry.rest.management.ConfigurationDefinitionVO;
+import io.kokuwa.fleet.registry.rest.management.ConfigurationVO;
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 
 /**
  * Mapper for {@link ConfigurationDefinition}.
@@ -95,6 +106,103 @@ public interface ConfigurationMapper {
 				return toDefinitionUrl((ConfigurationDefinitionUrlVO) configurationDefinition);
 			default:
 				throw new IllegalArgumentException("Unsupported type: " + configurationDefinition.getType());
+		}
+	}
+
+	// configuration
+
+	@Mapping(target = "value", expression = "java(toValue(configuration))")
+	ConfigurationVO toConfiguration(Configuration configuration);
+
+	default List<ConfigurationVO> toConfigurations(List<? extends Configuration> configurations) {
+		return configurations.stream()
+				.sorted(Comparator.comparing(Configuration::getDefinition,
+						Comparator.comparing(ConfigurationDefinition::getKey)))
+				.map(this::toConfiguration)
+				.collect(Collectors.toList());
+	}
+
+	default Map<String, Object> toConfigurationMap(List<Configuration> configurations) {
+		return configurations.stream().collect(Collectors.toMap(
+				configuration -> configuration.getDefinition().getKey(),
+				configuration -> toValue(configuration),
+				(a, b) -> b, TreeMap::new));
+	}
+
+	default Object toValue(Configuration configuration) {
+		switch (configuration.getDefinition().getType()) {
+			case BOOLEAN:
+				return Boolean.parseBoolean(configuration.getValue());
+			case INTEGER:
+				return Integer.parseInt(configuration.getValue());
+			default:
+				return configuration.getValue();
+		}
+	}
+
+	default String toString(ConfigurationDefinition definition, Object object) {
+
+		var minimum = definition.getMinimum();
+		var maximum = definition.getMaximum();
+		var pattern = definition.getPattern();
+
+		switch (definition.getType()) {
+
+			case BOOLEAN: {
+				if (!Boolean.class.isInstance(object)) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
+							"Boolean expected, got: " + object.getClass().getSimpleName());
+				}
+				return String.valueOf(object);
+			}
+
+			case INTEGER: {
+				if (!Integer.class.isInstance(object)) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
+							"Integer expected, got: " + object.getClass().getSimpleName());
+				}
+				var value = (Integer) object;
+				if (minimum != null && value < minimum) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Minimum is " + minimum + ".");
+				}
+				if (maximum != null && value > maximum) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Maximum is " + maximum + ".");
+				}
+				return value.toString();
+			}
+
+			case URL: {
+				if (!String.class.isInstance(object)) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
+							"String expected, got: " + object.getClass().getSimpleName());
+				}
+				try {
+					return new URL((String) object).toString();
+				} catch (MalformedURLException e) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid url: " + e.getMessage());
+				}
+			}
+
+			case STRING: {
+				if (!String.class.isInstance(object)) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
+							"String expected, got: " + object.getClass().getSimpleName());
+				}
+				var value = (String) object;
+				if (minimum != null && value.length() < minimum) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "MinLength is " + minimum + ".");
+				}
+				if (maximum != null && value.length() > maximum) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "MaxLength is " + maximum + ".");
+				}
+				if (pattern != null && !Pattern.matches(definition.getPattern(), value)) {
+					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Pattern " + pattern + " mismatch.");
+				}
+				return value;
+			}
+
+			default:
+				throw new IllegalArgumentException("Unsupported type: " + definition.getType());
 		}
 	}
 }

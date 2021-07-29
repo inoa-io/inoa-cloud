@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class GroupsController implements GroupsApi {
 
-	private final SecurityManagement security;
+	private final Security security;
 	private final GroupMapper mapper;
 	private final GroupRepository repository;
 

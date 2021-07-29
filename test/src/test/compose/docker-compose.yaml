@@ -10,22 +10,29 @@ services:
     - KEYCLOAK_ADMIN=admin
     - KEYCLOAK_ADMIN_PASSWORD=password
     healthcheck:
-      test: curl -sf http://localhost:9000/realms/elco/protocol/openid-connect/certs
+      test: curl -sf http://localhost:9000/realms/inoa/protocol/openid-connect/certs
       interval: 5s
 
   postgres:
     image: postgres:${docker.postgres.version}
     environment:
-    - POSTGRES_USER=burnerselector
+    - POSTGRES_USER=gateway-registry
     - POSTGRES_PASSWORD=changeMe
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U burnerselector"]
+      test: ["CMD-SHELL", "pg_isready -U gateway-registry"]
       interval: 5s
 
-  burner-selector-service:
-    image: ${docker.image.repository}/burner-selector-service:${docker.image.version}
+  gateway-registry-service:
+    image: ${docker.image.repository}/gateway-registry-service:${docker.image.version}
     environment:
-    - MICRONAUT_ENVIRONMENTS=postgres
+    - MICRONAUT_ENVIRONMENTS=postgres,dev
+    - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:9000/realms/inoa/protocol/openid-connect/certs
+    - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
+    - LOGGER_LEVELS_IO_MICRONAUT_SECURITY=TRACE
+    - LOGGER_LEVELS_IO_MICRONAUT_DATA=TRACE
+    - LOGGER_LEVELS_IO_KOKUWA=TRACE
+    volumes:
+    - ${project.build.directory}/compose/service/testdata.sql:/database/V999__testdata.sql
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s

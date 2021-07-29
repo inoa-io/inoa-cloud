@@ -3,7 +3,7 @@ micronaut:
   ## test client with increased read-timeout for debbuging
   http:
     client:
-      logger-name: net.burnerselector.Test
+      logger-name: io.kokuwa.Test
       read-timeout: 5m
 
   ## used for tokens issued/checked at management api

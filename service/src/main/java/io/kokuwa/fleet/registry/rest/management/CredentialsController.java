@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CredentialsController implements CredentialsApi {
 
-	private final SecurityManagement security;
+	private final Security security;
 	private final CredentialMapper mapper;
 	private final GatewayRepository gatewayRepository;
 	private final CredentialRepository credentialRepository;

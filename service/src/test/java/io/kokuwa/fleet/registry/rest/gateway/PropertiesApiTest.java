@@ -17,12 +17,12 @@ import io.kokuwa.fleet.registry.domain.Gateway;
 import io.kokuwa.fleet.registry.domain.GatewayProperty;
 
 /**
- * Test for {@link PropertiesController}.
+ * Test for {@link PropertiesApi}.
  *
  * @author Stephan Schnabel
  */
 @DisplayName("gateway: properties")
-public class PropertiesControllerTest extends AbstractTest implements PropertiesApiTestSpec {
+public class PropertiesApiTest extends AbstractTest implements PropertiesApiTestSpec {
 
 	@Inject
 	PropertiesApiTestClient client;
