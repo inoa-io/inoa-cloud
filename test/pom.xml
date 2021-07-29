@@ -50,7 +50,7 @@
 	<build>
 		<plugins>
 
-				<!-- generate sources from openapi spec -->
+			<!-- generate sources from openapi spec -->
 			<plugin>
 				<groupId>org.openapitools</groupId>
 				<artifactId>openapi-generator-maven-plugin</artifactId>
@@ -62,9 +62,8 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi/gateway.yaml</inputSpec>
+							<inputSpec>${project.basedir}/../service/src/main/resources/openapi/gateway.yaml</inputSpec>
 							<apiPackage>io.kokuwa.fleet.registry.rest.gateway</apiPackage>
-							<generateSupportingFiles>false</generateSupportingFiles>
 						</configuration>
 					</execution>
 					<execution>
@@ -74,14 +73,14 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi/management.yaml</inputSpec>
+							<inputSpec>${project.basedir}/../service/src/main/resources/openapi/management.yaml</inputSpec>
 							<apiPackage>io.kokuwa.fleet.registry.rest.management</apiPackage>
 						</configuration>
 					</execution>
 				</executions>
 				<configuration>
 					<configOptions>
-						<clientId>registry</clientId>
+						<clientId>gateway-registry-service</clientId>
 					</configOptions>
 				</configuration>
 			</plugin>

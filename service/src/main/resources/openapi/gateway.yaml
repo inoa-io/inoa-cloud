@@ -66,6 +66,23 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenError'
+  /gateway/configuration:
+    get:
+      tags:
+      - configuration
+      summary: Get gateway configuration.
+      description: TODO
+      operationId: getConfiguration
+      responses:
+        200:
+          description: Configuration for gateway.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: {}
+        401:
+          description: Unauthorized.
   /gateway/properties:
     get:
       tags:

@@ -1,52 +1,59 @@
-
 {
-	"enabled": true,
-	"realm": "kokuwa",
-	"users": [
-		{
-			"enabled": true,
-			"username": "admin",
-			"credentials": [
-				{
-					"type": "password",
-					"value": "password"
-				}
-			]
-		},{
-			"enabled": true,
-			"username": "user1",
-			"credentials": [
-				{
-					"type": "password",
-					"value": "password"
-				}
-			]
-		},{
-			"enabled": true,
-			"username": "user2",
-			"credentials": [
-				{
-					"type": "password",
-					"value": "password"
-				}
-			]
-		}
-	],
-	"clients": [
-		{
-			"enabled": true,
-			"clientId": "gateway-registry-ui", 
-			"secret": "changeMe",
-			"standardFlowEnabled": false,
-			"implicitFlowEnabled": false,
-			"directAccessGrantsEnabled": true,
-			"serviceAccountsEnabled": false,
-			"protocol": "openid-connect",
-			"protocolMappers": [],
-			"redirectUris": [],
-			"webOrigins": [],
-			"defaultClientScopes": [],
-			"optionalClientScopes": []
-		}
-	]
+  "enabled": true,
+  "realm": "inoa",
+  "groups": [
+    { "id": "00000001-0000-0000-0000-000000000000", "name": "tenantA" },
+    { "id": "00000002-0000-0000-0000-000000000000", "name": "tenantB" }
+  ],
+  "users": [
+    {
+      "enabled": true,
+      "username": "admin",
+      "credentials": [ { "type": "password", "value": "password" } ]
+    },
+    {
+      "enabled": true,
+      "username": "userFromTenantA",
+      "credentials": [ { "type": "password", "value": "password" } ],
+      "groups": [ "tenantA" ]
+    },
+    {
+      "enabled": true,
+      "username": "userFromTenantB",
+      "credentials": [ { "type": "password", "value": "password" } ],
+      "groups": [ "tenantB" ]
+    }
+  ],
+  "clients": [
+    {
+      "enabled": true,
+      "clientId": "gateway-registry-ui",
+      "secret": "changeMe",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "tenant",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "config": {
+            "claim.name": "tenant",
+            "full.path": "false",
+            "multivalued": "false",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ],
+      "redirectUris": [],
+      "webOrigins": [],
+      "defaultClientScopes": [],
+      "optionalClientScopes": []
+    }
+  ]
 }
+

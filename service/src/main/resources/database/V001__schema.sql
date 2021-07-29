@@ -102,3 +102,25 @@ CREATE TABLE configuration_definition (
 	CONSTRAINT chk_configuration_definition_pattern CHECK (pattern IS NULL OR type = 'STRING'),
 	CONSTRAINT fk_configuration_definition FOREIGN KEY (tenant_id) REFERENCES tenant(id) ON DELETE CASCADE
 );
+CREATE TABLE tenant_configuration (
+	definition_id INTEGER NOT NULL,
+	value VARCHAR(1000) NOT NULL,
+	CONSTRAINT pk_tenant_configuration PRIMARY KEY (definition_id),
+	CONSTRAINT fk_tenant_configuration_definition FOREIGN KEY (definition_id) REFERENCES configuration_definition(id) ON DELETE CASCADE
+);
+CREATE TABLE group_configuration (
+	group_id INTEGER NOT NULL,
+	definition_id INTEGER NOT NULL,
+	value VARCHAR(1000) NOT NULL,
+	CONSTRAINT pk_group_configuration PRIMARY KEY (group_id,definition_id),
+	CONSTRAINT fk_group_configuration_group FOREIGN KEY (group_id) REFERENCES "group"(id) ON DELETE CASCADE,
+	CONSTRAINT fk_group_configuration_definition FOREIGN KEY (definition_id) REFERENCES configuration_definition(id) ON DELETE CASCADE
+);
+CREATE TABLE gateway_configuration (
+	gateway_id INTEGER NOT NULL,
+	definition_id INTEGER NOT NULL,
+	value VARCHAR(1000) NOT NULL,
+	CONSTRAINT pk_gateway_configuration PRIMARY KEY (gateway_id,definition_id),
+	CONSTRAINT fk_gateway_configuration_gateway FOREIGN KEY (gateway_id) REFERENCES gateway(id) ON DELETE CASCADE,
+	CONSTRAINT fk_gateway_configuration_definition FOREIGN KEY (definition_id) REFERENCES configuration_definition(id) ON DELETE CASCADE
+);

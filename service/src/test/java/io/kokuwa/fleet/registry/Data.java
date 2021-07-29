@@ -21,21 +21,28 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
+import io.kokuwa.fleet.registry.domain.Configuration;
 import io.kokuwa.fleet.registry.domain.ConfigurationDefinition;
 import io.kokuwa.fleet.registry.domain.ConfigurationDefinitionRepository;
 import io.kokuwa.fleet.registry.domain.Credential;
 import io.kokuwa.fleet.registry.domain.CredentialRepository;
 import io.kokuwa.fleet.registry.domain.Gateway;
+import io.kokuwa.fleet.registry.domain.GatewayConfiguration;
+import io.kokuwa.fleet.registry.domain.GatewayConfigurationRepository;
 import io.kokuwa.fleet.registry.domain.GatewayGroup;
 import io.kokuwa.fleet.registry.domain.GatewayGroupRepository;
 import io.kokuwa.fleet.registry.domain.GatewayProperty;
 import io.kokuwa.fleet.registry.domain.GatewayPropertyRepository;
 import io.kokuwa.fleet.registry.domain.GatewayRepository;
 import io.kokuwa.fleet.registry.domain.Group;
+import io.kokuwa.fleet.registry.domain.GroupConfiguration;
+import io.kokuwa.fleet.registry.domain.GroupConfigurationRepository;
 import io.kokuwa.fleet.registry.domain.GroupRepository;
 import io.kokuwa.fleet.registry.domain.Secret;
 import io.kokuwa.fleet.registry.domain.SecretRepository;
 import io.kokuwa.fleet.registry.domain.Tenant;
+import io.kokuwa.fleet.registry.domain.TenantConfiguration;
+import io.kokuwa.fleet.registry.domain.TenantConfigurationRepository;
 import io.kokuwa.fleet.registry.domain.TenantRepository;
 import io.kokuwa.fleet.registry.rest.management.ConfigurationTypeVO;
 import io.kokuwa.fleet.registry.rest.management.CredentialTypeVO;
@@ -60,6 +67,9 @@ public class Data {
 	private final CredentialRepository credentialRepository;
 	private final SecretRepository secretRepository;
 	private final ConfigurationDefinitionRepository configurationDefinitionRepository;
+	private final TenantConfigurationRepository tenantConfigurationRepository;
+	private final GroupConfigurationRepository groupConfigurationRepository;
+	private final GatewayConfigurationRepository gatewayConfigurationRepository;
 	private final ApplicationProperties applicationProperties;
 
 	void deleteAll() {
@@ -242,6 +252,26 @@ public class Data {
 				.setType(type);
 		consumer.accept(definition);
 		return configurationDefinitionRepository.save(definition);
+	}
+
+	public Configuration configuration(ConfigurationDefinition definition, String value) {
+		return tenantConfigurationRepository.save(new TenantConfiguration()
+				.setDefinition(definition)
+				.setValue(value));
+	}
+
+	public Configuration configuration(Group group, ConfigurationDefinition definition, String value) {
+		return groupConfigurationRepository.save(new GroupConfiguration()
+				.setGroup(group)
+				.setDefinition(definition)
+				.setValue(value));
+	}
+
+	public Configuration configuration(Gateway gateway, ConfigurationDefinition definition, String value) {
+		return gatewayConfigurationRepository.save(new GatewayConfiguration()
+				.setGateway(gateway)
+				.setDefinition(definition)
+				.setValue(value));
 	}
 
 	// read

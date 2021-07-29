@@ -1,7 +1,10 @@
 package io.kokuwa.fleet.registry.usecase;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -11,17 +14,22 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.jwt.SignedJWT;
+
+import io.kokuwa.fleet.registry.infrastructure.Auth;
 import io.kokuwa.fleet.registry.infrastructure.ComposeTest;
-import io.kokuwa.fleet.registry.rest.gateway.AuthApiTestClient;
-import io.kokuwa.fleet.registry.rest.gateway.PropertiesApiTestClient;
+import io.kokuwa.fleet.registry.rest.gateway.AuthApiClient;
+import io.kokuwa.fleet.registry.rest.gateway.PropertiesApiClient;
 import io.kokuwa.fleet.registry.rest.management.CredentialCreateVO;
 import io.kokuwa.fleet.registry.rest.management.CredentialTypeVO;
-import io.kokuwa.fleet.registry.rest.management.CredentialsApiTestClient;
+import io.kokuwa.fleet.registry.rest.management.CredentialsApiClient;
 import io.kokuwa.fleet.registry.rest.management.GatewayCreateVO;
-import io.kokuwa.fleet.registry.rest.management.GatewaysApiTestClient;
+import io.kokuwa.fleet.registry.rest.management.GatewaysApiClient;
 import io.kokuwa.fleet.registry.rest.management.SecretCreatePSKVO;
-import io.kokuwa.fleet.registry.rest.management.TenantCreateVO;
-import io.kokuwa.fleet.registry.rest.management.TenantsApiTestClient;
+import io.kokuwa.fleet.registry.rest.management.TenantsApiClient;
 import io.micronaut.http.HttpHeaderValues;
 
 /**
@@ -33,45 +41,61 @@ import io.micronaut.http.HttpHeaderValues;
 public class GatewayTest extends ComposeTest {
 
 	@Inject
-	TenantsApiTestClient tenantsClient;
+	GatewaysApiClient gatewaysClient;
 	@Inject
-	GatewaysApiTestClient gatewaysClient;
+	CredentialsApiClient credentialsClient;
 	@Inject
-	CredentialsApiTestClient credentialsClient;
+	AuthApiClient authClient;
 	@Inject
-	AuthApiTestClient authClient;
+	PropertiesApiClient propertiesClient;
 	@Inject
-	PropertiesApiTestClient propertiesClient;
+	TenantsApiClient tenantsApiClient;
 
-	@DisplayName("create tenant/gateway, authenticate, set properties")
+	static UUID gatewayId;
+	static String secret;
+
+	static String gatewayToken;
+	static String userToken;
+
+	@DisplayName("1. create gateway with psk secret")
 	@Test
-	void gateway() {
+	void createGateway() {
 
-		// create tenant with gateway
-
-		var tenantId = assert201(() -> tenantsClient.createTenant(auth(), new TenantCreateVO()
-				.setName(UUID.randomUUID().toString().substring(0, 30)))).getTenantId();
-		var gatewayId = assert201(() -> gatewaysClient.createGateway(auth(tenantId), new GatewayCreateVO()
-				.setName("device-1"))).getGatewayId();
-		var secret = UUID.randomUUID().toString();
-		assert201(() -> credentialsClient.createCredential(auth(tenantId), gatewayId, new CredentialCreateVO()
+		var vo = new GatewayCreateVO().setName("dev-" + UUID.randomUUID().toString().substring(0, 10));
+		userToken = auth.user(Auth.USER_TENANT_A);
+		gatewayId = assert201(() -> gatewaysClient.createGateway(userToken, vo)).getGatewayId();
+		secret = UUID.randomUUID().toString();
+		assert201(() -> credentialsClient.createCredential(userToken, gatewayId, new CredentialCreateVO()
 				.setAuthId("registry")
 				.setType(CredentialTypeVO.PSK)
 				.setSecrets(List.of(new SecretCreatePSKVO().setSecret(secret.getBytes())))));
+	}
 
-		// get token
+	@DisplayName("2. get registry token")
+	@Test
+	void getRegistryToken() {
+		var response = assert200(() -> authClient.getToken(Auth.GRANT_TYPE, auth.hmac(gatewayId, secret)));
+		gatewayToken = HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + response.getAccessToken();
+	}
 
-		var response = assert200(() -> authClient.getToken(GRANT_TYPE, gatewayToken(gatewayId, secret)));
-		var gatewayToken = HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + response.getAccessToken();
+	@DisplayName("3. validate registry token")
+	@Test
+	void validateRegistryToken() throws ParseException, JOSEException {
+		var jwt = (SignedJWT) JWTParser.parse(gatewayToken.split(" ")[1]);
+		var keyId = jwt.getHeader().getKeyID();
+		var keys = auth.getKeys();
+		var key = keys.getKeyByKeyId(keyId);
+		assertNotNull(key, "key unknown");
+		var verifier = new RSASSAVerifier(key.toRSAKey());
+		assertTrue(verifier.verify(jwt.getHeader(), jwt.getSigningInput(), jwt.getSignature()), "signature validation");
+	}
 
-		// set properties
-
-		var gatewayProperties = Map.of("aa", "1", "bb", "2");
-		assert200(() -> propertiesClient.setProperties(gatewayToken, gatewayProperties));
-
-		// get properties
-
-		var gateway = assert200(() -> gatewaysClient.findGateway(auth(tenantId), gatewayId));
-		assertEquals(gatewayProperties, gateway.getProperties());
+	@DisplayName("4. set and get properties")
+	@Test
+	void gatewayProperties() {
+		var properties = Map.of("aa", "1", "bb", "2");
+		assert200(() -> propertiesClient.setProperties(gatewayToken, properties));
+		assertEquals(properties, assert200(() -> propertiesClient.getProperties(gatewayToken)));
+		assertEquals(properties, assert200(() -> gatewaysClient.findGateway(userToken, gatewayId)).getProperties());
 	}
 }

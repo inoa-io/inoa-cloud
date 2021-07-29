@@ -532,6 +532,181 @@ paths:
           description: 'Unauthorized.'
         404:
           description: 'Configuration definition not found.'
+  /configuration:
+    get:
+      tags:
+      - configuration
+      summary: 'Find configurations.'
+      description: 'Find configurations on tenant level ordered by key.'
+      operationId: findConfigurations
+      responses:
+        200:
+          description: 'Configurations found.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Configuration'
+        401:
+          description: 'Unauthorized.'
+  /configuration/{configuration_key}:
+    parameters:
+    - $ref: '#/components/parameters/ConfigurationKey'
+    put:
+      tags:
+      - configuration
+      summary: 'Save configuration.'
+      description: TODO
+      operationId: setConfiguration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigurationSet'
+      responses:
+        204:
+          description: 'Configuration set.'
+        401:
+          description: 'Unauthorized.'
+        400:
+          description: 'Malformed.'
+        404:
+          description: 'Configuration not found.'
+    delete:
+      tags:
+      - configuration
+      summary: 'Delete configuration.'
+      description: TODO
+      operationId: resetConfiguration
+      responses:
+        204:
+          description: 'Configuration deleted.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Configuration not found.'
+  /groups/{group_id}/configuration:
+    parameters:
+    - $ref: '#/components/parameters/GroupId'
+    get:
+      tags:
+      - configuration
+      summary: 'Find configuration.'
+      description: 'Find configurations on group level ordered by key.'
+      operationId: findConfigurationsByGroup
+      responses:
+        200:
+          description: 'Configuration found.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Configuration'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Group not found.'
+  /groups/{group_id}/configuration/{configuration_key}:
+    parameters:
+    - $ref: '#/components/parameters/GroupId'
+    - $ref: '#/components/parameters/ConfigurationKey'
+    put:
+      tags:
+      - configuration
+      summary: 'Save configuration value.'
+      description: TODO
+      operationId: setConfigurationByGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigurationSet'
+      responses:
+        204:
+          description: 'Configuration set.'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Group of configuration key not found.'
+    delete:
+      tags:
+      - configuration
+      summary: 'Delete configuration.'
+      description: TODO
+      operationId: resetConfigurationByGroup
+      responses:
+        204:
+          description: 'Configuration deleted.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Group of configuration key not found.'
+  /gateway/{gateway_id}/configuration:
+    parameters:
+    - $ref: '#/components/parameters/GatewayId'
+    get:
+      tags:
+      - configuration
+      summary: 'Find configuration.'
+      description: 'Find configurations on gateway level ordered by key.'
+      operationId: findConfigurationsByGateway
+      responses:
+        200:
+          description: 'Configuration found.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Configuration'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Group not found.'
+  /gateway/{gateway_id}/configuration/{configuration_key}:
+    parameters:
+    - $ref: '#/components/parameters/GatewayId'
+    - $ref: '#/components/parameters/ConfigurationKey'
+    put:
+      tags:
+      - configuration
+      summary: 'Save configuration value.'
+      description: TODO
+      operationId: setConfigurationByGateway
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfigurationSet'
+      responses:
+        204:
+          description: 'Configuration set.'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Gateway of configuration key not found.'
+    delete:
+      tags:
+      - configuration
+      summary: 'Delete configuration.'
+      description: TODO
+      operationId: resetConfigurationByGateway
+      responses:
+        204:
+          description: 'Configuration deleted.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Gateway of configuration key not found.'
 
 components:
   schemas:
@@ -1013,6 +1188,26 @@ components:
           pattern:
             type: string
             maxLength: 1000
+    ConfigurationValue:
+      type: object
+    ConfigurationSet:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/ConfigurationValue'
+      required:
+      - value
+    Configuration:
+      description: 'Defines a configuration.'
+      type: object
+      properties:
+        definition:
+          $ref: '#/components/schemas/ConfigurationDefinition'
+        value:
+          $ref: '#/components/schemas/ConfigurationValue'
+      required:
+      - definition
+      - value
 
   parameters:
     TenantId:
