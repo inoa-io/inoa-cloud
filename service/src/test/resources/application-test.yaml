@@ -3,7 +3,7 @@ micronaut:
   ## test client with increased read-timeout for debbuging
   http:
     client:
-      logger-name: io.kokuwa.Test
+      logger-name: io.inoa.Test
       read-timeout: 5m
 
   ## used for tokens issued/checked at management api
@@ -35,5 +35,5 @@ registry:
 ## custom log configuration
 logger:
   levels:
-    io.kokuwa: TRACE
+    io.inoa: TRACE
     io.micronaut.data: TRACE

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.kokuwa.fleet</groupId>
+		<groupId>io.inoa.fleet</groupId>
 		<artifactId>gateway-registry</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
@@ -63,7 +63,7 @@
 						</goals>
 						<configuration>
 							<inputSpec>${project.basedir}/../service/src/main/resources/openapi/gateway.yaml</inputSpec>
-							<apiPackage>io.kokuwa.fleet.registry.rest.gateway</apiPackage>
+							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
 						</configuration>
 					</execution>
 					<execution>
@@ -74,7 +74,7 @@
 						</goals>
 						<configuration>
 							<inputSpec>${project.basedir}/../service/src/main/resources/openapi/management.yaml</inputSpec>
-							<apiPackage>io.kokuwa.fleet.registry.rest.management</apiPackage>
+							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
 						</configuration>
 					</execution>
 				</executions>
@@ -157,28 +157,6 @@
 							</resources>
 							<outputDirectory>${project.build.directory}/compose</outputDirectory>
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- do not create jar -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-jar</id>
-						<phase />
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-install-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-install</id>
-						<phase />
 					</execution>
 				</executions>
 			</plugin>

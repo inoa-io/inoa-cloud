@@ -17,4 +17,4 @@ registry:
 ## custom log configuration
 logger:
   levels:
-    io.kokuwa: TRACE
+    io.inoa: TRACE
