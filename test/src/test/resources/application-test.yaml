@@ -19,5 +19,4 @@ jackson:
 ## custom log configuration
 logger:
   levels:
-#    io.micronaut.retry.intercept.RecoveryInterceptor: OFF
     io.inoa: DEBUG

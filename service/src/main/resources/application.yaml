@@ -43,6 +43,8 @@ endpoints:
     sensitive: false
   health:
     details-visible: ANONYMOUS
+  loggers:
+    write-sensitive: false
 
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
@@ -64,3 +66,9 @@ flyway:
   datasources:
     default:
       locations: classpath:database
+
+## Custom log configuration
+logger:
+  levels:
+    org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor: WARN
+    io.micronaut.retry.intercept.RecoveryInterceptor: OFF

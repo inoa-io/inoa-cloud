@@ -9,7 +9,7 @@
 		<relativePath />
 	</parent>
 
-	<groupId>io.kokuwa.fleet</groupId>
+	<groupId>io.inoa.fleet</groupId>
 	<artifactId>gateway-registry</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
@@ -30,14 +30,14 @@
 	</modules>
 
 	<scm>
-		<url>https://github.com/kokuwaio/gateway-registry</url>
-		<connection>scm:git:https://github.com/kokuwaio/gateway-registry.git</connection>
-		<developerConnection>scm:git:https://github.com/kokuwaio/gateway-registry.git</developerConnection>
+		<url>https://github.com/grayc-de/gateway-registry</url>
+		<connection>scm:git:https://github.com/grayc-de/gateway-registry.git</connection>
+		<developerConnection>scm:git:https://github.com/grayc-de/gateway-registry.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
-		<system>github</system>
-		<url>https://github.com/kokuwaio/gateway-registry/issues</url>
+		<system>jira</system>
+		<url>https://grayc.atlassian.net/browse/INOA</url>
 	</issueManagement>
 
 	<properties>
@@ -106,66 +106,79 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>junit-jupiter</artifactId>
-				<version>${version.org.testcontainers}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>postgresql</artifactId>
-				<version>${version.org.testcontainers}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers</artifactId>
-				<version>${version.org.testcontainers}</version>
-			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+
+				<!-- generate sources from openapi spec -->
+				<plugin>
+					<groupId>org.openapitools</groupId>
+					<artifactId>openapi-generator-maven-plugin</artifactId>
+					<configuration>
+						<generatorName>micronaut</generatorName>
+						<modelNameSuffix>VO</modelNameSuffix>
+						<invokerPackage>io.inoa.fleet.registry.rest</invokerPackage>
+						<output>${project.build.directory}</output>
+						<configOptions>
+							<useLombokGenerated>true</useLombokGenerated>
+							<dateTimeRelaxed>false</dateTimeRelaxed>
+							<visitable>false</visitable>
+						</configOptions>
+						<typeMappings>
+							<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
+							<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
+						</typeMappings>
+						<ignoreFileOverride>${project.basedir}/../.openapi-ignore</ignoreFileOverride>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>io.kokuwa.micronaut</groupId>
+							<artifactId>micronaut-openapi-codegen</artifactId>
+							<version>${version.io.kokuwa.micronaut.codegen}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+
+				<!-- adjust jacoco excludes -->
+				<plugin>
+					<groupId>org.jacoco</groupId>
+					<artifactId>jacoco-maven-plugin</artifactId>
+					<configuration>
+						<excludes>
+							<exclude>**/*VO.class</exclude>
+							<exclude>**/*MapperImpl.class</exclude>
+						</excludes>
+					</configuration>
+				</plugin>
+
+			</plugins>
+		</pluginManagement>
 		<plugins>
 
-			<!-- generate sources from openapi spec -->
+			<!-- do not install/deploy anything -->
 			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<configuration>
-					<generatorName>micronaut</generatorName>
-					<modelNameSuffix>VO</modelNameSuffix>
-					<invokerPackage>io.kokuwa.fleet.registry.rest</invokerPackage>
-					<output>${project.build.directory}</output>
-					<configOptions>
-						<useLombokGenerated>true</useLombokGenerated>
-						<dateTimeRelaxed>false</dateTimeRelaxed>
-						<visitable>false</visitable>
-					</configOptions>
-					<typeMappings>
-						<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
-						<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
-					</typeMappings>
-					<ignoreFileOverride>${project.basedir}/../.openapi-ignore</ignoreFileOverride>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>io.kokuwa.micronaut</groupId>
-						<artifactId>micronaut-openapi-codegen</artifactId>
-						<version>${version.io.kokuwa.micronaut.codegen}</version>
-					</dependency>
-				</dependencies>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-install</id>
+						<phase />
+					</execution>
+				</executions>
 			</plugin>
-
-			<!-- adjust jacoco excludes -->
 			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>**/*MapperImpl.class</exclude>
-					</excludes>
-				</configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
+						<phase />
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>
