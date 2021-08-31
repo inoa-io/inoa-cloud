@@ -166,9 +166,11 @@ components:
         url: https://tools.ietf.org/html/rfc7523#section-3.1
       properties:
         error:
+          description: error key
           type: string
           example: invalid_grant
         error_description:
+          description: error description
           type: string
           example: gateway unknown
       required:
@@ -180,9 +182,11 @@ components:
         url: https://tools.ietf.org/html/rfc6749#section-5.1
       properties:
         access_token:
+          description: The access token to use.
           type: string
           example: ey....
         token_type:
+          description: Type of token.
           type: string
           example: bearer
         expires_in:
@@ -191,6 +195,7 @@ components:
           format: int64
           example: 300
         tenant_id:
+          description: Tentant of current gateway.
           type: string
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
