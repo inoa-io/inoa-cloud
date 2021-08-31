@@ -12,7 +12,8 @@ info:
   contact: 
     name: Kokuwa.io
     url: https://github.com/kokuwaio
-servers: []
+servers:
+- url: http://gateway-registry-service:8080
 security: 
 - BearerAuth: []
 paths:

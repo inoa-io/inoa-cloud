@@ -11,8 +11,10 @@ info:
   contact: 
     name: Kokuwa.io
     url: https://github.com/kokuwaio
-servers: []
+servers:
+- url: http://gateway-registry-service:8080
 security: 
+- Keycloak: []
 - BearerAuth: []
 paths:
   /tenants:
@@ -1251,3 +1253,6 @@ components:
     BearerAuth:
       type: http
       scheme: bearer
+    Keycloak:
+      type: openIdConnect
+      openIdConnectUrl: http://keycloak:8080/realms/inoa/.well-known/openid-configuration
