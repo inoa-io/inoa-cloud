@@ -3,18 +3,19 @@ services:
 
   keycloak:
     build: ${project.build.directory}/compose/keycloak
+    hostname: keycloak
     environment:
     - KC_HTTP_ENABLED=true
-    - KC_HTTP_PORT=9000
     - KC_CLUSTER=local
     - KEYCLOAK_ADMIN=admin
     - KEYCLOAK_ADMIN_PASSWORD=password
     healthcheck:
-      test: curl -sf http://localhost:9000/realms/inoa/protocol/openid-connect/certs
+      test: curl -sf http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       interval: 5s
 
   postgres:
     image: postgres:${docker.postgres.version}
+    hostname: postgres
     environment:
     - POSTGRES_USER=gateway-registry
     - POSTGRES_PASSWORD=changeMe
@@ -24,13 +25,13 @@ services:
 
   gateway-registry-service:
     image: ${docker.image.repository}/gateway-registry-service:${docker.image.version}
+    hostname: gateway-registry-service
     environment:
-    - MICRONAUT_ENVIRONMENTS=postgres,dev
-    - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:9000/realms/inoa/protocol/openid-connect/certs
+    - MICRONAUT_ENVIRONMENTS=postgres
+    - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
     - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
-    - LOGGER_LEVELS_IO_MICRONAUT_SECURITY=TRACE
-    - LOGGER_LEVELS_IO_MICRONAUT_DATA=TRACE
-    - LOGGER_LEVELS_IO_KOKUWA=TRACE
+    - REGISTRY_AUTH_ISSUER=http://gateway-registry-service:8080/
+    - REGISTRY_AUTH_GENERATE_KEY=TRUE
     volumes:
     - ${project.build.directory}/compose/service/testdata.sql:/database/V999__testdata.sql
     healthcheck:
@@ -41,3 +42,33 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+
+  dns-proxy:
+    image: defreitas/dns-proxy-server:2.19.0
+    hostname: dns-proxy
+    ports:
+    - 5380:5380
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /etc/resolv.conf:/etc/resolv.conf
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui:v3.52.0
+    hostname: swagger-ui
+    environment:
+    - URLS=[{url:"/management.yaml",name:"Management API"},{url:"/gateway.yaml",name:"Gateway API"}]
+    - DISPLAY_OPERATION_ID=true
+    - DISPLAY_REQUEST_DURATION=true
+    - PERSIST_AUTHORIZATION=true
+    - VALIDATOR_URL=
+    - TRY_IT_OUT_ENABLED=true
+    - OAUTH_CLIENT_ID=gateway-registry-ui
+    - OAUTH_CLIENT_SECRET=changeMe
+    volumes:
+    - ${project.parent.basedir}/service/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
+    - ${project.parent.basedir}/service/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
+    depends_on:
+      gateway-registry-service:
+        condition: service_started
+      keycloak:
+        condition: service_started

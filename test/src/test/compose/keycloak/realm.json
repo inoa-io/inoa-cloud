@@ -1,6 +1,7 @@
 {
   "enabled": true,
   "realm": "inoa",
+  "accessTokenLifespan": 1440000,
   "groups": [
     { "id": "00000001-0000-0000-0000-000000000000", "name": "tenantA" },
     { "id": "00000002-0000-0000-0000-000000000000", "name": "tenantB" }
@@ -9,7 +10,8 @@
     {
       "enabled": true,
       "username": "admin",
-      "credentials": [ { "type": "password", "value": "password" } ]
+      "credentials": [ { "type": "password", "value": "password" } ],
+      "groups": [ "tenantA", "tenantB" ]
     },
     {
       "enabled": true,
@@ -49,11 +51,14 @@
           }
         }
       ],
-      "redirectUris": [],
-      "webOrigins": [],
+      "redirectUris": [ "*" ],
+      "webOrigins": [ "*" ],
       "defaultClientScopes": [],
       "optionalClientScopes": []
     }
-  ]
+  ],
+  "clientScopes": [],
+  "defaultDefaultClientScopes": [],
+  "defaultOptionalClientScopes": []
 }
 
