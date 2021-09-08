@@ -12,6 +12,24 @@
 
 	<name>GatewayRegistry :: Service</name>
 
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.micronaut</groupId>
+				<artifactId>micronaut-bom</artifactId>
+				<version>${version.io.micronaut}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.keycloak.bom</groupId>
+				<artifactId>keycloak-bom-parent</artifactId>
+				<version>${version.org.keycloak}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 
 		<!-- micronaut -->
@@ -247,17 +265,6 @@
 						<goals>
 							<goal>dockerBuild</goal>
 						</goals>
-						<configuration>
-							<container>
-								<mainClass>io.inoa.fleet.registry.Application</mainClass>
-								<jvmFlags>
-									<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
-								</jvmFlags>
-							</container>
-							<to>
-								<image>${docker.image.repository}/${project.artifactId}:${docker.image.version}</image>
-							</to>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
