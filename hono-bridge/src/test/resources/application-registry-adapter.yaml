@@ -1,0 +1,45 @@
+hono:
+  kafka:
+    commonClientConfig:
+      bootstrap.servers: kafka-cluster-kafka-bootstrap.inoa-cloud.svc.cluster.local:9092
+  app:
+    maxInstances: 1
+    startupTimeout: 90
+  auth:
+    host: "hono-service-auth"
+    port: 5672
+    name: "Hono service-device-registry"
+    supportedSaslMechanisms: "PLAIN"
+    connectTimeout: 2000
+    validation:
+      sharedSecret: gggggggggggggggggggggggggggggggggggggggg
+  registry:
+    amqp:
+      insecurePortBindAddress: "0.0.0.0"
+      insecurePort: "5672"
+
+    http:
+      authenticationRequired: false
+      insecurePortEnabled: true
+      insecurePortBindAddress: "0.0.0.0"
+      insecurePort: "9999"
+      deviceIdPattern: "^[a-zA-Z0-9-_\\.\\:]+$"
+    svc:
+      filename: "/etc/hono/sandbox-device-identities.json"
+      saveToFile: true
+  credentials:
+    svc:
+      filename: "/etc/hono/sandbox-credentials.json"
+      saveToFile: true
+  tenant:
+    svc:
+      filename: "/etc/hono/sandbox-tenants.json"
+      saveToFile: true
+  messaging:
+    certPath: /etc/hono/cert.pem
+    hostnameVerificationRequired: false
+    keyPath: /etc/hono/key.pem
+    trustStorePath: /etc/hono/trusted-certs.pem
+  healthCheck:
+    insecurePort: 8088
+    insecurePortBindAddress: "0.0.0.0"
