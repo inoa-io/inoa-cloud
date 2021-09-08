@@ -11,7 +11,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-package io.kokuwa.fleet.registry.hono;
+package io.inoa.fleet.registry.hono;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -71,15 +71,15 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.client.RestTemplate;
 
-import io.kokuwa.fleet.registry.hono.config.DeviceServiceProperties;
-import io.kokuwa.fleet.registry.hono.config.InoaProperties;
-import io.kokuwa.fleet.registry.hono.config.TenantServiceProperties;
-import io.kokuwa.fleet.registry.hono.impl.CredentialsManagementServiceImpl;
-import io.kokuwa.fleet.registry.hono.impl.CredentialsServiceImpl;
-import io.kokuwa.fleet.registry.hono.impl.DeviceManagementServiceImpl;
-import io.kokuwa.fleet.registry.hono.impl.RegistrationServiceImpl;
-import io.kokuwa.fleet.registry.hono.impl.TenantManagementServiceImpl;
-import io.kokuwa.fleet.registry.hono.impl.TenantServiceImpl;
+import io.inoa.fleet.registry.hono.config.DeviceServiceProperties;
+import io.inoa.fleet.registry.hono.config.InoaProperties;
+import io.inoa.fleet.registry.hono.config.TenantServiceProperties;
+import io.inoa.fleet.registry.hono.impl.CredentialsManagementServiceImpl;
+import io.inoa.fleet.registry.hono.impl.CredentialsServiceImpl;
+import io.inoa.fleet.registry.hono.impl.DeviceManagementServiceImpl;
+import io.inoa.fleet.registry.hono.impl.RegistrationServiceImpl;
+import io.inoa.fleet.registry.hono.impl.TenantManagementServiceImpl;
+import io.inoa.fleet.registry.hono.impl.TenantServiceImpl;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.opentracing.Tracer;
 import io.opentracing.contrib.tracerresolver.TracerResolver;
