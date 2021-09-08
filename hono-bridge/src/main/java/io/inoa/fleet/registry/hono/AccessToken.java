@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.hono;
+package io.inoa.fleet.registry.hono;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

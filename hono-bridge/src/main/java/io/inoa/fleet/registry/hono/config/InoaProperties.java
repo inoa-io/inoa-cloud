@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.hono.config;
+package io.inoa.fleet.registry.hono.config;
 
 import lombok.Data;
 

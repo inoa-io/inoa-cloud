@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.hono;
+package io.inoa.fleet.registry.hono;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
@@ -31,7 +31,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
-import io.kokuwa.fleet.registry.hono.config.InoaProperties;
+import io.inoa.fleet.registry.hono.config.InoaProperties;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.Timeout;

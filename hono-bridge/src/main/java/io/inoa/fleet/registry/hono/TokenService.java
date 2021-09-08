@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.hono;
+package io.inoa.fleet.registry.hono;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import io.kokuwa.fleet.registry.hono.config.InoaProperties;
+import io.inoa.fleet.registry.hono.config.InoaProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

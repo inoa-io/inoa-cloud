@@ -1,7 +1,6 @@
-package io.kokuwa.fleet.registry.hono;
+package io.inoa.fleet.registry.hono;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.containing;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
@@ -10,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import org.eclipse.hono.service.registration.RegistrationService;
-import org.eclipse.hono.util.RegistrationResult;
+import org.eclipse.hono.service.tenant.TenantService;
+import org.eclipse.hono.util.TenantResult;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,8 +30,9 @@ import org.testcontainers.utility.DockerImageName;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
-import io.kokuwa.fleet.registry.hono.config.InoaProperties;
+import io.inoa.fleet.registry.hono.config.InoaProperties;
 import io.vertx.core.Future;
+import io.vertx.core.json.JsonObject;
 import io.vertx.junit5.Timeout;
 import io.vertx.junit5.VertxExtension;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest
 @Timeout(value = 5, timeUnit = TimeUnit.SECONDS)
 @Execution(ExecutionMode.SAME_THREAD)
-public class RegistrationServiceTest {
+public class TenantServiceTest {
 
 	WireMockServer wireMockServer;
 
@@ -52,7 +52,7 @@ public class RegistrationServiceTest {
 			DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
 
 	@Autowired
-	RegistrationService registrationService;
+	TenantService tenantService;
 
 	@Autowired
 	InoaProperties inoaProperties;
@@ -69,10 +69,6 @@ public class RegistrationServiceTest {
 
 		wireMockServer.stubFor(get(urlEqualTo("/tenants/a910b71e-492e-4776-8a62-792d5a1f1780")).willReturn(
 				aResponse().withHeader("Content-Type", "application/json").withBodyFile("json/tenant.json")));
-
-		wireMockServer.stubFor(get(urlEqualTo("/gateways/b1f16184-04cf-11ec-9955-b780b05b0a68"))
-				.withHeader("x-inoa-tenant", containing("a910b71e-492e-4776-8a62-792d5a1f1780")).willReturn(
-						aResponse().withHeader("Content-Type", "application/json").withBodyFile("json/gateway.json")));
 
 		wireMockServer.stubFor(post(urlEqualTo("/auth/realms/inoa/protocol/openid-connect/token"))
 				.willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("{\"access_token\": "
@@ -91,16 +87,15 @@ public class RegistrationServiceTest {
 	}
 
 	@Test
-	public void myTest() throws InterruptedException {
-		Future<RegistrationResult> registrationResultFuture = registrationService
-				.assertRegistration("a910b71e-492e-4776-8a62-792d5a1f1780", "b1f16184-04cf-11ec-9955-b780b05b0a68");
+	public void testGetTenantById() throws InterruptedException {
+		Future<TenantResult<JsonObject>> tenantResultFuture = tenantService.get("a910b71e-492e-4776-8a62-792d5a1f1780");
 		CountDownLatch l = new CountDownLatch(1);
-		registrationResultFuture.setHandler(event -> {
+		tenantResultFuture.setHandler(event -> {
 			l.countDown();
 		});
 		l.await(5, TimeUnit.SECONDS);
-		assertTrue(registrationResultFuture.succeeded());
-		RegistrationResult result = registrationResultFuture.result();
+		assertTrue(tenantResultFuture.succeeded());
+		TenantResult<JsonObject> result = tenantResultFuture.result();
 		log.info("{}", result.getPayload());
 	}
 }

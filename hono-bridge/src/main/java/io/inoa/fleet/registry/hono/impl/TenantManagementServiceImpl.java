@@ -1,4 +1,4 @@
-package io.kokuwa.fleet.registry.hono.impl;
+package io.inoa.fleet.registry.hono.impl;
 
 import java.net.HttpURLConnection;
 import java.util.Optional;
@@ -14,8 +14,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import io.kokuwa.fleet.registry.hono.TokenService;
-import io.kokuwa.fleet.registry.hono.config.InoaProperties;
+import io.inoa.fleet.registry.hono.TokenService;
+import io.inoa.fleet.registry.hono.config.InoaProperties;
 import io.opentracing.Span;
 import io.vertx.core.Future;
 import lombok.RequiredArgsConstructor;
