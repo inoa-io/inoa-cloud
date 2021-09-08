@@ -3,244 +3,103 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.kokuwa</groupId>
-		<artifactId>maven-parent</artifactId>
-		<version>0.4.0</version>
-		<relativePath/>
+		<groupId>io.inoa.fleet</groupId>
+		<artifactId>gateway-registry</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>io.inoa.fleet</groupId>
 	<artifactId>gateway-registry-hono-bridge</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 
 	<name>GatewayRegistry :: Hono Bridge</name>
-	<url>https://github.com/kokuwaio/gateway-registry</url>
-	<inceptionYear>2020</inceptionYear>
-	<licenses>
-		<license>
-			<name>Apache License 2.0</name>
-			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
-		</license>
-	</licenses>
-
-	<scm>
-		<url>https://github.com/grayc-de/gateway-registry-hono-bridge.git</url>
-		<connection>scm:git:https://github.com/grayc-de/gateway-registry-hono-bridge.git</connection>
-		<developerConnection>scm:git:https://github.com/grayc-de/gateway-registry-hono-bridge.git</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
-	<issueManagement>
-		<system>github</system>
-		<url>https://github.com/kokuwaio/gateway-registry/issues</url>
-	</issueManagement>
-
-	<properties>
-
-		<!-- ===================================================================== -->
-		<!-- =============================== Build =============================== -->
-		<!-- ===================================================================== -->
-
-		<docker.image.repository>ghcr.io/grayc-de</docker.image.repository>
-		<docker.image.version>${project.version}</docker.image.version>
-
-		<!-- ===================================================================== -->
-		<!-- ============================== Libaries ============================= -->
-		<!-- ===================================================================== -->
-
-		<version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
-		<version.org.testcontainers>1.15.3</version.org.testcontainers>
-		<version.eclipse.hono>1.9.0</version.eclipse.hono>
-
-	</properties>
 
 	<dependencyManagement>
 		<dependencies>
-		
-			<!-- build -->
 			<dependency>
-				<groupId>org.mapstruct</groupId>
-				<artifactId>mapstruct</artifactId>
-				<version>${version.org.mapstruct}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.testcontainers</groupId>
-				<artifactId>testcontainers-bom</artifactId>
-				<version>${version.org.testcontainers}</version>
+				<groupId>org.eclipse.hono</groupId>
+				<artifactId>hono-bom</artifactId>
+				<version>${version.org.eclipse.hono}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${version.org.springframework.boot}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
 
-		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-service-base-spring</artifactId>
-			<version>${version.eclipse.hono}</version>
-		</dependency>
+		<!-- spring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>2.4.8</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
-			<version>2.4.8</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-actuator-autoconfigure</artifactId>
-			<version>2.4.8</version>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-service-device-registry-base</artifactId>
-			<version>${version.eclipse.hono}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-client-telemetry-amqp</artifactId>
-			<version>${version.eclipse.hono}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-client-telemetry-kafka</artifactId>
-			<version>${version.eclipse.hono}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.opentracing.contrib</groupId>
-			<artifactId>opentracing-tracerresolver</artifactId>
-			<version>0.1.8</version>
-		</dependency>
-
-		<!-- testing -->
-
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-junit5</artifactId>
-			<version>3.9.7</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<version>2.4.8</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- eclipse -->
+		<dependency>
+			<groupId>org.eclipse.hono</groupId>
+			<artifactId>hono-service-base-spring</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.eclipse.hono</groupId>
+			<artifactId>hono-service-device-registry-base</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.hono</groupId>
+			<artifactId>hono-client-telemetry-amqp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.hono</groupId>
+			<artifactId>hono-client-telemetry-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.opentracing.contrib</groupId>
+			<artifactId>opentracing-tracerresolver</artifactId>
+		</dependency>
+
+		<!-- testing -->
+		<dependency>
 			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock-standalone</artifactId>
-			<version>2.27.2</version>
+			<artifactId>wiremock-jre8-standalone</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>testcontainers</artifactId>
-			<version>1.16.0</version>
+			<groupId>io.vertx</groupId>
+			<artifactId>vertx-junit5</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>1.16.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>kafka</artifactId>
-			<version>1.16.0</version>
 			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
 
 	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<directory>src/test/resources</directory>
-				<filtering>true</filtering>
-			</testResource>
-		</testResources>
 		<plugins>
-
-			<!-- configure jar with libs and main class -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${version.org.projectlombok}</version>
-						</path>
-						<path>
-							<groupId>org.mapstruct</groupId>
-							<artifactId>mapstruct-processor</artifactId>
-							<version>${version.org.mapstruct}</version>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-
-			<!-- adjust jacoco excludes -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>**/*MapperImpl.class</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
-			<!-- run surefire tests with multiple configurations -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<failIfNoTests>true</failIfNoTests>
-				</configuration>
-			</plugin>
-
-			<!-- configure jar with lib and main class -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<addClasspath>true</addClasspath>
-							<classpathPrefix>lib/</classpathPrefix>
-							<mainClass>${exec.mainClass}</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-
-			<!-- copy project dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<includeScope>runtime</includeScope>
-							<outputDirectory>${project.build.directory}/lib</outputDirectory>
-							<silent>true</silent>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 
 			<!-- create container -->
 			<plugin>
@@ -252,16 +111,6 @@
 						<goals>
 							<goal>dockerBuild</goal>
 						</goals>
-						<configuration>
-							<container>
-								<jvmFlags>
-									<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
-								</jvmFlags>
-							</container>
-							<to>
-								<image>${docker.image.repository}/${project.artifactId}:${docker.image.version}</image>
-							</to>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
