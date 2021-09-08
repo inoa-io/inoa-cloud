@@ -32,7 +32,11 @@ public class ComposePropertySource implements PropertySourceLoader {
 	private static final File COMPOSE_FILE = Paths.get("target/compose/docker-compose.yaml").toFile();
 	private static final String CONTAINER_POSTGRES = "postgres";
 	private static final String CONTAINER_KEYCLOAK = "keycloak";
+	private static final String CONTAINER_KAFKA = "kafka";
 	private static final String CONTAINER_SERVICE = "gateway-registry-service";
+	private static final String CONTAINER_BRIDGE = "gateway-registry-hono-bridge";
+
+	private static final String CONTAINER_HONO_MQTT = "hono-adapter-mqtt";
 
 	private static Map<String, Object> cache;
 
@@ -54,11 +58,24 @@ public class ComposePropertySource implements PropertySourceLoader {
 				log.info("Start docker-compose containers.");
 				var waitForHealthcheck = Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(2));
 				var container = new DockerComposeContainer<>(COMPOSE_FILE)
-						.withServices(CONTAINER_SERVICE, CONTAINER_KEYCLOAK, CONTAINER_POSTGRES)
+						.withServices(
+								CONTAINER_SERVICE,
+								CONTAINER_BRIDGE,
+								CONTAINER_KEYCLOAK,
+								CONTAINER_POSTGRES,
+								"zookeeper",
+								CONTAINER_KAFKA,
+								"hono-service-auth",
+								"hono-service-command-router",
+								CONTAINER_HONO_MQTT)
 						.withExposedService(CONTAINER_SERVICE, 8080, waitForHealthcheck)
 						.withExposedService(CONTAINER_SERVICE, 8090, waitForHealthcheck)
 						.withExposedService(CONTAINER_KEYCLOAK, 8080, waitForHealthcheck)
+						.withExposedService(CONTAINER_KAFKA, 9092, waitForHealthcheck)
+						.withExposedService(CONTAINER_HONO_MQTT, 1883, waitForHealthcheck)
+						.waitingFor(CONTAINER_BRIDGE, waitForHealthcheck)
 						.withLogConsumer(CONTAINER_SERVICE, new Slf4jLogConsumer(log).withPrefix("service"))
+						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix("bridge"))
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
 						.withRemoveImages(RemoveImages.ALL)
 						.withLocalCompose(false);
@@ -66,13 +83,17 @@ public class ComposePropertySource implements PropertySourceLoader {
 				cache = Map.of(
 						"test.service.8080", "localhost:" + container.getServicePort(CONTAINER_SERVICE, 8080),
 						"test.service.8090", "localhost:" + container.getServicePort(CONTAINER_SERVICE, 8090),
-						"test.keycloak.8080", "localhost:" + container.getServicePort(CONTAINER_KEYCLOAK, 8080));
+						"test.keycloak.8080", "localhost:" + container.getServicePort(CONTAINER_KEYCLOAK, 8080),
+						"test.mqtt.1883", "localhost:" + container.getServicePort(CONTAINER_HONO_MQTT, 1883),
+						"test.kafka.9092", "localhost:" + container.getServicePort(CONTAINER_KAFKA, 9092));
 			} else {
 				log.info("Use existing containers and skip compose start.");
 				cache = Map.of(
 						"test.service.8080", CONTAINER_SERVICE + ":" + 8080,
 						"test.service.8090", CONTAINER_SERVICE + ":" + 8090,
-						"test.keycloak.8080", CONTAINER_KEYCLOAK + ":" + 8080);
+						"test.keycloak.8080", CONTAINER_KEYCLOAK + ":" + 8080,
+						"test.mqtt.1883", CONTAINER_HONO_MQTT + ":" + 1883,
+						"test.kafka.9092", CONTAINER_KAFKA + ":" + 9092);
 			}
 			log.info("Use properties: {}", cache);
 		}

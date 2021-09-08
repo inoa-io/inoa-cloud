@@ -1,4 +1,6 @@
 micronaut:
+
+  ## http clients for testing
   http:
     services:
       keycloak:
@@ -11,10 +13,26 @@ micronaut:
         url: http://${test.service.8090}
         logger-name: io.inoa.fleet.registry.Management
 
+  ## executors for kafka listener
+  executors:
+    consumer:
+      type: fixed
+      nThreads: 1
+
+## see https://micronaut-projects.github.io/micronaut-mqtt/latest/guide/#v3config
+mqtt:
+  enabled: false
+  client.server-uri: tcp://${test.mqtt.1883}
+
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
   serialization:
     indentOutput: true
+
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide/
+kafka:
+  bootstrap:
+    servers: ${test.kafka.9092}
 
 ## custom log configuration
 logger:

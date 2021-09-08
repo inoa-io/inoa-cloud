@@ -1,64 +1,89 @@
 {
-  "enabled": true,
-  "realm": "inoa",
-  "accessTokenLifespan": 1440000,
-  "groups": [
-    { "id": "00000001-0000-0000-0000-000000000000", "name": "tenantA" },
-    { "id": "00000002-0000-0000-0000-000000000000", "name": "tenantB" }
-  ],
-  "users": [
-    {
-      "enabled": true,
-      "username": "admin",
-      "credentials": [ { "type": "password", "value": "password" } ],
-      "groups": [ "tenantA", "tenantB" ]
-    },
-    {
-      "enabled": true,
-      "username": "userFromTenantA",
-      "credentials": [ { "type": "password", "value": "password" } ],
-      "groups": [ "tenantA" ]
-    },
-    {
-      "enabled": true,
-      "username": "userFromTenantB",
-      "credentials": [ { "type": "password", "value": "password" } ],
-      "groups": [ "tenantB" ]
-    }
-  ],
-  "clients": [
-    {
-      "enabled": true,
-      "clientId": "gateway-registry-ui",
-      "secret": "changeMe",
-      "standardFlowEnabled": false,
-      "implicitFlowEnabled": false,
-      "directAccessGrantsEnabled": true,
-      "serviceAccountsEnabled": false,
-      "protocol": "openid-connect",
-      "protocolMappers": [
-        {
-          "name": "tenant",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-group-membership-mapper",
-          "config": {
-            "claim.name": "tenant",
-            "full.path": "false",
-            "multivalued": "false",
-            "id.token.claim": "true",
-            "access.token.claim": "true",
-            "userinfo.token.claim": "true"
-          }
-        }
-      ],
-      "redirectUris": [ "*" ],
-      "webOrigins": [ "*" ],
-      "defaultClientScopes": [],
-      "optionalClientScopes": []
-    }
-  ],
-  "clientScopes": [],
-  "defaultDefaultClientScopes": [],
-  "defaultOptionalClientScopes": []
+	"enabled": true,
+	"realm": "inoa",
+	"accessTokenLifespan": 1440000,
+	"groups": [
+		{ "id": "00000001-0000-0000-0000-000000000000", "name": "tenantA" },
+		{ "id": "00000002-0000-0000-0000-000000000000", "name": "tenantB" }
+	],
+	"users": [
+		{
+			"enabled": true,
+			"username": "admin",
+			"credentials": [ { "type": "password", "value": "password" } ],
+			"groups": [ "tenantA", "tenantB" ]
+		},
+		{
+			"enabled": true,
+			"username": "userFromTenantA",
+			"credentials": [ { "type": "password", "value": "password" } ],
+			"groups": [ "tenantA" ]
+		},
+		{
+			"enabled": true,
+			"username": "userFromTenantB",
+			"credentials": [ { "type": "password", "value": "password" } ],
+			"groups": [ "tenantB" ]
+		}
+	],
+	"clients": [
+		{
+			"enabled": true,
+			"clientId": "gateway-registry-ui",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "tenant",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-group-membership-mapper",
+					"config": {
+						"claim.name": "tenant",
+						"full.path": "false",
+						"multivalued": "false",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
+				}
+			],
+			"redirectUris": [ "*" ],
+			"webOrigins": [ "*" ],
+			"defaultClientScopes": [],
+			"optionalClientScopes": []
+		},{
+			"enabled": true,
+			"clientId": "gateway-registry-hono-bridge",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": true,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "tenant - tenantA",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-hardcoded-claim-mapper",
+					"config": {
+						"claim.name": "tenant",
+						"claim.value":"2381b39a-e721-4456-8f9f-8d2c18cec993",
+						"jsonType.label":"String",
+						"access.token.claim": "true"
+					}
+				}
+			],
+			"defaultClientScopes": [],
+			"optionalClientScopes": []
+		}
+	],
+	"clientScopes": [],
+	"defaultDefaultClientScopes": [],
+	"defaultOptionalClientScopes": []
 }
-
