@@ -1,16 +1,19 @@
 package io.inoa.fleet.registry.usecase;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.ParseException;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,7 +32,11 @@ import io.inoa.fleet.registry.rest.management.CredentialsApiClient;
 import io.inoa.fleet.registry.rest.management.GatewayCreateVO;
 import io.inoa.fleet.registry.rest.management.GatewaysApiClient;
 import io.inoa.fleet.registry.rest.management.SecretCreatePSKVO;
+import io.inoa.fleet.registry.rest.management.SecretCreatePasswordVO;
 import io.inoa.fleet.registry.rest.management.TenantsApiClient;
+import io.inoa.fleet.registry.test.GatewayMqttClient;
+import io.inoa.fleet.registry.test.KafkaMessageStore;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpHeaderValues;
 
 /**
@@ -50,7 +57,12 @@ public class GatewayTest extends ComposeTest {
 	PropertiesApiClient propertiesClient;
 	@Inject
 	TenantsApiClient tenantsApiClient;
+	@Inject
+	KafkaMessageStore kafka;
+	@Value("${mqtt.client.server-uri}")
+	String mqttServerUrl;
 
+	static UUID tenantId = UUID.fromString("2381b39a-e721-4456-8f9f-8d2c18cec993");
 	static UUID gatewayId;
 	static String secret;
 
@@ -69,6 +81,10 @@ public class GatewayTest extends ComposeTest {
 				.setAuthId("registry")
 				.setType(CredentialTypeVO.PSK)
 				.setSecrets(List.of(new SecretCreatePSKVO().setSecret(secret.getBytes())))));
+		assert201(() -> credentialsClient.createCredential(userToken, gatewayId, new CredentialCreateVO()
+				.setAuthId("hono")
+				.setType(CredentialTypeVO.PASSWORD)
+				.setSecrets(List.of(new SecretCreatePasswordVO().setPassword(secret.getBytes())))));
 	}
 
 	@DisplayName("2. get registry token")
@@ -97,5 +113,27 @@ public class GatewayTest extends ComposeTest {
 		assert200(() -> propertiesClient.setProperties(gatewayToken, properties));
 		assertEquals(properties, assert200(() -> propertiesClient.getProperties(gatewayToken)));
 		assertEquals(properties, assert200(() -> gatewaysClient.findGateway(userToken, gatewayId)).getProperties());
+	}
+
+	@DisplayName("5. send telemetry message to kafka ")
+	@Test
+	void sendTelemetryToKafka() {
+		kafka.getMessages().clear();
+
+		var payload = "uggaugga-" + UUID.randomUUID();
+		var mqtt = new GatewayMqttClient(mqttServerUrl, tenantId, gatewayId, secret);
+		mqtt.connect();
+		mqtt.sendTelemetry(payload);
+
+		Awaitility
+				.await("wait for telemetry on kafka")
+				.pollInterval(Duration.ofMillis(100))
+				.timeout(Duration.ofMinutes(1))
+				.until(() -> !kafka.getMessages().isEmpty());
+		var message = kafka.getMessages().get(0);
+		assertAll(
+				() -> assertEquals(tenantId, message.getTenantId(), "tenantId"),
+				() -> assertEquals(gatewayId, message.getGatewayId(), "gatewayId"),
+				() -> assertEquals(payload, message.getPayload(), "payload"));
 	}
 }

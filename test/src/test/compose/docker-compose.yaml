@@ -1,6 +1,10 @@
 version: '2.3'
 services:
 
+  ###
+  ### Infrastructure
+  ###
+
   keycloak:
     build: ${project.build.directory}/compose/keycloak
     hostname: keycloak
@@ -12,6 +16,9 @@ services:
     healthcheck:
       test: curl -sf http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       interval: 5s
+    depends_on:
+      dns-proxy:
+        condition: service_started
 
   postgres:
     image: postgres:${docker.postgres.version}
@@ -23,6 +30,36 @@ services:
       test: ["CMD-SHELL", "pg_isready -U gateway-registry"]
       interval: 5s
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:6.1.2
+    hostname: zookeeper
+    environment:
+    - ZOOKEEPER_CLIENT_PORT=2182
+    healthcheck:
+      test: curl -sf http://zookeeper:8080/commands/stats
+      interval: 5s
+
+  kafka:
+    image: confluentinc/cp-kafka:6.1.2
+    hostname: kafka
+    environment:
+    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2182
+    - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093,BROKER://0.0.0.0:9092
+    - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=BROKER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+    - KAFKA_ADVERTISED_LISTENERS=BROKER://kafka:9092
+    - KAFKA_INTER_BROKER_LISTENER_NAME=BROKER
+    - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+    healthcheck:
+      test: cat < /dev/null > /dev/tcp/kafka/9092
+      interval: 5s
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+
+  ###
+  ### Inoa
+  ###
+
   gateway-registry-service:
     image: ${docker.image.repository}/gateway-registry-service:${docker.image.version}
     hostname: gateway-registry-service
@@ -32,6 +69,7 @@ services:
     - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
     - REGISTRY_AUTH_ISSUER=http://gateway-registry-service:8080/
     - REGISTRY_AUTH_GENERATE_KEY=TRUE
+    - LOGGER_LEVELS_IO_INOA=TRACE
     volumes:
     - ${project.build.directory}/compose/service/testdata.sql:/database/V999__testdata.sql
     healthcheck:
@@ -42,6 +80,113 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+
+  gateway-registry-hono-bridge:
+    image: ${docker.image.repository}/gateway-registry-hono-bridge:${docker.image.version}
+    hostname: gateway-registry-hono-bridge
+    env_file: ${project.build.directory}/compose/hono/base.env
+    environment:
+    - HONO_REGISTRY_AMQP_INSECUREPORTENABLED=true
+    - HONO_REGISTRY_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
+    - HONO_REGISTRY_AMQP_INSECUREPORT=5672
+    - HONO_REGISTRY_HTTP_INSECUREPORTENABLED=true
+    - HONO_REGISTRY_HTTP_INSECUREPORTBINDADDRESS=0.0.0.0
+    - HONO_REGISTRY_HTTP_INSECUREPORT=9999
+    - HONO_INOA_GATEWAYREGISTRYHOST=gateway-registry-service
+    - HONO_INOA_GATEWAYREGISTRYPORT=8080
+    - HONO_INOA_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
+    - HONO_INOA_CLIENT_ID=gateway-registry-hono-bridge
+    - HONO_INOA_CLIENT_SECRET=changeMe
+    volumes:
+    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+    healthcheck:
+      test: curl -sf http://localhost:8080/actuator/health
+      interval: 5s
+    depends_on:
+      kafka:
+        condition: service_healthy
+      gateway-registry-service:
+        condition: service_healthy
+
+  ###
+  ### Hono
+  ###
+
+  hono-service-auth:
+    image: eclipse/hono-service-auth-quarkus-native:${version.org.eclipse.hono}
+    hostname: hono-service-auth
+    env_file: ${project.build.directory}/compose/hono/base.env
+    environment:
+    - HONO_AUTH_AMQP_INSECUREPORTENABLED=true
+    - HONO_AUTH_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
+    - HONO_AUTH_AMQP_INSECUREPORT=5672
+    - HONO_AUTH_SVC_PERMISSIONSPATH=/etc/hono/permissions.json
+    - HONO_AUTH_SVC_SUPPORTEDSASLMECHANISMS=PLAIN
+    - HONO_AUTH_SVC_SIGNING_KEYPATH=/etc/hono/auth-server-key.pem
+    - HONO_AUTH_SVC_SIGNING_CERTPATH=/etc/hono/auth-server-cert.pem
+    volumes:
+    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+    - ${project.build.directory}/compose/hono/auth-server-key.pem:/etc/hono/auth-server-key.pem
+    - ${project.build.directory}/compose/hono/permissions.json:/etc/hono/permissions.json
+    healthcheck:
+      test: curl -sf http://hono-service-auth:8088/readiness
+      interval: 5s
+
+  hono-service-command-router:
+    image: eclipse/hono-service-command-router-quarkus-native:${version.org.eclipse.hono}
+    hostname: hono-service-command-router
+    env_file: ${project.build.directory}/compose/hono/base.env
+    environment:
+    - HONO_COMMANDROUTER_AMQP_INSECUREPORTENABLED=true
+    - HONO_COMMANDROUTER_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
+    - HONO_COMMANDROUTER_AMQP_INSECUREPORT=5672
+    - HONO_COMMAND_CERTPATH=/etc/hono/cert.pem
+    - HONO_COMMAND_KEYPATH=/etc/hono/key.pem
+    - HONO_COMMAND_TRUSTSTOREPATH=/etc/hono/trusted-certs.pem
+    volumes:
+    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+    - ${project.build.directory}/compose/hono/trusted-certs.pem:/trusted-certs.pem
+    - ${project.build.directory}/compose/hono/command-router-cert.pem:/etc/hono/command-router-cert.pem
+    - ${project.build.directory}/compose/hono/command-router-key.pem:/etc/hono/command-router-key.pem
+    - ${project.build.directory}/compose/hono/command-router.credentials:/etc/hono/credentials
+    healthcheck:
+      test: curl -sf http://hono-service-command-router:8088/readiness
+      interval: 5s
+    depends_on:
+      kafka:
+        condition: service_healthy
+      hono-service-auth:
+        condition: service_started
+      gateway-registry-hono-bridge:
+        condition: service_started
+
+  hono-adapter-mqtt:
+    image: eclipse/hono-adapter-mqtt-vertx-quarkus-native:${version.org.eclipse.hono}
+    hostname: hono-adapter-mqtt
+    env_file: ${project.build.directory}/compose/hono/base.env
+    environment:
+    - HONO_MQTT_INSECUREPORTENABLED=true
+    - HONO_MQTT_INSECUREPORTBINDADDRESS=0.0.0.0
+    - HONO_MQTT_INSECUREPORT=1883
+    volumes:
+    - ${project.build.directory}/compose/hono/adapter-mqtt.credentials:/etc/hono/credentials
+    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+    healthcheck:
+      test: curl -sf http://hono-adapter-mqtt:8088/readiness
+      interval: 5s
+    depends_on:
+      kafka:
+        condition: service_healthy
+      hono-service-auth:
+        condition: service_started
+      hono-service-command-router:
+        condition: service_started
+      gateway-registry-hono-bridge:
+        condition: service_started
+
+  ###
+  ### Test stuff
+  ###
 
   dns-proxy:
     image: defreitas/dns-proxy-server:2.19.0
@@ -67,8 +212,28 @@ services:
     volumes:
     - ${project.parent.basedir}/service/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
     - ${project.parent.basedir}/service/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
+    healthcheck:
+      test: curl -sf http://localhost:8080
+      interval: 5s
     depends_on:
       gateway-registry-service:
         condition: service_started
       keycloak:
         condition: service_started
+      dns-proxy:
+        condition: service_started
+
+  kafka-ui:
+    image: obsidiandynamics/kafdrop
+    hostname: kafka-ui
+    environment:
+    - KAFKA_BROKERCONNECT=kafka:9092
+    healthcheck:
+      test: curl -sf http://kafka-ui:9000
+      interval: 5s
+    depends_on:
+      kafka:
+        condition: service_healthy
+      dns-proxy:
+        condition: service_started
+

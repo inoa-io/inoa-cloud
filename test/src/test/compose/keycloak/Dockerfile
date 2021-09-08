@@ -1,4 +1,4 @@
-FROM quay.io/keycloak/keycloak-x:${version.org.keycloak} AS elco_keycloak
+FROM quay.io/keycloak/keycloak-x:${version.org.keycloak} AS inoa_keycloak
 
 ENV KC_HTTP_ENABLED=true
 ENV KC_CLUSTER=local
