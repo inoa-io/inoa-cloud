@@ -29,7 +29,7 @@ jackson:
   serialization:
     indentOutput: true
 
-## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide/
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
 kafka:
   bootstrap:
     servers: ${test.kafka.9092}
@@ -38,4 +38,4 @@ kafka:
 logger:
   levels:
     io.micronaut.retry.intercept.RecoveryInterceptor: OFF
-    io.inoa: DEBUG
+    io.inoa: TRACE

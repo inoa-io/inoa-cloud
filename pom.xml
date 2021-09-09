@@ -47,6 +47,7 @@
 		<!-- =============================== Build =============================== -->
 		<!-- ===================================================================== -->
 
+		<docker.kafka.version>6.1.2</docker.kafka.version>
 		<docker.postgres.version>13.1</docker.postgres.version>
 		<docker.image.repository>ghcr.io/grayc-de</docker.image.repository>
 		<docker.image.version>latest</docker.image.version>

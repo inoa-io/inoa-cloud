@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
@@ -23,7 +24,7 @@ public class KafkaMessageListener {
 	private static final String PATTERN_HONO_TELEMETRY = "^hono\\.telemetry\\.(?<tenantId>[0-9a-f\\-]{36})$";
 
 	private final KafkaMessageStore store;
-	private final org.apache.kafka.clients.admin.AdminClient admin;
+	private final AdminClient admin;
 
 	@PostConstruct
 	public void init() {
