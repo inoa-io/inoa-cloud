@@ -69,7 +69,7 @@ public class Auth {
 				.issuer(gatewayId.toString())
 				.issueTime(Date.from(now))
 				.notBeforeTime(Date.from(now))
-				.expirationTime(Date.from(now.plusSeconds(1)));
+				.expirationTime(Date.from(now.plusSeconds(10)));
 		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
 		jwt.sign(new MACSigner(secret));
 		return jwt.serialize();

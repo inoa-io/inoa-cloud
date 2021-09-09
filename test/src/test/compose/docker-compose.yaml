@@ -31,7 +31,7 @@ services:
       interval: 5s
 
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.1.2
+    image: confluentinc/cp-zookeeper:${docker.kafka.version}
     hostname: zookeeper
     environment:
     - ZOOKEEPER_CLIENT_PORT=2182
@@ -40,7 +40,7 @@ services:
       interval: 5s
 
   kafka:
-    image: confluentinc/cp-kafka:6.1.2
+    image: confluentinc/cp-kafka:${docker.kafka.version}
     hostname: kafka
     environment:
     - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2182
@@ -198,7 +198,7 @@ services:
     - /etc/resolv.conf:/etc/resolv.conf
 
   swagger-ui:
-    image: swaggerapi/swagger-ui:v3.52.0
+    image: swaggerapi/swagger-ui
     hostname: swagger-ui
     environment:
     - URLS=[{url:"/management.yaml",name:"Management API"},{url:"/gateway.yaml",name:"Gateway API"}]

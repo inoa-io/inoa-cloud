@@ -35,7 +35,6 @@ public class ComposePropertySource implements PropertySourceLoader {
 	private static final String CONTAINER_KAFKA = "kafka";
 	private static final String CONTAINER_SERVICE = "gateway-registry-service";
 	private static final String CONTAINER_BRIDGE = "gateway-registry-hono-bridge";
-
 	private static final String CONTAINER_HONO_MQTT = "hono-adapter-mqtt";
 
 	private static Map<String, Object> cache;
@@ -74,10 +73,12 @@ public class ComposePropertySource implements PropertySourceLoader {
 						.withExposedService(CONTAINER_KAFKA, 9092, waitForHealthcheck)
 						.withExposedService(CONTAINER_HONO_MQTT, 1883, waitForHealthcheck)
 						.waitingFor(CONTAINER_BRIDGE, waitForHealthcheck)
-						.withLogConsumer(CONTAINER_SERVICE, new Slf4jLogConsumer(log).withPrefix("service"))
-						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix("bridge"))
+						.withLogConsumer(CONTAINER_SERVICE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_SERVICE))
+						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BRIDGE))
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
 						.withRemoveImages(RemoveImages.ALL)
+						.withEnv("KAFKA_ADVERTISED_LISTENERS", "localhost")
+						.withEnv("KAFKA_ADVERTISED_HOST_NAME", "localhost")
 						.withLocalCompose(false);
 				container.start();
 				cache = Map.of(

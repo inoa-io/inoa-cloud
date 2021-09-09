@@ -128,7 +128,7 @@ public class GatewayTest extends ComposeTest {
 		Awaitility
 				.await("wait for telemetry on kafka")
 				.pollInterval(Duration.ofMillis(100))
-				.timeout(Duration.ofMinutes(1))
+				.timeout(Duration.ofSeconds(30))
 				.until(() -> !kafka.getMessages().isEmpty());
 		var message = kafka.getMessages().get(0);
 		assertAll(
