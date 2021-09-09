@@ -35,6 +35,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 	private static final String CONTAINER_KAFKA = "kafka";
 	private static final String CONTAINER_SERVICE = "gateway-registry-service";
 	private static final String CONTAINER_BRIDGE = "gateway-registry-hono-bridge";
+	private static final String CONTAINER_BACKUP = "gateway-registry-hono-backup-service";
 	private static final String CONTAINER_HONO_MQTT = "hono-adapter-mqtt";
 
 	private static Map<String, Object> cache;
@@ -62,6 +63,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 								CONTAINER_BRIDGE,
 								CONTAINER_KEYCLOAK,
 								CONTAINER_POSTGRES,
+								CONTAINER_BACKUP,
 								"zookeeper",
 								CONTAINER_KAFKA,
 								"hono-service-auth",
@@ -70,15 +72,13 @@ public class ComposePropertySource implements PropertySourceLoader {
 						.withExposedService(CONTAINER_SERVICE, 8080, waitForHealthcheck)
 						.withExposedService(CONTAINER_SERVICE, 8090, waitForHealthcheck)
 						.withExposedService(CONTAINER_KEYCLOAK, 8080, waitForHealthcheck)
-						.withExposedService(CONTAINER_KAFKA, 9092, waitForHealthcheck)
+						.withExposedService(CONTAINER_BACKUP, 8090, waitForHealthcheck)
 						.withExposedService(CONTAINER_HONO_MQTT, 1883, waitForHealthcheck)
 						.waitingFor(CONTAINER_BRIDGE, waitForHealthcheck)
 						.withLogConsumer(CONTAINER_SERVICE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_SERVICE))
 						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BRIDGE))
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
 						.withRemoveImages(RemoveImages.ALL)
-						.withEnv("KAFKA_ADVERTISED_LISTENERS", "localhost")
-						.withEnv("KAFKA_ADVERTISED_HOST_NAME", "localhost")
 						.withLocalCompose(false);
 				container.start();
 				cache = Map.of(
@@ -86,7 +86,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 						"test.service.8090", "localhost:" + container.getServicePort(CONTAINER_SERVICE, 8090),
 						"test.keycloak.8080", "localhost:" + container.getServicePort(CONTAINER_KEYCLOAK, 8080),
 						"test.mqtt.1883", "localhost:" + container.getServicePort(CONTAINER_HONO_MQTT, 1883),
-						"test.kafka.9092", "localhost:" + container.getServicePort(CONTAINER_KAFKA, 9092));
+						"test.backup.8090", "localhost:" + container.getServicePort(CONTAINER_BACKUP, 8090));
 			} else {
 				log.info("Use existing containers and skip compose start.");
 				cache = Map.of(
@@ -94,7 +94,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 						"test.service.8090", CONTAINER_SERVICE + ":" + 8090,
 						"test.keycloak.8080", CONTAINER_KEYCLOAK + ":" + 8080,
 						"test.mqtt.1883", CONTAINER_HONO_MQTT + ":" + 1883,
-						"test.kafka.9092", CONTAINER_KAFKA + ":" + 9092);
+						"test.backup.8090", CONTAINER_BACKUP + ":" + 8090);
 			}
 			log.info("Use properties: {}", cache);
 		}

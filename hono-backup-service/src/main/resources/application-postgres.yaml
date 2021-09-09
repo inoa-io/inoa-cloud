@@ -1,0 +1,4 @@
+datasources:
+  default:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${datasources.default.host:postgres}:${datasources.default.port:5432}/${datasources.default.database}

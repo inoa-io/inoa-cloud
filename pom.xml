@@ -25,8 +25,9 @@
 	</licenses>
 
 	<modules>
-		<module>service</module>
 		<module>hono-bridge</module>
+		<module>hono-backup-service</module>
+		<module>service</module>
 		<module>test</module>
 	</modules>
 

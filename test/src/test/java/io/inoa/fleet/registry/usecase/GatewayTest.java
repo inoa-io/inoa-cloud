@@ -1,6 +1,5 @@
 package io.inoa.fleet.registry.usecase;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -34,8 +33,8 @@ import io.inoa.fleet.registry.rest.management.GatewaysApiClient;
 import io.inoa.fleet.registry.rest.management.SecretCreatePSKVO;
 import io.inoa.fleet.registry.rest.management.SecretCreatePasswordVO;
 import io.inoa.fleet.registry.rest.management.TenantsApiClient;
+import io.inoa.fleet.registry.test.BackupServicePrometheusClient;
 import io.inoa.fleet.registry.test.GatewayMqttClient;
-import io.inoa.fleet.registry.test.KafkaMessageStore;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpHeaderValues;
 
@@ -58,7 +57,7 @@ public class GatewayTest extends ComposeTest {
 	@Inject
 	TenantsApiClient tenantsApiClient;
 	@Inject
-	KafkaMessageStore kafka;
+	BackupServicePrometheusClient backupServicePrometheusClient;
 	@Value("${mqtt.client.server-uri}")
 	String mqttServerUrl;
 
@@ -115,10 +114,10 @@ public class GatewayTest extends ComposeTest {
 		assertEquals(properties, assert200(() -> gatewaysClient.findGateway(userToken, gatewayId)).getProperties());
 	}
 
-	@DisplayName("5. send telemetry message to kafka ")
+	@DisplayName("5. send telemetry message to backup ")
 	@Test
-	void sendTelemetryToKafka() {
-		kafka.getMessages().clear();
+	void sendTelemetryToBackup() {
+		var messagesBefore = backupServicePrometheusClient.scrapMessages();
 
 		var payload = "uggaugga-" + UUID.randomUUID();
 		var mqtt = new GatewayMqttClient(mqttServerUrl, tenantId, gatewayId, secret);
@@ -126,14 +125,9 @@ public class GatewayTest extends ComposeTest {
 		mqtt.sendTelemetry(payload);
 
 		Awaitility
-				.await("wait for telemetry on kafka")
-				.pollInterval(Duration.ofMillis(100))
+				.await("wait for telemetry stored in backup")
+				.pollInterval(Duration.ofMillis(500))
 				.timeout(Duration.ofSeconds(30))
-				.until(() -> !kafka.getMessages().isEmpty());
-		var message = kafka.getMessages().get(0);
-		assertAll(
-				() -> assertEquals(tenantId, message.getTenantId(), "tenantId"),
-				() -> assertEquals(gatewayId, message.getGatewayId(), "gatewayId"),
-				() -> assertEquals(payload, message.getPayload(), "payload"));
+				.until(() -> backupServicePrometheusClient.scrapMessages() > messagesBefore);
 	}
 }

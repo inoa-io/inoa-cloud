@@ -12,12 +12,9 @@ micronaut:
       gateway-registry-service-management:
         url: http://${test.service.8090}
         logger-name: io.inoa.fleet.registry.Management
-
-  ## executors for kafka listener
-  executors:
-    consumer:
-      type: fixed
-      nThreads: 1
+      backup-service-management:
+        url: http://${test.backup.8090}
+        logger-name: io.inoa.hono.backup.Management
 
 ## see https://micronaut-projects.github.io/micronaut-mqtt/latest/guide/#v3config
 mqtt:
@@ -38,4 +35,4 @@ kafka:
 logger:
   levels:
     io.micronaut.retry.intercept.RecoveryInterceptor: OFF
-    io.inoa: TRACE
+    io.inoa: DEBUG
