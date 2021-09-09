@@ -39,10 +39,6 @@
 			<artifactId>micronaut-mqttv3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut.kafka</groupId>
-			<artifactId>micronaut-kafka</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.micronaut.security</groupId>
 			<artifactId>micronaut-security-jwt</artifactId>
 		</dependency>

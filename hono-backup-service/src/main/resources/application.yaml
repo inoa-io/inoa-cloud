@@ -1,0 +1,25 @@
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    port: 8090
+    path: /endpoints
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+  loggers:
+    write-sensitive: false
+
+## see https://micronaut-projects.github.io/micronaut-sql/latest/guide/#jdbc
+datasources:
+  default:
+    url: jdbc:h2:mem:${datasources.default.database};MODE=PostgreSQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    database: hono-backup
+    username: hono-backup
+    password: changeMe
+    dialect: POSTGRES
+
+## see https://micronaut-projects.github.io/micronaut-flyway/latest/guide/index.html#additionalConfig
+flyway:
+  datasources:
+    default:
+      locations: classpath:database

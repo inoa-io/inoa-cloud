@@ -24,10 +24,12 @@ services:
     image: postgres:${docker.postgres.version}
     hostname: postgres
     environment:
-    - POSTGRES_USER=gateway-registry
+    - POSTGRES_USER=postgres
     - POSTGRES_PASSWORD=changeMe
+    volumes:
+    - ${project.build.directory}/compose/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gateway-registry"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
 
   zookeeper:
@@ -67,6 +69,7 @@ services:
     - MICRONAUT_ENVIRONMENTS=postgres
     - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
     - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
+    - DATASOURCES_DEFAULT_USERNAME=postgres
     - REGISTRY_AUTH_ISSUER=http://gateway-registry-service:8080/
     - REGISTRY_AUTH_GENERATE_KEY=TRUE
     - LOGGER_LEVELS_IO_INOA=TRACE
@@ -106,6 +109,24 @@ services:
       kafka:
         condition: service_healthy
       gateway-registry-service:
+        condition: service_healthy
+
+  gateway-registry-hono-backup-service:
+    image: ${docker.image.repository}/gateway-registry-hono-backup-service:${docker.image.version}
+    hostname: gateway-registry-hono-backup-service
+    environment:
+    - MICRONAUT_ENVIRONMENTS=postgres
+    - DATASOURCES_DEFAULT_USERNAME=postgres
+    - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    - KAFKA_CONSUMERS_BACKUP_METADATA_MAX_AGE_MS=1000
+    - LOGGER_LEVELS_IO_INOA=TRACE
+    healthcheck:
+      test: curl -sf http://localhost:8090/endpoints/health
+      interval: 5s
+    depends_on:
+      kafka:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
   ###
