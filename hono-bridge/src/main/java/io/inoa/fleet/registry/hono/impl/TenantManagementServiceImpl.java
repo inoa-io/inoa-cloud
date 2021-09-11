@@ -44,7 +44,7 @@ public class TenantManagementServiceImpl extends AbstractTenantManagementService
 	}
 
 	@Override
-	public Future<OperationResult<Tenant>> readTenant(final String tenantId, final Span span) {
+	protected Future<OperationResult<Tenant>> processReadTenant(String tenantId, Span span) {
 		log.info("TenantManagementServiceImpl.readTenant");
 		Future<OperationResult<Tenant>> future = Future.future();
 		HttpHeaders headers = new HttpHeaders();
@@ -66,8 +66,7 @@ public class TenantManagementServiceImpl extends AbstractTenantManagementService
 	}
 
 	@Override
-	public Future<Result<Void>> deleteTenant(final String tenantId, final Optional<String> resourceVersion,
-			final Span span) {
+	protected Future<Result<Void>> processDeleteTenant(String tenantId, Optional<String> resourceVersion, Span span) {
 		log.info("TenantManagementServiceImpl.deleteTenant");
 		return null;
 	}
