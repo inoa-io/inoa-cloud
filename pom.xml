@@ -25,6 +25,7 @@
 	</licenses>
 
 	<modules>
+		<module>messages</module>
 		<module>kafka-backup</module>
 		<module>hono-bridge</module>
 		<module>gateway-registry</module>
