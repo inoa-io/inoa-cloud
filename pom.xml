@@ -196,6 +196,17 @@
 					</configuration>
 				</plugin>
 
+				<!-- speed up release -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<preparationGoals>clean</preparationGoals>
+						<goals>clean install -Dmaven.test.skip.exec=true</goals>
+					</configuration>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 		<plugins>

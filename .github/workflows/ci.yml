@@ -15,4 +15,4 @@ jobs:
     - name: dependencies
       run: mvn -B -q dependency:go-offline
     - name: verify
-      run: mvn -B verify
+      run: mvn -B install
