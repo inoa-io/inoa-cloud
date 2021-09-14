@@ -9,13 +9,13 @@
 		<relativePath />
 	</parent>
 
-	<groupId>io.inoa.fleet</groupId>
-	<artifactId>gateway-registry</artifactId>
+	<groupId>io.inoa.cloud</groupId>
+	<artifactId>parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>GatewayRegistry</name>
-	<url>https://github.com/kokuwaio/gateway-registry</url>
+	<name>INOA Cloud</name>
+	<url>https://github.com/grayc-de/inoa-cloud</url>
 	<inceptionYear>2020</inceptionYear>
 	<licenses>
 		<license>
@@ -25,16 +25,16 @@
 	</licenses>
 
 	<modules>
+		<module>kafka-backup</module>
 		<module>hono-bridge</module>
-		<module>hono-backup-service</module>
-		<module>service</module>
+		<module>gateway-registry</module>
 		<module>test</module>
 	</modules>
 
 	<scm>
-		<url>https://github.com/grayc-de/gateway-registry</url>
-		<connection>scm:git:https://github.com/grayc-de/gateway-registry.git</connection>
-		<developerConnection>scm:git:https://github.com/grayc-de/gateway-registry.git</developerConnection>
+		<url>https://github.com/grayc-de/inoa-cloud</url>
+		<connection>scm:git:https://github.com/grayc-de/inoa-cloud.git</connection>
+		<developerConnection>scm:git:https://github.com/grayc-de/inoa-cloud.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
@@ -66,7 +66,7 @@
 		<version.org.eclipse.hono>1.9.1</version.org.eclipse.hono>
 		<version.org.keycloak>15.0.2</version.org.keycloak>
 		<version.org.mapstruct>1.5.0.Beta1</version.org.mapstruct>
-		<version.org.springframework.boot>2.5.4</version.org.springframework.boot>
+		<version.org.springframework.boot>2.4.8</version.org.springframework.boot>
 		<version.org.testcontainers>1.16.0</version.org.testcontainers>
 
 	</properties>

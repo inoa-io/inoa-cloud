@@ -62,19 +62,19 @@ services:
   ### Inoa
   ###
 
-  gateway-registry-service:
-    image: ${docker.image.repository}/gateway-registry-service:${docker.image.version}
-    hostname: gateway-registry-service
+  gateway-registry:
+    image: ${docker.image.repository}/gateway-registry:${docker.image.version}
+    hostname: gateway-registry
     environment:
     - MICRONAUT_ENVIRONMENTS=postgres
     - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
     - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
     - DATASOURCES_DEFAULT_USERNAME=postgres
-    - REGISTRY_AUTH_ISSUER=http://gateway-registry-service:8080/
+    - REGISTRY_AUTH_ISSUER=http://gateway-registry:8080/
     - REGISTRY_AUTH_GENERATE_KEY=TRUE
     - LOGGER_LEVELS_IO_INOA=TRACE
     volumes:
-    - ${project.build.directory}/compose/service/testdata.sql:/database/V999__testdata.sql
+    - ${project.build.directory}/compose/gateway-registry/testdata.sql:/database/V999__testdata.sql
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
@@ -95,7 +95,7 @@ services:
     - HONO_REGISTRY_HTTP_INSECUREPORTENABLED=true
     - HONO_REGISTRY_HTTP_INSECUREPORTBINDADDRESS=0.0.0.0
     - HONO_REGISTRY_HTTP_INSECUREPORT=9999
-    - HONO_INOA_GATEWAYREGISTRYHOST=gateway-registry-service
+    - HONO_INOA_GATEWAYREGISTRYHOST=gateway-registry
     - HONO_INOA_GATEWAYREGISTRYPORT=8080
     - HONO_INOA_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
     - HONO_INOA_CLIENT_ID=gateway-registry-hono-bridge
@@ -108,12 +108,12 @@ services:
     depends_on:
       kafka:
         condition: service_healthy
-      gateway-registry-service:
+      gateway-registry:
         condition: service_healthy
 
-  gateway-registry-hono-backup-service:
-    image: ${docker.image.repository}/gateway-registry-hono-backup-service:${docker.image.version}
-    hostname: gateway-registry-hono-backup-service
+  kafka-backup:
+    image: ${docker.image.repository}/kafka-backup:${docker.image.version}
+    hostname: kafka-backup
     environment:
     - MICRONAUT_ENVIRONMENTS=postgres
     - DATASOURCES_DEFAULT_USERNAME=postgres
@@ -237,7 +237,7 @@ services:
       test: curl -sf http://localhost:8080
       interval: 5s
     depends_on:
-      gateway-registry-service:
+      gateway-registry:
         condition: service_started
       keycloak:
         condition: service_started

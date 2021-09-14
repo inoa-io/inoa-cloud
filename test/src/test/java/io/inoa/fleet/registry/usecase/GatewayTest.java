@@ -33,7 +33,7 @@ import io.inoa.fleet.registry.rest.management.GatewaysApiClient;
 import io.inoa.fleet.registry.rest.management.SecretCreatePSKVO;
 import io.inoa.fleet.registry.rest.management.SecretCreatePasswordVO;
 import io.inoa.fleet.registry.rest.management.TenantsApiClient;
-import io.inoa.fleet.registry.test.BackupServicePrometheusClient;
+import io.inoa.fleet.registry.test.KafkaBackupPrometheusClient;
 import io.inoa.fleet.registry.test.GatewayMqttClient;
 import io.micronaut.context.annotation.Value;
 import io.micronaut.http.HttpHeaderValues;
@@ -57,7 +57,7 @@ public class GatewayTest extends ComposeTest {
 	@Inject
 	TenantsApiClient tenantsApiClient;
 	@Inject
-	BackupServicePrometheusClient backupServicePrometheusClient;
+	KafkaBackupPrometheusClient kafkaBackupPrometheusClient;
 	@Value("${mqtt.client.server-uri}")
 	String mqttServerUrl;
 
@@ -117,7 +117,7 @@ public class GatewayTest extends ComposeTest {
 	@DisplayName("5. send telemetry message to backup ")
 	@Test
 	void sendTelemetryToBackup() {
-		var messagesBefore = backupServicePrometheusClient.scrapMessages();
+		var messagesBefore = kafkaBackupPrometheusClient.scrapMessages();
 
 		var payload = "uggaugga-" + UUID.randomUUID();
 		var mqtt = new GatewayMqttClient(mqttServerUrl, tenantId, gatewayId, secret);
@@ -128,6 +128,6 @@ public class GatewayTest extends ComposeTest {
 				.await("wait for telemetry stored in backup")
 				.pollInterval(Duration.ofMillis(500))
 				.timeout(Duration.ofSeconds(30))
-				.until(() -> backupServicePrometheusClient.scrapMessages() > messagesBefore);
+				.until(() -> kafkaBackupPrometheusClient.scrapMessages() > messagesBefore);
 	}
 }

@@ -21,7 +21,7 @@ docker-compose -f test/target/compose/docker-compose.yaml --no-cache build keycl
 Add environment variable to your service you want to debug in your **docker-compose.yaml**
 
 ```
-burner-selector-service:
+service:
   environment:
   - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
 ```

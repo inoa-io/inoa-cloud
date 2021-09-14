@@ -3,15 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.inoa.fleet</groupId>
-		<artifactId>gateway-registry</artifactId>
+		<groupId>io.inoa.cloud</groupId>
+		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>gateway-registry-hono-backup-service</artifactId>
+	<artifactId>gateway-registry</artifactId>
 
-	<name>GatewayRegistry :: Hono Backup Service</name>
-	<description>Backups payloads from Hono.</description>
+	<name>INOA Cloud :: Gateway Registry</name>
 
 	<dependencyManagement>
 		<dependencies>
@@ -22,10 +21,17 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.keycloak.bom</groupId>
+				<artifactId>keycloak-bom-parent</artifactId>
+				<version>${version.org.keycloak}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-	
+
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut</groupId>
@@ -33,16 +39,20 @@
 		</dependency>
 		<dependency>
 			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-server-netty</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-websocket</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.kafka</groupId>
-			<artifactId>micronaut-kafka</artifactId>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
@@ -66,30 +76,20 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
-		<!-- monitoring -->
+		<!-- libraries -->
 		<dependency>
-			<groupId>io.micrometer</groupId>
-			<artifactId>micrometer-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-management</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.micrometer</groupId>
-			<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-			<scope>runtime</scope>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
 		</dependency>
 
 		<!-- test -->
@@ -101,16 +101,6 @@
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>kafka</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.awaitility</groupId>
-			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -131,6 +121,70 @@
 		</testResources>
 		<plugins>
 
+			<!-- add generated sources -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/annotations</source>
+								<source>${project.build.directory}/generated-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-test-sources</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-test-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- generate sources from openapi spec -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-gateway-generate</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/gateway.yaml</inputSpec>
+							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
+							<generateSupportingFiles>false</generateSupportingFiles>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-management-generate</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/management.yaml</inputSpec>
+							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- configure annotation processors -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -143,8 +197,18 @@
 							<version>${version.org.projectlombok}</version>
 						</path>
 						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${version.org.mapstruct}</version>
+						</path>
+						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-validation</artifactId>
 							<version>${version.io.micronaut}</version>
 						</path>
 						<path>
@@ -155,7 +219,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-
 
 			<!-- run tests with multiple database configurations -->
 			<plugin>
@@ -208,4 +271,48 @@
 
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>check</id>
+			<activation>
+				<file>
+					<exists>pom.xml</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+
+					<!-- validate openapi specs -->
+					<plugin>
+						<groupId>org.openapitools.openapistylevalidator</groupId>
+						<artifactId>openapi-style-validator-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>openapi-gateway-validate</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>validate</goal>
+								</goals>
+								<configuration>
+									<inputFile>${project.basedir}/src/main/resources/openapi/gateway.yaml</inputFile>
+								</configuration>
+							</execution>
+							<execution>
+								<id>openapi-management-validate</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>validate</goal>
+								</goals>
+								<configuration>
+									<inputFile>${project.basedir}/src/main/resources/openapi/management.yaml</inputFile>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

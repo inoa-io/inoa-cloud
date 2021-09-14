@@ -4,12 +4,12 @@ import io.inoa.fleet.registry.infrastructure.PrometheusClient;
 import io.micronaut.http.client.annotation.Client;
 
 /**
- * Prometheus clients for backup service.
+ * Prometheus clients for kafka backup.
  *
  * @author Stephan Schnabel
  */
-@Client("backup-service-management")
-public interface BackupServicePrometheusClient extends PrometheusClient {
+@Client("kafka-backup-management")
+public interface KafkaBackupPrometheusClient extends PrometheusClient {
 
 	default long scrapMessages() {
 		return scrapCounter("backup_messages");

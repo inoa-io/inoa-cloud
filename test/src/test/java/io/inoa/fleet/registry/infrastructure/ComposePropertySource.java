@@ -33,9 +33,9 @@ public class ComposePropertySource implements PropertySourceLoader {
 	private static final String CONTAINER_POSTGRES = "postgres";
 	private static final String CONTAINER_KEYCLOAK = "keycloak";
 	private static final String CONTAINER_KAFKA = "kafka";
-	private static final String CONTAINER_SERVICE = "gateway-registry-service";
+	private static final String CONTAINER_REGISTRY = "gateway-registry";
 	private static final String CONTAINER_BRIDGE = "gateway-registry-hono-bridge";
-	private static final String CONTAINER_BACKUP = "gateway-registry-hono-backup-service";
+	private static final String CONTAINER_BACKUP = "kafka-backup";
 	private static final String CONTAINER_HONO_MQTT = "hono-adapter-mqtt";
 
 	private static Map<String, Object> cache;
@@ -59,7 +59,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 				var waitForHealthcheck = Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(2));
 				var container = new DockerComposeContainer<>(COMPOSE_FILE)
 						.withServices(
-								CONTAINER_SERVICE,
+								CONTAINER_REGISTRY,
 								CONTAINER_BRIDGE,
 								CONTAINER_KEYCLOAK,
 								CONTAINER_POSTGRES,
@@ -69,32 +69,32 @@ public class ComposePropertySource implements PropertySourceLoader {
 								"hono-service-auth",
 								"hono-service-command-router",
 								CONTAINER_HONO_MQTT)
-						.withExposedService(CONTAINER_SERVICE, 8080, waitForHealthcheck)
-						.withExposedService(CONTAINER_SERVICE, 8090, waitForHealthcheck)
+						.withExposedService(CONTAINER_REGISTRY, 8080, waitForHealthcheck)
+						.withExposedService(CONTAINER_REGISTRY, 8090, waitForHealthcheck)
 						.withExposedService(CONTAINER_KEYCLOAK, 8080, waitForHealthcheck)
 						.withExposedService(CONTAINER_BACKUP, 8090, waitForHealthcheck)
 						.withExposedService(CONTAINER_HONO_MQTT, 1883, waitForHealthcheck)
 						.waitingFor(CONTAINER_BRIDGE, waitForHealthcheck)
-						.withLogConsumer(CONTAINER_SERVICE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_SERVICE))
+						.withLogConsumer(CONTAINER_REGISTRY, new Slf4jLogConsumer(log).withPrefix(CONTAINER_REGISTRY))
 						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BRIDGE))
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
 						.withRemoveImages(RemoveImages.ALL)
 						.withLocalCompose(false);
 				container.start();
 				cache = Map.of(
-						"test.service.8080", "localhost:" + container.getServicePort(CONTAINER_SERVICE, 8080),
-						"test.service.8090", "localhost:" + container.getServicePort(CONTAINER_SERVICE, 8090),
+						"test.gateway-registry.8080", "localhost:" + container.getServicePort(CONTAINER_REGISTRY, 8080),
+						"test.gateway-registry.8090", "localhost:" + container.getServicePort(CONTAINER_REGISTRY, 8090),
 						"test.keycloak.8080", "localhost:" + container.getServicePort(CONTAINER_KEYCLOAK, 8080),
 						"test.mqtt.1883", "localhost:" + container.getServicePort(CONTAINER_HONO_MQTT, 1883),
-						"test.backup.8090", "localhost:" + container.getServicePort(CONTAINER_BACKUP, 8090));
+						"test.kafka-backup.8090", "localhost:" + container.getServicePort(CONTAINER_BACKUP, 8090));
 			} else {
 				log.info("Use existing containers and skip compose start.");
 				cache = Map.of(
-						"test.service.8080", CONTAINER_SERVICE + ":" + 8080,
-						"test.service.8090", CONTAINER_SERVICE + ":" + 8090,
+						"test.gateway-registry.8080", CONTAINER_REGISTRY + ":" + 8080,
+						"test.gateway-registry.8090", CONTAINER_REGISTRY + ":" + 8090,
 						"test.keycloak.8080", CONTAINER_KEYCLOAK + ":" + 8080,
 						"test.mqtt.1883", CONTAINER_HONO_MQTT + ":" + 1883,
-						"test.backup.8090", CONTAINER_BACKUP + ":" + 8090);
+						"test.kafka-backup.8090", CONTAINER_BACKUP + ":" + 8090);
 			}
 			log.info("Use properties: {}", cache);
 		}

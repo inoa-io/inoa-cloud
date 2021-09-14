@@ -6,14 +6,14 @@ micronaut:
       keycloak:
         url: http://${test.keycloak.8080}
         logger-name: io.inoa.Keycloak
-      gateway-registry-service:
-        url: http://${test.service.8080}
+      gateway-registry:
+        url: http://${test.gateway-registry.8080}
         logger-name: io.inoa.fleet.registry.Client
-      gateway-registry-service-management:
-        url: http://${test.service.8090}
+      gateway-registry-management:
+        url: http://${test.gateway-registry.8090}
         logger-name: io.inoa.fleet.registry.Management
-      backup-service-management:
-        url: http://${test.backup.8090}
+      kafka-backup-management:
+        url: http://${test.kafka-backup.8090}
         logger-name: io.inoa.hono.backup.Management
 
 ## see https://micronaut-projects.github.io/micronaut-mqtt/latest/guide/#v3config

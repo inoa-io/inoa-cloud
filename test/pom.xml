@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.inoa.fleet</groupId>
-		<artifactId>gateway-registry</artifactId>
+		<groupId>io.inoa.cloud</groupId>
+		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>gateway-registry-test</artifactId>
+	<artifactId>test</artifactId>
 
-	<name>GatewayRegistry :: Test</name>
+	<name>INOA Cloud :: Test</name>
 
 	<dependencyManagement>
 		<dependencies>
@@ -82,7 +82,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/../service/src/main/resources/openapi/gateway.yaml</inputSpec>
+							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/gateway.yaml</inputSpec>
 							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
 						</configuration>
 					</execution>
@@ -93,14 +93,14 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/../service/src/main/resources/openapi/management.yaml</inputSpec>
+							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/management.yaml</inputSpec>
 							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
 						</configuration>
 					</execution>
 				</executions>
 				<configuration>
 					<configOptions>
-						<clientId>gateway-registry-service</clientId>
+						<clientId>gateway-registry</clientId>
 					</configOptions>
 				</configuration>
 			</plugin>
@@ -189,6 +189,18 @@
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 					<trimStackTrace>false</trimStackTrace>
 				</configuration>
+			</plugin>
+
+			<!-- do not install anything -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-install</id>
+						<phase />
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>

@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.inoa.fleet</groupId>
-		<artifactId>gateway-registry</artifactId>
+		<groupId>io.inoa.cloud</groupId>
+		<artifactId>parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>gateway-registry-hono-bridge</artifactId>
 
-	<name>GatewayRegistry :: Hono Bridge</name>
+	<name>INOA Cloud :: Hono Bridge</name>
 
 	<dependencyManagement>
 		<dependencies>
