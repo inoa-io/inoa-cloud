@@ -11,7 +11,7 @@
 
 	<groupId>io.inoa.cloud</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>INOA Cloud</name>
@@ -35,7 +35,7 @@
 		<url>https://github.com/grayc-de/inoa-cloud</url>
 		<connection>scm:git:https://github.com/grayc-de/inoa-cloud.git</connection>
 		<developerConnection>scm:git:https://github.com/grayc-de/inoa-cloud.git</developerConnection>
-		<tag>0.0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>jira</system>
