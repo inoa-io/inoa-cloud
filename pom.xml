@@ -29,6 +29,7 @@
 		<module>kafka-backup</module>
 		<module>hono-bridge</module>
 		<module>gateway-registry</module>
+		<module>gateway-command-service</module>
 		<module>test</module>
 	</modules>
 
@@ -108,6 +109,11 @@
 			<dependency>
 				<groupId>org.eclipse.hono</groupId>
 				<artifactId>hono-bom</artifactId>
+				<version>${version.org.eclipse.hono}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.hono</groupId>
+				<artifactId>hono-client-application-kafka</artifactId>
 				<version>${version.org.eclipse.hono}</version>
 			</dependency>
 			<dependency>
