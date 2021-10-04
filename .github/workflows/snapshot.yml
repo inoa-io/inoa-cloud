@@ -54,3 +54,5 @@ jobs:
         run: docker push --all-tags ghcr.io/grayc-de/gateway-registry-hono-bridge
       - name: docker push kafka-backup
         run: docker push --all-tags ghcr.io/grayc-de/kafka-backup
+      - name: docker push gateway-command-service
+        run: docker push --all-tags ghcr.io/grayc-de/gateway-command-service
