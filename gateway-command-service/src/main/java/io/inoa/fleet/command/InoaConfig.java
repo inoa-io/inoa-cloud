@@ -11,5 +11,7 @@ import lombok.Data;
 @ConfigurationProperties("inoa")
 public class InoaConfig {
 	private List<String> tenantIds = new ArrayList<>();
-	private String kafkaUrl = "kafka-cluster-kafka-bootstrap.inoa-cloud.svc.cluster.local:9092";
+	private String kafkaUrl = "kafka:9092";
+	private String clientIdPrefix = "inoa.command";
+	private String consumerGroupId = "inoa-command-application";
 }

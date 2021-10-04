@@ -37,9 +37,7 @@ public class IotConfig {
 
 		final CountDownLatch latch = new CountDownLatch(1);
 
-		client.start().onSuccess(v -> {
-			latch.countDown();
-		});
+		client.start().onSuccess(v -> latch.countDown());
 
 		latch.await();
 		return client;
@@ -67,20 +65,18 @@ public class IotConfig {
 	}
 
 	private ApplicationClient<? extends MessageContext> createKafkaApplicationClient(Vertx vertx) {
-		final String clientIdPrefix = "example.application"; // used by Kafka for request logging
-		final String consumerGroupId = "hono-example-application";
 
 		final Map<String, String> properties = new HashMap<>();
 		properties.put("bootstrap.servers", inoaConfig.getKafkaUrl());
 
 		final KafkaConsumerConfigProperties consumerConfig = new KafkaConsumerConfigProperties();
 		consumerConfig.setCommonClientConfig(properties);
-		consumerConfig.setDefaultClientIdPrefix(clientIdPrefix);
-		consumerConfig.setConsumerConfig(Map.of("group.id", consumerGroupId));
+		consumerConfig.setDefaultClientIdPrefix(inoaConfig.getClientIdPrefix());
+		consumerConfig.setConsumerConfig(Map.of("group.id", inoaConfig.getConsumerGroupId()));
 
 		final KafkaProducerConfigProperties producerConfig = new KafkaProducerConfigProperties();
 		producerConfig.setCommonClientConfig(properties);
-		producerConfig.setDefaultClientIdPrefix(clientIdPrefix);
+		producerConfig.setDefaultClientIdPrefix(inoaConfig.getClientIdPrefix());
 
 		final KafkaProducerFactory<String, Buffer> producerFactory = KafkaProducerFactory.sharedProducerFactory(vertx);
 		return new KafkaApplicationClientImpl(vertx, consumerConfig, producerFactory, producerConfig);

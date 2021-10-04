@@ -30,7 +30,7 @@ public class CommandController {
 	private final ObjectMapper objectMapper;
 
 	@PostMapping("/{tenantId}/{deviceId}")
-	public DeferredResult<ResponseEntity<?>> los(@PathVariable String tenantId, @PathVariable String deviceId,
+	public DeferredResult<ResponseEntity<?>> sendCommand(@PathVariable String tenantId, @PathVariable String deviceId,
 			@RequestBody Object data) throws JsonProcessingException {
 		DeferredResult<ResponseEntity<?>> output = new DeferredResult<>();
 		final Buffer commandBuffer = buildCommandPayload(objectMapper.writeValueAsBytes(data));
