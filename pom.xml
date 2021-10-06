@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.4.0</version>
+		<version>0.4.2</version>
 		<relativePath />
 	</parent>
 
@@ -25,11 +25,13 @@
 	</licenses>
 
 	<modules>
-		<module>messages</module>
-		<module>kafka-backup</module>
-		<module>hono-bridge</module>
 		<module>gateway-registry</module>
 		<module>gateway-command-service</module>
+		<module>hono-bridge</module>
+		<module>backup</module>
+		<module>messages</module>
+		<module>translator</module>
+		<module>exporter</module>
 		<module>test</module>
 	</modules>
 
@@ -52,6 +54,7 @@
 
 		<docker.kafka.version>6.1.2</docker.kafka.version>
 		<docker.postgres.version>13.1</docker.postgres.version>
+		<docker.influxdb.version>2.0-alpine</docker.influxdb.version>
 		<docker.image.repository>ghcr.io/grayc-de</docker.image.repository>
 		<docker.image.version>latest</docker.image.version>
 
@@ -60,6 +63,7 @@
 		<!-- ===================================================================== -->
 
 		<version.com.github.tomakehurst.wiremock>2.31.0</version.com.github.tomakehurst.wiremock>
+		<version.com.influxdb.client>3.3.0</version.com.influxdb.client>
 		<version.io.kokuwa.micronaut.codegen>2.1.9</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>2.5.13</version.io.micronaut>
@@ -101,6 +105,11 @@
 			</dependency>
 
 			<!-- libraries -->
+			<dependency>
+				<groupId>com.influxdb</groupId>
+				<artifactId>influxdb-client-java</artifactId>
+				<version>${version.com.influxdb.client}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.github.tomakehurst</groupId>
 				<artifactId>wiremock-jre8-standalone</artifactId>

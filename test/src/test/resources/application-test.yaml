@@ -15,6 +15,12 @@ micronaut:
       kafka-backup-management:
         url: http://${test.kafka-backup.8090}
         logger-name: io.inoa.hono.backup.Management
+      inoa-translator-management:
+        url: http://${test.inoa-translator.8090}
+        logger-name: io.inoa.cloud.translator.Management
+      inoa-exporter-management:
+        url: http://${test.inoa-exporter.8090}
+        logger-name: io.inoa.cloud.exporter.Management
 
 ## see https://micronaut-projects.github.io/micronaut-mqtt/latest/guide/#v3config
 mqtt:
@@ -30,6 +36,14 @@ jackson:
 kafka:
   bootstrap:
     servers: ${test.kafka.9092}
+
+## influxdb
+influxdb:
+  url: http://${test.influxdb.8086}
+  username: influxdb
+  password: changeMe
+  org: test
+  bucket: export
 
 ## custom log configuration
 logger:

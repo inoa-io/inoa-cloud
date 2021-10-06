@@ -56,7 +56,6 @@ public interface PrometheusClient {
 		return scrap().stream()
 				.filter(metric -> Objects.equals(metric.getName(), name))
 				.filter(metric -> Objects.equals(metric.getTags().get(tag), value))
-
 				.mapToDouble(Metric::getValue)
 				.sum();
 	}

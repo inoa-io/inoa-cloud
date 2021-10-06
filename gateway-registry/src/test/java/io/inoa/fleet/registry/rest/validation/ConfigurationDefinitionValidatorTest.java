@@ -16,7 +16,6 @@ import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionIntegerVO;
 import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionStringVO;
 import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionUrlVO;
 import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionVO;
-import io.inoa.fleet.registry.rest.validation.ConfigurationDefinitionValidator;
 import io.micronaut.validation.validator.constraints.ConstraintValidator;
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext;
 import lombok.Getter;
