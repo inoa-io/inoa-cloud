@@ -16,9 +16,7 @@ services:
     healthcheck:
       test: curl -sf http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       interval: 5s
-    depends_on:
-      dns-proxy:
-        condition: service_started
+      retries: 30
 
   postgres:
     image: postgres:${docker.postgres.version}
@@ -31,6 +29,21 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
+      retries: 30
+
+  influxdb:
+    image: influxdb:${docker.influxdb.version}
+    hostname: influxdb
+    environment:
+    - DOCKER_INFLUXDB_INIT_MODE=setup
+    - DOCKER_INFLUXDB_INIT_USERNAME=influxdb
+    - DOCKER_INFLUXDB_INIT_PASSWORD=changeMe
+    - DOCKER_INFLUXDB_INIT_ORG=test
+    - DOCKER_INFLUXDB_INIT_BUCKET=export
+    healthcheck:
+      test: wget --spider --quiet http://localhost:8086/ping || exit 1
+      interval: 5s
+      retries: 30
 
   zookeeper:
     image: confluentinc/cp-zookeeper:${docker.kafka.version}
@@ -54,9 +67,10 @@ services:
     healthcheck:
       test: cat < /dev/null > /dev/tcp/kafka/9092
       interval: 5s
+      retries: 30
     depends_on:
       zookeeper:
-        condition: service_healthy
+        condition: service_started
 
   ###
   ### Inoa
@@ -78,6 +92,7 @@ services:
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
+      retries: 30
     depends_on:
       keycloak:
         condition: service_healthy
@@ -105,11 +120,12 @@ services:
     healthcheck:
       test: curl -sf http://localhost:8080/actuator/health
       interval: 5s
+      retries: 30
     depends_on:
       kafka:
-        condition: service_healthy
+        condition: service_started
       gateway-registry:
-        condition: service_healthy
+        condition: service_started
 
   kafka-backup:
     image: ${docker.image.repository}/kafka-backup:${docker.image.version}
@@ -118,16 +134,57 @@ services:
     - MICRONAUT_ENVIRONMENTS=postgres
     - DATASOURCES_DEFAULT_USERNAME=postgres
     - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    - KAFKA_CONSUMERS_BACKUP_METADATA_MAX_AGE_MS=1000
+    - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
     - LOGGER_LEVELS_IO_INOA=TRACE
+    - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
+      retries: 30
     depends_on:
       kafka:
-        condition: service_healthy
+        condition: service_started
       postgres:
         condition: service_healthy
+
+  inoa-translator:
+    image: ${docker.image.repository}/inoa-translator:${docker.image.version}
+    hostname: inoa-translator
+    environment:
+    - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+    - LOGGER_LEVELS_IO_INOA=TRACE
+    - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+    healthcheck:
+      test: curl -sf http://localhost:8090/endpoints/health
+      interval: 5s
+      retries: 30
+    depends_on:
+      kafka:
+        condition: service_started
+
+  inoa-exporter:
+    image: ${docker.image.repository}/inoa-exporter:${docker.image.version}
+    hostname: inoa-exporter
+    environment:
+    - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+    - INFLUXDB_URL=http://influxdb:8086
+    - INFLUXDB_USERNAME=influxdb
+    - INFLUXDB_PASSWORD=changeMe
+    - INFLUXDB_ORG=test
+    - INFLUXDB_BUCKET=export
+    - LOGGER_LEVELS_IO_INOA=TRACE
+    - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+    healthcheck:
+      test: curl -sf http://localhost:8090/endpoints/health
+      interval: 5s
+      retries: 30
+    depends_on:
+      kafka:
+        condition: service_started
+      influxdb:
+        condition: service_started
 
   ###
   ### Hono
@@ -152,6 +209,7 @@ services:
     healthcheck:
       test: curl -sf http://hono-service-auth:8088/readiness
       interval: 5s
+      retries: 30
 
   hono-service-command-router:
     image: eclipse/hono-service-command-router-quarkus-native:${version.org.eclipse.hono}
@@ -173,9 +231,10 @@ services:
     healthcheck:
       test: curl -sf http://hono-service-command-router:8088/readiness
       interval: 5s
+      retries: 30
     depends_on:
       kafka:
-        condition: service_healthy
+        condition: service_started
       hono-service-auth:
         condition: service_started
       gateway-registry-hono-bridge:
@@ -195,9 +254,10 @@ services:
     healthcheck:
       test: curl -sf http://hono-adapter-mqtt:8088/readiness
       interval: 5s
+      retries: 30
     depends_on:
       kafka:
-        condition: service_healthy
+        condition: service_started
       hono-service-auth:
         condition: service_started
       hono-service-command-router:
@@ -231,11 +291,12 @@ services:
     - OAUTH_CLIENT_ID=gateway-registry-ui
     - OAUTH_CLIENT_SECRET=changeMe
     volumes:
-    - ${project.parent.basedir}/service/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
-    - ${project.parent.basedir}/service/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
+    - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
+    - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
     healthcheck:
       test: curl -sf http://localhost:8080
       interval: 5s
+      retries: 30
     depends_on:
       gateway-registry:
         condition: service_started
@@ -252,9 +313,10 @@ services:
     healthcheck:
       test: curl -sf http://kafka-ui:9000
       interval: 5s
+      retries: 30
     depends_on:
       kafka:
-        condition: service_healthy
+        condition: service_started
       dns-proxy:
         condition: service_started
 

@@ -1,16 +1,16 @@
 package io.inoa.fleet.registry.usecase;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.text.ParseException;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import javax.inject.Inject;
 
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
@@ -23,19 +23,13 @@ import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.fleet.registry.infrastructure.Auth;
 import io.inoa.fleet.registry.infrastructure.ComposeTest;
-import io.inoa.fleet.registry.rest.gateway.AuthApiClient;
-import io.inoa.fleet.registry.rest.gateway.PropertiesApiClient;
 import io.inoa.fleet.registry.rest.management.CredentialCreateVO;
 import io.inoa.fleet.registry.rest.management.CredentialTypeVO;
-import io.inoa.fleet.registry.rest.management.CredentialsApiClient;
 import io.inoa.fleet.registry.rest.management.GatewayCreateVO;
-import io.inoa.fleet.registry.rest.management.GatewaysApiClient;
 import io.inoa.fleet.registry.rest.management.SecretCreatePSKVO;
 import io.inoa.fleet.registry.rest.management.SecretCreatePasswordVO;
-import io.inoa.fleet.registry.rest.management.TenantsApiClient;
-import io.inoa.fleet.registry.test.KafkaBackupPrometheusClient;
 import io.inoa.fleet.registry.test.GatewayMqttClient;
-import io.micronaut.context.annotation.Value;
+import io.inoa.hono.messages.HonoTelemetryMessageVO;
 import io.micronaut.http.HttpHeaderValues;
 
 /**
@@ -46,27 +40,25 @@ import io.micronaut.http.HttpHeaderValues;
 @DisplayName("usecase")
 public class GatewayTest extends ComposeTest {
 
-	@Inject
-	GatewaysApiClient gatewaysClient;
-	@Inject
-	CredentialsApiClient credentialsClient;
-	@Inject
-	AuthApiClient authClient;
-	@Inject
-	PropertiesApiClient propertiesClient;
-	@Inject
-	TenantsApiClient tenantsApiClient;
-	@Inject
-	KafkaBackupPrometheusClient kafkaBackupPrometheusClient;
-	@Value("${mqtt.client.server-uri}")
-	String mqttServerUrl;
-
 	static UUID tenantId = UUID.fromString("2381b39a-e721-4456-8f9f-8d2c18cec993");
 	static UUID gatewayId;
 	static String secret;
 
 	static String gatewayToken;
 	static String userToken;
+
+	static long backupMessagesBefore;
+	static long inoaTranslatorSuccessBefore;
+	static long inoaExporterKafkaRecordsBefore;
+	static HonoTelemetryMessageVO payload;
+
+	@DisplayName("0. collect preconditions")
+	@Test
+	void preconditions() {
+		backupMessagesBefore = kafkaBackupPrometheusClient.scrapMessages();
+		inoaTranslatorSuccessBefore = inoaTranslatorPrometheusClient.scrapMessagesSuccess();
+		inoaExporterKafkaRecordsBefore = inoaExporterPrometheusClient.scrapKafkaRecords();
+	}
 
 	@DisplayName("1. create gateway with psk secret")
 	@Test
@@ -114,20 +106,67 @@ public class GatewayTest extends ComposeTest {
 		assertEquals(properties, assert200(() -> gatewaysClient.findGateway(userToken, gatewayId)).getProperties());
 	}
 
-	@DisplayName("5. send telemetry message to backup ")
+	@DisplayName("5. send telemetry")
 	@Test
-	void sendTelemetryToBackup() {
-		var messagesBefore = kafkaBackupPrometheusClient.scrapMessages();
-
-		var payload = "uggaugga-" + UUID.randomUUID();
+	void sendTelemetry() {
+		payload = new HonoTelemetryMessageVO()
+				.setTimestamp(Instant.now().toEpochMilli())
+				.setUrn("urn:dvh4013:0815:meh")
+				.setValue("123.456".getBytes());
 		var mqtt = new GatewayMqttClient(mqttServerUrl, tenantId, gatewayId, secret);
 		mqtt.connect();
 		mqtt.sendTelemetry(payload);
+	}
 
+	@DisplayName("6. wait for message stored in backup")
+	@Test
+	void waitForBackup() {
 		Awaitility
-				.await("wait for telemetry stored in backup")
+				.await("wait for message stored in backup")
 				.pollInterval(Duration.ofMillis(500))
 				.timeout(Duration.ofSeconds(30))
-				.until(() -> kafkaBackupPrometheusClient.scrapMessages() > messagesBefore);
+				.until(() -> kafkaBackupPrometheusClient.scrapMessages() > backupMessagesBefore);
+	}
+
+	@DisplayName("7. wait for message translated to inoa message")
+	@Test
+	void waitForTranslator() {
+		Awaitility
+				.await("wait for message translated to inoa message")
+				.pollInterval(Duration.ofMillis(500))
+				.timeout(Duration.ofSeconds(30))
+				.until(() -> inoaTranslatorPrometheusClient.scrapMessagesSuccess() > inoaTranslatorSuccessBefore);
+	}
+
+	@DisplayName("8. wait for message in influx")
+	@Test
+	void waitForInfluxdb() {
+		Awaitility
+				.await("wait for message translated to inoa message")
+				.pollInterval(Duration.ofMillis(500))
+				.timeout(Duration.ofSeconds(30))
+				.until(() -> inoaExporterPrometheusClient.scrapKafkaRecords() > inoaExporterKafkaRecordsBefore);
+	}
+
+	@DisplayName("9. check message in influx")
+	@Test
+	void checkInfluxdb() {
+		var query = "from(bucket:\"export\")"
+				+ " |> range(start: -10h)"
+				+ " |> filter(fn: (r) => r.gateway_id == \"" + gatewayId + "\")";
+		var tables = influxdb.getQueryApi().query(query);
+		assertEquals(1, tables.size(), "tables");
+		assertEquals(1, tables.get(0).getRecords().size(), "records");
+		var record = tables.get(0).getRecords().get(0);
+		assertAll("record",
+				() -> assertEquals("inoa", record.getMeasurement(), "measurement"),
+				() -> assertEquals(tenantId.toString(), record.getValueByKey("tenant_id"), "tenant_id"),
+				() -> assertEquals(gatewayId.toString(), record.getValueByKey("gateway_id"), "gateway_id"),
+				() -> assertEquals("urn:dvh4013:0815:meh", record.getValueByKey("urn"), "urn"),
+				() -> assertEquals("dvh4013", record.getValueByKey("type"), "type"),
+				() -> assertEquals("0815", record.getValueByKey("device_id"), "device_id"),
+				() -> assertEquals("meh", record.getValueByKey("sensor"), "sensor"),
+				() -> assertEquals(Instant.ofEpochMilli(payload.getTimestamp()), record.getTime(), "timestamp"),
+				() -> assertEquals(123.456D, record.getValue(), "value"));
 	}
 }

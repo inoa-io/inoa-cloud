@@ -36,7 +36,10 @@ public class ComposePropertySource implements PropertySourceLoader {
 	private static final String CONTAINER_REGISTRY = "gateway-registry";
 	private static final String CONTAINER_BRIDGE = "gateway-registry-hono-bridge";
 	private static final String CONTAINER_BACKUP = "kafka-backup";
+	private static final String CONTAINER_TRANSLATE = "inoa-translator";
+	private static final String CONTAINER_EXPORTER = "inoa-exporter";
 	private static final String CONTAINER_HONO_MQTT = "hono-adapter-mqtt";
+	private static final String CONTAINER_INFLUXDB = "influxdb";
 
 	private static Map<String, Object> cache;
 
@@ -56,28 +59,44 @@ public class ComposePropertySource implements PropertySourceLoader {
 		if (cache == null) {
 			if (SocketUtils.isTcpPortAvailable(5380)) {
 				log.info("Start docker-compose containers.");
-				var waitForHealthcheck = Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(2));
+				var waitForHealthcheck = Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(5));
 				var container = new DockerComposeContainer<>(COMPOSE_FILE)
 						.withServices(
-								CONTAINER_REGISTRY,
-								CONTAINER_BRIDGE,
-								CONTAINER_KEYCLOAK,
-								CONTAINER_POSTGRES,
-								CONTAINER_BACKUP,
 								"zookeeper",
 								CONTAINER_KAFKA,
+								CONTAINER_INFLUXDB,
+								CONTAINER_POSTGRES,
 								"hono-service-auth",
 								"hono-service-command-router",
-								CONTAINER_HONO_MQTT)
-						.withExposedService(CONTAINER_REGISTRY, 8080, waitForHealthcheck)
-						.withExposedService(CONTAINER_REGISTRY, 8090, waitForHealthcheck)
-						.withExposedService(CONTAINER_KEYCLOAK, 8080, waitForHealthcheck)
-						.withExposedService(CONTAINER_BACKUP, 8090, waitForHealthcheck)
-						.withExposedService(CONTAINER_HONO_MQTT, 1883, waitForHealthcheck)
+								CONTAINER_HONO_MQTT,
+								CONTAINER_BRIDGE,
+								CONTAINER_REGISTRY,
+								CONTAINER_KEYCLOAK,
+								CONTAINER_BACKUP,
+								CONTAINER_TRANSLATE,
+								CONTAINER_EXPORTER)
+						.withExposedService(CONTAINER_INFLUXDB, 8086)
+						.withExposedService(CONTAINER_REGISTRY, 8080)
+						.withExposedService(CONTAINER_REGISTRY, 8090)
+						.withExposedService(CONTAINER_KEYCLOAK, 8080)
+						.withExposedService(CONTAINER_BACKUP, 8090)
+						.withExposedService(CONTAINER_TRANSLATE, 8090)
+						.withExposedService(CONTAINER_EXPORTER, 8090)
+						.withExposedService(CONTAINER_HONO_MQTT, 1883)
+						.waitingFor(CONTAINER_INFLUXDB, waitForHealthcheck)
+						.waitingFor(CONTAINER_REGISTRY, waitForHealthcheck)
+						.waitingFor(CONTAINER_KEYCLOAK, waitForHealthcheck)
 						.waitingFor(CONTAINER_BRIDGE, waitForHealthcheck)
+						.waitingFor(CONTAINER_HONO_MQTT, waitForHealthcheck)
+						.waitingFor(CONTAINER_TRANSLATE, waitForHealthcheck)
+						.waitingFor(CONTAINER_EXPORTER, waitForHealthcheck)
+						.waitingFor(CONTAINER_BACKUP, waitForHealthcheck)
 						.withLogConsumer(CONTAINER_REGISTRY, new Slf4jLogConsumer(log).withPrefix(CONTAINER_REGISTRY))
 						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BRIDGE))
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
+						.withLogConsumer(CONTAINER_BACKUP, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BACKUP))
+						.withLogConsumer(CONTAINER_TRANSLATE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_TRANSLATE))
+						.withLogConsumer(CONTAINER_EXPORTER, new Slf4jLogConsumer(log).withPrefix(CONTAINER_EXPORTER))
 						.withRemoveImages(RemoveImages.ALL)
 						.withLocalCompose(false);
 				container.start();
@@ -86,7 +105,10 @@ public class ComposePropertySource implements PropertySourceLoader {
 						"test.gateway-registry.8090", "localhost:" + container.getServicePort(CONTAINER_REGISTRY, 8090),
 						"test.keycloak.8080", "localhost:" + container.getServicePort(CONTAINER_KEYCLOAK, 8080),
 						"test.mqtt.1883", "localhost:" + container.getServicePort(CONTAINER_HONO_MQTT, 1883),
-						"test.kafka-backup.8090", "localhost:" + container.getServicePort(CONTAINER_BACKUP, 8090));
+						"test.kafka-backup.8090", "localhost:" + container.getServicePort(CONTAINER_BACKUP, 8090),
+						"test.inoa-exporter.8090", "localhost:" + container.getServicePort(CONTAINER_EXPORTER, 8090),
+						"test.inoa-translator.8090", "localhost:" + container.getServicePort(CONTAINER_TRANSLATE, 8090),
+						"test.influxdb.8086", "localhost:" + container.getServicePort(CONTAINER_INFLUXDB, 8086));
 			} else {
 				log.info("Use existing containers and skip compose start.");
 				cache = Map.of(
@@ -94,7 +116,10 @@ public class ComposePropertySource implements PropertySourceLoader {
 						"test.gateway-registry.8090", CONTAINER_REGISTRY + ":" + 8090,
 						"test.keycloak.8080", CONTAINER_KEYCLOAK + ":" + 8080,
 						"test.mqtt.1883", CONTAINER_HONO_MQTT + ":" + 1883,
-						"test.kafka-backup.8090", CONTAINER_BACKUP + ":" + 8090);
+						"test.kafka-backup.8090", CONTAINER_BACKUP + ":" + 8090,
+						"test.inoa-exporter.8090", CONTAINER_EXPORTER + ":" + 8090,
+						"test.inoa-translator.8090", CONTAINER_TRANSLATE + ":" + 8090,
+						"test.influxdb.8086", CONTAINER_INFLUXDB + ":" + 8086);
 			}
 			log.info("Use properties: {}", cache);
 		}

@@ -7,10 +7,14 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.inoa.hono.messages.HonoTelemetryMessageVO;
 import lombok.SneakyThrows;
 
-public class GatewayMqttClient implements AutoCloseable {
+public class GatewayMqttClient {
 
+	private final ObjectMapper mapper = new ObjectMapper();
 	private final UUID tenantId;
 	private final UUID gatewayId;
 	private final String password;
@@ -38,12 +42,16 @@ public class GatewayMqttClient implements AutoCloseable {
 	}
 
 	@SneakyThrows
+	public void sendTelemetry(HonoTelemetryMessageVO payload) {
+		sendTelemetry(mapper.writeValueAsString(payload));
+	}
+
+	@SneakyThrows
 	public void sendTelemetry(String payload) {
 		client.publish("telemetry", new MqttMessage(payload.getBytes()));
 	}
 
 	@SneakyThrows
-	@Override
 	public void close() {
 		client.disconnectForcibly();
 	}

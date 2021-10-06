@@ -25,6 +25,13 @@
 	</dependencyManagement>
 	<dependencies>
 
+		<!-- project -->
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>messages</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut</groupId>
@@ -46,6 +53,12 @@
 			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-logging</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- libraries -->
+		<dependency>
+			<groupId>com.influxdb</groupId>
+			<artifactId>influxdb-client-java</artifactId>
 		</dependency>
 
 		<!-- test -->

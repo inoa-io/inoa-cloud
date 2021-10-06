@@ -6,13 +6,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: checkout
-      uses: actions/checkout@v2
-    - name: setup
-      uses: actions/setup-java@v1
-      with:
-        java-version: 11
-    - name: dependencies
-      run: mvn -B -q dependency:go-offline
-    - name: verify
-      run: mvn -B install
+
+      ###
+      ### Prepare
+      ###
+
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: setup java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+
+      ###
+      ### Build
+      ###
+
+      - name: setup maven dependencies
+        run: mvn -B dependency:go-offline -q
+      - name: build
+        run: mvn -B clean install
