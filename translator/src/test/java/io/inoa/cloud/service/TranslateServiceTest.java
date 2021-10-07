@@ -4,16 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer.MethodName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
 
-import io.inoa.cloud.converter.DVH4013Converter;
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -24,31 +22,62 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
  * @author Stephan Schnabel
  */
 @MicronautTest
-@TestMethodOrder(MethodName.class)
 public class TranslateServiceTest {
 
 	@Inject
 	TranslateService service;
 
-	@DisplayName("DVH4013 - base64 to double")
+	@DisplayName("Example - base64 to single value")
 	@Test
-	void typeDVH4013() {
+	void typeExampleSingleValue() {
 		var tenantId = UUID.randomUUID();
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
-				.setUrn("urn:" + DVH4013Converter.DVH4013 + ":123:456")
+				.setUrn("urn:example:0815:number")
 				.setTimestamp(Instant.now().toEpochMilli())
 				.setValue("1234".getBytes());
-		var actual = service.toInoa(tenantId, gatewayId, message).orElse(null);
-		var expected = new InoaTelemetryMessageVO()
+		var actual = service.toInoa(tenantId, gatewayId, message);
+		var expected = List.of(new InoaTelemetryMessageVO()
 				.setTenantId(tenantId)
 				.setGatewayId(gatewayId)
 				.setUrn(message.getUrn())
-				.setDeviceType(DVH4013Converter.DVH4013)
-				.setDeviceId("123")
-				.setSensor("456")
+				.setDeviceType("example")
+				.setDeviceId("0815")
+				.setSensor("number")
 				.setTimestamp(Instant.ofEpochMilli(message.getTimestamp()))
-				.setValue(1234D);
+				.setValue(1234D));
+		assertEquals(expected, actual, "inoa message");
+	}
+
+	@DisplayName("Example - base64 to multiple values")
+	@Test
+	void typeExampleMultipleValues() {
+		var tenantId = UUID.randomUUID();
+		var gatewayId = UUID.randomUUID();
+		var message = new HonoTelemetryMessageVO()
+				.setUrn("urn:example:0815:json")
+				.setTimestamp(Instant.now().toEpochMilli())
+				.setValue("{\"string\":\"sdf\",\"int\":4,\"double\":34.01,\"bool\":true,\"obj\":{}}".getBytes());
+		var actual = service.toInoa(tenantId, gatewayId, message);
+		var expected = List.of(
+				new InoaTelemetryMessageVO()
+						.setTenantId(tenantId)
+						.setGatewayId(gatewayId)
+						.setUrn(message.getUrn() + ".int")
+						.setDeviceType("example")
+						.setDeviceId("0815")
+						.setSensor("json.int")
+						.setTimestamp(Instant.ofEpochMilli(message.getTimestamp()))
+						.setValue(4D),
+				new InoaTelemetryMessageVO()
+						.setTenantId(tenantId)
+						.setGatewayId(gatewayId)
+						.setUrn(message.getUrn() + ".double")
+						.setDeviceType("example")
+						.setDeviceId("0815")
+						.setSensor("json.double")
+						.setTimestamp(Instant.ofEpochMilli(message.getTimestamp()))
+						.setValue(34.01D));
 		assertEquals(expected, actual, "inoa message");
 	}
 
@@ -58,7 +87,7 @@ public class TranslateServiceTest {
 		var tenantId = UUID.randomUUID();
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
-				.setUrn("urn:" + DVH4013Converter.DVH4013 + ":123:456")
+				.setUrn("urn:example:0815:number")
 				.setTimestamp(Instant.now().toEpochMilli())
 				.setValue("NAN".getBytes());
 		assertTrue(service.toInoa(tenantId, gatewayId, message).isEmpty(), "inoa");
@@ -70,7 +99,7 @@ public class TranslateServiceTest {
 		var tenantId = UUID.randomUUID();
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
-				.setUrn("urn:nope:08:15")
+				.setUrn("urn:example:0815:nope")
 				.setTimestamp(Instant.now().toEpochMilli())
 				.setValue("1234".getBytes());
 		assertTrue(service.toInoa(tenantId, gatewayId, message).isEmpty(), "inoa");

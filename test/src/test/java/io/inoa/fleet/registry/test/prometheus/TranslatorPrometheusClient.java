@@ -1,6 +1,5 @@
-package io.inoa.fleet.registry.test;
+package io.inoa.fleet.registry.test.prometheus;
 
-import io.inoa.fleet.registry.infrastructure.PrometheusClient;
 import io.micronaut.http.client.annotation.Client;
 
 /**
@@ -9,7 +8,7 @@ import io.micronaut.http.client.annotation.Client;
  * @author Stephan Schnabel
  */
 @Client("inoa-translator-management")
-public interface InoaTranslatorPrometheusClient extends PrometheusClient {
+public interface TranslatorPrometheusClient extends PrometheusClient {
 
 	default long scrapMessagesSuccess() {
 		return scrapCounter("translate_messages_success");

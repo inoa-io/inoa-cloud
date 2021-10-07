@@ -55,9 +55,9 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 
 		var tenantId = UUID.randomUUID();
 		var gatewayId = UUID.randomUUID();
-		var deviceType = "dvh4013";
+		var deviceType = "example";
 		var deviceId = UUID.randomUUID().toString();
-		var sensor = UUID.randomUUID().toString();
+		var sensor = "number";
 		var urn = "urn:" + deviceType + ":" + deviceId + ":" + sensor;
 		var timestamp = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 		var counter = metrics.counterSuccess(tenantId, deviceType, sensor);
@@ -97,7 +97,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 		var counter = metrics.counterFailTenantId(tenantId);
 		var countBefore = counter.count();
 
-		send(tenantId, gatewayId, "{\"urn\":\"urn:00:00:00\",\"timestamp\":0,\"value\":\"Mg==\"}");
+		send(tenantId, gatewayId, "{\"urn\":\"urn:example:0815:number\",\"timestamp\":0,\"value\":\"Mg==\"}");
 		assertIncrement(counter, countBefore);
 	}
 
@@ -110,7 +110,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 		var counter = metrics.counterFailGatewayId(tenantId);
 		var countBefore = counter.count();
 
-		send(tenantId, gatewayId, "{\"urn\":\"urn:00:00:00\",\"timestamp\":0,\"value\":\"Mg==\"}");
+		send(tenantId, gatewayId, "{\"urn\":\"urn:example:0815:number\",\"timestamp\":0,\"value\":\"Mg==\"}");
 		assertIncrement(counter, countBefore);
 	}
 
@@ -146,10 +146,10 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 
 		var tenantId = UUID.randomUUID();
 		var gatewayId = UUID.randomUUID();
-		var counter = metrics.counterFailConverter(tenantId, "00", "00");
+		var counter = metrics.counterFailConverter(tenantId, "example", "nope");
 		var countBefore = counter.count();
 
-		send(tenantId, gatewayId, "{\"urn\":\"urn:00:00:00\",\"timestamp\":0,\"value\":\"Mg==\"}");
+		send(tenantId, gatewayId, "{\"urn\":\"urn:example:0815:nope\",\"timestamp\":0,\"value\":\"Mg==\"}");
 		assertIncrement(counter, countBefore);
 	}
 
@@ -159,10 +159,10 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 
 		var tenantId = UUID.randomUUID();
 		var gatewayId = UUID.randomUUID();
-		var counter = metrics.counterFailValue(tenantId, "dvh4013", "00");
+		var counter = metrics.counterFailValue(tenantId, "example", "number");
 		var countBefore = counter.count();
 
-		send(tenantId, gatewayId, "{\"urn\":\"urn:dvh4013:00:00\",\"timestamp\":0,\"value\":\"bm9wZQo=\"}");
+		send(tenantId, gatewayId, "{\"urn\":\"urn:example:0815:number\",\"timestamp\":0,\"value\":\"bm9wZQo=\"}");
 		assertIncrement(counter, countBefore);
 	}
 

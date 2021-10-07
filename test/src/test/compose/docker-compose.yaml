@@ -272,6 +272,8 @@ services:
   dns-proxy:
     image: defreitas/dns-proxy-server:2.19.0
     hostname: dns-proxy
+    environment:
+    - MG_LOG_LEVEL=WARNING
     ports:
     - 5380:5380
     volumes:
@@ -293,10 +295,6 @@ services:
     volumes:
     - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
     - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
-    healthcheck:
-      test: curl -sf http://localhost:8080
-      interval: 5s
-      retries: 30
     depends_on:
       gateway-registry:
         condition: service_started
@@ -310,10 +308,6 @@ services:
     hostname: kafka-ui
     environment:
     - KAFKA_BROKERCONNECT=kafka:9092
-    healthcheck:
-      test: curl -sf http://kafka-ui:9000
-      interval: 5s
-      retries: 30
     depends_on:
       kafka:
         condition: service_started

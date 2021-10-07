@@ -2,16 +2,18 @@ package io.inoa.cloud.service;
 
 import java.time.Instant;
 import java.util.Comparator;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.inject.Singleton;
 
 import org.slf4j.MDC;
 
-import io.inoa.cloud.converter.ValueConverter;
+import io.inoa.cloud.converter.Converter;
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
 import io.micronaut.core.order.Ordered;
@@ -33,10 +35,10 @@ public class TranslateService {
 			+ ":(?<deviceId>[a-zA-Z0-9\\-]{2,36})"
 			+ ":(?<sensor>[a-zA-Z0-9\\-\\:\\*]{2,64})");
 
-	private final Set<ValueConverter> converters;
+	private final Set<Converter> converters;
 	private final TranslateMetrics metrics;
 
-	public Optional<InoaTelemetryMessageVO> toInoa(
+	public List<InoaTelemetryMessageVO> toInoa(
 			UUID tenantId,
 			UUID gatewayId,
 			HonoTelemetryMessageVO hono) {
@@ -46,7 +48,7 @@ public class TranslateService {
 		var matcher = URN_PATTERN.matcher(hono.getUrn());
 		if (!matcher.matches()) {
 			log.error("Unsupported urn {}.", hono.getUrn());
-			return Optional.empty();
+			return List.of();
 		}
 		var deviceType = matcher.group("deviceType");
 		var deviceId = matcher.group("deviceId");
@@ -57,34 +59,63 @@ public class TranslateService {
 
 		// get converter
 
-		var valueConverter = converters.stream()
+		var converter = converters.stream()
 				.sorted(Comparator.comparing(Ordered::getOrder))
-				.filter(converter -> converter.supports(deviceType, sensor))
+				.filter(c -> c.supports(deviceType, sensor))
 				.findFirst();
-		if (valueConverter.isEmpty()) {
+		if (converter.isEmpty()) {
 			log.warn("Device type {} with sensor {} is unsupported.", deviceType, sensor);
 			metrics.counterFailConverter(tenantId, deviceType, sensor).increment();
-			return Optional.empty();
+			return List.of();
 		}
 
 		// map message value
 
-		var value = valueConverter.flatMap(converter -> converter.convert(hono));
-		if (value.isEmpty()) {
+		var messages = converter.get().convert(hono, deviceType, sensor)
+				.peek(inoa -> fillMessage(hono, inoa, tenantId, gatewayId, deviceType, deviceId, sensor))
+				.collect(Collectors.toList());
+		if (messages.isEmpty()) {
 			log.warn("Failed on value: {}", new String(hono.getValue()));
 			metrics.counterFailValue(tenantId, deviceType, sensor).increment();
-			return Optional.empty();
+			return List.of();
 		}
 
-		return Optional.of(new InoaTelemetryMessageVO()
-				.setTenantId(tenantId)
-				.setGatewayId(gatewayId)
-				.setUrn(hono.getUrn())
-				.setDeviceType(deviceType)
-				.setDeviceId(deviceId)
-				.setSensor(sensor)
-				.setTimestamp(Instant.ofEpochMilli(hono.getTimestamp()))
-				.setValue(value.get())
-				.setExt(hono.getExt()));
+		return messages;
+	}
+
+	private void fillMessage(
+			HonoTelemetryMessageVO hono,
+			InoaTelemetryMessageVO inoa,
+			UUID tenantId,
+			UUID gatewayId,
+			String deviceType,
+			String deviceId,
+			String sensor) {
+
+		inoa.setTenantId(tenantId);
+		inoa.setGatewayId(gatewayId);
+
+		if (inoa.getUrn() == null) {
+			inoa.setUrn(hono.getUrn());
+		}
+		if (inoa.getDeviceId() == null) {
+			inoa.setDeviceId(deviceId);
+		}
+		if (inoa.getDeviceType() == null) {
+			inoa.setDeviceType(deviceType);
+		}
+		if (inoa.getSensor() == null) {
+			inoa.setSensor(sensor);
+		}
+		if (inoa.getTimestamp() == null) {
+			inoa.setTimestamp(Instant.ofEpochMilli(hono.getTimestamp()));
+		}
+
+		if (hono.getExt() != null) {
+			if (hono.getExt() != null) {
+				inoa.setExt(new HashMap<>());
+			}
+			hono.getExt().forEach(inoa.getExt()::putIfAbsent);
+		}
 	}
 }

@@ -1,1 +1,3 @@
-INSERT INTO tenant(tenant_id,name,enabled,created,updated) VALUES ('2381b39a-e721-4456-8f9f-8d2c18cec993','tenantA',true,'2021-01-01 00:00:00','2021-01-01 00:00:00');
+INSERT INTO tenant(id,tenant_id,name,enabled,created,updated) VALUES (1,'2381b39a-e721-4456-8f9f-8d2c18cec993','tenantA',true,'2021-01-01 00:00:00','2021-01-01 00:00:00');
+INSERT INTO configuration_definition(id,tenant_id,key,type,description,pattern) VALUES (1,1,'mqtt.url','STRING','URL to use vor MQTT.','tcp:\/\/[a-z0-9-]+:[0-9]+');
+INSERT INTO tenant_configuration(definition_id,value) VALUES (1,'tcp://hono-adapter-mqtt:1883');

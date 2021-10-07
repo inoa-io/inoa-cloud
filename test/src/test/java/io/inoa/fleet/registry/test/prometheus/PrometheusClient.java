@@ -1,4 +1,4 @@
-package io.inoa.fleet.registry.infrastructure;
+package io.inoa.fleet.registry.test.prometheus;
 
 import java.util.Map;
 import java.util.Objects;

@@ -8,6 +8,7 @@ import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
+import io.micronaut.core.util.CollectionUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,15 +27,19 @@ public class InoaMessageListener {
 	@Topic(patterns = "inoa\\.telemetry\\..*")
 	void receive(InoaTelemetryMessageVO message) {
 		log.trace("Retrieved: {}", message);
-		influx.getWriteApiBlocking().writePoint(Point
+		var point = Point
 				.measurement("inoa")
+				.time(message.getTimestamp(), WritePrecision.MS)
+				.addField("value", message.getValue());
+		if (CollectionUtils.isNotEmpty(message.getExt())) {
+			point.addTags(message.getExt());
+		}
+		influx.getWriteApiBlocking().writePoint(point
 				.addTag("tenant_id", message.getTenantId().toString())
 				.addTag("gateway_id", message.getGatewayId().toString())
 				.addTag("urn", message.getUrn())
 				.addTag("device_id", message.getDeviceId())
 				.addTag("type", message.getDeviceType())
-				.addTag("sensor", message.getSensor())
-				.time(message.getTimestamp(), WritePrecision.MS)
-				.addField("value", message.getValue()));
+				.addTag("sensor", message.getSensor()));
 	}
 }
