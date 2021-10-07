@@ -59,7 +59,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 		if (cache == null) {
 			if (SocketUtils.isTcpPortAvailable(5380)) {
 				log.info("Start docker-compose containers.");
-				var waitForHealthcheck = Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(5));
+				var waitForHealthcheck = Wait.forHealthcheck().withStartupTimeout(Duration.ofMinutes(10));
 				var container = new DockerComposeContainer<>(COMPOSE_FILE)
 						.withServices(
 								"zookeeper",

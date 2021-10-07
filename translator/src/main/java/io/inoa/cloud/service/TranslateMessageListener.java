@@ -83,9 +83,15 @@ public class TranslateMessageListener {
 
 			// parse payload, convert and publish
 
-			toHonoMessage(tenantId, payload)
-					.flatMap(message -> service.toInoa(tenantId, gatewayId, message))
-					.ifPresentOrElse(this::publishInoa, () -> metrics.counterIgnore(tenantId).increment());
+			var inoaOptional = toHonoMessage(tenantId, payload).map(hono -> service.toInoa(tenantId, gatewayId, hono));
+			if (inoaOptional.isEmpty() || inoaOptional.get().isEmpty()) {
+				metrics.counterIgnore(tenantId).increment();
+			} else {
+				for (var inoa : inoaOptional.get()) {
+					producer.send(new ProducerRecord<>("inoa.telemetry." + tenantId, inoa.getGatewayId(), inoa));
+					metrics.counterSuccess(tenantId, inoa.getDeviceType(), inoa.getSensor()).increment();
+				}
+			}
 
 		} finally {
 			MDC.clear();
@@ -114,10 +120,5 @@ public class TranslateMessageListener {
 		}
 
 		return Optional.of(message);
-	}
-
-	private void publishInoa(InoaTelemetryMessageVO message) {
-		producer.send(new ProducerRecord<>("inoa.telemetry." + message.getTenantId(), message.getGatewayId(), message));
-		metrics.counterSuccess(message.getTenantId(), message.getDeviceType(), message.getSensor()).increment();
 	}
 }

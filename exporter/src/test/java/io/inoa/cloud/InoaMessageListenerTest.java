@@ -59,6 +59,7 @@ public class InoaMessageListenerTest implements TestPropertyProvider {
 				.setDeviceId(UUID.randomUUID().toString())
 				.setDeviceType(UUID.randomUUID().toString())
 				.setSensor(UUID.randomUUID().toString())
+				.setExt(Map.of("sensor", "should be overidden by origing", "foo", "bar"))
 				.setTimestamp(Instant.now().minusSeconds(7200).truncatedTo(ChronoUnit.SECONDS))
 				.setValue(123.456D);
 
@@ -90,6 +91,7 @@ public class InoaMessageListenerTest implements TestPropertyProvider {
 				() -> assertEquals(message.getDeviceId(), record.getValueByKey("device_id"), "device_id"),
 				() -> assertEquals(message.getDeviceType(), record.getValueByKey("type"), "type"),
 				() -> assertEquals(message.getSensor(), record.getValueByKey("sensor"), "sensor"),
+				() -> assertEquals("bar", record.getValueByKey("foo"), "ext.foo"),
 				() -> assertEquals(message.getTimestamp(), record.getTime(), "timestamp"),
 				() -> assertEquals(message.getValue(), record.getValue(), "value"));
 	}

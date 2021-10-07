@@ -10,6 +10,7 @@ import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Requires;
 import lombok.extern.slf4j.Slf4j;
 
+@Requires(property = "influxdb.enabled", notEquals = "false")
 @Requires(property = "influxdb.url")
 @Factory
 @Slf4j
