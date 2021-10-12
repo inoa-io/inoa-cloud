@@ -55,6 +55,7 @@
 		<docker.kafka.version>6.1.2</docker.kafka.version>
 		<docker.postgres.version>13.1</docker.postgres.version>
 		<docker.influxdb.version>2.0-alpine</docker.influxdb.version>
+		<docker.grafana.version>8.1.5</docker.grafana.version>
 		<docker.image.repository>ghcr.io/grayc-de</docker.image.repository>
 		<docker.image.version>latest</docker.image.version>
 
