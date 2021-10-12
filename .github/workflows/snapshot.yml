@@ -1,10 +1,10 @@
 name: Snapshot
 
-on:
+"on":
   push:
     branches:
-    - 'main'
-    - '[1-9]+.[0-9]+.x'
+      - 'main'
+      - '[1-9]+.[0-9]+.x'
 
 jobs:
   build:
@@ -27,7 +27,7 @@ jobs:
             branch=${GITHUB_REF##*/}
             sha=${GITHUB_SHA::8}
             ts=$(date +%s)
-            echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"  
+            echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
 
       ###
       ### Build

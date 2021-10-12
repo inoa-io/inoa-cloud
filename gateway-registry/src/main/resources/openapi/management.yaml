@@ -8,19 +8,19 @@ info:
   license:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  contact: 
+  contact:
     name: Kokuwa.io
     url: https://github.com/kokuwaio
 servers:
-- url: http://gateway-registry-service:8080
-security: 
-- Keycloak: []
-- BearerAuth: []
+  - url: http://gateway-registry-service:8080
+security:
+  - Keycloak: []
+  - BearerAuth: []
 paths:
   /tenants:
     get:
       tags:
-      - tenants
+        - tenants
       summary: 'Find tenants.'
       description: 'Returns all tenants ordered by name.'
       operationId: findTenants
@@ -37,7 +37,7 @@ paths:
           description: 'Unauthorized.'
     post:
       tags:
-      - tenants
+        - tenants
       summary: 'Create tenant.'
       description: TODO
       operationId: createTenant
@@ -62,10 +62,10 @@ paths:
           description: Tenant with id or name already exists.
   /tenants/{tenant_id}:
     parameters:
-    - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/TenantId'
     get:
       tags:
-      - tenants
+        - tenants
       summary: 'Find tenant.'
       description: TODO
       operationId: findTenant
@@ -82,7 +82,7 @@ paths:
           description: 'Tenant not found.'
     put:
       tags:
-      - tenants
+        - tenants
       summary: 'Update tenant.'
       description: TODO
       operationId: updateTenant
@@ -109,7 +109,7 @@ paths:
           description: 'Tenant with name already exists.'
     delete:
       tags:
-      - tenants
+        - tenants
       summary: 'Delete tenant.'
       description: TODO
       operationId: deleteTenant
@@ -125,7 +125,7 @@ paths:
   /groups:
     get:
       tags:
-      - groups
+        - groups
       summary: 'Find groups.'
       description: 'Returns all groups ordered by name.'
       operationId: findGroups
@@ -142,7 +142,7 @@ paths:
           description: 'Unauthorized.'
     post:
       tags:
-      - groups
+        - groups
       summary: 'Create group.'
       description: TODO
       operationId: createGroup
@@ -167,10 +167,10 @@ paths:
           description: 'Group with name already exists.'
   /groups/{group_id}:
     parameters:
-    - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/GroupId'
     get:
       tags:
-      - groups
+        - groups
       summary: 'Fimd group.'
       description: TODO
       operationId: findGroup
@@ -187,7 +187,7 @@ paths:
           description: 'Group not found.'
     put:
       tags:
-      - groups
+        - groups
       summary: 'Update group.'
       description: TODO
       operationId: updateGroup
@@ -214,7 +214,7 @@ paths:
           description: 'Group with name already exists.'
     delete:
       tags:
-      - groups
+        - groups
       summary: 'Delete group.'
       description: TODO
       operationId: deleteGroup
@@ -228,7 +228,7 @@ paths:
   /gateways:
     get:
       tags:
-      - gateways
+        - gateways
       summary: 'Find gateways.'
       description: 'Returns all gateways ordered by name.'
       operationId: findGateways
@@ -245,7 +245,7 @@ paths:
           description: 'Unauthorized.'
     post:
       tags:
-      - gateways
+        - gateways
       summary: 'Create gateway.'
       description: TODO
       operationId: createGateway
@@ -270,10 +270,10 @@ paths:
           description: 'Gateway with name already exists.'
   /gateways/{gateway_id}:
     parameters:
-    - $ref: '#/components/parameters/GatewayId'
+      - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
-      - gateways
+        - gateways
       summary: 'Find gateway.'
       description: TODO
       operationId: findGateway
@@ -290,7 +290,7 @@ paths:
           description: 'Gateway not found.'
     put:
       tags:
-      - gateways
+        - gateways
       summary: 'Update gateway.'
       description: TODO
       operationId: updateGateway
@@ -317,7 +317,7 @@ paths:
           description: 'Gateway with name already exists.'
     delete:
       tags:
-      - gateways
+        - gateways
       summary: 'Delete gateway.'
       description: TODO
       operationId: deleteGateway
@@ -330,10 +330,10 @@ paths:
           description: 'Gateway not found.'
   /gateways/{gateway_id}/credentials:
     parameters:
-    - $ref: '#/components/parameters/GatewayId'
+      - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
-      - credentials
+        - credentials
       summary: 'Get credentials for gateway.'
       description: 'Get credentials for gateway.'
       operationId: findCredentials
@@ -352,7 +352,7 @@ paths:
           description: 'Gateway not found.'
     post:
       tags:
-      - credentials
+        - credentials
       summary: 'Create credential.'
       description: TODO
       operationId: createCredential
@@ -379,11 +379,11 @@ paths:
           description: 'AuthId for gateway already exists.'
   /gateways/{gateway_id}/credentials/{credential_id}:
     parameters:
-    - $ref: '#/components/parameters/GatewayId'
-    - $ref: '#/components/parameters/CredentialId'
+      - $ref: '#/components/parameters/GatewayId'
+      - $ref: '#/components/parameters/CredentialId'
     get:
       tags:
-      - credentials
+        - credentials
       summary: 'Find credentials.'
       description: TODO
       operationId: findCredential
@@ -400,7 +400,7 @@ paths:
           description: 'Gateway or credential not found.'
     delete:
       tags:
-      - credentials
+        - credentials
       summary: 'Delete credential.'
       description: TODO
       operationId: deleteCredential
@@ -413,11 +413,11 @@ paths:
           description: 'Gateway or credential not found.'
   /gateways/{gateway_id}/credentials/{credential_id}/secrets:
     parameters:
-    - $ref: '#/components/parameters/GatewayId'
-    - $ref: '#/components/parameters/CredentialId'
+      - $ref: '#/components/parameters/GatewayId'
+      - $ref: '#/components/parameters/CredentialId'
     post:
       tags:
-      - credentials
+        - credentials
       summary: 'Create secret.'
       description: TODO
       operationId: createSecret
@@ -442,12 +442,12 @@ paths:
           description: 'Gateway not found.'
   /gateways/{gateway_id}/credentials/{credential_id}/secrets/{secret_id}:
     parameters:
-    - $ref: '#/components/parameters/GatewayId'
-    - $ref: '#/components/parameters/CredentialId'
-    - $ref: '#/components/parameters/SecretId'
+      - $ref: '#/components/parameters/GatewayId'
+      - $ref: '#/components/parameters/CredentialId'
+      - $ref: '#/components/parameters/SecretId'
     get:
       tags:
-      - credentials
+        - credentials
       summary: 'Get secret.'
       description: TODO
       operationId: findSecret
@@ -464,7 +464,7 @@ paths:
           description: 'Gateway or credential or secret not found.'
     delete:
       tags:
-      - credentials
+        - credentials
       summary: 'Delete secret.'
       description: TODO
       operationId: deleteSecret
@@ -478,7 +478,7 @@ paths:
   /configuration/definition:
     get:
       tags:
-      - configuration
+        - configuration
       summary: 'Find configuration definitions.'
       description: 'Find configurations definitions.'
       operationId: findConfigurationDefinitions
@@ -495,10 +495,10 @@ paths:
           description: 'Unauthorized.'
   /configuration/definition/{configuration_key}:
     parameters:
-    - $ref: '#/components/parameters/ConfigurationKey'
+      - $ref: '#/components/parameters/ConfigurationKey'
     post:
       tags:
-      - configuration
+        - configuration
       summary: 'Save configuration definition.'
       description: TODO
       operationId: createConfigurationDefinition
@@ -523,7 +523,7 @@ paths:
           description: 'Key already in use.'
     delete:
       tags:
-      - configuration
+        - configuration
       summary: 'Delete configuration definition.'
       description: TODO
       operationId: deleteConfigurationDefinition
@@ -537,7 +537,7 @@ paths:
   /configuration:
     get:
       tags:
-      - configuration
+        - configuration
       summary: 'Find configurations.'
       description: 'Find configurations on tenant level ordered by key.'
       operationId: findConfigurations
@@ -554,10 +554,10 @@ paths:
           description: 'Unauthorized.'
   /configuration/{configuration_key}:
     parameters:
-    - $ref: '#/components/parameters/ConfigurationKey'
+      - $ref: '#/components/parameters/ConfigurationKey'
     put:
       tags:
-      - configuration
+        - configuration
       summary: 'Save configuration.'
       description: TODO
       operationId: setConfiguration
@@ -578,7 +578,7 @@ paths:
           description: 'Configuration not found.'
     delete:
       tags:
-      - configuration
+        - configuration
       summary: 'Delete configuration.'
       description: TODO
       operationId: resetConfiguration
@@ -591,10 +591,10 @@ paths:
           description: 'Configuration not found.'
   /groups/{group_id}/configuration:
     parameters:
-    - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/GroupId'
     get:
       tags:
-      - configuration
+        - configuration
       summary: 'Find configuration.'
       description: 'Find configurations on group level ordered by key.'
       operationId: findConfigurationsByGroup
@@ -613,11 +613,11 @@ paths:
           description: 'Group not found.'
   /groups/{group_id}/configuration/{configuration_key}:
     parameters:
-    - $ref: '#/components/parameters/GroupId'
-    - $ref: '#/components/parameters/ConfigurationKey'
+      - $ref: '#/components/parameters/GroupId'
+      - $ref: '#/components/parameters/ConfigurationKey'
     put:
       tags:
-      - configuration
+        - configuration
       summary: 'Save configuration value.'
       description: TODO
       operationId: setConfigurationByGroup
@@ -638,7 +638,7 @@ paths:
           description: 'Group of configuration key not found.'
     delete:
       tags:
-      - configuration
+        - configuration
       summary: 'Delete configuration.'
       description: TODO
       operationId: resetConfigurationByGroup
@@ -651,10 +651,10 @@ paths:
           description: 'Group of configuration key not found.'
   /gateway/{gateway_id}/configuration:
     parameters:
-    - $ref: '#/components/parameters/GatewayId'
+      - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
-      - configuration
+        - configuration
       summary: 'Find configuration.'
       description: 'Find configurations on gateway level ordered by key.'
       operationId: findConfigurationsByGateway
@@ -673,11 +673,11 @@ paths:
           description: 'Group not found.'
   /gateway/{gateway_id}/configuration/{configuration_key}:
     parameters:
-    - $ref: '#/components/parameters/GatewayId'
-    - $ref: '#/components/parameters/ConfigurationKey'
+      - $ref: '#/components/parameters/GatewayId'
+      - $ref: '#/components/parameters/ConfigurationKey'
     put:
       tags:
-      - configuration
+        - configuration
       summary: 'Save configuration value.'
       description: TODO
       operationId: setConfigurationByGateway
@@ -698,7 +698,7 @@ paths:
           description: 'Gateway of configuration key not found.'
     delete:
       tags:
-      - configuration
+        - configuration
       summary: 'Delete configuration.'
       description: TODO
       operationId: resetConfigurationByGateway
@@ -712,12 +712,12 @@ paths:
 
 components:
   schemas:
-  
+
     Timestamp:
       description: 'Common timestamp for created/updated timestamps.'
       type: string
       format: date-time
-      example: '2021-01-01T00:00:00'    
+      example: '2021-01-01T00:00:00'
     Id:
       description: 'Id as technical reference (never changes).'
       type: string
@@ -754,11 +754,11 @@ components:
         updated:
           $ref: '#/components/schemas/Timestamp'
       required:
-      - tenant_id
-      - enabled
-      - name
-      - created
-      - updated
+        - tenant_id
+        - enabled
+        - name
+        - created
+        - updated
     TenantCreate:
       description: 'Tenant to create.'
       type: object
@@ -770,7 +770,7 @@ components:
         enabled:
           $ref: '#/components/schemas/Enabled'
       required:
-      - name
+        - name
     TenantUpdate:
       description: 'Tenant to update.'
       type: object
@@ -804,10 +804,10 @@ components:
         updated:
           $ref: '#/components/schemas/Timestamp'
       required:
-      - group_id
-      - name
-      - created
-      - updated
+        - group_id
+        - name
+        - created
+        - updated
     GroupCreate:
       description: 'Group to create.'
       type: object
@@ -817,7 +817,7 @@ components:
         name:
           $ref: '#/components/schemas/GroupName'
       required:
-      - name
+        - name
     GroupUpdate:
       description: 'Group to update.'
       type: object
@@ -844,7 +844,7 @@ components:
         $ref: '#/components/schemas/Id'
       uniqueItems: true
       example:
-      - 00000000-0000-0000-0000-000000000000
+        - 00000000-0000-0000-0000-000000000000
     Gateway:
       description: 'Gateway with common fields.'
       type: object
@@ -860,11 +860,11 @@ components:
         updated:
           $ref: '#/components/schemas/Timestamp'
       required:
-      - gateway_id
-      - enabled
-      - name
-      - created
-      - updated
+        - gateway_id
+        - enabled
+        - name
+        - created
+        - updated
     GatewayDetail:
       description: 'Gateway with detailed fields.'
       type: object
@@ -892,13 +892,13 @@ components:
         updated:
           $ref: '#/components/schemas/Timestamp'
       required:
-      - gateway_id
-      - enabled
-      - name
-      - group_ids
-      - properties
-      - created
-      - updated
+        - gateway_id
+        - enabled
+        - name
+        - group_ids
+        - properties
+        - created
+        - updated
     GatewayCreate:
       description: 'Gateway to create.'
       type: object
@@ -912,7 +912,7 @@ components:
         group_ids:
           $ref: '#/components/schemas/GatewayGroups'
       required:
-      - name
+        - name
     GatewayUpdate:
       description: 'Gateway to update.'
       type: object
@@ -939,9 +939,9 @@ components:
       description: 'Types of supported credentials.'
       type: string
       enum:
-      - password
-      - psk
-      - rsa
+        - password
+        - psk
+        - rsa
     Credential:
       properties:
         credential_id:
@@ -961,13 +961,13 @@ components:
         updated:
           $ref: '#/components/schemas/Timestamp'
       required:
-      - credential_id
-      - auth_id
-      - enabled
-      - type
-      - secrets
-      - created
-      - updated
+        - credential_id
+        - auth_id
+        - enabled
+        - type
+        - secrets
+        - created
+        - updated
     CredentialCreate:
       type: object
       properties:
@@ -982,9 +982,9 @@ components:
           items:
             $ref: '#/components/schemas/SecretCreate'
       required:
-      - auth_id
-      - type
-      - secrets
+        - auth_id
+        - type
+        - secrets
     CredentialUpdate:
       type: object
       properties:
@@ -1008,9 +1008,9 @@ components:
         created:
           $ref: '#/components/schemas/Timestamp'
       required:
-      - secret_id
-      - type
-      - created
+        - secret_id
+        - type
+        - created
     SecretDetail:
       description: 'Secret related to a credentail with meta informations.'
       type: object
@@ -1028,42 +1028,42 @@ components:
           psk: '#/components/schemas/SecretDetailPSK'
           password: '#/components/schemas/SecretDetailPassword'
       required:
-      - secret_id
-      - type
-      - created
+        - secret_id
+        - type
+        - created
     SecretDetailPSK:
       type: object
       allOf:
-      - $ref: '#/components/schemas/SecretDetail'
-      - properties:
-          secret:
-            type: string
-            format: byte
-        required:
-        - secret
+        - $ref: '#/components/schemas/SecretDetail'
+        - properties:
+            secret:
+              type: string
+              format: byte
+          required:
+            - secret
     SecretDetailRSA:
       type: object
       allOf:
-      - $ref: '#/components/schemas/SecretDetail'
-      - properties:
-          public_key:
-            type: string
-            format: byte
-          private_key:
-            type: string
-            format: byte
-        required:
-        - public_key
+        - $ref: '#/components/schemas/SecretDetail'
+        - properties:
+            public_key:
+              type: string
+              format: byte
+            private_key:
+              type: string
+              format: byte
+          required:
+            - public_key
     SecretDetailPassword:
       type: object
       allOf:
-      - $ref: '#/components/schemas/SecretDetail'
-      - properties:
-          password:
-            type: string
-            format: byte
-        required:
-        - password
+        - $ref: '#/components/schemas/SecretDetail'
+        - properties:
+            password:
+              type: string
+              format: byte
+          required:
+            - password
 
     SecretCreate:
       description: 'Create secret.'
@@ -1078,40 +1078,40 @@ components:
           psk: '#/components/schemas/SecretCreatePSK'
           password: '#/components/schemas/SecretCreatePassword'
       required:
-      - type
+        - type
     SecretCreatePSK:
       type: object
       allOf:
-      - $ref: '#/components/schemas/SecretCreate'
-      - properties:
-          secret:
-            type: string
-            format: byte
-        required:
-        - secret
+        - $ref: '#/components/schemas/SecretCreate'
+        - properties:
+            secret:
+              type: string
+              format: byte
+          required:
+            - secret
     SecretCreateRSA:
       type: object
       allOf:
-      - $ref: '#/components/schemas/SecretCreate'
-      - properties:
-          public_key:
-            type: string
-            format: byte
-          private_key:
-            type: string
-            format: byte
-        required:
-        - public_key
+        - $ref: '#/components/schemas/SecretCreate'
+        - properties:
+            public_key:
+              type: string
+              format: byte
+            private_key:
+              type: string
+              format: byte
+          required:
+            - public_key
     SecretCreatePassword:
       type: object
       allOf:
-      - $ref: '#/components/schemas/SecretCreate'
-      - properties:
-          password:
-            type: string
-            format: byte
-        required:
-        - password
+        - $ref: '#/components/schemas/SecretCreate'
+        - properties:
+            password:
+              type: string
+              format: byte
+          required:
+            - password
 
     ###
     ### Configuration
@@ -1127,10 +1127,10 @@ components:
     ConfigurationType:
       description: 'Possible types of configuration values.'
       enum:
-      - INTEGER
-      - BOOLEAN
-      - STRING
-      - URL
+        - INTEGER
+        - BOOLEAN
+        - STRING
+        - URL
     ConfigurationDescription:
       description: 'Describes a configuration.'
       type: string
@@ -1153,43 +1153,43 @@ components:
           STRING: '#/components/schemas/ConfigurationDefinitionString'
           URL: '#/components/schemas/ConfigurationDefinitionUrl'
       required:
-      - key
-      - type
+        - key
+        - type
     ConfigurationDefinitionBoolean:
       type: object
       allOf:
-      - $ref: '#/components/schemas/ConfigurationDefinition'
+        - $ref: '#/components/schemas/ConfigurationDefinition'
     ConfigurationDefinitionUrl:
       type: object
       allOf:
-      - $ref: '#/components/schemas/ConfigurationDefinition'
+        - $ref: '#/components/schemas/ConfigurationDefinition'
     ConfigurationDefinitionInteger:
       type: object
       allOf:
-      - $ref: '#/components/schemas/ConfigurationDefinition'
-      - properties:
-          minimum:
-            type: integer
-            format: int32
-          maximum:
-            type: integer
-            format: int32
+        - $ref: '#/components/schemas/ConfigurationDefinition'
+        - properties:
+            minimum:
+              type: integer
+              format: int32
+            maximum:
+              type: integer
+              format: int32
     ConfigurationDefinitionString:
       type: object
       allOf:
-      - $ref: '#/components/schemas/ConfigurationDefinition'
-      - properties:
-          minLength:
-            type: integer
-            format: int32
-            minimum: 1
-          maxLength:
-            type: integer
-            format: int32
-            maximum: 1000
-          pattern:
-            type: string
-            maxLength: 1000
+        - $ref: '#/components/schemas/ConfigurationDefinition'
+        - properties:
+            minLength:
+              type: integer
+              format: int32
+              minimum: 1
+            maxLength:
+              type: integer
+              format: int32
+              maximum: 1000
+            pattern:
+              type: string
+              maxLength: 1000
     ConfigurationValue:
       type: object
     ConfigurationSet:
@@ -1198,7 +1198,7 @@ components:
         value:
           $ref: '#/components/schemas/ConfigurationValue'
       required:
-      - value
+        - value
     Configuration:
       description: 'Defines a configuration.'
       type: object
@@ -1208,8 +1208,8 @@ components:
         value:
           $ref: '#/components/schemas/ConfigurationValue'
       required:
-      - definition
-      - value
+        - definition
+        - value
 
   parameters:
     TenantId:

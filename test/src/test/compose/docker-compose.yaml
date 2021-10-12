@@ -9,10 +9,10 @@ services:
     build: ${project.build.directory}/compose/keycloak
     hostname: keycloak
     environment:
-    - KC_HTTP_ENABLED=true
-    - KC_CLUSTER=local
-    - KEYCLOAK_ADMIN=admin
-    - KEYCLOAK_ADMIN_PASSWORD=password
+      - KC_HTTP_ENABLED=true
+      - KC_CLUSTER=local
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=password
     healthcheck:
       test: curl -sf http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       interval: 5s
@@ -22,10 +22,10 @@ services:
     image: postgres:${docker.postgres.version}
     hostname: postgres
     environment:
-    - POSTGRES_USER=postgres
-    - POSTGRES_PASSWORD=changeMe
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=changeMe
     volumes:
-    - ${project.build.directory}/compose/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
+      - ${project.build.directory}/compose/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -35,12 +35,12 @@ services:
     image: influxdb:${docker.influxdb.version}
     hostname: influxdb
     environment:
-    - DOCKER_INFLUXDB_INIT_MODE=setup
-    - DOCKER_INFLUXDB_INIT_USERNAME=influxdb
-    - DOCKER_INFLUXDB_INIT_PASSWORD=changeMe
-    - DOCKER_INFLUXDB_INIT_ORG=test
-    - DOCKER_INFLUXDB_INIT_BUCKET=export
-    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=AdminChangeMe
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=influxdb
+      - DOCKER_INFLUXDB_INIT_PASSWORD=changeMe
+      - DOCKER_INFLUXDB_INIT_ORG=test
+      - DOCKER_INFLUXDB_INIT_BUCKET=export
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=AdminChangeMe
     healthcheck:
       test: wget --spider --quiet http://localhost:8086/ping || exit 1
       interval: 5s
@@ -50,12 +50,12 @@ services:
     image: grafana/grafana:${docker.grafana.version}
     hostname: grafana
     environment:
-    - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=changeMe
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=changeMe
     volumes:
-    - ${project.build.directory}/compose/grafana/grafana.ini:/etc/grafana/grafana.ini
-    - ${project.build.directory}/compose/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
-    - ${project.build.directory}/compose/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
-    - ${project.build.directory}/compose/grafana/dvh4013.json:/compose/dashboards/dvh4013.json
+      - ${project.build.directory}/compose/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ${project.build.directory}/compose/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ${project.build.directory}/compose/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ${project.build.directory}/compose/grafana/dvh4013.json:/compose/dashboards/dvh4013.json
     depends_on:
       keycloak:
         condition: service_started
@@ -66,7 +66,7 @@ services:
     image: confluentinc/cp-zookeeper:${docker.kafka.version}
     hostname: zookeeper
     environment:
-    - ZOOKEEPER_CLIENT_PORT=2182
+      - ZOOKEEPER_CLIENT_PORT=2182
     healthcheck:
       test: curl -sf http://zookeeper:8080/commands/stats
       interval: 5s
@@ -75,12 +75,12 @@ services:
     image: confluentinc/cp-kafka:${docker.kafka.version}
     hostname: kafka
     environment:
-    - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2182
-    - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093,BROKER://0.0.0.0:9092
-    - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=BROKER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-    - KAFKA_ADVERTISED_LISTENERS=BROKER://kafka:9092
-    - KAFKA_INTER_BROKER_LISTENER_NAME=BROKER
-    - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2182
+      - KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9093,BROKER://0.0.0.0:9092
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=BROKER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      - KAFKA_ADVERTISED_LISTENERS=BROKER://kafka:9092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=BROKER
+      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1
     healthcheck:
       test: cat < /dev/null > /dev/tcp/kafka/9092
       interval: 5s
@@ -97,15 +97,15 @@ services:
     image: ${docker.image.repository}/gateway-registry:${docker.image.version}
     hostname: gateway-registry
     environment:
-    - MICRONAUT_ENVIRONMENTS=postgres
-    - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
-    - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
-    - DATASOURCES_DEFAULT_USERNAME=postgres
-    - REGISTRY_AUTH_ISSUER=http://gateway-registry:8080/
-    - REGISTRY_AUTH_GENERATE_KEY=TRUE
-    - LOGGER_LEVELS_IO_INOA=TRACE
+      - MICRONAUT_ENVIRONMENTS=postgres
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
+      - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
+      - DATASOURCES_DEFAULT_USERNAME=postgres
+      - REGISTRY_AUTH_ISSUER=http://gateway-registry:8080/
+      - REGISTRY_AUTH_GENERATE_KEY=TRUE
+      - LOGGER_LEVELS_IO_INOA=TRACE
     volumes:
-    - ${project.build.directory}/compose/gateway-registry/testdata.sql:/database/V999__testdata.sql
+      - ${project.build.directory}/compose/gateway-registry/testdata.sql:/database/V999__testdata.sql
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
@@ -121,19 +121,19 @@ services:
     hostname: gateway-registry-hono-bridge
     env_file: ${project.build.directory}/compose/hono/base.env
     environment:
-    - HONO_REGISTRY_AMQP_INSECUREPORTENABLED=true
-    - HONO_REGISTRY_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
-    - HONO_REGISTRY_AMQP_INSECUREPORT=5672
-    - HONO_REGISTRY_HTTP_INSECUREPORTENABLED=true
-    - HONO_REGISTRY_HTTP_INSECUREPORTBINDADDRESS=0.0.0.0
-    - HONO_REGISTRY_HTTP_INSECUREPORT=9999
-    - HONO_INOA_GATEWAYREGISTRYHOST=gateway-registry
-    - HONO_INOA_GATEWAYREGISTRYPORT=8080
-    - HONO_INOA_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
-    - HONO_INOA_CLIENT_ID=gateway-registry-hono-bridge
-    - HONO_INOA_CLIENT_SECRET=changeMe
+      - HONO_REGISTRY_AMQP_INSECUREPORTENABLED=true
+      - HONO_REGISTRY_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
+      - HONO_REGISTRY_AMQP_INSECUREPORT=5672
+      - HONO_REGISTRY_HTTP_INSECUREPORTENABLED=true
+      - HONO_REGISTRY_HTTP_INSECUREPORTBINDADDRESS=0.0.0.0
+      - HONO_REGISTRY_HTTP_INSECUREPORT=9999
+      - HONO_INOA_GATEWAYREGISTRYHOST=gateway-registry
+      - HONO_INOA_GATEWAYREGISTRYPORT=8080
+      - HONO_INOA_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
+      - HONO_INOA_CLIENT_ID=gateway-registry-hono-bridge
+      - HONO_INOA_CLIENT_SECRET=changeMe
     volumes:
-    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+      - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
     healthcheck:
       test: curl -sf http://localhost:8080/actuator/health
       interval: 5s
@@ -148,12 +148,12 @@ services:
     image: ${docker.image.repository}/kafka-backup:${docker.image.version}
     hostname: kafka-backup
     environment:
-    - MICRONAUT_ENVIRONMENTS=postgres
-    - DATASOURCES_DEFAULT_USERNAME=postgres
-    - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
-    - LOGGER_LEVELS_IO_INOA=TRACE
-    - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+      - MICRONAUT_ENVIRONMENTS=postgres
+      - DATASOURCES_DEFAULT_USERNAME=postgres
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
@@ -168,10 +168,10 @@ services:
     image: ${docker.image.repository}/inoa-translator:${docker.image.version}
     hostname: inoa-translator
     environment:
-    - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
-    - LOGGER_LEVELS_IO_INOA=TRACE
-    - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
@@ -184,15 +184,15 @@ services:
     image: ${docker.image.repository}/inoa-exporter:${docker.image.version}
     hostname: inoa-exporter
     environment:
-    - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
-    - INFLUXDB_URL=http://influxdb:8086
-    - INFLUXDB_USERNAME=influxdb
-    - INFLUXDB_PASSWORD=changeMe
-    - INFLUXDB_ORG=test
-    - INFLUXDB_BUCKET=export
-    - LOGGER_LEVELS_IO_INOA=TRACE
-    - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_USERNAME=influxdb
+      - INFLUXDB_PASSWORD=changeMe
+      - INFLUXDB_ORG=test
+      - INFLUXDB_BUCKET=export
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
@@ -212,17 +212,17 @@ services:
     hostname: hono-service-auth
     env_file: ${project.build.directory}/compose/hono/base.env
     environment:
-    - HONO_AUTH_AMQP_INSECUREPORTENABLED=true
-    - HONO_AUTH_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
-    - HONO_AUTH_AMQP_INSECUREPORT=5672
-    - HONO_AUTH_SVC_PERMISSIONSPATH=/etc/hono/permissions.json
-    - HONO_AUTH_SVC_SUPPORTEDSASLMECHANISMS=PLAIN
-    - HONO_AUTH_SVC_SIGNING_KEYPATH=/etc/hono/auth-server-key.pem
-    - HONO_AUTH_SVC_SIGNING_CERTPATH=/etc/hono/auth-server-cert.pem
+      - HONO_AUTH_AMQP_INSECUREPORTENABLED=true
+      - HONO_AUTH_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
+      - HONO_AUTH_AMQP_INSECUREPORT=5672
+      - HONO_AUTH_SVC_PERMISSIONSPATH=/etc/hono/permissions.json
+      - HONO_AUTH_SVC_SUPPORTEDSASLMECHANISMS=PLAIN
+      - HONO_AUTH_SVC_SIGNING_KEYPATH=/etc/hono/auth-server-key.pem
+      - HONO_AUTH_SVC_SIGNING_CERTPATH=/etc/hono/auth-server-cert.pem
     volumes:
-    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
-    - ${project.build.directory}/compose/hono/auth-server-key.pem:/etc/hono/auth-server-key.pem
-    - ${project.build.directory}/compose/hono/permissions.json:/etc/hono/permissions.json
+      - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+      - ${project.build.directory}/compose/hono/auth-server-key.pem:/etc/hono/auth-server-key.pem
+      - ${project.build.directory}/compose/hono/permissions.json:/etc/hono/permissions.json
     healthcheck:
       test: curl -sf http://hono-service-auth:8088/readiness
       interval: 5s
@@ -233,18 +233,18 @@ services:
     hostname: hono-service-command-router
     env_file: ${project.build.directory}/compose/hono/base.env
     environment:
-    - HONO_COMMANDROUTER_AMQP_INSECUREPORTENABLED=true
-    - HONO_COMMANDROUTER_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
-    - HONO_COMMANDROUTER_AMQP_INSECUREPORT=5672
-    - HONO_COMMAND_CERTPATH=/etc/hono/cert.pem
-    - HONO_COMMAND_KEYPATH=/etc/hono/key.pem
-    - HONO_COMMAND_TRUSTSTOREPATH=/etc/hono/trusted-certs.pem
+      - HONO_COMMANDROUTER_AMQP_INSECUREPORTENABLED=true
+      - HONO_COMMANDROUTER_AMQP_INSECUREPORTBINDADDRESS=0.0.0.0
+      - HONO_COMMANDROUTER_AMQP_INSECUREPORT=5672
+      - HONO_COMMAND_CERTPATH=/etc/hono/cert.pem
+      - HONO_COMMAND_KEYPATH=/etc/hono/key.pem
+      - HONO_COMMAND_TRUSTSTOREPATH=/etc/hono/trusted-certs.pem
     volumes:
-    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
-    - ${project.build.directory}/compose/hono/trusted-certs.pem:/trusted-certs.pem
-    - ${project.build.directory}/compose/hono/command-router-cert.pem:/etc/hono/command-router-cert.pem
-    - ${project.build.directory}/compose/hono/command-router-key.pem:/etc/hono/command-router-key.pem
-    - ${project.build.directory}/compose/hono/command-router.credentials:/etc/hono/credentials
+      - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+      - ${project.build.directory}/compose/hono/trusted-certs.pem:/trusted-certs.pem
+      - ${project.build.directory}/compose/hono/command-router-cert.pem:/etc/hono/command-router-cert.pem
+      - ${project.build.directory}/compose/hono/command-router-key.pem:/etc/hono/command-router-key.pem
+      - ${project.build.directory}/compose/hono/command-router.credentials:/etc/hono/credentials
     healthcheck:
       test: curl -sf http://hono-service-command-router:8088/readiness
       interval: 5s
@@ -262,12 +262,12 @@ services:
     hostname: hono-adapter-mqtt
     env_file: ${project.build.directory}/compose/hono/base.env
     environment:
-    - HONO_MQTT_INSECUREPORTENABLED=true
-    - HONO_MQTT_INSECUREPORTBINDADDRESS=0.0.0.0
-    - HONO_MQTT_INSECUREPORT=1883
+      - HONO_MQTT_INSECUREPORTENABLED=true
+      - HONO_MQTT_INSECUREPORTBINDADDRESS=0.0.0.0
+      - HONO_MQTT_INSECUREPORT=1883
     volumes:
-    - ${project.build.directory}/compose/hono/adapter-mqtt.credentials:/etc/hono/credentials
-    - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
+      - ${project.build.directory}/compose/hono/adapter-mqtt.credentials:/etc/hono/credentials
+      - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
     healthcheck:
       test: curl -sf http://hono-adapter-mqtt:8088/readiness
       interval: 5s
@@ -290,28 +290,28 @@ services:
     image: defreitas/dns-proxy-server:2.19.0
     hostname: dns-proxy
     environment:
-    - MG_LOG_LEVEL=WARNING
+      - MG_LOG_LEVEL=WARNING
     ports:
-    - 5380:5380
+      - 5380:5380
     volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
-    - /etc/resolv.conf:/etc/resolv.conf
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/resolv.conf:/etc/resolv.conf
 
   swagger-ui:
     image: swaggerapi/swagger-ui
     hostname: swagger-ui
     environment:
-    - URLS=[{url:"/management.yaml",name:"Management API"},{url:"/gateway.yaml",name:"Gateway API"}]
-    - DISPLAY_OPERATION_ID=true
-    - DISPLAY_REQUEST_DURATION=true
-    - PERSIST_AUTHORIZATION=true
-    - VALIDATOR_URL=
-    - TRY_IT_OUT_ENABLED=true
-    - OAUTH_CLIENT_ID=gateway-registry-ui
-    - OAUTH_CLIENT_SECRET=changeMe
+      - URLS=[{url:"/management.yaml",name:"Management API"},{url:"/gateway.yaml",name:"Gateway API"}]
+      - DISPLAY_OPERATION_ID=true
+      - DISPLAY_REQUEST_DURATION=true
+      - PERSIST_AUTHORIZATION=true
+      - VALIDATOR_URL=
+      - TRY_IT_OUT_ENABLED=true
+      - OAUTH_CLIENT_ID=gateway-registry-ui
+      - OAUTH_CLIENT_SECRET=changeMe
     volumes:
-    - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
-    - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
+      - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
+      - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
     depends_on:
       gateway-registry:
         condition: service_started
@@ -324,10 +324,9 @@ services:
     image: obsidiandynamics/kafdrop
     hostname: kafka-ui
     environment:
-    - KAFKA_BROKERCONNECT=kafka:9092
+      - KAFKA_BROKERCONNECT=kafka:9092
     depends_on:
       kafka:
         condition: service_started
       dns-proxy:
         condition: service_started
-

@@ -13,21 +13,21 @@ micronaut:
       enabled: true
       default:
         allowedMethods:
-        - GET
-        - POST
-        - PUT
-        - DELETE
+          - GET
+          - POST
+          - PUT
+          - DELETE
 
   security:
 
     ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#interceptUrlMap
     intercept-url-map:
-    - pattern: /endpoints/**
-      access: isAnonymous()
-    - pattern: /openapi/**
-      access: isAnonymous()
-    - pattern: /**
-      access: isAuthenticated()
+      - pattern: /endpoints/**
+        access: isAnonymous()
+      - pattern: /openapi/**
+        access: isAnonymous()
+      - pattern: /**
+        access: isAuthenticated()
 
   # see https://micronaut-projects.github.io/micronaut-data/latest/guide/configurationreference.html
   data:
@@ -71,4 +71,4 @@ flyway:
 logger:
   levels:
     org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor: WARN
-    io.micronaut.retry.intercept.RecoveryInterceptor: OFF
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
