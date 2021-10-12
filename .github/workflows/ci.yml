@@ -13,6 +13,13 @@ jobs:
           format: colored
           strict: true
 
+  lint-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: xt0rted/markdownlint-problem-matcher@v1
+      - run: markdownlint .
+
   build:
     runs-on: ubuntu-latest
     steps:
