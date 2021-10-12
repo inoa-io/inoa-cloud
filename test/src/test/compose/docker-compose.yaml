@@ -40,10 +40,27 @@ services:
     - DOCKER_INFLUXDB_INIT_PASSWORD=changeMe
     - DOCKER_INFLUXDB_INIT_ORG=test
     - DOCKER_INFLUXDB_INIT_BUCKET=export
+    - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=AdminChangeMe
     healthcheck:
       test: wget --spider --quiet http://localhost:8086/ping || exit 1
       interval: 5s
       retries: 30
+
+  grafana:
+    image: grafana/grafana:${docker.grafana.version}
+    hostname: grafana
+    environment:
+    - GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET=changeMe
+    volumes:
+    - ${project.build.directory}/compose/grafana/grafana.ini:/etc/grafana/grafana.ini
+    - ${project.build.directory}/compose/grafana/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+    - ${project.build.directory}/compose/grafana/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+    - ${project.build.directory}/compose/grafana/dvh4013.json:/compose/dashboards/dvh4013.json
+    depends_on:
+      keycloak:
+        condition: service_started
+      influxdb:
+        condition: service_started
 
   zookeeper:
     image: confluentinc/cp-zookeeper:${docker.kafka.version}
