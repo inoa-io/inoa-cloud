@@ -1,28 +1,24 @@
 name: PullRequest
 
-on: [pull_request]
+"on": [pull_request]
 
 jobs:
+
+  lint-yaml:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ibiqlik/action-yamllint@v3
+        with:
+          format: colored
+          strict: true
+
   build:
     runs-on: ubuntu-latest
     steps:
-
-      ###
-      ### Prepare
-      ###
-
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: setup java
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
         with:
           java-version: 11
-
-      ###
-      ### Build
-      ###
-
-      - name: setup maven dependencies
-        run: mvn -B dependency:go-offline -q
-      - name: build
-        run: mvn -B clean install
+      - run: mvn -B dependency:go-offline -q
+      - run: mvn -B clean install

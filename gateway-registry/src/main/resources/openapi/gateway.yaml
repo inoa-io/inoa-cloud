@@ -9,18 +9,18 @@ info:
   license:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  contact: 
+  contact:
     name: Kokuwa.io
     url: https://github.com/kokuwaio
 servers:
-- url: http://gateway-registry-service:8080
-security: 
-- BearerAuth: []
+  - url: http://gateway-registry-service:8080
+security:
+  - BearerAuth: []
 paths:
   /auth/keys:
     get:
       tags:
-      - auth
+        - auth
       summary: Get public jwks.
       description: TODO
       operationId: getKeys
@@ -34,7 +34,7 @@ paths:
   /auth/token:
     post:
       tags:
-      - auth
+        - auth
       summary: Get registry token with gateway token.
       description: TODO
       externalDocs:
@@ -42,18 +42,18 @@ paths:
         url: https://tools.ietf.org/html/rfc7523#section-2.1
       operationId: getToken
       security: []
-      parameters: 
-      - name: grant_type
-        in: query
-        required: true
-        schema:
-          type: string
-          example: urn:ietf:params:oauth:grant-type:jwt-bearer
-      - name: assertion
-        in: query
-        required: true
-        schema:
-          type: string
+      parameters:
+        - name: grant_type
+          in: query
+          required: true
+          schema:
+            type: string
+            example: urn:ietf:params:oauth:grant-type:jwt-bearer
+        - name: assertion
+          in: query
+          required: true
+          schema:
+            type: string
       responses:
         200:
           description: Registry token with extra data.
@@ -70,7 +70,7 @@ paths:
   /gateway/configuration:
     get:
       tags:
-      - configuration
+        - configuration
       summary: Get gateway configuration.
       description: TODO
       operationId: getConfiguration
@@ -87,7 +87,7 @@ paths:
   /gateway/properties:
     get:
       tags:
-      - properties
+        - properties
       summary: Get gateway properties.
       description: TODO
       operationId: getProperties
@@ -102,7 +102,7 @@ paths:
           description: Unauthorized.
     put:
       tags:
-      - properties
+        - properties
       summary: Set multiple gateway properties.
       description: TODO
       operationId: setProperties
@@ -123,14 +123,14 @@ paths:
           description: Unauthorized.
   /gateway/properties/{key}:
     parameters:
-    - name: key
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/PropertyKey'
+      - name: key
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/PropertyKey'
     put:
       tags:
-      - properties
+        - properties
       summary: Set gateway property.
       description: TODO
       operationId: setProperty
@@ -147,7 +147,7 @@ paths:
           description: Unauthorized.
     delete:
       tags:
-      - properties
+        - properties
       summary: Delete gateway property.
       description: TODO
       operationId: deleteProperty
@@ -174,8 +174,8 @@ components:
           type: string
           example: gateway unknown
       required:
-      - error
-      - error_description
+        - error
+        - error_description
     TokenRepsonse:
       externalDocs:
         description: token success response
@@ -200,10 +200,10 @@ components:
           format: uuid
           example: 00000000-0000-0000-0000-000000000000
       required:
-      - access_token
-      - token_type
-      - expires_in
-      - tenant_id
+        - access_token
+        - token_type
+        - expires_in
+        - tenant_id
     PropertyKey:
       type: string
       pattern: '^[a-z0-9_\-\.]{2,100}$'

@@ -7,7 +7,7 @@ info:
   license:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
-  contact: 
+  contact:
     name: GrayC GmbH
     url: https://grayc.de
 paths: {}
@@ -68,14 +68,14 @@ components:
           example:
             obis-1: 0815
       required:
-      - tenant_id
-      - gateway_id
-      - urn
-      - device_type
-      - device_id
-      - sensor
-      - timestamp
-      - value
+        - tenant_id
+        - gateway_id
+        - urn
+        - device_type
+        - device_id
+        - sensor
+        - timestamp
+        - value
       example:
         tenant_id: 123
         gateway_id: 345
