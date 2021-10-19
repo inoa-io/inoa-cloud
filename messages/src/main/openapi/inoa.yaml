@@ -31,7 +31,7 @@ components:
         urn:
           description: 'TODO'
           type: string
-          pattern: 'urn:(?<deviceType>[a-zA-Z0-9\-]{2,32}):(?<deviceId>[a-zA-Z0-9\-]{2,36}):(?<sensor>[a-zA-Z0-9\-\:*]{2,64})'
+          pattern: 'urn:(?<deviceType>[a-zA-Z0-9\-]{2,32}):(?<deviceId>[a-zA-Z0-9\-]{2,36}):(?<sensor>[a-zA-Z0-9_\-\:*]{2,64})'
           example: 'urn:dvh4013:12314214:1-0:1.8.0*255'
         device_type:
           description: 'TODO'

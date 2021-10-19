@@ -33,7 +33,7 @@ public class TranslateService {
 	private static Pattern URN_PATTERN = Pattern.compile("urn"
 			+ ":(?<deviceType>[a-zA-Z0-9\\-]{2,32})"
 			+ ":(?<deviceId>[a-zA-Z0-9\\-]{2,36})"
-			+ ":(?<sensor>[a-zA-Z0-9\\-\\:\\*]{2,64})");
+			+ ":(?<sensor>[a-zA-Z0-9_\\-\\:\\*]{2,64})");
 
 	private final Set<Converter> converters;
 	private final TranslateMetrics metrics;
