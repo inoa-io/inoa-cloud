@@ -121,3 +121,15 @@ translator:
           converter: modbus
           ext:
             label: l3_voltage_threshold
+
+    # source: Fabian Schlegel
+    - name: satellite
+      sensors:
+        - name: memory_heap   # memory heap
+          converter: number
+        - name: memory_free   # memory free
+          converter: number
+        - name: reset_reason  # reason of last restart
+          converter: number
+        - name: reset_count   # count of restarts since manufacturing
+          converter: number
