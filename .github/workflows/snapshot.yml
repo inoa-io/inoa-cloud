@@ -36,7 +36,7 @@ jobs:
       - name: setup maven dependencies
         run: mvn -B dependency:go-offline -q
       - name: build
-        run: mvn -B clean install -Ddocker.image.version=${{ steps.prep.outputs.BUILD_ID }}
+        run: mvn -B clean install -Ddocker.image.version=${{ steps.prep.outputs.BUILD_ID }} -DskipTests
 
       ###
       ### Docker
