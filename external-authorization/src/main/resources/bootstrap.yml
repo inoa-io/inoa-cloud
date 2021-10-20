@@ -1,0 +1,4 @@
+micronaut:
+  application:
+    name: ${project.artifactId}
+    version: ${project.version}

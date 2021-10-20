@@ -1,0 +1,14 @@
+## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
+jackson:
+  serialization:
+    indentOutput: true
+
+## custom log configuration
+logger:
+  levels:
+    io.inoa: TRACE
+
+inoa:
+  auth:
+    issuer: http://authz:8090
+    privateKey: classpath:jwtRS256.key
