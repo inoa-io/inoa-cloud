@@ -1,6 +1,6 @@
 grpc:
   server:
-    port: 5050
+    port: ${random.port}
   channels:
     istioAuth:
       address: 'localhost:${grpc.server.port}'

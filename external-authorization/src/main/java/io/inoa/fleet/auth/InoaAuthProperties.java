@@ -8,5 +8,6 @@ import lombok.Data;
 public class InoaAuthProperties {
 	private String issuer;
 	private String tenantHeader = "x-inoa-tenant";
-	private String privateKey = "file:///home/user/changeMe.pem";
+	private String privateKey;
+	private String keyId = "test";
 }

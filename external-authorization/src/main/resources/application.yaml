@@ -46,12 +46,6 @@ endpoints:
   loggers:
     write-sensitive: false
 
-## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
-jackson:
-  bean-introspection-module: true
-  serialization:
-    writeDatesAsTimestamps: false
-
 ## see https://micronaut-projects.github.io/micronaut-sql/latest/guide/#jdbc
 datasources:
   default:
