@@ -1,0 +1,15 @@
+grpc:
+  server:
+    port: ${random.port}
+  channels:
+    istioAuth:
+      address: 'localhost:${grpc.server.port}'
+      plaintext: true
+      max-retry-attempts: 10
+logger:
+  levels:
+    root: INFO
+inoa:
+  auth:
+    issuer: http://authz.inoa-cloud:8090
+    privateKey: classpath:jwtRS256.key

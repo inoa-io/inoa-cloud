@@ -1,0 +1,9 @@
+## custom log configuration
+logger:
+  levels:
+    io.inoa: TRACE
+
+inoa:
+  auth:
+    issuer: http://authz:8090
+    privateKey: classpath:jwtRS256.key
