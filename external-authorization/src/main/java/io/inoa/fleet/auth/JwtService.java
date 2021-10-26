@@ -122,7 +122,12 @@ public class JwtService {
 
 		try {
 			var reader = new BufferedReader(new InputStreamReader(privateKeyAsStream.get()));
-			return JWK.parseFromPEMEncodedObjects(IOUtils.readText(reader));
+			JWK jwk = JWK.parseFromPEMEncodedObjects(IOUtils.readText(reader));
+			return new RSAKey.Builder((RSAPublicKey) jwk.toRSAKey().toPublicKey())
+					.privateKey((RSAPrivateKey) jwk.toRSAKey().toPrivateKey())
+					.keyUse(KeyUse.SIGNATURE)
+					.keyID(properties.getKeyId())
+					.build();
 		} catch (JOSEException | IOException e) {
 			var message = "Private key " + privateKey + " is not readable.";
 			log.error(message, e);
