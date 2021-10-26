@@ -16,12 +16,12 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.envoyproxy.envoy.config.core.v3.HeaderValueOption;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.nimbusds.jose.JOSEException;
 
+import io.envoyproxy.envoy.config.core.v3.HeaderValueOption;
 import io.envoyproxy.envoy.service.auth.v3.AttributeContext;
 import io.envoyproxy.envoy.service.auth.v3.AuthorizationGrpc;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
@@ -29,9 +29,7 @@ import io.envoyproxy.envoy.service.auth.v3.CheckResponse;
 import io.grpc.stub.StreamObserver;
 import io.micronaut.test.annotation.MockBean;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class GrpcTest extends AbstractTest {
 
 	private static class TestStreamObserver implements StreamObserver<CheckResponse> {

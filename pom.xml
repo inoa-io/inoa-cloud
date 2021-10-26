@@ -53,10 +53,11 @@
 		<!-- =============================== Build =============================== -->
 		<!-- ===================================================================== -->
 
-		<docker.kafka.version>6.1.2</docker.kafka.version>
-		<docker.postgres.version>13.1</docker.postgres.version>
 		<docker.influxdb.version>2.0-alpine</docker.influxdb.version>
 		<docker.grafana.version>8.1.5</docker.grafana.version>
+		<docker.kafka.version>6.1.2</docker.kafka.version>
+		<docker.postgres.version>13.1</docker.postgres.version>
+
 		<docker.image.repository>ghcr.io/grayc-de</docker.image.repository>
 		<docker.image.version>latest</docker.image.version>
 
@@ -66,19 +67,19 @@
 
 		<version.com.github.tomakehurst.wiremock>2.31.0</version.com.github.tomakehurst.wiremock>
 		<version.com.influxdb.client>3.3.0</version.com.influxdb.client>
+		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
 		<version.io.kokuwa.micronaut.codegen>2.2.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>2.5.13</version.io.micronaut>
 		<version.io.micronaut.data>2.5.0</version.io.micronaut.data>
 		<version.org.awaitility>4.1.0</version.org.awaitility>
+		<version.org.bouncycastle>1.68</version.org.bouncycastle>
 		<version.org.eclipse.hono>1.9.1</version.org.eclipse.hono>
 		<version.org.keycloak>15.0.2</version.org.keycloak>
 		<version.org.mapstruct>1.5.0.Beta1</version.org.mapstruct>
 		<version.org.springframework.boot>2.4.11</version.org.springframework.boot>
-		<version.org.testcontainers>1.16.1</version.org.testcontainers>
-		<version.org.bouncycastle>1.68</version.org.bouncycastle>
-		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
 		<version.org.springframework.security>5.4.5</version.org.springframework.security>
+		<version.org.testcontainers>1.16.1</version.org.testcontainers>
 
 	</properties>
 

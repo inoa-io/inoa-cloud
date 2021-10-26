@@ -11,5 +11,5 @@ logger:
     root: INFO
 inoa:
   auth:
+    key-id: test
     issuer: http://authz.inoa-cloud:8090
-    privateKey: classpath:jwtRS256.key

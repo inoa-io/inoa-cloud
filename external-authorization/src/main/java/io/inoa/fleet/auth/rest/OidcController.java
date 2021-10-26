@@ -9,12 +9,10 @@ import io.micronaut.http.annotation.Produces;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-@RequiredArgsConstructor
-@Controller
 @Secured(SecurityRule.IS_ANONYMOUS)
+@Controller
+@RequiredArgsConstructor
 public class OidcController {
 
 	private final InoaAuthProperties properties;

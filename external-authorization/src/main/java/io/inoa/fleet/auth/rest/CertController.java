@@ -14,11 +14,9 @@ import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Secured(SecurityRule.IS_ANONYMOUS)
 @Controller("/protocol/openid-connect")
-@Slf4j
 @RequiredArgsConstructor
 public class CertController {
 
