@@ -2,7 +2,6 @@ package io.inoa.fleet.auth;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -10,11 +9,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.text.ParseException;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.inject.Singleton;
@@ -46,33 +43,18 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 public class JwtService {
 
+	private final Map<String, AuthenticationHelper> authenticationManagers = new ConcurrentHashMap<>();
 	@Getter
 	private final JWK jwk;
-	private final InoaAuthProperties inoaAuthProperties;
-	private final Map<String, AuthenticationHelper> authenticationManagers = new ConcurrentHashMap<>();
+	private final InoaAuthProperties properties;
 
-	public JwtService(InoaAuthProperties inoaAuthProperties, ResourceResolver resourceResolver)
-			throws IOException, JOSEException {
-		this.inoaAuthProperties = inoaAuthProperties;
-		log.info("loading private key from location: {}", inoaAuthProperties.getPrivateKey());
-		Optional<InputStream> resourceAsStream = resourceResolver
-				.getResourceAsStream(inoaAuthProperties.getPrivateKey());
-		if (resourceAsStream.isPresent()) {
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceAsStream.get()));
-			String content = IOUtils.readText(bufferedReader);
-			jwk = JWK.parseFromPEMEncodedObjects(content);
-		} else {
-			log.warn("file not found: {}", inoaAuthProperties.getPrivateKey());
-			log.warn("Generate random key. Do not use in Production!");
-			KeyPair keyPair = generateKey().toKeyPair();
-			jwk = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
-					.privateKey((RSAPrivateKey) keyPair.getPrivate()).keyUse(KeyUse.SIGNATURE).keyID(getKeyID())
-					.build();
-		}
+	public JwtService(InoaAuthProperties properties, ResourceResolver resourceResolver) {
+		this.properties = properties;
+		this.jwk = loadPrivateKey(resourceResolver);
 	}
 
 	public String getKeyID() {
-		return inoaAuthProperties.getKeyId();
+		return properties.getKeyId();
 	}
 
 	public Jwt parseJwtToken(String token) throws ParseException {
@@ -87,7 +69,7 @@ public class JwtService {
 
 	public String createJwtToken(Jwt auth, String tenant) throws JOSEException {
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder().subject(auth.getClaim("sub"))
-				.claim("uid", auth.getClaim("sub")).issuer(inoaAuthProperties.getIssuer())
+				.claim("uid", auth.getClaim("sub")).issuer(properties.getIssuer())
 				.audience(List.of("inoa-cloud")).claim("tenant", tenant).claim("email", auth.getClaim("email"))
 				.claim("preferred_username", auth.getClaim("preferred_username")).issueTime(new Date())
 				.expirationTime(new Date(new Date().getTime() + 60 * 1000)).build();
@@ -105,18 +87,46 @@ public class JwtService {
 		return new RSASSASigner(jwk.toRSAKey());
 	}
 
-	private RSAKey generateKey() {
+	private JWK loadPrivateKey(ResourceResolver resourceResolver) {
 
-		KeyPair pair;
-		try {
-			var generator = KeyPairGenerator.getInstance("RSA");
-			generator.initialize(2048);
-			pair = generator.generateKeyPair();
-		} catch (NoSuchAlgorithmException e) {
-			throw new BeanInstantiationException("Unable to generate key.", e);
+		// no key - test mode
+
+		var privateKey = properties.getPrivateKey();
+		if (privateKey == null) {
+			log.warn("Generate random key. Do not use in Production!");
+
+			KeyPair pair;
+			try {
+				var generator = KeyPairGenerator.getInstance("RSA");
+				generator.initialize(2048);
+				pair = generator.generateKeyPair();
+			} catch (NoSuchAlgorithmException e) {
+				throw new BeanInstantiationException("Unable to generate key.", e);
+			}
+			return new RSAKey.Builder((RSAPublicKey) pair.getPublic())
+					.privateKey((RSAPrivateKey) pair.getPrivate())
+					.keyUse(KeyUse.SIGNATURE)
+					.keyID(properties.getKeyId())
+					.build();
 		}
 
-		return new RSAKey.Builder((RSAPublicKey) pair.getPublic()).privateKey((RSAPrivateKey) pair.getPrivate())
-				.keyID("random-" + Instant.now().toString()).keyUse(KeyUse.SIGNATURE).build();
+		// read key from resource
+
+		log.info("Loading private key from location: {}", privateKey);
+		var privateKeyAsStream = resourceResolver.getResourceAsStream(privateKey);
+		if (privateKeyAsStream.isEmpty()) {
+			var message = "Private key " + privateKey + " not found.";
+			log.error(message);
+			throw new BeanInstantiationException(message);
+		}
+
+		try {
+			var reader = new BufferedReader(new InputStreamReader(privateKeyAsStream.get()));
+			return JWK.parseFromPEMEncodedObjects(IOUtils.readText(reader));
+		} catch (JOSEException | IOException e) {
+			var message = "Private key " + privateKey + " is not readable.";
+			log.error(message, e);
+			throw new BeanInstantiationException(message, e);
+		}
 	}
 }
