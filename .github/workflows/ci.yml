@@ -29,4 +29,4 @@ jobs:
         with:
           java-version: 11
       - run: mvn -B dependency:go-offline -q
-      - run: mvn -B clean install -DskipTests
+      - run: mvn -B clean install
