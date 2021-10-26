@@ -39,12 +39,14 @@ import com.nimbusds.jwt.SignedJWT;
 import io.micronaut.context.exceptions.BeanInstantiationException;
 import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.io.ResourceResolver;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Singleton
 public class JwtService {
 
+	@Getter
 	private final JWK jwk;
 	private final InoaAuthProperties inoaAuthProperties;
 	private final Map<String, AuthenticationHelper> authenticationManagers = new ConcurrentHashMap<>();
