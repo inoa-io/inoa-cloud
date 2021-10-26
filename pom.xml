@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.4.3</version>
+		<version>0.4.4</version>
 		<relativePath />
 	</parent>
 
@@ -66,20 +66,21 @@
 		<!-- ===================================================================== -->
 
 		<version.com.github.tomakehurst.wiremock>2.31.0</version.com.github.tomakehurst.wiremock>
-		<version.com.influxdb.client>3.3.0</version.com.influxdb.client>
+		<version.com.influxdb.client>3.4.0</version.com.influxdb.client>
 		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
 		<version.io.kokuwa.micronaut.codegen>2.2.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.0.4</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>2.5.13</version.io.micronaut>
 		<version.io.micronaut.data>2.5.0</version.io.micronaut.data>
-		<version.org.awaitility>4.1.0</version.org.awaitility>
-		<version.org.bouncycastle>1.68</version.org.bouncycastle>
+		<version.org.awaitility>4.1.1</version.org.awaitility>
+		<version.org.bouncycastle>1.69</version.org.bouncycastle>
 		<version.org.eclipse.hono>1.9.1</version.org.eclipse.hono>
 		<version.org.keycloak>15.0.2</version.org.keycloak>
 		<version.org.mapstruct>1.5.0.Beta1</version.org.mapstruct>
-		<version.org.springframework.boot>2.4.11</version.org.springframework.boot>
-		<version.org.springframework.security>5.4.5</version.org.springframework.security>
-		<version.org.testcontainers>1.16.1</version.org.testcontainers>
+		<!-- spring version aligned with version from hono-pom -->
+		<version.org.springframework.boot>2.4.8</version.org.springframework.boot>
+		<version.org.springframework.security>5.5.3</version.org.springframework.security>
+		<version.org.testcontainers>1.16.2</version.org.testcontainers>
 
 	</properties>
 
@@ -148,7 +149,6 @@
 				<artifactId>awaitility</artifactId>
 				<version>${version.org.awaitility}</version>
 			</dependency>
-
 			<dependency>
 				<groupId>io.envoyproxy.controlplane</groupId>
 				<artifactId>api</artifactId>
