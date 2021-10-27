@@ -39,7 +39,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-actuator-autoconfigure</artifactId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -52,31 +52,26 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 
 		<!-- eclipse -->
 		<dependency>
 			<groupId>org.eclipse.hono</groupId>
 			<artifactId>hono-service-base-spring</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.hono</groupId>
 			<artifactId>hono-client-application-kafka</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-service-device-registry-base</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-client-telemetry-amqp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-client-telemetry-kafka</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.opentracing.contrib</groupId>
 			<artifactId>opentracing-tracerresolver</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- testing -->

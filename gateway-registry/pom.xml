@@ -92,6 +92,18 @@
 			<artifactId>mapstruct</artifactId>
 		</dependency>
 
+		<!-- monitoring -->
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-management</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.micrometer</groupId>
+			<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- test -->
 		<dependency>
 			<groupId>io.micronaut.test</groupId>

@@ -135,7 +135,7 @@ services:
     volumes:
       - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
     healthcheck:
-      test: curl -sf http://localhost:8080/actuator/health
+      test: curl -sf http://localhost:8088/readiness
       interval: 5s
       retries: 30
     depends_on:
