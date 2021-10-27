@@ -25,6 +25,7 @@
 	</licenses>
 
 	<modules>
+        <module>micronaut-influxdb</module>
 		<module>gateway-registry</module>
 		<module>gateway-command-service</module>
 		<module>hono-bridge</module>
