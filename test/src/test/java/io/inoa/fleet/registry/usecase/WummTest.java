@@ -39,8 +39,8 @@ public class WummTest extends ComposeTest {
 		gateway.mqtt().connect()
 				.sendTelemetry("urn:dvh4013:0815:0x0000", timestamp, Hex.decodeHex("0103017B0C16"))
 				.sendTelemetry("urn:dvh4013:0815:0x0002", timestamp, Hex.decodeHex("01030201C80C16"))
-				.sendTelemetry("urn:dvh4013:0815:0x4000", timestamp, Hex.decodeHex("0103017B0C16"))
-				.sendTelemetry("urn:dvh4013:0815:0x8102", timestamp, Hex.decodeHex("01030201C80C16"));
+				.sendTelemetry("urn:dvh4013:0815:0x4001", timestamp, Hex.decodeHex("0103017B0C16"))
+				.sendTelemetry("urn:dvh4013:0815:0x4101", timestamp, Hex.decodeHex("01030201C80C16"));
 		monitoring.awaitExporterKafkaRecords("wait for messaged stored in influx", 4);
 		influxdb.awaitTables(gateway, 4);
 
@@ -58,12 +58,12 @@ public class WummTest extends ComposeTest {
 						gateway, "urn:dvh4013:0815:0x0002", timestamp, 45.6D,
 						Map.of("label", "power_out"))),
 				() -> assertAll("0x4000", influxdb.asserts(
-						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x4000"),
-						gateway, "urn:dvh4013:0815:0x4000", timestamp, 0.123D,
+						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x4001"),
+						gateway, "urn:dvh4013:0815:0x4001", timestamp, 0.123D,
 						Map.of("label", "work_in", "obis", "1-0:1.8.0*255"))),
 				() -> assertAll("0x8102", influxdb.asserts(
-						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x8102"),
-						gateway, "urn:dvh4013:0815:0x8102", timestamp, 0.456D,
+						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x4101"),
+						gateway, "urn:dvh4013:0815:0x4101", timestamp, 0.456D,
 						Map.of("label", "work_out", "obis", "1-0:2.8.0*255"))));
 	}
 }

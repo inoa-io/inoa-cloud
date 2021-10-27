@@ -34,20 +34,20 @@ translator:
     # source: https://www.dzg.de/fileadmin/dzg/content/downloads/produkte-zaehler/dvh4013/DZG_Modbus_Protocol.pdf
     - name: dvh4013
       sensors:
-        - name: "0x4000"   # The current total tariff rate import active energy
-          modifier: 0.001  # 3 decimal places, the unit kW
+        - name: "0x4001"   # The current total tariff rate import active energy
+          modifier: 0.001  # 3 decimal places, the unit kWh
           converter: modbus
           ext:
             label: work_in
             obis: 1-0:1.8.0*255
-            unit: watt
-        - name: "0x8102"   # The current tariff rate 1 export active demand
-          modifier: 0.001  # 3 decimal places, the unit kW
+            unit: watthour
+        - name: "0x4101"   # The current tariff rate 1 export active demand
+          modifier: 0.001  # 3 decimal places, the unit kWh
           converter: modbus
           ext:
             label: work_out
             obis: 1-0:2.8.0*255
-            unit: watt
+            unit: watthour
         - name: "0x0000"   # The total import active power
           modifier: 0.1    # 1 decimal places, the unit W
           converter: modbus
@@ -108,17 +108,17 @@ translator:
             label: frequency
             unit: hertz
         - name: "0x0014"   # The total import demand
-          modifier: 0.1    # 4 decimal places, the unit kWh
+          modifier: 0.1    # 4 decimal places, the unit kW
           converter: modbus
           ext:
             label: work_in
-            unit: watthours
+            unit: watt
         - name: "0x0016"   # The total export demand
-          modifier: 0.1    # 4 decimal places, the unit kWh
+          modifier: 0.1    # 4 decimal places, the unit kW
           converter: modbus
           ext:
             label: work_out
-            unit: watthours
+            unit: watt
         - name: "0x0018"   # L1 voltage threshold
           modifier: 0.001  # 3 decimal places, the unit %
           converter: modbus
