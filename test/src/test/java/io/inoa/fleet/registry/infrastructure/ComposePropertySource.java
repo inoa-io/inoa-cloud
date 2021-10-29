@@ -35,7 +35,6 @@ public class ComposePropertySource implements PropertySourceLoader {
 	private static final String CONTAINER_KAFKA = "kafka";
 	private static final String CONTAINER_REGISTRY = "gateway-registry";
 	private static final String CONTAINER_BRIDGE = "gateway-registry-hono-bridge";
-	private static final String CONTAINER_BACKUP = "kafka-backup";
 	private static final String CONTAINER_TRANSLATE = "inoa-translator";
 	private static final String CONTAINER_EXPORTER = "inoa-exporter";
 	private static final String CONTAINER_HONO_MQTT = "hono-adapter-mqtt";
@@ -72,14 +71,12 @@ public class ComposePropertySource implements PropertySourceLoader {
 								CONTAINER_BRIDGE,
 								CONTAINER_REGISTRY,
 								CONTAINER_KEYCLOAK,
-								CONTAINER_BACKUP,
 								CONTAINER_TRANSLATE,
 								CONTAINER_EXPORTER)
 						.withExposedService(CONTAINER_INFLUXDB, 8086)
 						.withExposedService(CONTAINER_REGISTRY, 8080)
 						.withExposedService(CONTAINER_REGISTRY, 8090)
 						.withExposedService(CONTAINER_KEYCLOAK, 8080)
-						.withExposedService(CONTAINER_BACKUP, 8090)
 						.withExposedService(CONTAINER_TRANSLATE, 8090)
 						.withExposedService(CONTAINER_EXPORTER, 8090)
 						.withExposedService(CONTAINER_HONO_MQTT, 1883)
@@ -90,11 +87,9 @@ public class ComposePropertySource implements PropertySourceLoader {
 						.waitingFor(CONTAINER_HONO_MQTT, waitForHealthcheck)
 						.waitingFor(CONTAINER_TRANSLATE, waitForHealthcheck)
 						.waitingFor(CONTAINER_EXPORTER, waitForHealthcheck)
-						.waitingFor(CONTAINER_BACKUP, waitForHealthcheck)
 						.withLogConsumer(CONTAINER_REGISTRY, new Slf4jLogConsumer(log).withPrefix(CONTAINER_REGISTRY))
 						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BRIDGE))
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
-						.withLogConsumer(CONTAINER_BACKUP, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BACKUP))
 						.withLogConsumer(CONTAINER_TRANSLATE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_TRANSLATE))
 						.withLogConsumer(CONTAINER_EXPORTER, new Slf4jLogConsumer(log).withPrefix(CONTAINER_EXPORTER))
 						.withRemoveImages(RemoveImages.ALL)
@@ -105,7 +100,6 @@ public class ComposePropertySource implements PropertySourceLoader {
 						"test.gateway-registry.8090", "localhost:" + container.getServicePort(CONTAINER_REGISTRY, 8090),
 						"test.keycloak.8080", "localhost:" + container.getServicePort(CONTAINER_KEYCLOAK, 8080),
 						"test.mqtt.1883", "localhost:" + container.getServicePort(CONTAINER_HONO_MQTT, 1883),
-						"test.kafka-backup.8090", "localhost:" + container.getServicePort(CONTAINER_BACKUP, 8090),
 						"test.inoa-exporter.8090", "localhost:" + container.getServicePort(CONTAINER_EXPORTER, 8090),
 						"test.inoa-translator.8090", "localhost:" + container.getServicePort(CONTAINER_TRANSLATE, 8090),
 						"test.influxdb.8086", "localhost:" + container.getServicePort(CONTAINER_INFLUXDB, 8086));
@@ -116,7 +110,6 @@ public class ComposePropertySource implements PropertySourceLoader {
 						"test.gateway-registry.8090", CONTAINER_REGISTRY + ":" + 8090,
 						"test.keycloak.8080", CONTAINER_KEYCLOAK + ":" + 8080,
 						"test.mqtt.1883", CONTAINER_HONO_MQTT + ":" + 1883,
-						"test.kafka-backup.8090", CONTAINER_BACKUP + ":" + 8090,
 						"test.inoa-exporter.8090", CONTAINER_EXPORTER + ":" + 8090,
 						"test.inoa-translator.8090", CONTAINER_TRANSLATE + ":" + 8090,
 						"test.influxdb.8086", CONTAINER_INFLUXDB + ":" + 8086);

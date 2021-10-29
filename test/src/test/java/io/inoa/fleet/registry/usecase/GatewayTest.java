@@ -79,25 +79,19 @@ public class GatewayTest extends ComposeTest {
 		gateway.mqtt().sendTelemetry("urn:example:0815:number", timestamp, "123.456".getBytes());
 	}
 
-	@DisplayName("07. wait for message stored in backup")
-	@Test
-	void waitForBackup() {
-		monitoring.awaitbackupMessages("wait for message stored in backup", 1);
-	}
-
-	@DisplayName("08. wait for message translated to inoa message")
+	@DisplayName("07. wait for message translated to inoa message")
 	@Test
 	void waitForTranslator() {
 		monitoring.awaitTranslatorSuccess("wait for message translated to inoa message", 1);
 	}
 
-	@DisplayName("09. wait for message in influx")
+	@DisplayName("08. wait for message in influx")
 	@Test
 	void waitForInfluxdb() {
 		monitoring.awaitExporterKafkaRecords("wait for message stored in influxdb", 1);
 	}
 
-	@DisplayName("10. check message in influx")
+	@DisplayName("09. check message in influx")
 	@Test
 	void checkInfluxdb() {
 		var tables = influxdb.findByGateway(gateway);
