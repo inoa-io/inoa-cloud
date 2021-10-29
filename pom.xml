@@ -25,11 +25,10 @@
 	</licenses>
 
 	<modules>
-        <module>micronaut-influxdb</module>
+		<module>micronaut-influxdb</module>
 		<module>gateway-registry</module>
 		<module>gateway-command-service</module>
 		<module>hono-bridge</module>
-		<module>backup</module>
 		<module>messages</module>
 		<module>translator</module>
 		<module>exporter</module>

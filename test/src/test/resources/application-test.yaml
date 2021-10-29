@@ -12,9 +12,6 @@ micronaut:
       gateway-registry-management:
         url: http://${test.gateway-registry.8090}
         logger-name: io.inoa.fleet.registry.Management
-      kafka-backup-management:
-        url: http://${test.kafka-backup.8090}
-        logger-name: io.inoa.hono.backup.Management
       inoa-translator-management:
         url: http://${test.inoa-translator.8090}
         logger-name: io.inoa.cloud.translator.Management
