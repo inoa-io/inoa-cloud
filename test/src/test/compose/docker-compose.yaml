@@ -92,7 +92,7 @@ services:
   ###
 
   gateway-registry:
-    image: ${docker.image.repository}/gateway-registry:${docker.image.version}
+    image: ${container.image.repository}/gateway-registry:${container.image.version}
     hostname: gateway-registry
     environment:
       - MICRONAUT_ENVIRONMENTS=postgres
@@ -114,7 +114,7 @@ services:
         condition: service_healthy
 
   gateway-registry-hono-bridge:
-    image: ${docker.image.repository}/gateway-registry-hono-bridge:${docker.image.version}
+    image: ${container.image.repository}/gateway-registry-hono-bridge:${container.image.version}
     hostname: gateway-registry-hono-bridge
     env_file: ${project.build.directory}/compose/hono/base.env
     environment:
@@ -142,7 +142,7 @@ services:
         condition: service_started
 
   inoa-translator:
-    image: ${docker.image.repository}/inoa-translator:${docker.image.version}
+    image: ${container.image.repository}/inoa-translator:${container.image.version}
     hostname: inoa-translator
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
@@ -158,7 +158,7 @@ services:
         condition: service_started
 
   inoa-exporter:
-    image: ${docker.image.repository}/inoa-exporter:${docker.image.version}
+    image: ${container.image.repository}/inoa-exporter:${container.image.version}
     hostname: inoa-exporter
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
