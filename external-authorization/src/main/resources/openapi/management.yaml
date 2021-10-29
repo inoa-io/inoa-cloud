@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: "Registry: Management API"
+  description: |
+    * TODO
+  version: 1.0.0
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: inoa.io
+    url: https://github.com/inoa-io
+servers:
+  - url: http://gateway-registry-service:8080
+security:
+  - Keycloak: []
+  - BearerAuth: []
+paths:
+  /tenants:
+    get:
+      tags:
+        - tenants
+      summary: 'Find tenants.'
+      description: 'Returns all tenants ordered by name.'
+      operationId: findTenants
+      responses:
+        200:
+          description: 'Returns tenants.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+        401:
+          description: 'Unauthorized.'
+    post:
+      tags:
+        - tenants
+      summary: 'Create tenant.'
+      description: TODO
+      operationId: createTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+      responses:
+        201:
+          description: 'Tenant created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        409:
+          description: Tenant with id or name already exists.
+  /tenants/{tenant_id}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags:
+        - tenants
+      summary: 'Find tenant.'
+      description: TODO
+      operationId: findTenant
+      responses:
+        200:
+          description: 'Tenant found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Tenant not found.'
+    put:
+      tags:
+        - tenants
+      summary: 'Update tenant.'
+      description: TODO
+      operationId: updateTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdate'
+      responses:
+        200:
+          description: 'Tenant updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Tenant not found.'
+        409:
+          description: 'Tenant with name already exists.'
+    delete:
+      tags:
+        - tenants
+      summary: 'Delete tenant.'
+      description: TODO
+      operationId: deleteTenant
+      responses:
+        204:
+          description: 'Tenant deleted.'
+        400:
+          description: 'Cannot delete because gateways exists.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Tenant not found.'
+components:
+  schemas:
+    Timestamp:
+      description: 'Common timestamp for created/updated timestamps.'
+      type: string
+      format: date-time
+      example: '2021-01-01T00:00:00'
+    Id:
+      description: 'Id as technical reference (never changes).'
+      type: string
+      format: uuid
+    Enabled:
+      description: 'Flag if enabled or not.'
+      type: boolean
+      default: true
+      example: false
+
+    ###
+    ### Tenant
+    ###
+
+    TenantName:
+      description: 'Human friendly shortname (can change).'
+      type: string
+      minLength: 3
+      maxLength: 20
+      pattern: '^[a-zA-Z0-9\-]*$'
+      example: kokuwa
+    Tenant:
+      description: 'Tenant with fields.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/TenantName'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - name
+        - created
+        - updated
+    TenantCreate:
+      description: 'Tenant to create.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/TenantName'
+      required:
+        - name
+    TenantUpdate:
+      description: 'Tenant to update.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/TenantName'
+
+    ###
+    ### User
+    ###
+
+    UserEmail:
+      description: 'Human friendly shortname (can change).'
+      type: string
+      minLength: 3
+      maxLength: 20
+      pattern: '^[a-zA-Z0-9\-]*$'
+      example: kokuwa
+    User:
+      description: 'User with fields.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/UserEmail'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - email
+        - created
+        - updated
+    UserCreate:
+      description: 'User to create.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/UserEmail'
+      required:
+        - name
+    UserUpdate:
+      description: 'User to update.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/UserEmail'
+
+  parameters:
+    TenantId:
+      name: tenant_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    Keycloak:
+      type: openIdConnect
+      openIdConnectUrl: http://keycloak:8080/realms/inoa/.well-known/openid-configuration

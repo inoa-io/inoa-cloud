@@ -69,8 +69,8 @@ public class JwtService {
 
 	public String createJwtToken(Jwt auth, String tenant) throws JOSEException {
 		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder().subject(auth.getClaim("sub"))
-				.claim("uid", auth.getClaim("sub")).issuer(properties.getIssuer())
-				.audience(List.of("inoa-cloud")).claim("tenant", tenant).claim("email", auth.getClaim("email"))
+				.claim("uid", auth.getClaim("sub")).issuer(properties.getIssuer()).audience(List.of("inoa-cloud"))
+				.claim("tenant", tenant).claim("email", auth.getClaim("email"))
 				.claim("preferred_username", auth.getClaim("preferred_username")).issueTime(new Date())
 				.expirationTime(new Date(new Date().getTime() + 60 * 1000)).build();
 
@@ -103,11 +103,8 @@ public class JwtService {
 			} catch (NoSuchAlgorithmException e) {
 				throw new BeanInstantiationException("Unable to generate key.", e);
 			}
-			return new RSAKey.Builder((RSAPublicKey) pair.getPublic())
-					.privateKey((RSAPrivateKey) pair.getPrivate())
-					.keyUse(KeyUse.SIGNATURE)
-					.keyID(properties.getKeyId())
-					.build();
+			return new RSAKey.Builder((RSAPublicKey) pair.getPublic()).privateKey((RSAPrivateKey) pair.getPrivate())
+					.keyUse(KeyUse.SIGNATURE).keyID(properties.getKeyId()).build();
 		}
 
 		// read key from resource
@@ -124,10 +121,8 @@ public class JwtService {
 			var reader = new BufferedReader(new InputStreamReader(privateKeyAsStream.get()));
 			JWK jwk = JWK.parseFromPEMEncodedObjects(IOUtils.readText(reader));
 			return new RSAKey.Builder((RSAPublicKey) jwk.toRSAKey().toPublicKey())
-					.privateKey((RSAPrivateKey) jwk.toRSAKey().toPrivateKey())
-					.keyUse(KeyUse.SIGNATURE)
-					.keyID(properties.getKeyId())
-					.build();
+					.privateKey((RSAPrivateKey) jwk.toRSAKey().toPrivateKey()).keyUse(KeyUse.SIGNATURE)
+					.keyID(properties.getKeyId()).build();
 		} catch (JOSEException | IOException e) {
 			var message = "Private key " + privateKey + " is not readable.";
 			log.error(message, e);
