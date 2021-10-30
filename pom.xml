@@ -25,7 +25,6 @@
 	</licenses>
 
 	<modules>
-		<module>micronaut-influxdb</module>
 		<module>gateway-registry</module>
 		<module>gateway-command-service</module>
 		<module>hono-bridge</module>
@@ -68,10 +67,10 @@
 		<!-- ===================================================================== -->
 
 		<version.com.github.tomakehurst.wiremock>2.31.0</version.com.github.tomakehurst.wiremock>
-		<version.com.influxdb.client>3.4.0</version.com.influxdb.client>
 		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
 		<version.io.kokuwa.micronaut.codegen>2.2.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>0.1.2</version.io.kokuwa.micronaut.logging>
+		<version.io.kokuwa.micronaut.influxdb>0.0.1</version.io.kokuwa.micronaut.influxdb>
 		<version.io.micronaut>2.5.13</version.io.micronaut>
 		<version.io.micronaut.data>2.5.0</version.io.micronaut.data>
 		<version.org.awaitility>4.1.1</version.org.awaitility>
@@ -105,6 +104,11 @@
 				<artifactId>micronaut-logging</artifactId>
 				<version>${version.io.kokuwa.micronaut.logging}</version>
 			</dependency>
+			<dependency>
+				<groupId>io.kokuwa.micronaut</groupId>
+				<artifactId>micronaut-influxdb</artifactId>
+				<version>${version.io.kokuwa.micronaut.influxdb}</version>
+			</dependency>
 
 			<!-- spring -->
 			<dependency>
@@ -114,11 +118,6 @@
 			</dependency>
 
 			<!-- libraries -->
-			<dependency>
-				<groupId>com.influxdb</groupId>
-				<artifactId>influxdb-client-java</artifactId>
-				<version>${version.com.influxdb.client}</version>
-			</dependency>
 			<dependency>
 				<groupId>com.github.tomakehurst</groupId>
 				<artifactId>wiremock-jre8-standalone</artifactId>
