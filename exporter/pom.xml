@@ -31,11 +31,6 @@
 			<artifactId>messages</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>io.inoa.cloud</groupId>
-			<artifactId>micronaut-influxdb</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- micronaut -->
 		<dependency>
@@ -58,14 +53,12 @@
 		</dependency>
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-influxdb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-logging</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<!-- libraries -->
-		<dependency>
-			<groupId>com.influxdb</groupId>
-			<artifactId>influxdb-client-java</artifactId>
 		</dependency>
 
 		<!-- monitoring -->
