@@ -41,3 +41,10 @@ influxdb:
   password: changeMe
   org: test
   bucket: export
+
+## custom log configuration
+logger:
+  levels:
+    io.inoa: TRACE
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
+    org.testcontainers.DockerClientFactory: WARN
