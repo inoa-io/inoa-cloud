@@ -1,55 +1,48 @@
 name: Development
 
 "on":
+  workflow_dispatch: {}
   push:
     branches:
-      - 'development'
+      - development
 
 jobs:
-  build:
+
+  lint-yaml:
     runs-on: ubuntu-latest
     steps:
-
-      ###
-      ### Prepare
-      ###
-
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: setup java
-        uses: actions/setup-java@v1
+      - uses: actions/checkout@v2
+      - uses: ibiqlik/action-yamllint@v3
         with:
+          format: colored
+          strict: true
+
+  lint-markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: docker://avtodev/markdown-lint:v1
+        with:
+          args: /github/workspace
+
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - lint-markdown
+      - lint-yaml
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: temurin
           java-version: 11
-      - name: generate build id
-        id: prep
-        run: |
-          branch=${GITHUB_REF##*/}
-          sha=${GITHUB_SHA::8}
-          ts=$(date +%s)
-          echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
-
-      ###
-      ### Build
-      ###
-
-      - name: setup maven dependencies
-        run: mvn -B dependency:go-offline -q
-      - name: build
-        run: mvn -B clean install -Ddocker.image.version=${{ steps.prep.outputs.BUILD_ID }} -DskipTests -pl :external-authorization
-
-      ###
-      ### Docker
-      ###
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+          cache: maven
+      - run: mvn -B -pl :external-authorization dependency:go-offline -q
+      - run: mvn -B -pl :external-authorization install -Dcontainer.image.version='${project.version}-development-${maven.build.timestamp}'
+      - uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GIT_ACTION_TOKEN }}
-      # - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry
-      # - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry-hono-bridge
-      # - run: docker push --all-tags ghcr.io/grayc-de/gateway-command-service
-      # - run: docker push --all-tags ghcr.io/grayc-de/inoa-translator
-      # - run: docker push --all-tags ghcr.io/grayc-de/inoa-exporter
+      - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry
       - run: docker push --all-tags ghcr.io/grayc-de/external-authorization
