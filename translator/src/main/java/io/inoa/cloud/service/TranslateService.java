@@ -1,6 +1,7 @@
 package io.inoa.cloud.service;
 
 import java.time.Instant;
+import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -75,7 +76,7 @@ public class TranslateService {
 				.peek(inoa -> fillMessage(hono, inoa, tenantId, gatewayId, deviceType, deviceId, sensor))
 				.collect(Collectors.toList());
 		if (messages.isEmpty()) {
-			log.warn("Failed on value: {}", new String(hono.getValue()));
+			log.warn("Failed on value: {}", Base64.getEncoder().encode(hono.getValue()));
 			metrics.counterFailValue(tenantId, deviceType, sensor).increment();
 			return List.of();
 		}
