@@ -44,5 +44,4 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GIT_ACTION_TOKEN }}
-      - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry
       - run: docker push --all-tags ghcr.io/grayc-de/external-authorization
