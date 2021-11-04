@@ -63,6 +63,16 @@ public class ModbusConverterTest extends AbstractConverterTest {
 		assertEmpty(converter, hono, "example", "modbus");
 	}
 
+	@DisplayName("fail: exception code")
+	@Test
+	void failExceptionCode() {
+		var hono = new HonoTelemetryMessageVO()
+				.setUrn("urn:example:0815:modbus")
+				.setTimestamp(Instant.now().toEpochMilli())
+				.setValue(toModbus("81", "02", "0815"));
+		assertEmpty(converter, hono, "example", "modbus");
+	}
+
 	@DisplayName("fail: byte count invalid")
 	@Test
 	void failByteCountInvalid() {
