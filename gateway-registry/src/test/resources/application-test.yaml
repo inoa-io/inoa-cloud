@@ -37,3 +37,4 @@ logger:
   levels:
     io.inoa: TRACE
     io.micronaut.data: TRACE
+    org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor: TRACE

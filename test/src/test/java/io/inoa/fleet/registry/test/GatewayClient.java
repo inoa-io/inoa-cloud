@@ -38,7 +38,7 @@ public class GatewayClient {
 	private final ConfigurationApiClient configurationClient;
 
 	@Getter
-	private final UUID tenantId;
+	private final String tenantId;
 	@Getter
 	private final UUID gatewayId;
 	private final String secret;
@@ -116,7 +116,7 @@ public class GatewayClient {
 	public static class GatewayMqttClient {
 
 		private final ObjectMapper mapper = new ObjectMapper();
-		private final UUID tenantId;
+		private final String tenantId;
 		private final UUID gatewayId;
 		private final String password;
 		private final MqttClient client;
@@ -124,7 +124,7 @@ public class GatewayClient {
 		@SneakyThrows
 		public GatewayMqttClient(
 				String mqttServerUrl,
-				UUID tenantId,
+				String tenantId,
 				UUID gatewayId,
 				String password) {
 			this.tenantId = tenantId;

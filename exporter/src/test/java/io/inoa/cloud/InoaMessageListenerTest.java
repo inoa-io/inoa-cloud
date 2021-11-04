@@ -53,7 +53,7 @@ public class InoaMessageListenerTest implements TestPropertyProvider {
 	void success() {
 
 		var message = new InoaTelemetryMessageVO()
-				.setTenantId(UUID.randomUUID())
+				.setTenantId("inoa")
 				.setGatewayId(UUID.randomUUID())
 				.setUrn("urn")
 				.setDeviceId(UUID.randomUUID().toString())

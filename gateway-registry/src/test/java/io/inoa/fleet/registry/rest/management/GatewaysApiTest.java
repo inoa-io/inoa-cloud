@@ -161,7 +161,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var group = data.group(tenant);
 		var notExistingGroupUuid = UUID.randomUUID();
 		var vo = new GatewayCreateVO()
-				.setName(data.tenantName())
+				.setName(data.gatewayName())
 				.setGroupIds(Set.of(group.getGroupId(), notExistingGroupUuid));
 		var error = assert400(() -> client.createGateway(auth(tenant), vo));
 		assertEquals("Group " + notExistingGroupUuid + " not found.", error.getMessage());

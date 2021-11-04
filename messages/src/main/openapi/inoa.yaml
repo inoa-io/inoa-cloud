@@ -21,8 +21,7 @@ components:
         tenant_id:
           description: 'Id of tenant.'
           type: string
-          format: uuid
-          example: 10001
+          example: inoa
         gateway_id:
           description: 'Id of gateway @ tenant.'
           type: string
@@ -79,10 +78,10 @@ components:
       example:
         tenant_id: 123
         gateway_id: 345
-        urn: 'urn:dvh4013:12314214:1-0:1.8.0*255'
+        urn: 'urn:dvh4013:12314214:0x4001'
         device_type: dvh4013
         device_id: 12314214
-        sensor: 1-0:1.8.0*255
+        sensor: 0x4001
         timestamp: 2021-09-09T06:46:59
         value: 99.42
         metadata:

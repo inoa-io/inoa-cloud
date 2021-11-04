@@ -53,7 +53,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Test
 	void success() {
 
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var deviceType = "example";
 		var deviceId = UUID.randomUUID().toString();
@@ -92,7 +92,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Test
 	void failTenantId() {
 
-		var tenantId = "nope";
+		var tenantId = "abc";
 		var gatewayId = UUID.randomUUID();
 		var counter = metrics.counterFailTenantId(tenantId);
 		var countBefore = counter.count();
@@ -105,7 +105,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Test
 	void failGatewayId() {
 
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = "nope";
 		var counter = metrics.counterFailGatewayId(tenantId);
 		var countBefore = counter.count();
@@ -118,7 +118,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Test
 	void failMessageRead() {
 
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var counter = metrics.counterFailMessageRead(tenantId);
 		var countBefore = counter.count();
@@ -131,7 +131,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Test
 	void failMessageValidate() {
 
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var counter = metrics.counterFailMessageValidate(tenantId);
 		var countBefore = counter.count();
@@ -144,7 +144,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Test
 	void failConverter() {
 
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var counter = metrics.counterFailConverter(tenantId, "example", "nope");
 		var countBefore = counter.count();
@@ -157,7 +157,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Test
 	void failValue() {
 
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var counter = metrics.counterFailValue(tenantId, "example", "number");
 		var countBefore = counter.count();
@@ -166,7 +166,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 		assertIncrement(counter, countBefore);
 	}
 
-	private void send(Object tenantId, Object gatewayId, String payload) {
+	private void send(String tenantId, Object gatewayId, String payload) {
 		var future = producer.send(new ProducerRecord<>("hono.telemetry." + tenantId, gatewayId.toString(), payload));
 		Awaitility.await("message send")
 				.pollInterval(Duration.ofMillis(50))
@@ -184,9 +184,7 @@ public class TranslateMessageListenerTest implements TestPropertyProvider {
 	@Override
 	public Map<String, String> getProperties() {
 		var kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
-		if (!kafka.isRunning()) {
-			kafka.start();
-		}
+		kafka.start();
 		return Map.of(
 				"kafka.bootstrap.servers", kafka.getBootstrapServers(),
 				"kafka.consumers.default.metadata.max.age.ms", "200");

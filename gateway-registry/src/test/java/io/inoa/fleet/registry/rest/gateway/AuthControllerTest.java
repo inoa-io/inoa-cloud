@@ -183,7 +183,7 @@ public class AuthControllerTest extends AbstractTest {
 	@DisplayName("error: tenant disabled")
 	@Test
 	void errorTenantDisabled() {
-		var tenant = data.tenant(data.tenantName(), false);
+		var tenant = data.tenant(data.tenantId(), data.tenantName(), false);
 		var gateway = data.gateway(tenant);
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
 		var errorDescription = "tenant " + tenant.getTenantId() + " disabled";

@@ -30,7 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TranslateMessageListener {
 
-	private static final String PATTERN_UUID = "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}";
+	private static final String PATTERN_TENANT_ID = "^[a-z0-9\\-]{4,30}$";
+	private static final String PATTERN_UUID = "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$";
 
 	private final Validator validator;
 	private final ObjectMapper objectMapper;
@@ -54,25 +55,22 @@ public class TranslateMessageListener {
 	@Topic(patterns = "hono\\.telemetry\\..*")
 	void receive(ConsumerRecord<String, String> record) {
 
+		var tenantId = record.topic().substring(15);
 		var key = record.key();
-		var topic = record.topic();
 		var payload = record.value();
 
 		try {
 
-			MDC.put("tenantId", topic);
+			MDC.put("tenantId", tenantId);
 			MDC.put("gatewayId", key);
 
 			// get tenantId and gatewayId from message record
 
-			var tenantIdString = topic.substring(15);
-			MDC.put("tenantId", tenantIdString);
-			if (!Pattern.matches(PATTERN_UUID, tenantIdString)) {
+			if (!Pattern.matches(PATTERN_TENANT_ID, tenantId)) {
 				log.warn("Got record with unparseable topic: {}", key);
-				metrics.counterFailTenantId(tenantIdString).increment();
+				metrics.counterFailTenantId(tenantId).increment();
 				return;
 			}
-			var tenantId = UUID.fromString(tenantIdString);
 
 			if (!Pattern.matches(PATTERN_UUID, key)) {
 				log.warn("Got record with unparseable key: {}", key);
@@ -98,7 +96,7 @@ public class TranslateMessageListener {
 		}
 	}
 
-	private Optional<HonoTelemetryMessageVO> toHonoMessage(UUID tenantId, String payload) {
+	private Optional<HonoTelemetryMessageVO> toHonoMessage(String tenantId, String payload) {
 
 		HonoTelemetryMessageVO message = null;
 		try {

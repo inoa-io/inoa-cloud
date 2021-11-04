@@ -40,7 +40,7 @@ public class TranslateService {
 	private final TranslateMetrics metrics;
 
 	public List<InoaTelemetryMessageVO> toInoa(
-			UUID tenantId,
+			String tenantId,
 			UUID gatewayId,
 			HonoTelemetryMessageVO hono) {
 
@@ -87,7 +87,7 @@ public class TranslateService {
 	private void fillMessage(
 			HonoTelemetryMessageVO hono,
 			InoaTelemetryMessageVO inoa,
-			UUID tenantId,
+			String tenantId,
 			UUID gatewayId,
 			String deviceType,
 			String deviceId,

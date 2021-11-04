@@ -195,10 +195,9 @@ components:
           format: int64
           example: 300
         tenant_id:
-          description: Tentant of current gateway.
+          description: Tenant id of current gateway.
           type: string
-          format: uuid
-          example: 00000000-0000-0000-0000-000000000000
+          example: inoa
       required:
         - access_token
         - token_type

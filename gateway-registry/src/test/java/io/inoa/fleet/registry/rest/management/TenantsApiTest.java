@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -36,9 +35,9 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 
 		// create tenants
 
-		var tenant1 = data.tenant("abc2");
-		var tenant2 = data.tenant("abc1");
-		var tenant3 = data.tenant("aaa");
+		var tenant1 = data.tenant(data.tenantId(), "abc2", true);
+		var tenant2 = data.tenant(data.tenantId(), "abc1", true);
+		var tenant3 = data.tenant(data.tenantId(), "aaa3", true);
 
 		// execute
 
@@ -71,21 +70,21 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Test
 	@Override
 	public void findTenant401() {
-		assert401(() -> client.findTenant(null, UUID.randomUUID()));
+		assert401(() -> client.findTenant(null, "junit"));
 	}
 
 	@DisplayName("findTenant(404): not found")
 	@Test
 	@Override
 	public void findTenant404() {
-		assert404("Tenant not found.", () -> client.findTenant(auth(), UUID.randomUUID()));
+		assert404("Tenant not found.", () -> client.findTenant(auth(), "junit"));
 	}
 
 	@DisplayName("createTenant(201): with mandatory properties")
 	@Test
 	@Override
 	public void createTenant201() {
-		var vo = new TenantCreateVO().setName(data.tenantName());
+		var vo = new TenantCreateVO().setTenantId("junit").setName(data.tenantName());
 		var created = assert201(() -> client.createTenant(auth(), vo));
 		assertNotNull(created.getTenantId(), "tenantId");
 		assertEquals(true, created.getEnabled(), "enabled");
@@ -98,7 +97,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@DisplayName("createTenant(201): with optional properties")
 	@Test
 	public void createTenant201All() {
-		var vo = new TenantCreateVO().setTenantId(UUID.randomUUID()).setEnabled(false).setName(data.tenantName());
+		var vo = new TenantCreateVO().setTenantId("junit").setEnabled(false).setName(data.tenantName());
 		var created = assert201(() -> client.createTenant(auth(), vo));
 		assertEquals(vo.getTenantId(), created.getTenantId(), "tenantId");
 		assertEquals(vo.getName(), created.getName(), "name");
@@ -152,6 +151,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	public void createTenant409Name() {
 		var existing = data.tenant();
 		assert409(() -> client.createTenant(auth(), new TenantCreateVO()
+				.setTenantId(data.tenantId())
 				.setName(existing.getName())));
 		assertEquals(1, data.countTenants(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
@@ -233,7 +233,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Test
 	@Override
 	public void updateTenant404() {
-		assert404("Tenant not found.", () -> client.updateTenant(auth(), UUID.randomUUID(), new TenantUpdateVO()));
+		assert404("Tenant not found.", () -> client.updateTenant(auth(), "junit", new TenantUpdateVO()));
 	}
 
 	@DisplayName("updateTenant(409): name exists")
@@ -281,6 +281,6 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Test
 	@Override
 	public void deleteTenant404() {
-		assert404("Tenant not found.", () -> client.deleteTenant(auth(), UUID.randomUUID()));
+		assert404("Tenant not found.", () -> client.deleteTenant(auth(), "junit"));
 	}
 }

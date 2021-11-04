@@ -71,4 +71,3 @@ flyway:
 logger:
   levels:
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
-    org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor: WARN

@@ -1,7 +1,6 @@
 package io.inoa.fleet.registry.rest.management;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.inoa.fleet.registry.domain.GatewayRepository;
@@ -35,7 +34,7 @@ public class TenantsController implements TenantsApi {
 	}
 
 	@Override
-	public HttpResponse<TenantVO> findTenant(UUID tenantId) {
+	public HttpResponse<TenantVO> findTenant(String tenantId) {
 		var tenant = tenantRepository.findByTenantId(tenantId);
 		if (tenant.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
@@ -48,25 +47,25 @@ public class TenantsController implements TenantsApi {
 
 		// check id/name for uniqueness
 
-		var uniqueSingle = vo.getTenantId() == null
-				? tenantRepository.existsByName(vo.getName())
-				: tenantRepository.existsByNameOrTenantId(vo.getName(), vo.getTenantId());
-		if (uniqueSingle) {
+		var existing = tenantRepository.existsByNameOrTenantId(vo.getName(), vo.getTenantId());
+		if (existing) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
 		}
 
 		// create tenant
+
 		var tenant = tenantRepository.save(new Tenant()
 				.setName(vo.getName())
 				.setEnabled(vo.getEnabled())
-				.setTenantId(vo.getTenantId() == null ? UUID.randomUUID() : vo.getTenantId()));
+				.setTenantId(vo.getTenantId()));
 
 		// return
+
 		return HttpResponse.created(mapper.toTenant(tenant));
 	}
 
 	@Override
-	public HttpResponse<TenantVO> updateTenant(UUID tenantId, TenantUpdateVO vo) {
+	public HttpResponse<TenantVO> updateTenant(String tenantId, TenantUpdateVO vo) {
 
 		// get tenant from database
 
@@ -112,7 +111,7 @@ public class TenantsController implements TenantsApi {
 	}
 
 	@Override
-	public HttpResponse<Object> deleteTenant(UUID tenantId) {
+	public HttpResponse<Object> deleteTenant(String tenantId) {
 		var tenant = tenantRepository.findByTenantId(tenantId);
 		if (tenant.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");

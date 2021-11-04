@@ -30,7 +30,7 @@ public class TranslateServiceTest {
 	@DisplayName("Example - base64 to single value")
 	@Test
 	void typeExampleSingleValue() {
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
 				.setUrn("urn:example:0815:number")
@@ -52,7 +52,7 @@ public class TranslateServiceTest {
 	@DisplayName("Example - base64 to multiple values")
 	@Test
 	void typeExampleMultipleValues() {
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
 				.setUrn("urn:example:0815:json")
@@ -84,7 +84,7 @@ public class TranslateServiceTest {
 	@DisplayName("fail: value not convertable")
 	@Test
 	void failNoConvertable() {
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
 				.setUrn("urn:example:0815:number")
@@ -96,7 +96,7 @@ public class TranslateServiceTest {
 	@DisplayName("fail: no converter")
 	@Test
 	void failNoConverter() {
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
 				.setUrn("urn:example:0815:nope")
@@ -108,7 +108,7 @@ public class TranslateServiceTest {
 	@DisplayName("fail: unsupported urn")
 	@Test
 	void failUnsupportedUrn() {
-		var tenantId = UUID.randomUUID();
+		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var message = new HonoTelemetryMessageVO()
 				.setUrn("NOPE")

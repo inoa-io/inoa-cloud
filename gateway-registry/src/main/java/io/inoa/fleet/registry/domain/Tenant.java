@@ -1,7 +1,6 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
-import java.util.UUID;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
@@ -25,7 +24,7 @@ public class Tenant {
 	private Long id;
 
 	@MappedProperty
-	private UUID tenantId;
+	private String tenantId;
 	@MappedProperty
 	private String name;
 	@MappedProperty

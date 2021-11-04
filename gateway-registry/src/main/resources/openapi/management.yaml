@@ -732,19 +732,25 @@ components:
     ### Tenant
     ###
 
-    TenantName:
-      description: 'Human friendly shortname (can change).'
+    TenantId:
+      description: 'Human friendly shortname (cannot change).'
       type: string
-      minLength: 3
-      maxLength: 20
-      pattern: '^[a-zA-Z0-9\-]*$'
-      example: kokuwa
+      minLength: 4
+      maxLength: 30
+      pattern: '^[a-z0-9\-]*$'
+      example: inoa
+    TenantName:
+      description: 'Human friendly display name (can change).'
+      type: string
+      minLength: 4
+      maxLength: 100
+      example: Kokuwa Project
     Tenant:
       description: 'Tenant with fields.'
       type: object
       properties:
         tenant_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/TenantId'
         name:
           $ref: '#/components/schemas/TenantName'
         enabled:
@@ -764,12 +770,13 @@ components:
       type: object
       properties:
         tenant_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/TenantId'
         name:
           $ref: '#/components/schemas/TenantName'
         enabled:
           $ref: '#/components/schemas/Enabled'
       required:
+        - tenant_id
         - name
     TenantUpdate:
       description: 'Tenant to update.'
@@ -1217,7 +1224,7 @@ components:
       in: path
       required: true
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/TenantId'
     GroupId:
       name: group_id
       in: path

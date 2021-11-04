@@ -114,20 +114,23 @@ public class Data {
 
 	// manipulation
 
+	public String tenantId() {
+		return UUID.randomUUID().toString().substring(0, 30);
+	}
+
 	public String tenantName() {
-		return UUID.randomUUID().toString().substring(0, 20);
+		return UUID.randomUUID().toString();
 	}
 
 	public Tenant tenant() {
-		return tenant(tenantName(), true);
+		return tenant(tenantId(), tenantName(), true);
 	}
 
-	public Tenant tenant(String name) {
-		return tenant(name, true);
-	}
-
-	public Tenant tenant(String name, boolean enabled) {
-		return tenantRepository.save(new Tenant().setTenantId(UUID.randomUUID()).setName(name).setEnabled(enabled));
+	public Tenant tenant(String tenantId, String name, boolean enabled) {
+		return tenantRepository.save(new Tenant()
+				.setTenantId(tenantId)
+				.setName(name)
+				.setEnabled(enabled));
 	}
 
 	public String groupName() {

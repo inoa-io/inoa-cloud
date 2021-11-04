@@ -35,7 +35,7 @@ public class InoaMessageListener {
 			point.addTags(message.getExt());
 		}
 		influx.getWriteApiBlocking().writePoint(point
-				.addTag("tenant_id", message.getTenantId().toString())
+				.addTag("tenant_id", message.getTenantId())
 				.addTag("gateway_id", message.getGatewayId().toString())
 				.addTag("urn", message.getUrn())
 				.addTag("device_id", message.getDeviceId())

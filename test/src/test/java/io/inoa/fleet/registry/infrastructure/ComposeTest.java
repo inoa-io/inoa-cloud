@@ -1,7 +1,5 @@
 package io.inoa.fleet.registry.infrastructure;
 
-import java.util.UUID;
-
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +21,7 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public abstract class ComposeTest {
 
-	public static final UUID TENANT_ID = UUID.fromString("2381b39a-e721-4456-8f9f-8d2c18cec993");
+	public static final String TENANT_ID = "tenant-a";
 	public static final String ADMIN = "admin";
 	public static final String USER_TENANT_A = "userFromTenantA";
 	public static final String USER_TENANT_B = "userFromTenantB";

@@ -3,7 +3,6 @@ package io.inoa.cloud.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Singleton;
 
@@ -41,39 +40,39 @@ public class TranslateMetrics {
 		return counter(COUNTER_NAME_FAIL_TENANT_ID, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
 	}
 
-	public Counter counterFailGatewayId(UUID tenantId) {
-		return counter(COUNTER_NAME_FAIL_GATEWAY_ID, Set.of(Tag.of(TAG_TENANT_ID, tenantId.toString())));
+	public Counter counterFailGatewayId(String tenantId) {
+		return counter(COUNTER_NAME_FAIL_GATEWAY_ID, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
 	}
 
-	public Counter counterFailMessageRead(UUID tenantId) {
-		return counter(COUNTER_NAME_FAIL_MESSAGE_READ, Set.of(Tag.of(TAG_TENANT_ID, tenantId.toString())));
+	public Counter counterFailMessageRead(String tenantId) {
+		return counter(COUNTER_NAME_FAIL_MESSAGE_READ, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
 	}
 
-	public Counter counterFailMessageValidate(UUID tenantId) {
-		return counter(COUNTER_NAME_FAIL_MESSAGE_VALIDATE, Set.of(Tag.of(TAG_TENANT_ID, tenantId.toString())));
+	public Counter counterFailMessageValidate(String tenantId) {
+		return counter(COUNTER_NAME_FAIL_MESSAGE_VALIDATE, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
 	}
 
-	public Counter counterIgnore(UUID tenantId) {
-		return counter(COUNTER_NAME_IGNORE, Set.of(Tag.of(TAG_TENANT_ID, tenantId.toString())));
+	public Counter counterIgnore(String tenantId) {
+		return counter(COUNTER_NAME_IGNORE, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
 	}
 
-	public Counter counterFailConverter(UUID tenantId, String deviceType, String sensor) {
+	public Counter counterFailConverter(String tenantId, String deviceType, String sensor) {
 		return counter(COUNTER_NAME_FAIL_CONVERTER, Set.of(
-				Tag.of(TAG_TENANT_ID, tenantId.toString()),
+				Tag.of(TAG_TENANT_ID, tenantId),
 				Tag.of(TAG_TYPE, deviceType),
 				Tag.of(TAG_SENSOR, sensor)));
 	}
 
-	public Counter counterFailValue(UUID tenantId, String deviceType, String sensor) {
+	public Counter counterFailValue(String tenantId, String deviceType, String sensor) {
 		return counter(COUNTER_NAME_FAIL_VALUE, Set.of(
-				Tag.of(TAG_TENANT_ID, tenantId.toString()),
+				Tag.of(TAG_TENANT_ID, tenantId),
 				Tag.of(TAG_TYPE, deviceType),
 				Tag.of(TAG_SENSOR, sensor)));
 	}
 
-	public Counter counterSuccess(UUID tenantId, String deviceType, String sensor) {
+	public Counter counterSuccess(String tenantId, String deviceType, String sensor) {
 		return counter(COUNTER_NAME_SUCCESS, Set.of(
-				Tag.of(TAG_TENANT_ID, tenantId.toString()),
+				Tag.of(TAG_TENANT_ID, tenantId),
 				Tag.of(TAG_TYPE, deviceType),
 				Tag.of(TAG_SENSOR, sensor)));
 	}
