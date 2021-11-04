@@ -19,7 +19,7 @@ public class Tenant {
 	@GeneratedValue
 	private Long id;
 	@MappedProperty
-	private UUID tenantId;
+	private String tenantId;
 	@MappedProperty
 	private String name;
 	@DateCreated

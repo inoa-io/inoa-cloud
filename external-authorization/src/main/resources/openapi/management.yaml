@@ -142,6 +142,13 @@ components:
     ### Tenant
     ###
 
+    TenantId:
+      description: 'Human friendly uniq key (cannot change).'
+      type: string
+      minLength: 5
+      maxLength: 30
+      pattern: '^[a-zA-Z0-9\-]*$'
+      example: kokuwa-12345
     TenantName:
       description: 'Human friendly shortname (can change).'
       type: string
@@ -153,8 +160,8 @@ components:
       description: 'Tenant with fields.'
       type: object
       properties:
-        id:
-          $ref: '#/components/schemas/Id'
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
         name:
           $ref: '#/components/schemas/TenantName'
         created:
@@ -162,7 +169,7 @@ components:
         updated:
           $ref: '#/components/schemas/Timestamp'
       required:
-        - id
+        - tenantId
         - name
         - created
         - updated
@@ -170,9 +177,12 @@ components:
       description: 'Tenant to create.'
       type: object
       properties:
+        tenantId:
+          $ref: '#/components/schemas/TenantId'
         name:
           $ref: '#/components/schemas/TenantName'
       required:
+        - key
         - name
     TenantUpdate:
       description: 'Tenant to update.'
@@ -230,7 +240,7 @@ components:
       in: path
       required: true
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/TenantId'
 
   securitySchemes:
     BearerAuth:

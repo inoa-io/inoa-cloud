@@ -10,18 +10,13 @@ import io.micronaut.data.repository.CrudRepository;
 /**
  * Repository for {@link Tenant}.
  *
- * @author Stephan Schnabel
  */
 @JdbcRepository
 public interface TenantRepository extends CrudRepository<Tenant, Long> {
 
-	List<Tenant> findAllOrderByName();
+	List<Tenant> findAllOrderByTenantId();
 
-	Optional<Tenant> findByTenantId(UUID tenantId);
+	Optional<Tenant> findByTenantId(String tenantId);
 
-	Optional<UUID> findTenantIdByName(String name);
-
-	Boolean existsByNameOrTenantId(String name, UUID tenantId);
-
-	Boolean existsByName(String name);
+	Boolean existsByTenantId(String tenantId);
 }

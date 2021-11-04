@@ -29,7 +29,9 @@ public class Data {
 	}
 
 	public Tenant tenant(String name) {
-		return tenantRepository.save(new Tenant().setTenantId(UUID.randomUUID()).setName(name));
+		String tenantId = UUID.randomUUID().toString();
+		return tenantRepository
+				.save(new Tenant().setTenantId(tenantId.substring(0, Math.min(tenantId.length(), 30))).setName(name));
 	}
 
 }
