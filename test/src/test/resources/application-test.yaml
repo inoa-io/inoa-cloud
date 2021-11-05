@@ -46,5 +46,9 @@ influxdb:
 logger:
   levels:
     io.inoa: TRACE
+    # DEBUG to avoid prometheus endpoint spam
+    io.inoa.fleet.registry.Management: DEBUG
+    io.inoa.cloud.translator.Management: DEBUG
+    io.inoa.cloud.exporter.Management: DEBUG
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
     org.testcontainers.DockerClientFactory: WARN

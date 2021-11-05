@@ -273,7 +273,7 @@ public class AuthControllerTest extends AbstractTest {
 	}
 
 	private void assertSuccess(Gateway gateway, String jwt) {
-		TokenRepsonseVO response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));
+		TokenResponseVO response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));
 		UUID uuidFromResponse = authTokenService.validateToken(response.getAccessToken()).orElse(null);
 		assertEquals(gateway.getGatewayId(), uuidFromResponse, "access_token");
 		assertEquals(response.getTokenType(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, "token_type");

@@ -42,25 +42,19 @@ paths:
         url: https://tools.ietf.org/html/rfc7523#section-2.1
       operationId: getToken
       security: []
-      parameters:
-        - name: grant_type
-          in: query
-          required: true
-          schema:
-            type: string
-            example: urn:ietf:params:oauth:grant-type:jwt-bearer
-        - name: assertion
-          in: query
-          required: true
-          schema:
-            type: string
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
       responses:
         200:
           description: Registry token with extra data.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenRepsonse'
+                $ref: '#/components/schemas/TokenResponse'
         400:
           description: Issuing token failed.
           content:
@@ -176,7 +170,24 @@ components:
       required:
         - error
         - error_description
-    TokenRepsonse:
+    TokenRequest:
+      description: Request for access token.
+      externalDocs:
+        description: token request
+        url: https://tools.ietf.org/html/rfc7523#section-2.1
+      properties:
+        grant_type:
+          description: Fixed request grant type.
+          type: string
+          example: urn:ietf:params:oauth:grant-type:jwt-bearer
+        assertion:
+          description: Token from gateway.
+          type: string
+          example: ey....
+      required:
+        - grant_type
+        - assertion
+    TokenResponse:
       externalDocs:
         description: token success response
         url: https://tools.ietf.org/html/rfc6749#section-5.1
