@@ -3,19 +3,11 @@ package io.inoa.cloud.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.read.ListAppender;
-
-import jakarta.inject.Inject;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.awaitility.Awaitility;
@@ -30,9 +22,13 @@ import org.slf4j.MDC;
 import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
-import io.micronaut.configuration.kafka.annotation.KafkaClient;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.read.ListAppender;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
+import jakarta.inject.Inject;
 
 /**
  * Test for {@link LogEventListener}.
@@ -79,7 +75,7 @@ public class LogEventListenerTest implements TestPropertyProvider {
 		var countBefore = counter.count();
 
 		// send message
-		send(tenantId, gatewayId,"{\n"
+		send(tenantId, gatewayId, "{\n"
 				+ "    \"specversion\" : \"1.0\",\n"
 				+ "    \"type\" : \"io.inoa.log.emitted\",\n"
 				+ "    \"source\" : \"869a39c8-44ec-4155-9175-1dee6e846978\",\n"

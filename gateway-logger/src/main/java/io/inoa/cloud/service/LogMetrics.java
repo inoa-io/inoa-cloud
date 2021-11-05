@@ -52,8 +52,7 @@ public class LogMetrics {
 	}
 
 	public Counter counterSuccess(String tenantId) {
-		return counter(COUNTER_NAME_SUCCESS, Set.of(
-				Tag.of(TAG_TENANT_ID, tenantId)));
+		return counter(COUNTER_NAME_SUCCESS, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
 	}
 
 	private Counter counter(String counter, Set<Tag> tags) {
