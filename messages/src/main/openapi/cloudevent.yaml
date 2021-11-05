@@ -61,4 +61,4 @@ components:
         source: '869a39c8-44ec-4155-9175-1dee6e846978'
         time: 2021-09-09T06:46:59
         datacontenttype: 'application/json'
-        data: 'OK'
+        data: { }

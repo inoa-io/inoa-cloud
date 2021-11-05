@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Fabian Schlegel
  */
-@KafkaListener(clientId = "logger", groupId = "inoa", offsetReset = OffsetReset.EARLIEST)
+@KafkaListener(offsetReset = OffsetReset.EARLIEST)
 @Slf4j
 public class LogEventListener {
 
