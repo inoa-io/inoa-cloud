@@ -2,13 +2,12 @@ package io.inoa.cloud.converter.common;
 
 import java.time.Instant;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.cloud.converter.AbstractConverterTest;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
+import jakarta.inject.Inject;
 
 /**
  * Test for {@link NumberConverter}.

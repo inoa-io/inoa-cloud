@@ -173,13 +173,6 @@
 
 		</dependencies>
 	</dependencyManagement>
-	<dependencies>
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
-		</dependency>
-	</dependencies>
 
 	<build>
 		<pluginManagement>
@@ -202,6 +195,7 @@
 						<typeMappings>
 							<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
 							<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
+							<typeMapping>Singleton=jakarta.inject.Singleton</typeMapping>
 						</typeMappings>
 						<ignoreFileOverride>${project.basedir}/../.openapi-ignore</ignoreFileOverride>
 					</configuration>

@@ -5,11 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.inject.Singleton;
-
 import io.inoa.fleet.registry.rest.HttpResponseAssertions;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.validation.validator.Validator;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 @Singleton

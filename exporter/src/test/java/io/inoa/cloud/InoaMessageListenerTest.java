@@ -12,8 +12,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.awaitility.Awaitility;
@@ -31,6 +29,7 @@ import com.influxdb.query.FluxTable;
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
+import jakarta.inject.Inject;
 
 /**
  * Test for {@link InoaMessageListener}.

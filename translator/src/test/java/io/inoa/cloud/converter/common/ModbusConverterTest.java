@@ -2,8 +2,6 @@ package io.inoa.cloud.converter.common;
 
 import java.time.Instant;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +9,7 @@ import com.github.dockerjava.zerodep.shaded.org.apache.commons.codec.binary.Hex;
 
 import io.inoa.cloud.converter.AbstractConverterTest;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
+import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 
 /**

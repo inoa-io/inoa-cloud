@@ -4,11 +4,10 @@ import java.util.Iterator;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-import javax.inject.Singleton;
-
 import io.inoa.cloud.ApplicationProperties;
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
+import jakarta.inject.Singleton;
 
 /**
  * Value converter for json.

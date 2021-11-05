@@ -11,14 +11,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import javax.inject.Singleton;
-
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.function.Executable;
 
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 @Singleton

@@ -1,7 +1,5 @@
 package io.inoa.fleet.auth;
 
-import javax.inject.Singleton;
-
 import com.google.rpc.Status;
 
 import io.envoyproxy.envoy.config.core.v3.HeaderValue;
@@ -11,6 +9,7 @@ import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import io.envoyproxy.envoy.service.auth.v3.CheckResponse;
 import io.envoyproxy.envoy.service.auth.v3.OkHttpResponse;
 import io.grpc.stub.StreamObserver;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
