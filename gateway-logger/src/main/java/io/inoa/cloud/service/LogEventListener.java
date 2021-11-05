@@ -1,5 +1,6 @@
 package io.inoa.cloud.service;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import ch.qos.logback.classic.Level;
@@ -7,6 +8,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 import io.inoa.cloud.event.CloudEventVO;
 import io.inoa.cloud.log.JSONLogVO;
+import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Fabian Schlegel
  */
+@AllArgsConstructor
 @KafkaListener(offsetReset = OffsetReset.EARLIEST)
 @Slf4j
 public class LogEventListener {
@@ -36,15 +39,6 @@ public class LogEventListener {
 	private final Validator validator;
 	private final ObjectMapper objectMapper;
 	private final LogMetrics metrics;
-
-	public LogEventListener(
-			Validator validator,
-			ObjectMapper objectMapper,
-			LogMetrics metrics) {
-		this.validator = validator;
-		this.objectMapper = objectMapper;
-		this.metrics = metrics;
-	}
 
 	@Topic(patterns = "hono\\.event\\..*")
 	void receive(ConsumerRecord<String, String> record) {
@@ -73,60 +67,57 @@ public class LogEventListener {
 			}
 
 			// parse payload
-			CloudEventVO event;
-			try {
-				event = objectMapper.readValue(payload, CloudEventVO.class);
-			} catch (JsonProcessingException e) {
-				log.warn("Retrieved invalid payload: {}", payload);
-				metrics.counterFailMessageRead(tenantId).increment();
-				return;
-			}
-
-			// validate payload
-			var payloadViolations = validator.validate(event);
-			if (!payloadViolations.isEmpty()) {
-				log.warn("Retrieved invalid payload: {}", payload);
-				if (log.isDebugEnabled()) {
-					payloadViolations.forEach(v -> log.debug("Violation: {} {}", v.getPropertyPath(), v.getMessage()));
-				}
-				metrics.counterFailMessageValidate(tenantId).increment();
+			var event = parse(CloudEventVO.class, payload, tenantId);
+			if(event.isEmpty()) {
 				return;
 			}
 
 			// check if we are in charge
-			if(!LOG_CLOUD_EVENT_TYPE.equals(event.getType())) {
-				log.trace("Not in charge for event type: {}", event.getType());
+			if(!LOG_CLOUD_EVENT_TYPE.equals(event.get().getType())) {
+				log.trace("Not in charge for event type: {}", event.get().getType());
 				return;
 			}
 
 			// parse json log
-			JSONLogVO jsonLogVO;
-			try {
-				jsonLogVO = objectMapper.readValue(objectMapper.writeValueAsString(event.getData()), JSONLogVO.class);
-			} catch (JsonProcessingException e) {
-				log.warn("Retrieved invalid JSON log: {}", event.getData());
-				metrics.counterFailMessageValidate(tenantId).increment();
-				return;
-			}
-
-			// validate json log
-			var jsonLogViolations = validator.validate(jsonLogVO);
-			if (!jsonLogViolations.isEmpty()) {
-				log.warn("Retrieved invalid payload: {}", event.getData());
-				if (log.isDebugEnabled()) {
-					jsonLogViolations.forEach(v -> log.debug("Violation: {} {}", v.getPropertyPath(), v.getMessage()));
-				}
-				metrics.counterFailMessageValidate(tenantId).increment();
+			var jsonLog = parse(JSONLogVO.class, event.get().getData(), tenantId);
+			if(event.isEmpty()) {
 				return;
 			}
 
 			// Actual log
-			log(jsonLogVO);
+			log(jsonLog.get());
 			metrics.counterSuccess(tenantId).increment();
 
 		} finally {
 			MDC.clear();
 		}
+	}
+
+	private <T> Optional<T> parse(Class<T> clazz, Object input, String tenantId) {
+		// parse json log
+		T result = null;
+		try {
+			if(input instanceof String) {
+				result = objectMapper.readValue(input.toString(), clazz);
+			} else {
+				result = objectMapper.readValue(objectMapper.writeValueAsString(input), clazz);
+			}
+		} catch (JsonProcessingException e) {
+			log.warn("Retrieved invalid JSON log: {}", input);
+			metrics.counterFailMessageValidate(tenantId).increment();
+			Optional.empty();
+		}
+		// validate json log
+		var violations = validator.validate(result);
+		if (!violations.isEmpty()) {
+			log.warn("Retrieved invalid payload: {}", input);
+			if (log.isDebugEnabled()) {
+				violations.forEach(v -> log.debug("Violation: {} {}", v.getPropertyPath(), v.getMessage()));
+			}
+			metrics.counterFailMessageValidate(tenantId).increment();
+			Optional.empty();
+		}
+		return Optional.of(result);
 	}
 
 	private void log(JSONLogVO jsonLogVO) {

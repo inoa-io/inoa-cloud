@@ -44,7 +44,6 @@ import io.micronaut.test.support.TestPropertyProvider;
 public class LogEventListenerTest implements TestPropertyProvider {
 
 	@Inject
-	@KafkaClient("hono-producer")
 	Producer<String, String> producer;
 	@Inject
 	LogMetrics metrics;
