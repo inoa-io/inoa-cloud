@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayGroup;
 import io.inoa.fleet.registry.domain.GatewayGroupRepository;
@@ -50,7 +52,7 @@ public class GatewaysController implements GatewaysApi {
 	}
 
 	@Override
-	public HttpResponse<GatewayDetailVO> createGateway(GatewayCreateVO vo) {
+	public HttpResponse<GatewayDetailVO> createGateway(@Valid GatewayCreateVO vo) {
 		var tenant = security.getTenant();
 
 		// check name for uniqueness
@@ -86,7 +88,7 @@ public class GatewaysController implements GatewaysApi {
 	}
 
 	@Override
-	public HttpResponse<GatewayDetailVO> updateGateway(UUID gatewayId, GatewayUpdateVO vo) {
+	public HttpResponse<GatewayDetailVO> updateGateway(UUID gatewayId, @Valid GatewayUpdateVO vo) {
 
 		var gateway = getGateway(gatewayId);
 		var changed = false;

@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -24,12 +22,12 @@ import org.testcontainers.utility.DockerImageName;
 
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.micrometer.core.instrument.Counter;
-import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
+import jakarta.inject.Inject;
 import lombok.Getter;
 
 /**
@@ -42,7 +40,6 @@ import lombok.Getter;
 public class TranslateMessageListenerTest implements TestPropertyProvider {
 
 	@Inject
-	@KafkaClient("hono-producer")
 	Producer<String, String> producer;
 	@Inject
 	TestListener testListener;

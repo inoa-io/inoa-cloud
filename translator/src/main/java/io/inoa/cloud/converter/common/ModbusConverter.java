@@ -3,11 +3,10 @@ package io.inoa.cloud.converter.common;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import javax.inject.Singleton;
-
 import io.inoa.cloud.ApplicationProperties;
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
+import jakarta.inject.Singleton;
 
 /**
  * Value converter for Modbus.

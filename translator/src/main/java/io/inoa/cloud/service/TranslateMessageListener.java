@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.MDC;
 
@@ -14,11 +14,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
-import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.validation.validator.Validator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @KafkaListener(clientId = "translator", groupId = "translator", offsetReset = OffsetReset.EARLIEST)
 @Slf4j
+@RequiredArgsConstructor
 public class TranslateMessageListener {
 
 	private static final String PATTERN_TENANT_ID = "^[a-z0-9\\-]{4,30}$";
@@ -37,20 +38,7 @@ public class TranslateMessageListener {
 	private final ObjectMapper objectMapper;
 	private final TranslateService service;
 	private final TranslateMetrics metrics;
-	private final KafkaProducer<UUID, InoaTelemetryMessageVO> producer;
-
-	public TranslateMessageListener(
-			Validator validator,
-			ObjectMapper objectMapper,
-			TranslateService service,
-			TranslateMetrics metrics,
-			@KafkaClient("inoa-producer") KafkaProducer<UUID, InoaTelemetryMessageVO> producer) {
-		this.validator = validator;
-		this.objectMapper = objectMapper;
-		this.service = service;
-		this.metrics = metrics;
-		this.producer = producer;
-	}
+	private final Producer<UUID, InoaTelemetryMessageVO> producer;
 
 	@Topic(patterns = "hono\\.telemetry\\..*")
 	void receive(ConsumerRecord<String, String> record) {

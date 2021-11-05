@@ -5,12 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.inject.Singleton;
-
 import org.awaitility.Awaitility;
 
 import io.inoa.fleet.registry.test.prometheus.ExporterPrometheusClient;
 import io.inoa.fleet.registry.test.prometheus.TranslatorPrometheusClient;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 @Singleton

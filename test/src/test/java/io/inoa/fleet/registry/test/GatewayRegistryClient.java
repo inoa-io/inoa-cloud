@@ -10,9 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import com.nimbusds.jose.jwk.JWKSet;
 
 import io.inoa.fleet.registry.infrastructure.ComposeTest;
@@ -33,6 +30,8 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 

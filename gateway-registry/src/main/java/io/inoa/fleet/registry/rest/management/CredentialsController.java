@@ -3,6 +3,8 @@ package io.inoa.fleet.registry.rest.management;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import io.inoa.fleet.registry.domain.Credential;
 import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
@@ -49,7 +51,7 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<CredentialVO> createCredential(UUID gatewayId, CredentialCreateVO vo) {
+	public HttpResponse<CredentialVO> createCredential(UUID gatewayId, @Valid CredentialCreateVO vo) {
 		var gateway = getGateway(gatewayId);
 		if (credentialRepository.existsByGatewayAndAuthId(gateway, vo.getAuthId())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "AuthId already exists.");
@@ -60,7 +62,7 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<SecretDetailVO> createSecret(UUID gatewayId, UUID credentialId, SecretCreateVO vo) {
+	public HttpResponse<SecretDetailVO> createSecret(UUID gatewayId, UUID credentialId, @Valid SecretCreateVO vo) {
 		var credential = getCredential(gatewayId, credentialId);
 		var secret = secretRepository.save(mapper.toSecret(credential, vo));
 		log.info("Created secret: {}", secret);

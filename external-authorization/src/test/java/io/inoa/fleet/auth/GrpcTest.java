@@ -14,8 +14,6 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.jwt.Jwt;
 
@@ -28,6 +26,7 @@ import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import io.envoyproxy.envoy.service.auth.v3.CheckResponse;
 import io.grpc.stub.StreamObserver;
 import io.micronaut.test.annotation.MockBean;
+import jakarta.inject.Inject;
 import lombok.Getter;
 
 public class GrpcTest extends AbstractTest {

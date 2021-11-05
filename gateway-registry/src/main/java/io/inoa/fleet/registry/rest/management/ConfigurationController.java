@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import io.inoa.fleet.registry.domain.ConfigurationDefinition;
 import io.inoa.fleet.registry.domain.ConfigurationDefinitionRepository;
 import io.inoa.fleet.registry.domain.Gateway;
@@ -52,7 +54,7 @@ public class ConfigurationController implements ConfigurationApi {
 
 	@Override
 	public HttpResponse<ConfigurationDefinitionVO> createConfigurationDefinition(String key,
-			@ConfigurationDefinitionValid ConfigurationDefinitionVO vo) {
+			@Valid @ConfigurationDefinitionValid ConfigurationDefinitionVO vo) {
 		var tenant = security.getTenant();
 		if (!Objects.equals(key, vo.getKey())) {
 			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Key in path differs from model.");
@@ -100,7 +102,7 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<Object> setConfiguration(String key, ConfigurationSetVO vo) {
+	public HttpResponse<Object> setConfiguration(String key, @Valid ConfigurationSetVO vo) {
 		var tenant = security.getTenant();
 		var definition = getConfigurationDefinition(tenant, key);
 		var value = mapper.toString(definition, vo.getValue());
@@ -113,7 +115,7 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<Object> setConfigurationByGroup(UUID groupId, String key, ConfigurationSetVO vo) {
+	public HttpResponse<Object> setConfigurationByGroup(UUID groupId, String key, @Valid ConfigurationSetVO vo) {
 		var tenant = security.getTenant();
 		var group = getGroup(tenant, groupId);
 		var definition = getConfigurationDefinition(tenant, key);
@@ -128,7 +130,7 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<Object> setConfigurationByGateway(UUID gatewayId, String key, ConfigurationSetVO vo) {
+	public HttpResponse<Object> setConfigurationByGateway(UUID gatewayId, String key, @Valid ConfigurationSetVO vo) {
 		var tenant = security.getTenant();
 		var gateway = getGateway(tenant, gatewayId);
 		var definition = getConfigurationDefinition(tenant, key);

@@ -3,6 +3,8 @@ package io.inoa.fleet.registry.rest.management;
 import java.util.List;
 import java.util.UUID;
 
+import javax.validation.Valid;
+
 import io.inoa.fleet.registry.domain.Group;
 import io.inoa.fleet.registry.domain.GroupRepository;
 import io.inoa.fleet.registry.rest.mapper.GroupMapper;
@@ -38,7 +40,7 @@ public class GroupsController implements GroupsApi {
 	}
 
 	@Override
-	public HttpResponse<GroupVO> createGroup(GroupCreateVO vo) {
+	public HttpResponse<GroupVO> createGroup(@Valid GroupCreateVO vo) {
 		var tenant = security.getTenant();
 
 		if (repository.existsByTenantAndName(tenant, vo.getName())) {
@@ -58,7 +60,7 @@ public class GroupsController implements GroupsApi {
 	}
 
 	@Override
-	public HttpResponse<GroupVO> updateGroup(UUID groupId, GroupUpdateVO vo) {
+	public HttpResponse<GroupVO> updateGroup(UUID groupId, @Valid GroupUpdateVO vo) {
 
 		var changed = false;
 		var group = getGroup(groupId);

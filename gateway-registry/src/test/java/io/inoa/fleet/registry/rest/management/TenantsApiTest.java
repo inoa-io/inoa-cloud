@@ -107,7 +107,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertEquals(created, assert200(() -> client.findTenant(auth(), created.getTenantId())), "vo");
 	}
 
-	@DisplayName("createTenant(400): check bean validation")
+	@DisplayName("createTenant(400): is beanvalidation active")
 	@Test
 	@Override
 	public void createTenant400() {

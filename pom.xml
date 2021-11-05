@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.5.3</version>
+		<version>0.5.4</version>
 		<relativePath />
 	</parent>
 
@@ -69,11 +69,11 @@
 
 		<version.com.github.tomakehurst.wiremock>2.31.0</version.com.github.tomakehurst.wiremock>
 		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
-		<version.io.kokuwa.micronaut.codegen>2.2.0</version.io.kokuwa.micronaut.codegen>
-		<version.io.kokuwa.micronaut.logging>0.1.2</version.io.kokuwa.micronaut.logging>
-		<version.io.kokuwa.micronaut.influxdb>0.0.1</version.io.kokuwa.micronaut.influxdb>
-		<version.io.micronaut>2.5.13</version.io.micronaut>
-		<version.io.micronaut.data>2.5.0</version.io.micronaut.data>
+		<version.io.kokuwa.micronaut.codegen>2.2.1</version.io.kokuwa.micronaut.codegen>
+		<version.io.kokuwa.micronaut.logging>3.0.0-M1</version.io.kokuwa.micronaut.logging>
+		<version.io.kokuwa.micronaut.influxdb>3.0.0-M1</version.io.kokuwa.micronaut.influxdb>
+		<version.io.micronaut>3.1.3</version.io.micronaut>
+		<version.io.micronaut.data>3.1.2</version.io.micronaut.data>
 		<version.org.awaitility>4.1.1</version.org.awaitility>
 		<version.org.bouncycastle>1.69</version.org.bouncycastle>
 		<version.org.eclipse.hono>1.9.1</version.org.eclipse.hono>
@@ -196,6 +196,7 @@
 						<typeMappings>
 							<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
 							<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
+							<typeMapping>Singleton=jakarta.inject.Singleton</typeMapping>
 						</typeMappings>
 						<ignoreFileOverride>${project.basedir}/../.openapi-ignore</ignoreFileOverride>
 					</configuration>

@@ -5,10 +5,11 @@ import javax.inject.Singleton;
 import org.reactivestreams.Publisher;
 
 import io.inoa.fleet.registry.domain.GatewayRepository;
+import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.token.validator.TokenValidator;
-import io.reactivex.Flowable;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 /**
  * Validate gateway token.
@@ -23,13 +24,13 @@ public class AuthTokenValidator implements TokenValidator {
 	private final GatewayRepository gatewayRepository;
 
 	@Override
-	public Publisher<Authentication> validateToken(String token) {
+	public Publisher<Authentication> validateToken(String token, HttpRequest<?> request) {
 		return service
 				.validateToken(token)
 				.flatMap(gatewayRepository::findByGatewayId)
 				.map(GatewayAuthentication::new)
 				.map(Authentication.class::cast)
-				.map(Flowable::just)
-				.orElseGet(Flowable::empty);
+				.map(Mono::just)
+				.orElseGet(Mono::empty);
 	}
 }
