@@ -3,12 +3,6 @@ package io.inoa.cloud.service;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.LoggingEvent;
-
-import io.inoa.cloud.event.CloudEventVO;
-import io.inoa.cloud.log.JSONLogVO;
-import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -16,10 +10,15 @@ import org.slf4j.MDC;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
+import io.inoa.cloud.event.CloudEventVO;
+import io.inoa.cloud.log.JSONLogVO;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.validation.validator.Validator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -68,19 +67,19 @@ public class LogEventListener {
 
 			// parse payload
 			var event = parse(CloudEventVO.class, payload, tenantId);
-			if(event.isEmpty()) {
+			if (event.isEmpty()) {
 				return;
 			}
 
 			// check if we are in charge
-			if(!LOG_CLOUD_EVENT_TYPE.equals(event.get().getType())) {
+			if (!LOG_CLOUD_EVENT_TYPE.equals(event.get().getType())) {
 				log.trace("Not in charge for event type: {}", event.get().getType());
 				return;
 			}
 
 			// parse json log
 			var jsonLog = parse(JSONLogVO.class, event.get().getData(), tenantId);
-			if(event.isEmpty()) {
+			if (event.isEmpty()) {
 				return;
 			}
 
@@ -97,7 +96,7 @@ public class LogEventListener {
 		// parse json log
 		T result = null;
 		try {
-			if(input instanceof String) {
+			if (input instanceof String) {
 				result = objectMapper.readValue(input.toString(), clazz);
 			} else {
 				result = objectMapper.readValue(objectMapper.writeValueAsString(input), clazz);
