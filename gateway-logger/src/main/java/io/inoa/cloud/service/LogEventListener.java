@@ -8,7 +8,7 @@ import ch.qos.logback.classic.spi.LoggingEvent;
 
 import io.inoa.cloud.event.CloudEventVO;
 import io.inoa.cloud.log.JSONLogVO;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Fabian Schlegel
  */
-@AllArgsConstructor
+@RequiredArgsConstructor
 @KafkaListener(offsetReset = OffsetReset.EARLIEST)
 @Slf4j
 public class LogEventListener {

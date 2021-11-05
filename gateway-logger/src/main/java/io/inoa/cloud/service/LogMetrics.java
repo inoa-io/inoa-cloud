@@ -4,11 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import javax.inject.Singleton;
-
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 /**
