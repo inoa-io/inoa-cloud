@@ -54,7 +54,7 @@ public class AuthController implements AuthApi {
 	}
 
 	@Override
-	public HttpResponse<TokenRepsonseVO> getToken(String grantType, String token) {
+	public HttpResponse<TokenResponseVO> getToken(String grantType, String token) {
 		if (!GRANT_TYPE.equals(grantType)) {
 			throw error("grant_type is not " + GRANT_TYPE);
 		}
@@ -203,8 +203,8 @@ public class AuthController implements AuthApi {
 	 * @param gateway Gateway.
 	 * @return Response with payload.
 	 */
-	private HttpResponse<TokenRepsonseVO> getTokenResponse(Gateway gateway) {
-		return HttpResponse.ok(new TokenRepsonseVO()
+	private HttpResponse<TokenResponseVO> getTokenResponse(Gateway gateway) {
+		return HttpResponse.ok(new TokenResponseVO()
 				.setAccessToken(authService.createToken(gateway.getGatewayId()))
 				.setTokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
 				.setExpiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())

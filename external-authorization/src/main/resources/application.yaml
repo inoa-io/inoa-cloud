@@ -1,4 +1,7 @@
 micronaut:
+  application:
+    name: ${project.artifactId}
+    version: ${project.version}
 
   ## see https://docs.micronaut.io/latest/guide/index.html#staticResources
   router:

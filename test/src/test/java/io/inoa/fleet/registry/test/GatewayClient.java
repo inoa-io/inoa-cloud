@@ -21,7 +21,6 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 
-import io.inoa.fleet.registry.rest.gateway.AuthApiClient;
 import io.inoa.fleet.registry.rest.gateway.ConfigurationApiClient;
 import io.inoa.fleet.registry.rest.gateway.PropertiesApiClient;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
@@ -33,7 +32,7 @@ import lombok.SneakyThrows;
 @RequiredArgsConstructor
 public class GatewayClient {
 
-	private final AuthApiClient authClient;
+	private final AuthApiFixedClient authClient;
 	private final PropertiesApiClient propertiesClient;
 	private final ConfigurationApiClient configurationClient;
 
