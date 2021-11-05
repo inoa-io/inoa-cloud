@@ -6,6 +6,8 @@ import java.util.UUID;
 
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
+import io.micronaut.data.model.Page;
+import io.micronaut.data.model.Pageable;
 import io.micronaut.data.repository.CrudRepository;
 
 /**
@@ -18,6 +20,8 @@ public interface GatewayRepository extends CrudRepository<Gateway, Long> {
 
 	List<Gateway> findByTenantOrderByName(Tenant tenant);
 
+	Page<Gateway> findByTenant(Tenant tenant, Pageable pageable);
+
 	@Join("tenant")
 	Optional<Gateway> findByGatewayId(UUID gatewayId);
 
@@ -27,3 +31,4 @@ public interface GatewayRepository extends CrudRepository<Gateway, Long> {
 
 	Boolean existsByTenantAndName(Tenant tenant, String name);
 }
+

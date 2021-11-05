@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import io.inoa.fleet.registry.rest.management.GatewayPageVO;
+import io.micronaut.data.model.Page;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants.ComponentModel;
@@ -24,6 +26,8 @@ import io.inoa.fleet.registry.rest.management.GatewayVO;
 public interface GatewayMapper {
 
 	List<GatewayVO> toGateways(List<Gateway> gateways);
+
+	GatewayPageVO toGatewayPage(Page<Gateway> gateways);
 
 	@Mapping(target = "groupIds", source = "groups")
 	GatewayDetailVO toGatewayDetail(Gateway gateway);
