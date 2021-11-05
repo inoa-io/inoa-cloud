@@ -52,6 +52,7 @@ endpoints:
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
   bean-introspection-module: true
+  always-serialize-errors-as-list: false
   serialization:
     writeDatesAsTimestamps: false
 

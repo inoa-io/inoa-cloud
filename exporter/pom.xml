@@ -47,11 +47,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-websocket</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-influxdb</artifactId>
 		</dependency>

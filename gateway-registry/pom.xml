@@ -32,6 +32,12 @@
 	</dependencyManagement>
 	<dependencies>
 
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut</groupId>
@@ -49,6 +55,10 @@
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-server-netty</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.reactor</groupId>
+			<artifactId>micronaut-reactor</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.micronaut.security</groupId>
@@ -84,6 +94,13 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- avoid compiler warning, see https://docs.micronaut.io/latest/guide/#_nullable_annotations -->
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- libraries -->
@@ -221,6 +238,11 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-validation</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-http-validation</artifactId>
 							<version>${version.io.micronaut}</version>
 						</path>
 						<path>

@@ -29,7 +29,6 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.query.FluxTable;
 
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
-import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 
@@ -43,7 +42,6 @@ import io.micronaut.test.support.TestPropertyProvider;
 public class InoaMessageListenerTest implements TestPropertyProvider {
 
 	@Inject
-	@KafkaClient("inoa-producer")
 	Producer<String, InoaTelemetryMessageVO> producer;
 	@Inject
 	InfluxDBClient influxdb;
