@@ -1,0 +1,4 @@
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    enabled: false

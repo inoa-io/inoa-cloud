@@ -71,6 +71,28 @@
 							<modelPackage>io.inoa.cloud.messages</modelPackage>
 						</configuration>
 					</execution>
+					<execution>
+						<id>openapi-generate-cloud-event</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/openapi/cloudevent.yaml</inputSpec>
+							<modelPackage>io.inoa.cloud.event</modelPackage>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-generate-json-log</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/openapi/jsonlog.yaml</inputSpec>
+							<modelPackage>io.inoa.cloud.log</modelPackage>
+						</configuration>
+					</execution>
 				</executions>
 				<configuration>
 					<generateApis>false</generateApis>
