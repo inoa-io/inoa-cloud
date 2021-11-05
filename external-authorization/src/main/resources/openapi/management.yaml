@@ -1,0 +1,430 @@
+openapi: 3.0.3
+info:
+  title: "Registry: Management API"
+  description: |
+    * TODO
+  version: 1.0.0
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: inoa.io
+    url: https://github.com/inoa-io
+servers:
+  - url: http://gateway-registry-service:8080
+security:
+  - Keycloak: []
+  - BearerAuth: []
+paths:
+  /tenants:
+    get:
+      tags:
+        - tenants
+      summary: 'Find tenants.'
+      description: 'Returns all tenants ordered by name.'
+      operationId: findTenants
+      responses:
+        200:
+          description: 'Returns tenants.'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+        401:
+          description: 'Unauthorized.'
+    post:
+      tags:
+        - tenants
+      summary: 'Create tenant.'
+      description: TODO
+      operationId: createTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+      responses:
+        201:
+          description: 'Tenant created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        409:
+          description: Tenant with id or name already exists.
+  /tenants/{tenant_id}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags:
+        - tenants
+      summary: 'Find tenant.'
+      description: TODO
+      operationId: findTenant
+      responses:
+        200:
+          description: 'Tenant found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Tenant not found.'
+    put:
+      tags:
+        - tenants
+      summary: 'Update tenant.'
+      description: TODO
+      operationId: updateTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdate'
+      responses:
+        200:
+          description: 'Tenant updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Tenant not found.'
+        409:
+          description: 'Tenant with name already exists.'
+    delete:
+      tags:
+        - tenants
+      summary: 'Delete tenant.'
+      description: TODO
+      operationId: deleteTenant
+      responses:
+        204:
+          description: 'Tenant deleted.'
+        400:
+          description: 'Bad request.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Tenant not found.'
+
+  /tenants/{tenant_id}/users:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags:
+        - users
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/Sort'
+        - name: filter
+          description: 'Search in name. Supports wildcard *, is case insensitive.'
+          in: query
+          schema:
+            type: string
+            maxLength: 10
+            example: viess
+      summary: 'Find users.'
+      description: 'Returns all users ordered by name.'
+      operationId: findUsers
+      responses:
+        200:
+          description: 'Page with users.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPage'
+        401:
+          description: 'Unauthorized.'
+    post:
+      tags:
+        - users
+      summary: 'Create user.'
+      description: TODO
+      operationId: createUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        201:
+          description: 'User created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        409:
+          description: User with email already exists.
+
+  /tenants/{tenant_id}/users/{user_id}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/UserId'
+    get:
+      tags:
+        - users
+      summary: 'Find user.'
+      description: TODO
+      operationId: findUser
+      responses:
+        200:
+          description: 'User found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'User not found.'
+    put:
+      tags:
+        - users
+      summary: 'Update user.'
+      description: TODO
+      operationId: updateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        200:
+          description: 'User updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'User not found.'
+        409:
+          description: 'User with email already exists.'
+    delete:
+      tags:
+        - users
+      summary: 'Delete user.'
+      description: TODO
+      operationId: deleteUser
+      responses:
+        204:
+          description: 'User deleted.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'User not found.'
+components:
+  schemas:
+    Timestamp:
+      description: 'Common timestamp for created/updated timestamps.'
+      type: string
+      format: date-time
+      example: '2021-01-01T00:00:00'
+    Id:
+      description: 'Id as technical reference (never changes).'
+      type: string
+      format: uuid
+    Enabled:
+      description: 'Flag if enabled or not.'
+      type: boolean
+      default: true
+      example: false
+
+    ###
+    ### Tenant
+    ###
+
+    TenantId:
+      description: 'Human friendly uniq key (cannot change).'
+      type: string
+      minLength: 4
+      maxLength: 30
+      pattern: '^[a-z0-9\-]*$'
+      example: kokuwa-12345
+    TenantName:
+      description: 'Human friendly shortname (can change).'
+      type: string
+      minLength: 3
+      maxLength: 100
+      example: kokuwa
+    Tenant:
+      description: 'Tenant with fields.'
+      type: object
+      properties:
+        tenant_id:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          $ref: '#/components/schemas/Enabled'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - tenant_id
+        - name
+        - enabled
+        - created
+        - updated
+    TenantCreate:
+      description: 'Tenant to create.'
+      type: object
+      properties:
+        tenant_id:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          $ref: '#/components/schemas/Enabled'
+      required:
+        - tenant_id
+        - name
+        - enabled
+    TenantUpdate:
+      description: 'Tenant to update.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          $ref: '#/components/schemas/Enabled'
+      required:
+        - name
+        - enabled
+
+    ###
+    ### User
+    ###
+
+    UserEmail:
+      description: 'User email.'
+      type: string
+      minLength: 6
+      maxLength: 254
+      example: user@example.org
+    User:
+      description: 'User with fields.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        email:
+          $ref: '#/components/schemas/UserEmail'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - email
+        - created
+        - updated
+    UserPage:
+      description: 'Page for user.'
+      type: object
+      properties:
+        content:
+          description: 'List of entries on page.'
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        total_size:
+          description: 'Total available entries.'
+          type: integer
+          format: int32
+          example: 0
+      required:
+        - content
+        - total_size
+    UserCreate:
+      description: 'User to create.'
+      type: object
+      properties:
+        email:
+          $ref: '#/components/schemas/UserEmail'
+      required:
+        - email
+    UserUpdate:
+      description: 'User to update.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/UserEmail'
+
+  parameters:
+    PageablePage:
+      description: 'Page number for pagination.'
+      name: page
+      in: query
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      example: 0
+    PageableSize:
+      description: 'Page size for pagination.'
+      name: size
+      in: query
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+      example: 50
+    Sort:
+      description: 'Sorting.'
+      name: sort
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          pattern: '[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?'
+      example:
+        - name,asc
+        - tenant_id,desc
+    TenantId:
+      name: tenant_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/TenantId'
+    UserId:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    Keycloak:
+      type: openIdConnect
+      openIdConnectUrl: http://keycloak:8080/realms/inoa/.well-known/openid-configuration

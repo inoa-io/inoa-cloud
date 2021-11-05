@@ -73,6 +73,7 @@
 		<version.io.kokuwa.micronaut.influxdb>3.0.0-M1</version.io.kokuwa.micronaut.influxdb>
 		<version.io.micronaut>3.1.3</version.io.micronaut>
 		<version.io.micronaut.data>3.1.2</version.io.micronaut.data>
+		<version.org.assertj>3.16.1</version.org.assertj>
 		<version.org.awaitility>4.1.1</version.org.awaitility>
 		<version.org.bouncycastle>1.69</version.org.bouncycastle>
 		<version.org.eclipse.hono>1.9.1</version.org.eclipse.hono>
@@ -169,6 +170,12 @@
 				<groupId>org.bouncycastle</groupId>
 				<artifactId>bcpkix-jdk15on</artifactId>
 				<version>${version.org.bouncycastle}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>${version.org.assertj}</version>
+				<scope>test</scope>
 			</dependency>
 
 		</dependencies>
