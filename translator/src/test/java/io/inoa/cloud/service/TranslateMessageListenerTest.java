@@ -24,7 +24,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.micrometer.core.instrument.Counter;
-import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
@@ -42,7 +41,6 @@ import lombok.Getter;
 public class TranslateMessageListenerTest implements TestPropertyProvider {
 
 	@Inject
-	@KafkaClient("hono-producer")
 	Producer<String, String> producer;
 	@Inject
 	TestListener testListener;

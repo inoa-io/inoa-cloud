@@ -3,6 +3,8 @@ package io.inoa.fleet.registry.rest.management;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javax.validation.Valid;
+
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.fleet.registry.domain.TenantRepository;
@@ -43,7 +45,7 @@ public class TenantsController implements TenantsApi {
 	}
 
 	@Override
-	public HttpResponse<TenantVO> createTenant(TenantCreateVO vo) {
+	public HttpResponse<TenantVO> createTenant(@Valid TenantCreateVO vo) {
 
 		// check id/name for uniqueness
 
@@ -65,7 +67,7 @@ public class TenantsController implements TenantsApi {
 	}
 
 	@Override
-	public HttpResponse<TenantVO> updateTenant(String tenantId, TenantUpdateVO vo) {
+	public HttpResponse<TenantVO> updateTenant(String tenantId, @Valid TenantUpdateVO vo) {
 
 		// get tenant from database
 
