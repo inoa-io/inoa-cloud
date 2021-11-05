@@ -17,7 +17,6 @@ import com.nimbusds.jose.jwk.JWKSet;
 
 import io.inoa.fleet.registry.infrastructure.ComposeTest;
 import io.inoa.fleet.registry.infrastructure.TestAssertions;
-import io.inoa.fleet.registry.rest.gateway.AuthApiClient;
 import io.inoa.fleet.registry.rest.gateway.PropertiesApiClient;
 import io.inoa.fleet.registry.rest.management.ConfigurationApiClient;
 import io.inoa.fleet.registry.rest.management.ConfigurationSetVO;
@@ -32,7 +31,7 @@ import io.inoa.fleet.registry.rest.management.SecretCreatePasswordVO;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.client.RxHttpClient;
+import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -43,13 +42,13 @@ public class GatewayRegistryClient {
 
 	@Inject
 	@Client("keycloak")
-	RxHttpClient keycloak;
+	HttpClient keycloak;
 
 	private final TestAssertions assertions;
 	private final GatewaysApiClient gatewaysClient;
 	private final CredentialsApiClient credentialsClient;
 	private final ConfigurationApiClient configurationClient;
-	private final AuthApiClient authClient;
+	private final AuthApiFixedClient authClient;
 	private final PropertiesApiClient propertiesClient;
 	private final io.inoa.fleet.registry.rest.gateway.ConfigurationApiClient configurationGatewayClient;
 
