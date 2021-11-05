@@ -1,11 +1,14 @@
 package io.inoa.cloud.service;
 
-import java.util.Optional;
 import java.util.regex.Pattern;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
 
 import io.inoa.cloud.event.CloudEventVO;
 import io.inoa.cloud.log.JSONLogVO;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -117,10 +120,42 @@ public class LogEventListener {
 				return;
 			}
 
+			// Actual log
+			log(jsonLogVO);
 			metrics.counterSuccess(tenantId).increment();
 
 		} finally {
 			MDC.clear();
 		}
+	}
+
+	private void log(JSONLogVO jsonLogVO) {
+		Level level;
+		switch (jsonLogVO.getLevel()) {
+		case 0:
+			level = Level.OFF;
+			break;
+		case 1:
+			level = Level.ERROR;
+			break;
+		case 2:
+			level = Level.WARN;
+			break;
+		case 3:
+			level = Level.INFO;
+			break;
+		case 4:
+			level = Level.DEBUG;
+			break;
+		case 5:
+			level = Level.TRACE;
+			break;
+		default:
+			level = Level.ALL;
+		}
+		var logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(jsonLogVO.getTag());
+		var event = new LoggingEvent(logger.getName(), logger, level, jsonLogVO.getMsg(), null, null);
+		event.setTimeStamp(jsonLogVO.getTime());
+		logger.callAppenders(event);
 	}
 }

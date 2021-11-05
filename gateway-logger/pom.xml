@@ -59,7 +59,6 @@
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-logging</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 
 		<!-- monitoring -->
