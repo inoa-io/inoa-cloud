@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.inject.Singleton;
-
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
@@ -36,6 +34,7 @@ import com.nimbusds.jwt.SignedJWT;
 import io.micronaut.context.exceptions.BeanInstantiationException;
 import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.io.ResourceResolver;
+import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

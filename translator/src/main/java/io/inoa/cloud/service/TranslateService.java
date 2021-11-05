@@ -10,14 +10,13 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import javax.inject.Singleton;
-
 import org.slf4j.MDC;
 
 import io.inoa.cloud.converter.Converter;
 import io.inoa.cloud.messages.InoaTelemetryMessageVO;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
 import io.micronaut.core.order.Ordered;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
