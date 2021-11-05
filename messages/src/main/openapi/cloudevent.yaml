@@ -1,0 +1,64 @@
+openapi: 3.0.3
+info:
+  title: Cloud Event Definitions
+  version: 1.0.1
+  description: |
+    Model definitions for cloud events.
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: GrayC GmbH
+    url: https://grayc.de
+paths: {}
+components:
+  schemas:
+    CloudEvent:
+      description: 'Cloud Event'
+      type: object
+      properties:
+        id:
+          description: 'Id of event'
+          type: string
+          example: A234-1234-1234
+        specversion:
+          description: 'Version of cloud event spec'
+          type: string
+          example: 1.0
+        type:
+          description: 'Type of the event'
+          type: string
+          example: 'io.inoa.log.emitted'
+        source:
+          description: 'Event source'
+          type: string
+          format: uuid
+          example: '869a39c8-44ec-4155-9175-1dee6e846978'
+        time:
+          description: 'Timestamp of event'
+          type: string
+          format: date-time
+          example: '2021-09-09T06:46:59'
+        datacontenttype:
+          description: 'Content type'
+          type: string
+          example: 'application/json'
+        data:
+          description: 'Actual data'
+          type: object
+      required:
+        - id
+        - specversion
+        - time
+        - type
+        - source
+        - datacontenttype
+        - data
+      example:
+        id: '123456789'
+        specversion: '1.0.1'
+        type: 'io.inoa.log.emitted'
+        source: '869a39c8-44ec-4155-9175-1dee6e846978'
+        time: 2021-09-09T06:46:59
+        datacontenttype: 'application/json'
+        data: 'OK'

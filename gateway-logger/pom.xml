@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.inoa.cloud</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.2-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>gateway-logger</artifactId>
+
+	<name>INOA Cloud :: Gateway Logger</name>
+	<description>Subscribes to log events and forwards them to logging backend.</description>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.micronaut</groupId>
+				<artifactId>micronaut-bom</artifactId>
+				<version>${version.io.micronaut}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+
+		<!-- project -->
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>messages</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- micronaut -->
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.kafka</groupId>
+			<artifactId>micronaut-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-server-netty</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-websocket</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-logging</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- monitoring -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-management</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.micrometer</groupId>
+			<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- test -->
+		<dependency>
+			<groupId>io.micronaut.test</groupId>
+			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>kafka</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+		<plugins>
+
+			<!-- configure annotation processors -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${version.org.projectlombok}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-validation</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- create container -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>dockerBuild</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
