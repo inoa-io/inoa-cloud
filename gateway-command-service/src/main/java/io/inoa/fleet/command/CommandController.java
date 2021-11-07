@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/command")
 @RequiredArgsConstructor
 public class CommandController {
+
 	private final ApplicationClient<? extends MessageContext> honoClient;
 	private final ObjectMapper objectMapper;
 
