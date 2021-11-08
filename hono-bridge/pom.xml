@@ -39,13 +39,13 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
+			<artifactId>spring-boot-starter</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- eclipse -->
@@ -57,23 +57,12 @@
 			<groupId>org.eclipse.hono</groupId>
 			<artifactId>hono-service-device-registry-base</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-client-telemetry-amqp</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.hono</groupId>
-			<artifactId>hono-client-telemetry-kafka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.opentracing.contrib</groupId>
-			<artifactId>opentracing-tracerresolver</artifactId>
-		</dependency>
 
 		<!-- monitoring -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-actuator-autoconfigure</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>
@@ -81,32 +70,57 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- testing -->
-		<dependency>
-			<groupId>com.github.tomakehurst</groupId>
-			<artifactId>wiremock-jre8-standalone</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.vertx</groupId>
-			<artifactId>vertx-junit5</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>kafka</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
 		<plugins>
+
+			<!-- add generated sources -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- generate sources from openapi spec -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-management-generate</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/management.yaml</inputSpec>
+							<apiPackage>io.inoa.fleet.registry.rest</apiPackage>
+							<generateApis>false</generateApis>
+							<generateApiTests>false</generateApiTests>
+							<modelsToGenerate>Tenant,GatewayDetail,CredentialType,Credential,Secret,SecretDetail,SecretDetailPassword,SecretDetailRSA,SecretDetailPSK</modelsToGenerate>
+							<generateSupportingFiles>false</generateSupportingFiles>
+							<configOptions>
+								<useBeanValidation>false</useBeanValidation>
+								<introspected>false</introspected>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!-- create container -->
 			<plugin>
