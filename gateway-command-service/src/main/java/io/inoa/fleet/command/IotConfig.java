@@ -8,9 +8,10 @@ import org.eclipse.hono.application.client.ApplicationClient;
 import org.eclipse.hono.application.client.DownstreamMessage;
 import org.eclipse.hono.application.client.MessageContext;
 import org.eclipse.hono.application.client.kafka.impl.KafkaApplicationClientImpl;
-import org.eclipse.hono.client.kafka.KafkaProducerConfigProperties;
-import org.eclipse.hono.client.kafka.KafkaProducerFactory;
 import org.eclipse.hono.client.kafka.consumer.KafkaConsumerConfigProperties;
+import org.eclipse.hono.client.kafka.producer.CachingKafkaProducerFactory;
+import org.eclipse.hono.client.kafka.producer.KafkaProducerConfigProperties;
+import org.eclipse.hono.client.kafka.producer.KafkaProducerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @RequiredArgsConstructor
 public class IotConfig {
+
 	private final InoaConfig inoaConfig;
 
 	@Bean
@@ -78,7 +80,7 @@ public class IotConfig {
 		producerConfig.setCommonClientConfig(properties);
 		producerConfig.setDefaultClientIdPrefix(inoaConfig.getClientIdPrefix());
 
-		final KafkaProducerFactory<String, Buffer> producerFactory = KafkaProducerFactory.sharedProducerFactory(vertx);
+		final KafkaProducerFactory<String, Buffer> producerFactory = CachingKafkaProducerFactory.sharedFactory(vertx);
 		return new KafkaApplicationClientImpl(vertx, consumerConfig, producerFactory, producerConfig);
 	}
 }
