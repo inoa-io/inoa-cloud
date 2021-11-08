@@ -19,8 +19,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TranslateMetrics {
 
-	public static final String COUNTER_NAME_FAIL_GATEWAY_ID = "translate_messages_fail_gateway_id_total";
 	public static final String COUNTER_NAME_FAIL_TENANT_ID = "translate_messages_fail_tenant_id_total";
+	public static final String COUNTER_NAME_FAIL_GATEWAY_ID = "translate_messages_fail_gateway_id_total";
 	public static final String COUNTER_NAME_FAIL_MESSAGE_READ = "translate_messages_fail_read_total";
 	public static final String COUNTER_NAME_FAIL_MESSAGE_VALIDATE = "translate_messages_fail_validate_total";
 	public static final String COUNTER_NAME_FAIL_CONVERTER = "translate_messages_fail_converter_total";

@@ -55,7 +55,7 @@ public class TranslateMessageListener {
 			// get tenantId and gatewayId from message record
 
 			if (!Pattern.matches(PATTERN_TENANT_ID, tenantId)) {
-				log.warn("Got record with unparseable topic: {}", key);
+				log.warn("Got record with unparseable topic: {}", tenantId);
 				metrics.counterFailTenantId(tenantId).increment();
 				return;
 			}

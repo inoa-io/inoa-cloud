@@ -1,5 +1,6 @@
 package io.inoa.cloud.service;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Duration;
@@ -44,16 +45,30 @@ public class LogEventListenerTest implements TestPropertyProvider {
 	@Inject
 	LogMetrics metrics;
 
-	private static List<ILoggingEvent> logEvents = new ArrayList<>();
+	private static List<ILoggingEvent> logsGateway = new ArrayList<>();
+	private static List<ILoggingEvent> logsListener = new ArrayList<>();
 
 	@BeforeAll
 	static void setUpListAppender() {
+
+		Awaitility.setDefaultTimeout(Duration.ofSeconds(10));
+		Awaitility.setDefaultPollInterval(Duration.ofMillis(100));
+
 		var log = (Logger) LoggerFactory.getLogger("METERING");
 		if (log.getAppender("test") == null) {
 			var appender = new ListAppender<ILoggingEvent>();
 			appender.setName("test");
 			appender.start();
-			appender.list = logEvents;
+			appender.list = logsGateway;
+			log.addAppender(appender);
+		}
+
+		log = (Logger) LoggerFactory.getLogger(LogEventListener.class);
+		if (log.getAppender("test") == null) {
+			var appender = new ListAppender<ILoggingEvent>();
+			appender.setName("test");
+			appender.start();
+			appender.list = logsListener;
 			log.addAppender(appender);
 		}
 	}
@@ -61,7 +76,8 @@ public class LogEventListenerTest implements TestPropertyProvider {
 	@BeforeEach
 	@AfterEach
 	void setUpMdc() {
-		logEvents.clear();
+		logsGateway.clear();
+		logsListener.clear();
 		MDC.clear();
 	}
 
@@ -71,47 +87,83 @@ public class LogEventListenerTest implements TestPropertyProvider {
 
 		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
-		var counter = metrics.counterSuccess(tenantId);
-		var countBefore = counter.count();
+		var countSuccessBefore = metrics.counterSuccess(tenantId).count();
 
 		// send message
-		send(tenantId, gatewayId, "{\n"
-				+ "    \"specversion\" : \"1.0\",\n"
-				+ "    \"type\" : \"io.inoa.log.emitted\",\n"
-				+ "    \"source\" : \"869a39c8-44ec-4155-9175-1dee6e846978\",\n"
-				+ "    \"id\" : \"123456789\",\n"
-				+ "    \"time\" : \"2018-04-05T17:31:00Z\",\n"
-				+ "    \"datacontenttype\" : \"application/json\",\n"
-				+ "    \"data\" : \n"
-				+ "      { \n"
-				+ "        \"tag\": \"METERING\",\n"
-				+ "        \"level\": 3,\n"
-				+ "        \"time\": 123456789,\n"
-				+ "        \"msg\": \"OK\"\n"
-				+ "      }\n"
+		send(tenantId, gatewayId, "{"
+				+ "    \"specversion\" : \"1.0\","
+				+ "    \"type\" : \"io.inoa.log.emitted\","
+				+ "    \"source\" : \"869a39c8-44ec-4155-9175-1dee6e846978\","
+				+ "    \"id\" : \"123456789\","
+				+ "    \"time\" : \"2018-04-05T17:31:00Z\","
+				+ "    \"datacontenttype\" : \"application/json\","
+				+ "    \"data\" : "
+				+ "      { "
+				+ "        \"tag\": \"METERING\","
+				+ "        \"level\": 3,"
+				+ "        \"time\": 123456789,"
+				+ "        \"msg\": \"OK\""
+				+ "      }"
 				+ "}");
 
-		Awaitility.await("Successful Log")
-				.pollInterval(Duration.ofMillis(50))
-				.timeout(Duration.ofSeconds(120))
-				.until(() -> counter.count() != countBefore);
+		Awaitility
+				.await("Successful Log")
+				.until(() -> metrics.counterSuccess(tenantId).count(), count -> count != countSuccessBefore);
 
 		// validate translated message
-		assertEquals(1, logEvents.size(), "Correct logs");
-		assertEquals("OK", logEvents.get(0).getMessage(), "Correct message");
-		assertEquals(Level.INFO, logEvents.get(0).getLevel(), "Correct message");
-		assertEquals("METERING", logEvents.get(0).getLoggerName(), "Correct logger name");
-		assertEquals(123456789, logEvents.get(0).getTimeStamp(), "Correct timestamp");
-		assertEquals(tenantId, logEvents.get(0).getMDCPropertyMap().get("tenantId"), "Correct MDCs");
-		assertEquals(gatewayId.toString(), logEvents.get(0).getMDCPropertyMap().get("gatewayId"), "Correct MDCs");
+
+		assertEquals(0, logsListener.size(), "listener logs");
+		assertEquals(1, logsGateway.size(), "gateway logs");
+		var logEvent = logsGateway.get(0);
+		assertAll("log event",
+				() -> assertEquals("OK", logEvent.getFormattedMessage(), "message"),
+				() -> assertEquals(Level.INFO, logEvent.getLevel(), "level"),
+				() -> assertEquals("METERING", logEvent.getLoggerName(), "logger"),
+				() -> assertEquals(123456789, logEvent.getTimeStamp(), "timestamp"),
+				() -> assertEquals(tenantId, logEvent.getMDCPropertyMap().get("tenantId"), "mdc tenant"),
+				() -> assertEquals(gatewayId.toString(), logEvent.getMDCPropertyMap().get("gatewayId"), "mdc gateway"));
+	}
+
+	@DisplayName("ignore event")
+	@Test
+	void ignore() {
+
+		var tenantId = "inoa";
+		var gatewayId = UUID.randomUUID();
+		var countSuccessBefore = metrics.counterSuccess(tenantId).count();
+		var countIgnoreBefore = metrics.counterIgnore(tenantId).count();
+
+		// send message
+		send(tenantId, gatewayId, "{"
+				+ "    \"specversion\" : \"1.0\","
+				+ "    \"type\" : \"wurst\","
+				+ "    \"source\" : \"869a39c8-44ec-4155-9175-1dee6e846978\","
+				+ "    \"id\" : \"123456789\","
+				+ "    \"time\" : \"2018-04-05T17:31:00Z\","
+				+ "    \"datacontenttype\" : \"application/json\","
+				+ "    \"data\" : {}"
+				+ "}");
+
+		Awaitility
+				.await("ignore log statement")
+				.until(() -> metrics.counterIgnore(tenantId).count(), count -> count == countIgnoreBefore + 1);
+		assertEquals(countSuccessBefore, metrics.counterSuccess(tenantId).count(), "success metrics increased");
+
+		// validate logs
+
+		assertEquals(0, logsGateway.size(), "gateway logs");
+		assertEquals(1, logsListener.size(), "listener logs");
+		var logEvent = logsListener.get(0);
+		assertAll("log event",
+				() -> assertEquals("Not in charge for event type: wurst", logEvent.getFormattedMessage(), "message"),
+				() -> assertEquals(Level.TRACE, logEvent.getLevel(), "level"),
+				() -> assertEquals(tenantId, logEvent.getMDCPropertyMap().get("tenantId"), "mdc tenant"),
+				() -> assertEquals(gatewayId.toString(), logEvent.getMDCPropertyMap().get("gatewayId"), "mdc gateway"));
 	}
 
 	private void send(String tenantId, Object gatewayId, String payload) {
 		var future = producer.send(new ProducerRecord<>("hono.event." + tenantId, gatewayId.toString(), payload));
-		Awaitility.await("message send")
-				.pollInterval(Duration.ofMillis(50))
-				.timeout(Duration.ofSeconds(5))
-				.until(() -> future.isDone());
+		Awaitility.await("message send").until(() -> future.isDone());
 	}
 
 	@Override

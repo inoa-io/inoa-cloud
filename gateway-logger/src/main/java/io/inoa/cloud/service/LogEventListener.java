@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import io.inoa.cloud.event.CloudEventVO;
 import io.inoa.cloud.log.JSONLogVO;
@@ -43,45 +44,47 @@ public class LogEventListener {
 	void receive(ConsumerRecord<String, String> record) {
 
 		var tenantId = record.topic().substring(11);
-		var key = record.key();
+		var gatewayId = record.key();
 		var payload = record.value();
 
 		try {
 
 			MDC.put("tenantId", tenantId);
-			MDC.put("gatewayId", key);
+			MDC.put("gatewayId", gatewayId);
 
 			// get tenantId and gatewayId from message record
 
 			if (!Pattern.matches(PATTERN_TENANT_ID, tenantId)) {
-				log.warn("Got record with unparseable topic: {}", key);
+				log.warn("Got record with unparseable topic: {}", tenantId);
 				metrics.counterFailTenantId(tenantId).increment();
 				return;
 			}
 
-			if (!Pattern.matches(PATTERN_UUID, key)) {
-				log.warn("Got record with unparseable key: {}", key);
+			if (!Pattern.matches(PATTERN_UUID, gatewayId)) {
+				log.warn("Got record with unparseable key: {}", gatewayId);
 				metrics.counterFailGatewayId(tenantId).increment();
 				return;
 			}
 
 			// parse payload
 
-			var event = parse(tenantId, CloudEventVO.class, payload);
-			if (event.isEmpty()) {
+			var eventOptional = parse(tenantId, CloudEventVO.class, payload);
+			if (eventOptional.isEmpty()) {
 				return;
 			}
+			var event = eventOptional.get();
 
 			// check if we are in charge
 
-			if (!LOG_CLOUD_EVENT_TYPE.equals(event.get().getType())) {
-				log.trace("Not in charge for event type: {}", event.get().getType());
+			if (!LOG_CLOUD_EVENT_TYPE.equals(event.getType())) {
+				log.trace("Not in charge for event type: {}", event.getType());
+				metrics.counterIgnore(tenantId).increment();
 				return;
 			}
 
 			// parse json log
 
-			var jsonLog = parse(tenantId, JSONLogVO.class, event.get().getData());
+			var jsonLog = parse(tenantId, JSONLogVO.class, event.getData());
 			if (jsonLog.isEmpty()) {
 				return;
 			}
@@ -129,32 +132,28 @@ public class LogEventListener {
 	}
 
 	private void log(JSONLogVO jsonLog) {
-		Level level;
-		switch (jsonLog.getLevel()) {
-			case 0:
-				level = Level.OFF;
-				break;
-			case 1:
-				level = Level.ERROR;
-				break;
-			case 2:
-				level = Level.WARN;
-				break;
-			case 3:
-				level = Level.INFO;
-				break;
-			case 4:
-				level = Level.DEBUG;
-				break;
-			case 5:
-				level = Level.TRACE;
-				break;
-			default:
-				level = Level.ALL;
-		}
-		var logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(jsonLog.getTag());
-		var event = new LoggingEvent(logger.getName(), logger, level, jsonLog.getMsg(), null, null);
+		var logger = (Logger) LoggerFactory.getLogger(jsonLog.getTag());
+		var event = new LoggingEvent(logger.getName(), logger, getLogLevel(jsonLog), jsonLog.getMsg(), null, null);
 		event.setTimeStamp(jsonLog.getTime());
 		logger.callAppenders(event);
+	}
+
+	private Level getLogLevel(JSONLogVO jsonLog) {
+		switch (jsonLog.getLevel()) {
+			case 0:
+				return Level.OFF;
+			case 1:
+				return Level.ERROR;
+			case 2:
+				return Level.WARN;
+			case 3:
+				return Level.INFO;
+			case 4:
+				return Level.DEBUG;
+			case 5:
+				return Level.TRACE;
+			default:
+				return Level.ALL;
+		}
 	}
 }

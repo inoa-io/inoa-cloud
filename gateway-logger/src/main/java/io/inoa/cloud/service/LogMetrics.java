@@ -19,11 +19,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LogMetrics {
 
-	public static final String COUNTER_NAME_FAIL_GATEWAY_ID = "log_messages_fail_gateway_id_total";
 	public static final String COUNTER_NAME_FAIL_TENANT_ID = "log_messages_fail_tenant_id_total";
+	public static final String COUNTER_NAME_FAIL_GATEWAY_ID = "log_messages_fail_gateway_id_total";
 	public static final String COUNTER_NAME_FAIL_MESSAGE_READ = "log_messages_fail_read_total";
 	public static final String COUNTER_NAME_FAIL_MESSAGE_VALIDATE = "log_messages_fail_validate_total";
-	public static final String COUNTER_NAME_IGNORE = "translate_messages_ignore_total";
+	public static final String COUNTER_NAME_IGNORE = "log_messages_ignore_total";
 	public static final String COUNTER_NAME_SUCCESS = "log_messages_success_total";
 
 	public static final String TAG_TENANT_ID = "tenantId";
