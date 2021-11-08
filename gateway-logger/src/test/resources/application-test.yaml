@@ -2,3 +2,8 @@
 endpoints:
   all:
     enabled: false
+
+## custom log configuration
+logger:
+  levels:
+    io.inoa: TRACE
