@@ -1,113 +1,49 @@
 package io.inoa.fleet.registry.hono.impl;
 
 import java.net.HttpURLConnection;
-import java.util.List;
-import java.util.Optional;
 
 import org.eclipse.hono.auth.HonoPasswordEncoder;
-import org.eclipse.hono.deviceregistry.service.credentials.AbstractCredentialsService;
-import org.eclipse.hono.deviceregistry.service.credentials.CredentialKey;
-import org.eclipse.hono.deviceregistry.service.tenant.TenantKey;
-import org.eclipse.hono.deviceregistry.util.DeviceRegistryUtils;
+import org.eclipse.hono.auth.SpringBasedHonoPasswordEncoder;
+import org.eclipse.hono.service.credentials.CredentialsService;
 import org.eclipse.hono.util.CredentialsConstants;
 import org.eclipse.hono.util.CredentialsResult;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestTemplate;
+import org.eclipse.hono.util.RequestResponseApiConstants;
+import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import io.inoa.fleet.registry.hono.TokenService;
-import io.inoa.fleet.registry.hono.config.InoaProperties;
+import io.inoa.fleet.registry.hono.rest.RegistryClient;
 import io.opentracing.Span;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Service
 @Slf4j
 @RequiredArgsConstructor
-public class CredentialsServiceImpl extends AbstractCredentialsService {
+public class CredentialsServiceImpl implements CredentialsService {
 
-	private final RestTemplate restTemplate;
-	private final InoaProperties inoaProperties;
-	private final TokenService tokenService;
-	private final HonoPasswordEncoder passwordEncoder;
+	private final HonoPasswordEncoder passwordEncoder = new SpringBasedHonoPasswordEncoder(10);
+	private final RegistryClient registryClient;
 
-	@Data
-	private static class Secret {
-		@JsonProperty("secret_id")
-		private String secretId;
-		private byte[] password;
-	}
-
-	@Data
-	private static class GatewayCredentials {
-		private String type;
-		@JsonProperty("credential_id")
-		private String credentialId;
-		private List<Secret> secrets;
+	@Override
+	public Future<CredentialsResult<JsonObject>> get(String tenantId, String type, String gatewayId,
+			JsonObject clientContext, Span span) {
+		log.info("get {}@{} {} - {}", gatewayId, tenantId, type, clientContext);
+		return Future.succeededFuture(registryClient.findPassword(tenantId, gatewayId)
+				.map(password -> new JsonObject()
+						.put(RequestResponseApiConstants.FIELD_ENABLED, true)
+						.put(RequestResponseApiConstants.FIELD_PAYLOAD_DEVICE_ID, gatewayId)
+						.put(CredentialsConstants.FIELD_SECRETS, new JsonArray()
+								.add(passwordEncoder.encode(new String(password.getPassword()))))
+						.put(CredentialsConstants.FIELD_TYPE, CredentialsConstants.SECRETS_TYPE_HASHED_PASSWORD)
+						.put(CredentialsConstants.FIELD_AUTH_ID, gatewayId))
+				.map(json -> CredentialsResult.from(HttpURLConnection.HTTP_OK, json))
+				.orElseGet(() -> CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
 	}
 
 	@Override
-	protected Future<CredentialsResult<JsonObject>> processGet(TenantKey tenantKey, CredentialKey credentialKey,
-			JsonObject jsonObject, Span span) {
-		log.info("CredentialsServiceImpl.processGet");
-		Future<CredentialsResult<JsonObject>> future = Future.future();
-		HttpHeaders headers = new HttpHeaders();
-		headers.setBearerAuth(tokenService.getAccessToken());
-		headers.add("x-inoa-tenant", tenantKey.getTenantId());
-		HttpEntity<?> request = new HttpEntity<>(null, headers);
-
-		JsonObject credential = new JsonObject();
-		try {
-			ResponseEntity<List<GatewayCredentials>> exchange = restTemplate.exchange(
-					String.format("http://%s:%d/gateways/%s/credentials", inoaProperties.getGatewayRegistryHost(),
-							inoaProperties.getGatewayRegistryPort(), credentialKey.getAuthId()),
-					HttpMethod.GET, request, new ParameterizedTypeReference<>() {
-
-					});
-			if (exchange.getBody() != null) {
-				Optional<GatewayCredentials> password = exchange.getBody().stream()
-						.filter(i -> i.getType().equals("password")).findFirst();
-				if (password.isPresent()) {
-					Secret remoteSecret = password.get().getSecrets().get(0);
-
-					ResponseEntity<Secret> secretResponseEntity = restTemplate
-							.exchange(
-									String.format("http://%s:%d/gateways/%s/credentials/%s/secrets/%s",
-											inoaProperties.getGatewayRegistryHost(),
-											inoaProperties.getGatewayRegistryPort(), credentialKey.getAuthId(),
-											password.get().getCredentialId(), remoteSecret.getSecretId()),
-									HttpMethod.GET, request, Secret.class);
-					if (secretResponseEntity.getBody() != null) {
-						JsonArray secrets = new JsonArray();
-						JsonObject secret = new JsonObject();
-						secret.put(CredentialsConstants.FIELD_SECRETS_HASH_FUNCTION,
-								CredentialsConstants.HASH_FUNCTION_BCRYPT);
-						log.info(new String(secretResponseEntity.getBody().getPassword()));
-						secrets.add(passwordEncoder.encode(new String(secretResponseEntity.getBody().getPassword())));
-
-						credential.put(CredentialsConstants.FIELD_SECRETS, secrets);
-						credential.put(CredentialsConstants.FIELD_PAYLOAD_DEVICE_ID, credentialKey.getAuthId());
-						credential.put(CredentialsConstants.FIELD_TYPE,
-								CredentialsConstants.SECRETS_TYPE_HASHED_PASSWORD);
-						credential.put(CredentialsConstants.FIELD_ENABLED, true);
-						credential.put(CredentialsConstants.FIELD_AUTH_ID, credentialKey.getAuthId());
-					}
-				}
-			}
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-		log.info(credential.toString());
-		future.complete(CredentialsResult.from(HttpURLConnection.HTTP_OK, credential.copy(),
-				DeviceRegistryUtils.getCacheDirective(180)));
-		return future;
+	public Future<CredentialsResult<JsonObject>> get(String tenantId, String type, String authId, Span span) {
+		return Future.failedFuture("Not implemented.");
 	}
 }

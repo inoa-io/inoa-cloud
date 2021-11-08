@@ -1,7 +1,3 @@
-spring:
-  profiles:
-    active: registry-adapter,registry-management,tenant-service
-
 management:
   metrics:
     export:
