@@ -7,10 +7,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 
@@ -30,7 +32,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	@Inject
 	GatewaysApiTestClient client;
 
-	@DisplayName("findGateways(200): success")
+	@DisplayName("findGateways(200): without parameters")
 	@Test
 	@Override
 	public void findGateways200() {
@@ -38,17 +40,62 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		data.gateway(tenant, "abc2");
 		data.gateway(tenant, "abc1");
 		var otherTenant = data.tenant();
-		var otherGateway = data.group(otherTenant, "abc");
-		var groups = assert200(() -> client.findGateways(auth(tenant)));
-		assertEquals(2, groups.size(), "groups");
-		assertTrue(groups.stream().noneMatch(group -> group.getGatewayId().equals(otherGateway.getGroupId())), "gw");
+		var otherGateway = data.gateway(otherTenant, "abc");
+		var page = assert200(() -> client.findGateways(auth(tenant), null, null, null, null));
+		assertEquals(2, page.totalSize(), "totalSize");
+		assertEquals(2, page.getContent().size(), "size");
+		assertTrue(page.getContent().stream()
+				.noneMatch(gateway -> gateway.getGatewayId().equals(otherGateway.getGatewayId())), "tenantId");
+	}
+
+	@DisplayName("findGateways(200): with pagination")
+	@Test
+	public void findGateways200WithPagination() {
+		var tenant = data.tenant();
+		IntStream.range(0, 5).forEach(i -> data.gateway(tenant, "gateway" + i));
+		var page = assert200(() -> client.findGateways(auth(tenant), 1, 3, null, null));
+		assertEquals(5, page.getTotalSize(), "totalSize");
+		assertEquals(2, page.getContent().size(), "contentSize");
+	}
+
+	@DisplayName("findGateways(200): with sort by single property")
+	@Test
+	public void findGateways200WithSortSingleProperty() {
+		var tenant = data.tenant();
+		IntStream.range(0, 5).forEach(i -> data.gateway(tenant, "gateway" + i));
+		var sort = List.of(GatewayVO.JSON_PROPERTY_NAME + ",Asc");
+		var comparator = Comparator.comparing(GatewayVO::getName);
+		var page = assert200(() -> client.findGateways(auth(tenant), null, null, sort, null));
+		assertSorted(page.getContent(), GatewayVO::getName, comparator);
+	}
+
+	@DisplayName("findGateways(200): with sort by multiple properties")
+	@Test
+	public void findGateways200WithSortMultipleProperty() {
+		var tenant = data.tenant();
+		IntStream.range(0, 5).forEach(i -> data.gateway(tenant, "gateway" + i, i % 2 == 0, List.of()));
+		var sort = List.of(
+				GatewayVO.JSON_PROPERTY_ENABLED,
+				GatewayVO.JSON_PROPERTY_NAME + ",DESC");
+		var comparator = Comparator
+				.comparing(GatewayVO::getEnabled).reversed()
+				.thenComparing(GatewayVO::getName).reversed();
+		var page = assert200(() -> client.findGateways(auth(tenant), null, null, sort, null));
+		assertSorted(page.getContent(), GatewayVO::getName, comparator);
+	}
+
+	@DisplayName("findGateways(400): invalid sort")
+	@Override
+	public void findGateways400() {
+		var tenant = data.tenant();
+		assert200(() -> client.findGateways(auth(tenant), null, null, List.of("nope"), null));
 	}
 
 	@DisplayName("findGateways(401): no token")
 	@Test
 	@Override
 	public void findGateways401() {
-		assert401(() -> client.findGateways(null));
+		assert401(() -> client.findGateways(null, null, null, null, null));
 	}
 
 	@DisplayName("findGateway(200): without group/properties")

@@ -12,7 +12,7 @@ import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayGroup;
 import io.inoa.fleet.registry.domain.GatewayGroupRepository;
 import io.inoa.fleet.registry.domain.GatewayPropertyRepository;
-import io.inoa.fleet.registry.domain.GatewayRepositoryImpl;
+import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.registry.domain.Group;
 import io.inoa.fleet.registry.domain.GroupRepository;
 import io.inoa.fleet.registry.domain.Tenant;
@@ -37,23 +37,28 @@ import lombok.extern.slf4j.Slf4j;
 public class GatewaysController implements GatewaysApi {
 
 	/** Available sort properties, see API spec for documentation. */
-	public static final Set<String> SORT_ORDER_PROPERTIES = Set.of(GatewayVO.JSON_PROPERTY_NAME);
+	public static final Set<String> SORT_ORDER_PROPERTIES = Set.of(
+			GatewayVO.JSON_PROPERTY_NAME,
+			GatewayVO.JSON_PROPERTY_ENABLED);
 
 	private final Security security;
 	private final GatewayMapper mapper;
 	private final GroupRepository groupRepository;
-	private final GatewayRepositoryImpl gatewayRepository;
+	private final GatewayRepository gatewayRepository;
 	private final GatewayGroupRepository gatewayGroupRepository;
 	private final GatewayPropertyRepository gatewayPropertyRepository;
 	private final PageableProvider pageableProvider;
 
 	@Get("/gateways")
 	@Override
-	public HttpResponse<GatewayPageVO> findGateways(Optional<Integer> page, Optional<Integer> size,
-			Optional<List<String>> sort, Optional<String> filter) {
+	public HttpResponse<GatewayPageVO> findGateways(
+			Optional<Integer> page,
+			Optional<Integer> size,
+			Optional<List<String>> sort,
+			Optional<String> filter) {
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, GatewayVO.JSON_PROPERTY_NAME);
-		return HttpResponse.ok(
-				mapper.toGatewayPage(gatewayRepository.findByTenantFilterd(security.getTenant(), filter, pageable)));
+		var gatewayPage = gatewayRepository.findByTenant(security.getTenant(), filter, pageable);
+		return HttpResponse.ok(mapper.toGatewayPage(gatewayPage));
 	}
 
 	@Override

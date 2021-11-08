@@ -238,7 +238,7 @@ paths:
           in: query
           schema:
             type: string
-            maxLength: 10
+            maxLength: 100
             example: isrl
       summary: 'Find gateways.'
       description: 'Returns all gateways ordered by name.'
@@ -250,6 +250,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GatewayPage'
+        400:
+          description: 'Illegal sort, allowed: name,enabled'
         401:
           description: 'Unauthorized.'
     post:
