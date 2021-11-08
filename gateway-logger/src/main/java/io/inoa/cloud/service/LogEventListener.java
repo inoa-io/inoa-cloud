@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import io.inoa.cloud.event.CloudEventVO;
 import io.inoa.cloud.log.JSONLogVO;
@@ -152,7 +153,7 @@ public class LogEventListener {
 			default:
 				level = Level.ALL;
 		}
-		var logger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(jsonLog.getTag());
+		var logger = (Logger) LoggerFactory.getLogger(jsonLog.getTag());
 		var event = new LoggingEvent(logger.getName(), logger, level, jsonLog.getMsg(), null, null);
 		event.setTimeStamp(jsonLog.getTime());
 		logger.callAppenders(event);
