@@ -114,8 +114,8 @@ public class GatewayRegistryClient {
 	}
 
 	public Optional<GatewayClient> toClient(String name, String secret) {
-		return assertions.assert200(() -> gatewaysClient.findGateways(userToken))
-				.stream()
+		return assertions.assert200(() -> gatewaysClient.findGateways(userToken, null, Optional.of(100), null, null))
+				.getContent().stream()
 				.filter(gateway -> gateway.getName().equals(name))
 				.findAny()
 				.map(gateway -> toClient(gateway.getGatewayId(), secret));

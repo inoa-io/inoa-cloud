@@ -13,7 +13,8 @@ import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayGroup;
 import io.inoa.fleet.registry.domain.GatewayProperty;
 import io.inoa.fleet.registry.rest.management.GatewayDetailVO;
-import io.inoa.fleet.registry.rest.management.GatewayVO;
+import io.inoa.fleet.registry.rest.management.GatewayPageVO;
+import io.micronaut.data.model.Page;
 
 /**
  * Mapper for {@link Gateway}, {@link GatewayProperty} and {@link GatewayGroup}.
@@ -23,7 +24,7 @@ import io.inoa.fleet.registry.rest.management.GatewayVO;
 @Mapper(componentModel = ComponentModel.JSR330, uses = GroupMapper.class)
 public interface GatewayMapper {
 
-	List<GatewayVO> toGateways(List<Gateway> gateways);
+	GatewayPageVO toGatewayPage(Page<Gateway> gateways);
 
 	@Mapping(target = "groupIds", source = "groups")
 	GatewayDetailVO toGatewayDetail(Gateway gateway);

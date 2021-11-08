@@ -209,6 +209,9 @@
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/openapi/management.yaml</inputSpec>
 							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
+							<configOptions>
+								<pageable>true</pageable>
+							</configOptions>
 						</configuration>
 					</execution>
 				</executions>

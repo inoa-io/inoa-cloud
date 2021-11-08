@@ -229,6 +229,17 @@ paths:
     get:
       tags:
         - gateways
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/Sort'
+        - name: filter
+          description: 'Search in name. Supports wildcard *, is case insensitive.'
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            example: isrl
       summary: 'Find gateways.'
       description: 'Returns all gateways ordered by name.'
       operationId: findGateways
@@ -238,9 +249,9 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Gateway'
+                $ref: '#/components/schemas/GatewayPage'
+        400:
+          description: 'Illegal sort, allowed: name,enabled'
         401:
           description: 'Unauthorized.'
     post:
@@ -872,6 +883,23 @@ components:
         - name
         - created
         - updated
+    GatewayPage:
+      description: 'Page for gateway.'
+      type: object
+      properties:
+        content:
+          description: 'List of entries on page.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Gateway'
+        total_size:
+          description: 'Total available entries.'
+          type: integer
+          format: int32
+          example: 0
+      required:
+        - content
+        - total_size
     GatewayDetail:
       description: 'Gateway with detailed fields.'
       type: object
@@ -1219,6 +1247,34 @@ components:
         - value
 
   parameters:
+    PageablePage:
+      description: 'Page number for pagination.'
+      name: page
+      in: query
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      example: 0
+    PageableSize:
+      description: 'Page size for pagination.'
+      name: size
+      in: query
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+      example: 50
+    Sort:
+      description: 'Sorting.'
+      name: sort
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          pattern: '[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?'
     TenantId:
       name: tenant_id
       in: path
