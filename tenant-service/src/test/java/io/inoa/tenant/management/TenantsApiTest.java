@@ -34,11 +34,12 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 
 		// create tenants
 
-		var tenant1 = data.tenant(data.tenantId(), "abc2", true);
-		var tenant2 = data.tenant(data.tenantId(), "abc1", true);
-		var tenant3 = data.tenant(data.tenantId(), "aaa3", true);
-		var user = data.user(tenant1, tenant2, tenant3);
-		data.tenant(data.tenantId(), "aaa5", true);
+		var tenant1 = data.tenant(data.tenantId(), "abc2", true, false);
+		var tenant2 = data.tenant(data.tenantId(), "abc1", true, false);
+		var tenant3 = data.tenant(data.tenantId(), "aaa3", true, false);
+		var tenant4 = data.tenantDeleted();
+		var user = data.user(tenant1, tenant2, tenant3, tenant4);
+		data.tenant(data.tenantId(), "aaa5", true, false);
 
 		// execute
 
@@ -92,6 +93,14 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Test
 	public void findTenant404NotAssigned() {
 		assert404(() -> client.findTenant(auth(), data.tenant().getTenantId()));
+	}
+
+	@DisplayName("findTenant(404): deleted")
+	@Test
+	public void findTenant404Deleted() {
+		var tenant = data.tenantDeleted();
+		var user = data.user(tenant);
+		assert404(() -> client.findTenant(auth(user), tenant.getTenantId()));
 	}
 
 	@DisplayName("createTenant(201): with mandatory properties")
@@ -158,6 +167,13 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Override
 	public void createTenant409() {
 		var tenantId = data.tenant().getTenantId();
+		assert409(() -> client.createTenant(auth(), tenantId, new TenantCreateVO().setName(data.tenantName())));
+	}
+
+	@DisplayName("createTenant(409): tenantId exists for deleted tenant")
+	@Test
+	public void createTenant409DeletedTenant() {
+		var tenantId = data.tenantDeleted().getTenantId();
 		assert409(() -> client.createTenant(auth(), tenantId, new TenantCreateVO().setName(data.tenantName())));
 	}
 
@@ -268,6 +284,15 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assert404(() -> client.updateTenant(auth(), tenantId, new TenantUpdateVO().setName(data.tenantName())));
 	}
 
+	@DisplayName("updateTenant(404): deleted")
+	@Test
+	public void updateTenant404Deleted() {
+		var tenant = data.tenantDeleted();
+		var user = data.user(tenant);
+		assert404(() -> client.updateTenant(auth(user), tenant.getTenantId(),
+				new TenantUpdateVO().setName(data.tenantName())));
+	}
+
 	@DisplayName("deleteTenant(204): success")
 	@Test
 	@Override
@@ -277,8 +302,10 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		var otherTenant = data.tenant();
 		var otherUser = data.user(tenant, otherTenant);
 		assert204(() -> client.deleteTenant(auth(user), tenant.getTenantId()));
+		assert404(() -> client.findTenant(auth(user), tenant.getTenantId()));
 		data.assertAssignment(user.getEmail());
 		data.assertAssignment(otherUser.getEmail(), otherTenant.getTenantId());
+		data.assertTenantSoftDelete(tenant.getTenantId());
 	}
 
 	@DisplayName("deleteTenant(401): no token")
@@ -305,5 +332,13 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		var user = data.user(tenant);
 		assert404(() -> client.deleteTenant(auth(), tenant.getTenantId()));
 		data.assertAssignment(user.getEmail(), tenant.getTenantId());
+	}
+
+	@DisplayName("deleteTenant(404): deleted")
+	@Test
+	public void deleteTenant404Deleted() {
+		var tenant = data.tenantDeleted();
+		var user = data.user(tenant);
+		assert404(() -> client.deleteTenant(auth(user), tenant.getTenantId()));
 	}
 }

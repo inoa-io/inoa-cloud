@@ -144,7 +144,7 @@ public class ManagementService {
 		return findTenant(tenantId).flatMap(tenant -> tenantUserRepository
 				.findUserByTenantAndUserUserId(tenant, userId)
 				.map(user -> {
-					tenantUserRepository.deleteByTenantAndUser(tenant, user);
+					tenantUserRepository.delete(tenant.getId(), user.getId());
 					log.info("Tenant {} user {} deleted.", tenantId, userId, user);
 					return user;
 				}))

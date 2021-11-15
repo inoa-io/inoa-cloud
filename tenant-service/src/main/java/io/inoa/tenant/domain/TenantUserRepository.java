@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import io.micronaut.data.annotation.Join;
+import io.micronaut.data.annotation.Query;
+import io.micronaut.data.annotation.Where;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
@@ -15,6 +18,8 @@ import io.micronaut.data.repository.GenericRepository;
  * @author Stephan Schnabel
  */
 @JdbcRepository
+@Join(value = "tenant", alias = "tenant_user_tenant_")
+@Where("tenant_user_tenant_.deleted IS NULL")
 public interface TenantUserRepository extends GenericRepository<TenantUser, Void> {
 
 	List<Tenant> findTenantByUserEmail(String email);
@@ -31,5 +36,6 @@ public interface TenantUserRepository extends GenericRepository<TenantUser, Void
 
 	void save(TenantUser tenantUser);
 
-	long deleteByTenantAndUser(Tenant tenant, User user);
+	@Query("DELETE FROM tenant_user WHERE tenant_id = :tenant AND user_id = :user")
+	long delete(long tenant, long user);
 }
