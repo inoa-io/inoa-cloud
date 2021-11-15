@@ -78,6 +78,14 @@ public class UsersApiTest extends AbstractTest implements UsersApiTestSpec {
 		assert404(() -> client.findUsers(auth(), data.tenant().getTenantId(), null, null, null, null));
 	}
 
+	@DisplayName("findUser(404): tenant deleted")
+	@Test
+	public void findUsers404TenantDeleted() {
+		var tenant = data.tenantDeleted();
+		var user = data.user(tenant);
+		assert404(() -> client.findUsers(auth(user), tenant.getTenantId(), null, null, null, null));
+	}
+
 	@DisplayName("findUser(200): success")
 	@Test
 	@Override
@@ -113,6 +121,14 @@ public class UsersApiTest extends AbstractTest implements UsersApiTestSpec {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
 		assert404(() -> client.findUser(auth(user), data.tenantId(), user.getUserId()));
+	}
+
+	@DisplayName("findUser(404): tenant deleted")
+	@Test
+	public void findUser404TenantDeleted() {
+		var tenant = data.tenantDeleted();
+		var user = data.user(tenant);
+		assert404(() -> client.findUser(auth(user), tenant.getTenantId(), user.getUserId()));
 	}
 
 	@DisplayName("findUser(404): user not assigned to same tenant")
@@ -188,6 +204,15 @@ public class UsersApiTest extends AbstractTest implements UsersApiTestSpec {
 				new UserCreateVO().setEmail(data.userEmail())));
 	}
 
+	@DisplayName("createUser(404): tenant deleted")
+	@Test
+	public void createUser404TenantDeleted() {
+		var tenant = data.tenantDeleted();
+		var user = data.user(tenant);
+		assert404(() -> client.createUser(auth(user), tenant.getTenantId(),
+				new UserCreateVO().setEmail(data.userEmail())));
+	}
+
 	@DisplayName("createUser(409): email already exists")
 	@Test
 	@Override
@@ -246,5 +271,14 @@ public class UsersApiTest extends AbstractTest implements UsersApiTestSpec {
 		var user = data.user();
 		assert404(() -> client.deleteUser(auth(user), otherTenant.getTenantId(), otherUser.getUserId()));
 		data.assertAssignment(otherUser.getEmail(), otherTenant.getTenantId());
+	}
+
+	@DisplayName("deleteUser(404): tenant deleted")
+	@Test
+	public void deleteUser404TenantDeleted() {
+		var tenant = data.tenantDeleted();
+		var user = data.user(tenant);
+		var otherUser = data.user(tenant);
+		assert404(() -> client.deleteUser(auth(user), tenant.getTenantId(), otherUser.getUserId()));
 	}
 }

@@ -1,5 +1,8 @@
 package io.inoa.tenant.domain;
 
+import java.util.Optional;
+
+import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.repository.CrudRepository;
 
@@ -9,4 +12,8 @@ import io.micronaut.data.repository.CrudRepository;
  * @author Stephan Schnabel
  */
 @JdbcRepository
-public interface TenantTestRepository extends CrudRepository<Tenant, Long> {}
+public interface TenantTestRepository extends CrudRepository<Tenant, Long> {
+
+	@Query("SELECT * FROM tenant WHERE tenant_id = :tenantId")
+	Optional<Tenant> findByTenantId(String tenantId);
+}
