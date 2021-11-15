@@ -1,0 +1,34 @@
+micronaut:
+
+  ## test client with increased read-timeout for debbuging
+  http:
+    client:
+      logger-name: io.inoa.Test
+      read-timeout: 5m
+
+  ## used for tokens issued/checked at management api
+  security:
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: pleaseChangeThisSecretForANewOne
+
+grpc:
+  server:
+    port: ${random.port}
+  channels:
+    istioAuth:
+      address: 'localhost:${grpc.server.port}'
+      plaintext: true
+      max-retry-attempts: 10
+inoa:
+  auth:
+    key-id: test
+    issuer: http://authz.inoa-cloud:8090
+
+## Custom log configuration
+logger:
+  levels:
+    io.inoa: TRACE
