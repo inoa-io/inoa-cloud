@@ -123,14 +123,17 @@ public class Data {
 	}
 
 	public Tenant tenant() {
-		return tenant(true);
+		return tenant(true, false);
 	}
 
-	public Tenant tenant(boolean enabled) {
+	public Tenant tenant(boolean enabled, boolean deleted) {
 		return tenantRepository.save(new Tenant()
 				.setTenantId(tenantId())
 				.setName(tenantName())
-				.setEnabled(enabled));
+				.setEnabled(enabled)
+				.setCreated(Instant.now())
+				.setUpdated(Instant.now())
+				.setDeleted(deleted ? Instant.now() : null));
 	}
 
 	public String groupName() {
@@ -305,6 +308,10 @@ public class Data {
 
 	public Tenant find(Tenant tenant) {
 		return tenantRepository.findById(tenant.getId()).get();
+	}
+
+	public Tenant findTenant(String tenantId) {
+		return tenantRepository.findByTenantId(tenantId).orElse(null);
 	}
 
 	public Group find(Group group) {

@@ -182,10 +182,21 @@ public class AuthControllerTest extends AbstractTest {
 	@DisplayName("error: tenant disabled")
 	@Test
 	void errorTenantDisabled() {
-		var tenant = data.tenant(false);
+		var tenant = data.tenant(false, false);
 		var gateway = data.gateway(tenant);
 		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
 		var errorDescription = "tenant " + tenant.getTenantId() + " disabled";
+		var jwt = token(gateway.getGatewayId(), gatewaySecret);
+		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+	}
+
+	@DisplayName("error: tenant deleted")
+	@Test
+	void errorTenantDeleted() {
+		var tenant = data.tenant(true, true);
+		var gateway = data.gateway(tenant);
+		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var errorDescription = "tenant " + tenant.getTenantId() + " deleted";
 		var jwt = token(gateway.getGatewayId(), gatewaySecret);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}

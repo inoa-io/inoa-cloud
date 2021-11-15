@@ -21,7 +21,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
  */
 @DisplayName("api: mapper")
 @TestMethodOrder(MethodName.class)
-public class ConfigurationDefinitionValidatorTest {
+public class ConfigurationMapperTest {
 
 	private final ConfigurationMapper mapper = new ConfigurationMapperImpl();
 

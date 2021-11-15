@@ -26,7 +26,7 @@ public class TenantsController implements TenantsApi {
 		if (!tenantId.equals(security.getTenantId())) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}
-		var tenant = tenantRepository.findByTenantId(tenantId);
+		var tenant = tenantRepository.findByTenantIdAndDeletedIsNull(tenantId);
 		if (tenant.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant not found.");
 		}
