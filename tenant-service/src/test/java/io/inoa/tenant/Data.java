@@ -1,15 +1,15 @@
 package io.inoa.tenant;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import javax.transaction.Transactional;
 
 import io.inoa.tenant.domain.Tenant;
 import io.inoa.tenant.domain.TenantTestRepository;
@@ -21,7 +21,6 @@ import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 @Singleton
-@Transactional(Transactional.TxType.REQUIRES_NEW)
 @RequiredArgsConstructor
 public class Data {
 
@@ -45,11 +44,19 @@ public class Data {
 	}
 
 	public Tenant tenant() {
-		return tenant(tenantId(), tenantName(), true);
+		return tenant(tenantId(), tenantName(), true, false);
 	}
 
-	public Tenant tenant(String tenantId, String name, boolean enabled) {
-		return tenantRepository.save(new Tenant().setTenantId(tenantId).setName(name).setEnabled(enabled));
+	public Tenant tenantDeleted() {
+		return tenant(tenantId(), tenantName(), true, true);
+	}
+
+	public Tenant tenant(String tenantId, String name, boolean enabled, boolean deleted) {
+		return tenantRepository.save(new Tenant()
+				.setTenantId(tenantId)
+				.setName(name)
+				.setEnabled(enabled)
+				.setDeleted(deleted ? Instant.now() : null));
 	}
 
 	public String userEmail() {
@@ -79,5 +86,9 @@ public class Data {
 		assertEquals(Set.of(expectedTenantIds), tenantUserRepository
 				.findTenantByUserEmail(email).stream().map(Tenant::getTenantId).collect(Collectors.toSet()),
 				"assignments");
+	}
+
+	public void assertTenantSoftDelete(String tenantId) {
+		assertNotNull(tenantRepository.findByTenantId(tenantId).map(Tenant::getDeleted).get(), "assignments");
 	}
 }

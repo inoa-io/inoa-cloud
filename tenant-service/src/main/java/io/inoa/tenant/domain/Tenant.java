@@ -29,4 +29,6 @@ public class Tenant {
 	private Instant created;
 	@DateUpdated
 	private Instant updated;
+	@MappedProperty
+	private Instant deleted;
 }

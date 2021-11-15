@@ -5,6 +5,7 @@ CREATE TABLE tenant (
 	name		VARCHAR(100)	NOT NULL,
 	created		TIMESTAMP		NOT NULL,
 	updated		TIMESTAMP		NOT NULL,
+	deleted		TIMESTAMP		NULL,
 	CONSTRAINT pk_tenant PRIMARY KEY (id),
 	CONSTRAINT uq_tenant_tenant_id UNIQUE (tenant_id),
 	CONSTRAINT chk_tenant_tenant_id CHECK (tenant_id ~ '^[a-z0-9\-]{4,30}$')
