@@ -1,8 +1,7 @@
 openapi: 3.0.3
 info:
-  title: "Tenant Management API"
-  description: |
-    * TODO
+  title: "INOA Tenant Management API"
+  description: TODO
   version: 0.0.1
   license:
     name: Apache License 2.0

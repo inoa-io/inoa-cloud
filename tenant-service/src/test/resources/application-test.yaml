@@ -15,6 +15,11 @@ micronaut:
             generator:
               secret: pleaseChangeThisSecretForANewOne
 
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    enabled: false
+
 grpc:
   server:
     port: ${random.port}
@@ -31,4 +36,6 @@ inoa:
 ## Custom log configuration
 logger:
   levels:
-    io.inoa: TRACE
+    io.inoa: DEBUG
+    io.micronaut.data: DEBUG
+    io.micronaut.http.client.exceptions.HttpClientResponseException: "OFF"
