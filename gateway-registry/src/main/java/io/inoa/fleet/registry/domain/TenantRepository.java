@@ -13,5 +13,7 @@ import io.micronaut.data.repository.CrudRepository;
 @JdbcRepository
 public interface TenantRepository extends CrudRepository<Tenant, Long> {
 
+	Optional<Tenant> findByTenantIdAndDeletedIsNull(String tenantId);
+
 	Optional<Tenant> findByTenantId(String tenantId);
 }

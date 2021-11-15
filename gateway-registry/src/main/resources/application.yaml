@@ -71,7 +71,11 @@ flyway:
     default:
       locations: classpath:database
 
-## Custom log configuration
-logger:
-  levels:
-    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
+kafka:
+  consumers:
+    default:
+      key:
+        deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value:
+        deserializer: io.cloudevents.kafka.CloudEventDeserializer

@@ -91,8 +91,11 @@ public class AuthController implements AuthApi {
 		var gateway = optionalGateway.get();
 		MDC.put("tenant", gateway.getTenant().getTenantId().toString());
 
-		// check enabled
+		// check enabled & deleted
 
+		if (gateway.getTenant().getDeleted() != null) {
+			throw error("tenant " + gateway.getTenant().getTenantId() + " deleted");
+		}
 		if (!gateway.getTenant().getEnabled()) {
 			throw error("tenant " + gateway.getTenant().getTenantId() + " disabled");
 		}

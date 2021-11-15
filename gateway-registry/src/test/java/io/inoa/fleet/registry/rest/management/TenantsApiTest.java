@@ -52,4 +52,11 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	public void findTenant404NotAssigned() {
 		assert404("Tenant not found.", () -> client.findTenant(auth(data.tenantId()), data.tenantId()));
 	}
+
+	@DisplayName("findTenant(404): deleted")
+	@Test
+	public void findTenant404Deleted() {
+		var tenant = data.tenant(true, true);
+		assert404("Tenant not found.", () -> client.findTenant(auth(tenant), tenant.getTenantId()));
+	}
 }
