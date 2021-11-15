@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.inject.Singleton;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
@@ -46,6 +45,7 @@ import io.inoa.fleet.registry.domain.TenantConfigurationRepository;
 import io.inoa.fleet.registry.domain.TenantRepository;
 import io.inoa.fleet.registry.rest.management.ConfigurationTypeVO;
 import io.inoa.fleet.registry.rest.management.CredentialTypeVO;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 

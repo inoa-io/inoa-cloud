@@ -8,8 +8,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Singleton;
-
 import io.inoa.fleet.registry.ApplicationProperties;
 import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
@@ -17,6 +15,7 @@ import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
 import io.micronaut.security.token.jwt.signature.rsa.RSASignature;
 import io.micronaut.security.token.jwt.signature.secret.SecretSignature;
 import io.micronaut.security.token.jwt.signature.secret.SecretSignatureConfiguration;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

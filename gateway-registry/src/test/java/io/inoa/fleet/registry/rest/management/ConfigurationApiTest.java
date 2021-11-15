@@ -11,13 +11,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.registry.AbstractTest;
 import io.inoa.fleet.registry.domain.ConfigurationDefinition;
+import jakarta.inject.Inject;
 
 /**
  * Test for {@link ConfigurationApi}.

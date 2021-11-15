@@ -12,8 +12,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -29,6 +27,7 @@ import io.micronaut.http.hateoas.JsonError;
 import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.validation.validator.Validator;
+import jakarta.inject.Inject;
 
 /**
  * Base for all unit tests.

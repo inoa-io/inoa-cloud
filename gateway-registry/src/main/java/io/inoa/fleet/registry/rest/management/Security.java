@@ -3,14 +3,13 @@ package io.inoa.fleet.registry.rest.management;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Singleton;
-
 import io.inoa.fleet.registry.ApplicationProperties;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.fleet.registry.domain.TenantRepository;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.security.utils.SecurityService;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

@@ -8,8 +8,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-import javax.inject.Singleton;
-
 import org.slf4j.MDC;
 
 import com.nimbusds.jose.JOSEException;
@@ -21,6 +19,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.fleet.registry.ApplicationProperties;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

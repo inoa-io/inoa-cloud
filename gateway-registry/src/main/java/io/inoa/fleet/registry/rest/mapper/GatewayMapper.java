@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayGroup;
@@ -21,7 +20,7 @@ import io.micronaut.data.model.Page;
  *
  * @author Stephan Schnabel
  */
-@Mapper(componentModel = ComponentModel.JSR330, uses = GroupMapper.class)
+@Mapper(uses = GroupMapper.class)
 public interface GatewayMapper {
 
 	GatewayPageVO toGatewayPage(Page<Gateway> gateways);
