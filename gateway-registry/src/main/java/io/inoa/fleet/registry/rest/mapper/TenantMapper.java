@@ -3,7 +3,6 @@ package io.inoa.fleet.registry.rest.mapper;
 import java.util.List;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.fleet.registry.rest.management.TenantVO;
@@ -13,7 +12,7 @@ import io.inoa.fleet.registry.rest.management.TenantVO;
  *
  * @author Stephan Schnabel
  */
-@Mapper(componentModel = ComponentModel.JSR330)
+@Mapper
 public interface TenantMapper {
 
 	TenantVO toTenant(Tenant tenant);

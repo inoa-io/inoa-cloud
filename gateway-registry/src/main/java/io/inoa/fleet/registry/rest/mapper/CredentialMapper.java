@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.registry.domain.Credential;
 import io.inoa.fleet.registry.domain.Gateway;
@@ -26,7 +25,7 @@ import io.inoa.fleet.registry.rest.management.SecretVO;
  *
  * @author Stephan Schnabel
  */
-@Mapper(componentModel = ComponentModel.JSR330)
+@Mapper
 public interface CredentialMapper {
 
 	// credential

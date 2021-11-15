@@ -17,9 +17,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +37,8 @@ import io.inoa.fleet.registry.rest.management.CredentialTypeVO;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpResponse;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import lombok.SneakyThrows;
 
 /**

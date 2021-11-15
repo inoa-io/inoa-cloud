@@ -3,14 +3,13 @@ package io.inoa.fleet.registry.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Singleton;
-
 import io.inoa.fleet.registry.domain.Configuration;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayConfigurationRepository;
 import io.inoa.fleet.registry.domain.GatewayGroupRepository;
 import io.inoa.fleet.registry.domain.GroupConfigurationRepository;
 import io.inoa.fleet.registry.domain.TenantConfigurationRepository;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 /**

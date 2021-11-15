@@ -3,8 +3,6 @@ package io.inoa.fleet.registry.rest.validation;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import javax.inject.Singleton;
-
 import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionIntegerVO;
 import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionStringVO;
 import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionVO;
@@ -12,6 +10,7 @@ import io.inoa.fleet.registry.rest.management.ConfigurationTypeVO;
 import io.micronaut.core.annotation.AnnotationValue;
 import io.micronaut.validation.validator.constraints.ConstraintValidator;
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext;
+import jakarta.inject.Singleton;
 
 /**
  * Performs additional constraint checks for {@link ConfigurationDefinitionVO}:

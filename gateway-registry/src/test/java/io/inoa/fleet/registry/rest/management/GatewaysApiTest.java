@@ -14,12 +14,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.IntStream;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.registry.AbstractTest;
+import jakarta.inject.Inject;
 
 /**
  * Test for {@link GatewaysApi}.
