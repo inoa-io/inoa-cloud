@@ -73,14 +73,14 @@ public abstract class AbstractTest {
 				+ authTokenService.createToken(gateway.getGatewayId());
 	}
 
-	public String auth() {
-		return new JwtProvider(signature).bearer("admin");
+	public String auth(Tenant tenant) {
+		return auth(tenant.getTenantId());
 	}
 
-	public String auth(Tenant tenant) {
+	public String auth(String tenantId) {
 		return new JwtProvider(signature).builder()
 				.subject("admin")
-				.claim(properties.getSecurity().getClaimTenant(), tenant.getTenantId().toString())
+				.claim(properties.getSecurity().getClaimTenant(), tenantId)
 				.toBearer();
 	}
 
