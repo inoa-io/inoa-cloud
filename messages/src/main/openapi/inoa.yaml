@@ -86,3 +86,47 @@ components:
         value: 99.42
         metadata:
           obis: '1-0:1.8.0*255'
+
+    Tenant:
+      description: 'Tenant with fields.'
+      type: object
+      properties:
+        tenant_id:
+          description: 'Id of tenant (cannot change).'
+          type: string
+          minLength: 4
+          maxLength: 30
+          pattern: '^[a-z0-9\-]*$'
+          example: 'inoa'
+        name:
+          description: 'Human friendly display name (can change).'
+          type: string
+          minLength: 3
+          maxLength: 100
+          example: 'inoa.io Project'
+        enabled:
+          description: 'Flag if enabled or not.'
+          type: boolean
+          default: true
+          example: false
+        created:
+          description: 'Timestamp for created.'
+          type: string
+          format: date-time
+          example: '2021-01-01T00:00:00'
+        updated:
+          description: 'Timestamp for updated.'
+          type: string
+          format: date-time
+          example: '2021-01-01T00:00:00'
+        deleted:
+          description: 'Timestamp for deleted.'
+          type: string
+          format: date-time
+          example: '2021-01-01T00:00:00'
+      required:
+        - tenant_id
+        - name
+        - enabled
+        - created
+        - updated
