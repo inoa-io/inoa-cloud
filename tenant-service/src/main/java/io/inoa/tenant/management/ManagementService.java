@@ -36,6 +36,7 @@ public class ManagementService {
 	private final TenantRepository tenantRepository;
 	private final TenantUserRepository tenantUserRepository;
 	private final UserRepository userRepository;
+	private final MessagingClient messaging;
 
 	// tenant
 
@@ -53,6 +54,7 @@ public class ManagementService {
 
 	Tenant createTenant(Tenant tenant) {
 		tenantRepository.save(tenant);
+		messaging.sendCloudEvent(tenant, MessagingClient.ACTION_CREATE);
 		log.info("Tenant {} created: {}", tenant.getTenantId(), tenant);
 		createUser(tenant, new User().setEmail(getUserEmail()));
 		return tenant;
@@ -84,6 +86,7 @@ public class ManagementService {
 
 			if (changed.get()) {
 				tenantRepository.update(tenant);
+				messaging.sendCloudEvent(tenant, MessagingClient.ACTION_UPDATE);
 			}
 
 			return tenant;
@@ -94,6 +97,7 @@ public class ManagementService {
 		return findTenant(tenantId)
 				.map(tenant -> {
 					tenantRepository.deleteByTenantId(tenantId);
+					messaging.sendCloudEvent(tenant, MessagingClient.ACTION_DELETE);
 					log.info("Tenant {} deleted:  {}", tenantId, tenant);
 					return tenant;
 				})

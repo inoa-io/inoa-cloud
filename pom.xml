@@ -68,6 +68,7 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
+		<version.io.cloudevents>2.2.0</version.io.cloudevents>
 		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
 		<version.io.kokuwa.micronaut.codegen>2.2.1</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>3.0.0-M1</version.io.kokuwa.micronaut.logging>
@@ -119,6 +120,16 @@
 			</dependency>
 
 			<!-- libraries -->
+			<dependency>
+				<groupId>io.cloudevents</groupId>
+				<artifactId>cloudevents-json-jackson</artifactId>
+				<version>${version.io.cloudevents}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.cloudevents</groupId>
+				<artifactId>cloudevents-kafka</artifactId>
+				<version>${version.io.cloudevents}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.eclipse.hono</groupId>
 				<artifactId>hono-bom</artifactId>

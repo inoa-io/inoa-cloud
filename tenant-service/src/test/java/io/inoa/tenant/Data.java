@@ -5,25 +5,42 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.awaitility.Awaitility;
+
+import io.cloudevents.CloudEvent;
+import io.cloudevents.jackson.PojoCloudEventDataMapper;
+import io.inoa.cloud.messages.TenantVO;
 import io.inoa.tenant.domain.Tenant;
 import io.inoa.tenant.domain.TenantTestRepository;
 import io.inoa.tenant.domain.TenantUser;
 import io.inoa.tenant.domain.TenantUserRepository;
 import io.inoa.tenant.domain.User;
 import io.inoa.tenant.domain.UserTestRepository;
+import io.inoa.tenant.management.MessagingClient;
+import io.micronaut.configuration.kafka.annotation.KafkaListener;
+import io.micronaut.configuration.kafka.annotation.OffsetReset;
+import io.micronaut.configuration.kafka.annotation.Topic;
+import io.micronaut.http.MediaType;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
+@KafkaListener(offsetReset = OffsetReset.EARLIEST)
 @Singleton
 @RequiredArgsConstructor
 public class Data {
 
+	private final List<ConsumerRecord<String, CloudEvent>> records = new ArrayList<>();
+	private final PojoCloudEventDataMapper<TenantVO> mapper = PojoCloudEventDataMapper
+			.from(MessagingClient.MAPPER, TenantVO.class);
 	private final TenantTestRepository tenantRepository;
 	private final TenantUserRepository tenantUserRepository;
 	private final UserTestRepository userRepository;
@@ -31,6 +48,33 @@ public class Data {
 	void deleteAll() {
 		tenantRepository.deleteAll();
 		userRepository.deleteAll();
+		records.clear();
+	}
+
+	// kafka
+
+	@Topic("inoa.tenant")
+	void receive(ConsumerRecord<String, CloudEvent> record) {
+		records.add(record);
+	}
+
+	public void assertEvent(String tenantId, String action) {
+
+		var record = Awaitility
+				.await("retrieve message")
+				.until(() -> records.isEmpty() ? null : records.get(0), r -> r != null);
+		assertEquals(tenantId, record.key(), "event.tenantId");
+		assertNotNull(record.value().getTime(), "event.time");
+		assertEquals(action, record.value().getSubject(), "event.subject");
+		assertEquals(MediaType.APPLICATION_JSON, record.value().getDataContentType(), "event.datatype");
+
+		var actual = mapper.map(record.value().getData()).getValue();
+		var expected = tenantRepository.findByTenantId(tenantId).get();
+		assertEquals(expected.getTenantId(), actual.getTenantId(), "event.data.tenantId");
+		assertEquals(expected.getName(), actual.getName(), "event.data.name");
+		assertEquals(expected.getEnabled(), actual.getEnabled(), "event.data.enabled");
+		assertEquals(expected.getCreated(), actual.getCreated(), "event.data.created");
+		assertEquals(expected.getUpdated(), actual.getUpdated(), "event.data.updated");
 	}
 
 	// create data
