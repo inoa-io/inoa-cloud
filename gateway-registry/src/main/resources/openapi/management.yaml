@@ -17,49 +17,6 @@ security:
   - Keycloak: []
   - BearerAuth: []
 paths:
-  /tenants:
-    get:
-      tags:
-        - tenants
-      summary: 'Find tenants.'
-      description: 'Returns all tenants ordered by name.'
-      operationId: findTenants
-      responses:
-        200:
-          description: 'Returns tenants.'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Tenant'
-        401:
-          description: 'Unauthorized.'
-    post:
-      tags:
-        - tenants
-      summary: 'Create tenant.'
-      description: TODO
-      operationId: createTenant
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantCreate'
-      responses:
-        201:
-          description: 'Tenant created.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-        400:
-          description: 'Malformed.'
-        401:
-          description: 'Unauthorized.'
-        409:
-          description: Tenant with id or name already exists.
   /tenants/{tenant_id}:
     parameters:
       - $ref: '#/components/parameters/TenantId'
@@ -76,48 +33,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Tenant'
-        401:
-          description: 'Unauthorized.'
-        404:
-          description: 'Tenant not found.'
-    put:
-      tags:
-        - tenants
-      summary: 'Update tenant.'
-      description: TODO
-      operationId: updateTenant
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TenantUpdate'
-      responses:
-        200:
-          description: 'Tenant updated.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-        400:
-          description: 'Malformed.'
-        401:
-          description: 'Unauthorized.'
-        404:
-          description: 'Tenant not found.'
-        409:
-          description: 'Tenant with name already exists.'
-    delete:
-      tags:
-        - tenants
-      summary: 'Delete tenant.'
-      description: TODO
-      operationId: deleteTenant
-      responses:
-        204:
-          description: 'Tenant deleted.'
-        400:
-          description: 'Cannot delete because gateways exists.'
         401:
           description: 'Unauthorized.'
         404:
@@ -776,27 +691,6 @@ components:
         - name
         - created
         - updated
-    TenantCreate:
-      description: 'Tenant to create.'
-      type: object
-      properties:
-        tenant_id:
-          $ref: '#/components/schemas/TenantId'
-        name:
-          $ref: '#/components/schemas/TenantName'
-        enabled:
-          $ref: '#/components/schemas/Enabled'
-      required:
-        - tenant_id
-        - name
-    TenantUpdate:
-      description: 'Tenant to update.'
-      type: object
-      properties:
-        name:
-          $ref: '#/components/schemas/TenantName'
-        enabled:
-          $ref: '#/components/schemas/Enabled'
 
     ###
     ### Group

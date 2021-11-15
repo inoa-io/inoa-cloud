@@ -123,13 +123,13 @@ public class Data {
 	}
 
 	public Tenant tenant() {
-		return tenant(tenantId(), tenantName(), true);
+		return tenant(true);
 	}
 
-	public Tenant tenant(String tenantId, String name, boolean enabled) {
+	public Tenant tenant(boolean enabled) {
 		return tenantRepository.save(new Tenant()
-				.setTenantId(tenantId)
-				.setName(name)
+				.setTenantId(tenantId())
+				.setName(tenantName())
 				.setEnabled(enabled));
 	}
 
