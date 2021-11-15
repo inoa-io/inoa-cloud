@@ -25,11 +25,22 @@
 	</dependencyManagement>
 	<dependencies>
 
+		<!-- project -->
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>messages</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-server-netty</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.kafka</groupId>
+			<artifactId>micronaut-kafka</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.micronaut.reactor</groupId>
@@ -83,6 +94,30 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.cloudevents</groupId>
+			<artifactId>cloudevents-kafka</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.kafka</groupId>
+					<artifactId>kafka-clients</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.cloudevents</groupId>
+			<artifactId>cloudevents-json-jackson</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-databind</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 
 		<!-- monitoring -->
 		<dependency>
@@ -108,8 +143,18 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>kafka</artifactId>
 			<scope>test</scope>
 		</dependency>
 

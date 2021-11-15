@@ -2,8 +2,6 @@ package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
 
-import io.micronaut.data.annotation.DateCreated;
-import io.micronaut.data.annotation.DateUpdated;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
@@ -30,8 +28,10 @@ public class Tenant {
 	@MappedProperty
 	private Boolean enabled;
 
-	@DateCreated
+	@MappedProperty
 	private Instant created;
-	@DateUpdated
+	@MappedProperty
 	private Instant updated;
+	@MappedProperty
+	private Instant deleted;
 }

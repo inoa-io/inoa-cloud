@@ -29,7 +29,7 @@ class Security {
 
 	Tenant getTenant() {
 		return tenantRepository
-				.findByTenantId(getTenantId())
+				.findByTenantIdAndDeletedIsNull(getTenantId())
 				.orElseThrow(() -> new HttpStatusException(HttpStatus.UNAUTHORIZED, "Tenant from JWT not found."));
 	}
 

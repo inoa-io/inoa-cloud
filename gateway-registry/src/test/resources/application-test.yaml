@@ -35,6 +35,7 @@ registry:
 ## custom log configuration
 logger:
   levels:
-    io.inoa: TRACE
-    io.micronaut.data: TRACE
+    io.inoa: INFO
+    io.micronaut.data: INFO
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
     org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor: WARN
