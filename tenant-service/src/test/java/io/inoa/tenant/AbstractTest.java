@@ -3,22 +3,31 @@ package io.inoa.tenant;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.testcontainers.containers.KafkaContainer;
+import org.testcontainers.utility.DockerImageName;
 
+import io.cloudevents.kafka.CloudEventDeserializer;
 import io.inoa.tenant.domain.Tenant;
 import io.inoa.tenant.domain.User;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.hateoas.JsonError;
 import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
 import io.micronaut.validation.validator.Validator;
 import jakarta.inject.Inject;
 
@@ -29,7 +38,8 @@ import jakarta.inject.Inject;
  */
 @MicronautTest(transactional = false, environments = "h2")
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public abstract class AbstractTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public abstract class AbstractTest implements TestPropertyProvider {
 
 	@Inject
 	public Data data;
@@ -40,6 +50,8 @@ public abstract class AbstractTest {
 
 	@BeforeEach
 	void init() {
+		Awaitility.setDefaultTimeout(Duration.ofSeconds(10));
+		Awaitility.setDefaultPollInterval(Duration.ofMillis(100));
 		data.deleteAll();
 	}
 
@@ -86,5 +98,16 @@ public abstract class AbstractTest {
 		var actual = content.stream().map(toKeyFunction).collect(Collectors.toList());
 		var expected = content.stream().sorted(comparator).map(toKeyFunction).collect(Collectors.toList());
 		assertEquals(expected, actual, "unsorted");
+	}
+
+	@Override
+	public Map<String, String> getProperties() {
+		var kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
+		kafka.start();
+		return Map.of(
+				"kafka.bootstrap.servers", kafka.getBootstrapServers(),
+				"kafka.consumers.default.key.deserializer", StringDeserializer.class.getName(),
+				"kafka.consumers.default.value.deserializer", CloudEventDeserializer.class.getName(),
+				"kafka.consumers.default.metadata.max.age.ms", "200");
 	}
 }

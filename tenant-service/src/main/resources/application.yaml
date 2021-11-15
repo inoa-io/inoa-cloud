@@ -58,6 +58,15 @@ datasources:
     password: changeMe
     dialect: POSTGRES
 
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
+kafka:
+  producers:
+    default:
+      key:
+        serializer: org.apache.kafka.common.serialization.StringSerializer
+      value:
+        serializer: io.cloudevents.kafka.CloudEventSerializer
+
 ## see https://micronaut-projects.github.io/micronaut-flyway/latest/guide/index.html#additionalConfig
 flyway:
   datasources:

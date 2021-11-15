@@ -118,6 +118,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertNotNull(created.getUpdated(), "updated");
 		assertEquals(created, assert200(() -> client.findTenant(auth(email), tenantId)), "vo");
 		data.assertAssignment(email, tenantId);
+		data.assertEvent(tenantId, MessagingClient.ACTION_CREATE);
 	}
 
 	@DisplayName("createTenant(201): with optional properties")
@@ -134,6 +135,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertNotNull(created.getUpdated(), "updated");
 		assertEquals(created, assert200(() -> client.findTenant(auth(email), tenantId)), "vo");
 		data.assertAssignment(email, tenantId);
+		data.assertEvent(tenantId, MessagingClient.ACTION_CREATE);
 	}
 
 	@DisplayName("createTenant(201): with existing user")
@@ -146,6 +148,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		var created = assert201(() -> client.createTenant(auth(user), tenantId, vo));
 		assertEquals(created, assert200(() -> client.findTenant(auth(user), tenantId)), "vo");
 		data.assertAssignment(user.getEmail(), tenantId, otherTenant.getTenantId());
+		data.assertEvent(tenantId, MessagingClient.ACTION_CREATE);
 	}
 
 	@DisplayName("createTenant(400): is beanvalidation active")
@@ -208,6 +211,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertTrue(updated.getUpdated().isAfter(tenant.getUpdated()), "updated");
 		assertEquals(updated, assert200(() -> client.findTenant(auth(user), updated.getTenantId())), "vo");
 		data.assertAssignment(user.getEmail(), tenant.getTenantId());
+		data.assertEvent(tenant.getTenantId(), MessagingClient.ACTION_UPDATE);
 	}
 
 	@DisplayName("updateTenant(200): update enabled only")
@@ -224,6 +228,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertTrue(updated.getUpdated().isAfter(tenant.getUpdated()), "updated");
 		assertEquals(updated, assert200(() -> client.findTenant(auth(user), updated.getTenantId())), "vo");
 		data.assertAssignment(user.getEmail(), tenant.getTenantId());
+		data.assertEvent(tenant.getTenantId(), MessagingClient.ACTION_UPDATE);
 	}
 
 	@DisplayName("updateTenant(200): update unchanged")
@@ -256,6 +261,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertTrue(updated.getUpdated().isAfter(tenant.getUpdated()), "updated");
 		assertEquals(updated, assert200(() -> client.findTenant(auth(user), updated.getTenantId())), "vo");
 		data.assertAssignment(user.getEmail(), tenant.getTenantId());
+		data.assertEvent(tenant.getTenantId(), MessagingClient.ACTION_UPDATE);
 	}
 
 	@DisplayName("updateTenant(400): is beanvalidation active")
@@ -311,6 +317,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		data.assertAssignment(user.getEmail());
 		data.assertAssignment(otherUser.getEmail(), otherTenant.getTenantId());
 		data.assertTenantSoftDelete(tenant.getTenantId());
+		data.assertEvent(tenant.getTenantId(), MessagingClient.ACTION_DELETE);
 	}
 
 	@DisplayName("deleteTenant(401): no token")

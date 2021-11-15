@@ -39,3 +39,4 @@ logger:
     io.inoa: DEBUG
     io.micronaut.data: DEBUG
     io.micronaut.http.client.exceptions.HttpClientResponseException: "OFF"
+    org.apache.kafka: WARN
