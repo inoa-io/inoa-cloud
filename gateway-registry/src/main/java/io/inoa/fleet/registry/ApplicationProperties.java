@@ -35,6 +35,12 @@ public class ApplicationProperties {
 
 		/** Claim for tenant. */
 		private String claimTenant = "tenant";
+
+		/** Audience whitelists. */
+		private List<String> tenantAudienceWhitelist = new ArrayList<>();
+
+		/** Header name for tenantId if audience is in whitelist. */
+		private String tenantHeaderName = "x-tenant-id";
 	}
 
 	/** Configuration for issuing registry jwt's. */
