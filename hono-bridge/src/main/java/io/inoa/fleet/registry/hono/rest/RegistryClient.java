@@ -58,7 +58,7 @@ public class RegistryClient {
 
 		var headers = new HttpHeaders();
 		headers.setBearerAuth(getAccessToken());
-		headers.add("x-inoa-tenant", tenantId);
+		headers.add("x-tenant-id", tenantId);
 		var request = new HttpEntity<>(null, headers);
 		var url = String.format("http://%s:%d/gateways/%s",
 				properties.getGatewayRegistryHost(),
@@ -146,5 +146,4 @@ public class RegistryClient {
 		@JsonProperty("access_token")
 		private String accessToken;
 	}
-
 }
