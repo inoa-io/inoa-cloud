@@ -33,7 +33,6 @@
 		<module>hono-bridge</module>
 		<module>translator</module>
 		<module>exporter</module>
-		<module>external-authorization</module>
 		<module>test</module>
 	</modules>
 
