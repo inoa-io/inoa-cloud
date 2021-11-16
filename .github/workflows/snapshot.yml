@@ -49,7 +49,6 @@ jobs:
       - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry
       - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry-hono-bridge
       - run: docker push --all-tags ghcr.io/grayc-de/gateway-command-service
+      - run: docker push --all-tags ghcr.io/grayc-de/gateway-logger
       - run: docker push --all-tags ghcr.io/grayc-de/inoa-translator
       - run: docker push --all-tags ghcr.io/grayc-de/inoa-exporter
-      - run: docker push --all-tags ghcr.io/grayc-de/external-authorization
-      - run: docker push --all-tags ghcr.io/grayc-de/gateway-logger
