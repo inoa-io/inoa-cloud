@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -122,6 +123,10 @@ public class Data {
 	}
 
 	// check
+
+	public Optional<Tenant> findTenant(String tenantId) {
+		return tenantRepository.findByTenantId(tenantId);
+	}
 
 	public void assertAssignment(String email, String... expectedTenantIds) {
 		assertTrue(StreamSupport

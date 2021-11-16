@@ -35,92 +35,52 @@ public class RegistryClient {
 	private final RegistryProperties properties;
 
 	public Optional<TenantVO> findTenant(String tenantId) {
-
-		var headers = new HttpHeaders();
-		headers.setBearerAuth(getAccessToken());
-		var request = new HttpEntity<>(null, headers);
-		var url = String.format("http://%s:%d/tenants/%s",
-				properties.getGatewayRegistryHost(),
-				properties.getGatewayRegistryPort(),
-				tenantId);
-
-		try {
-			return Optional.of(restTemplate.exchange(url, HttpMethod.GET, request, TenantVO.class).getBody());
-		} catch (NotFound e) {
-			return Optional.empty();
-		} catch (RestClientException e) {
-			log.error("Unable to get tenant.", e);
-			return Optional.empty();
-		}
+		return find(tenantId, "/tenants/" + tenantId, TenantVO.class, null);
 	}
 
 	public Optional<GatewayDetailVO> findGateway(String tenantId, String gatewayId) {
-
-		var headers = new HttpHeaders();
-		headers.setBearerAuth(getAccessToken());
-		headers.add("x-tenant-id", tenantId);
-		var request = new HttpEntity<>(null, headers);
-		var url = String.format("http://%s:%d/gateways/%s",
-				properties.getGatewayRegistryHost(),
-				properties.getGatewayRegistryPort(),
-				gatewayId);
-
-		try {
-			return Optional.of(restTemplate.exchange(url, HttpMethod.GET, request, GatewayDetailVO.class).getBody());
-		} catch (NotFound e) {
-			return Optional.empty();
-		} catch (RestClientException e) {
-			log.error("Unable to get gateway.", e);
-			return Optional.empty();
-		}
+		return find(tenantId, "/gateways/" + gatewayId, GatewayDetailVO.class, null);
 	}
 
 	public Optional<SecretDetailPasswordVO> findPassword(String tenantId, String gatewayId) {
 
-		var headers = new HttpHeaders();
-		headers.setBearerAuth(getAccessToken());
-		headers.add("x-inoa-tenant", tenantId);
-		var request = new HttpEntity<>(null, headers);
-		var url = String.format("http://%s:%d/gateways/%s/credentials",
-				properties.getGatewayRegistryHost(),
-				properties.getGatewayRegistryPort(),
-				gatewayId);
-
-		List<CredentialVO> credentials = null;
-		try {
-			credentials = restTemplate
-					.exchange(url, HttpMethod.GET, request, new ParameterizedTypeReference<List<CredentialVO>>() {})
-					.getBody();
-		} catch (NotFound e) {
-			return Optional.empty();
-		} catch (RestClientException e) {
-			log.error("Unable to get credentials.", e);
-			return Optional.empty();
-		}
-
-		var credential = credentials.stream().filter(c -> c.getType() == CredentialTypeVO.PASSWORD).findFirst();
-		if (credential.isEmpty() || credential.get().getSecrets().isEmpty()) {
+		var uri = "/gateways/" + gatewayId + "/credentials";
+		var credential = find(tenantId, uri, null, new ParameterizedTypeReference<List<CredentialVO>>() {})
+				.stream().flatMap(List::stream)
+				.filter(c -> c.getType() == CredentialTypeVO.PASSWORD)
+				.findFirst();
+		var secret = credential.stream().flatMap(c -> c.getSecrets().stream()).findFirst();
+		if (secret.isEmpty()) {
 			log.info("No password secret not found.");
 			return Optional.empty();
 		}
-		var secret = credential.get().getSecrets().get(0);
 
-		url = String.format("http://%s:%d/gateways/%s/credentials/%s/secrets/%s",
-				properties.getGatewayRegistryHost(),
-				properties.getGatewayRegistryPort(), gatewayId,
-				credential.get().getCredentialId(), secret.getSecretId());
+		uri += "/" + credential.get().getCredentialId() + "/secrets/" + secret.get().getSecretId();
+		return find(tenantId, uri, SecretDetailPasswordVO.class, null);
+	}
+
+	private <T> Optional<T> find(String tenantId, String uri, Class<T> type, ParameterizedTypeReference<T> ref) {
+
+		var url = "http://" + properties.getGatewayRegistryHost() + ":" + properties.getGatewayRegistryPort() + uri;
+		var headers = new HttpHeaders();
+		headers.setBearerAuth(getAccessToken());
+		headers.add("x-tenant-id", tenantId);
+		var request = new HttpEntity<>(null, headers);
+
 		try {
-			return Optional
-					.of(restTemplate.exchange(url, HttpMethod.GET, request, SecretDetailPasswordVO.class).getBody());
+			return Optional.of(type == null
+					? restTemplate.exchange(url, HttpMethod.GET, request, ref).getBody()
+					: restTemplate.exchange(url, HttpMethod.GET, request, type).getBody());
 		} catch (NotFound e) {
+			log.warn("Not found {} for tenant {}", uri, tenantId);
 			return Optional.empty();
 		} catch (RestClientException e) {
-			log.error("Unable to get credentials.", e);
+			log.error("Unable to get {}.", url, e);
 			return Optional.empty();
 		}
 	}
 
-	public String getAccessToken() {
+	private String getAccessToken() {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		LinkedMultiValueMap<String, String> tokenRequest = new LinkedMultiValueMap<>();
