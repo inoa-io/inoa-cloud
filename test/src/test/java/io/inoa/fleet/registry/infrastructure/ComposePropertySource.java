@@ -33,6 +33,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 	private static final String CONTAINER_POSTGRES = "postgres";
 	private static final String CONTAINER_KEYCLOAK = "keycloak";
 	private static final String CONTAINER_KAFKA = "kafka";
+	private static final String CONTAINER_TENANT = "tenant-service";
 	private static final String CONTAINER_REGISTRY = "gateway-registry";
 	private static final String CONTAINER_BRIDGE = "gateway-registry-hono-bridge";
 	private static final String CONTAINER_TRANSLATE = "inoa-translator";
@@ -69,11 +70,13 @@ public class ComposePropertySource implements PropertySourceLoader {
 								"hono-service-command-router",
 								CONTAINER_HONO_MQTT,
 								CONTAINER_BRIDGE,
+								CONTAINER_TENANT,
 								CONTAINER_REGISTRY,
 								CONTAINER_KEYCLOAK,
 								CONTAINER_TRANSLATE,
 								CONTAINER_EXPORTER)
 						.withExposedService(CONTAINER_INFLUXDB, 8086)
+						.withExposedService(CONTAINER_TENANT, 8080)
 						.withExposedService(CONTAINER_REGISTRY, 8080)
 						.withExposedService(CONTAINER_REGISTRY, 8090)
 						.withExposedService(CONTAINER_KEYCLOAK, 8080)
@@ -81,12 +84,14 @@ public class ComposePropertySource implements PropertySourceLoader {
 						.withExposedService(CONTAINER_EXPORTER, 8090)
 						.withExposedService(CONTAINER_HONO_MQTT, 1883)
 						.waitingFor(CONTAINER_INFLUXDB, waitForHealthcheck)
+						.waitingFor(CONTAINER_TENANT, waitForHealthcheck)
 						.waitingFor(CONTAINER_REGISTRY, waitForHealthcheck)
 						.waitingFor(CONTAINER_KEYCLOAK, waitForHealthcheck)
 						.waitingFor(CONTAINER_BRIDGE, waitForHealthcheck)
 						.waitingFor(CONTAINER_HONO_MQTT, waitForHealthcheck)
 						.waitingFor(CONTAINER_TRANSLATE, waitForHealthcheck)
 						.waitingFor(CONTAINER_EXPORTER, waitForHealthcheck)
+						.withLogConsumer(CONTAINER_TENANT, new Slf4jLogConsumer(log).withPrefix(CONTAINER_TENANT))
 						.withLogConsumer(CONTAINER_REGISTRY, new Slf4jLogConsumer(log).withPrefix(CONTAINER_REGISTRY))
 						.withLogConsumer(CONTAINER_BRIDGE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_BRIDGE))
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
@@ -96,6 +101,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 						.withLocalCompose(false);
 				container.start();
 				cache = Map.of(
+						"test.tenant-service.8080", "localhost:" + container.getServicePort(CONTAINER_TENANT, 8080),
 						"test.gateway-registry.8080", "localhost:" + container.getServicePort(CONTAINER_REGISTRY, 8080),
 						"test.gateway-registry.8090", "localhost:" + container.getServicePort(CONTAINER_REGISTRY, 8090),
 						"test.keycloak.8080", "localhost:" + container.getServicePort(CONTAINER_KEYCLOAK, 8080),
@@ -106,6 +112,7 @@ public class ComposePropertySource implements PropertySourceLoader {
 			} else {
 				log.info("Use existing containers and skip compose start.");
 				cache = Map.of(
+						"test.tenant-service.8080", CONTAINER_TENANT + ":" + 8080,
 						"test.gateway-registry.8080", CONTAINER_REGISTRY + ":" + 8080,
 						"test.gateway-registry.8090", CONTAINER_REGISTRY + ":" + 8090,
 						"test.keycloak.8080", CONTAINER_KEYCLOAK + ":" + 8080,

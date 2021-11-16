@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,7 @@ import lombok.SneakyThrows;
  * @author Stephan Schnabel
  */
 @DisplayName("Wumm")
+@Disabled("will be enabled with config default again")
 public class WummTest extends ComposeTest {
 
 	@DisplayName("DVH4013 with work/power in/out")
@@ -30,7 +32,7 @@ public class WummTest extends ComposeTest {
 
 		// create gateway
 
-		var gateway = registry.withUser(USER_TENANT_A).createGateway();
+		var gateway = gatewayRegistry.createGateway();
 
 		// send telemetry
 

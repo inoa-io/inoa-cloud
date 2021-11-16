@@ -9,6 +9,9 @@ micronaut:
       gateway-registry:
         url: http://${test.gateway-registry.8080}
         logger-name: io.inoa.fleet.registry.Client
+      tenant-service:
+        url: http://${test.tenant-service.8080}
+        logger-name: io.inoa.cloud.tenant.Client
       gateway-registry-management:
         url: http://${test.gateway-registry.8090}
         logger-name: io.inoa.fleet.registry.Management
