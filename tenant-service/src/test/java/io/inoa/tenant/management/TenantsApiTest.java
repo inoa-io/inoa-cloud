@@ -162,7 +162,16 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Test
 	@Override
 	public void createTenant401() {
-		assert401(() -> client.createTenant(null, new TenantCreateVO().setName(data.tenantName())));
+		assert401(() -> client.createTenant(null, data.tenantId(), new TenantCreateVO().setName(data.tenantName())));
+	}
+
+	@DisplayName("createTenant(401): without email claim")
+	@Test
+	public void createTenant401WithoutEmailClaim() {
+		var tenantId = data.tenantId();
+		assert401(() -> client.createTenant(auth((String) null), tenantId,
+				new TenantCreateVO().setName(data.tenantName())));
+		assertTrue(data.findTenant(tenantId).isEmpty(), "tenant created");
 	}
 
 	@DisplayName("createTenant(409): tenantId exists")

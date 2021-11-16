@@ -3,7 +3,6 @@ package io.inoa.tenant.management;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.MDC;
 
@@ -53,23 +52,24 @@ public class ManagementService {
 	}
 
 	Tenant createTenant(Tenant tenant) {
+		var user = new User().setEmail(getUserEmail());
 		tenantRepository.save(tenant);
 		messaging.sendCloudEvent(tenant, MessagingClient.ACTION_CREATE);
 		log.info("Tenant {} created: {}", tenant.getTenantId(), tenant);
-		createUser(tenant, new User().setEmail(getUserEmail()));
+		createUser(tenant, user);
 		return tenant;
 	}
 
 	Optional<Tenant> updateTenant(String tenantId, TenantUpdateVO vo) {
 		return findTenant(tenantId).map(tenant -> {
-			var changed = new AtomicBoolean(false);
+			var changed = false;
 
 			if (vo.getName() != null) {
 				if (tenant.getName().equals(vo.getName())) {
 					log.trace("Tenant {}: skip update of name {} because not changed.", tenantId, vo.getName());
 				} else {
 					log.info("Tenant {}: updated name from {} to {}.", tenantId, tenant.getName(), vo.getName());
-					changed.set(true);
+					changed = true;
 					tenant.setName(vo.getName());
 				}
 			}
@@ -79,12 +79,12 @@ public class ManagementService {
 					log.trace("Tenant {}: skip update of enabled {} because not changed.", tenantId, vo.getEnabled());
 				} else {
 					log.info("Tenant {}: updated enabled to {}.", tenantId, vo.getEnabled());
-					changed.set(true);
+					changed = true;
 					tenant.setEnabled(vo.getEnabled());
 				}
 			}
 
-			if (changed.get()) {
+			if (changed) {
 				tenantRepository.update(tenant);
 				messaging.sendCloudEvent(tenant, MessagingClient.ACTION_UPDATE);
 			}

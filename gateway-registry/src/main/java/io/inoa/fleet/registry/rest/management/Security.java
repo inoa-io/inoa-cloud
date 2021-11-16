@@ -13,6 +13,7 @@ import io.micronaut.http.context.ServerRequestContext;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
 import io.micronaut.security.utils.SecurityService;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,11 @@ public class Security {
 	private final ApplicationProperties properties;
 	private final TenantRepository tenantRepository;
 	private final SecurityService securityService;
+
+	@PostConstruct
+	void log() {
+		log.info("Configured whitelist audience: {}", properties.getSecurity().getTenantAudienceWhitelist());
+	}
 
 	Tenant getTenant() {
 		return tenantRepository
@@ -50,10 +56,12 @@ public class Security {
 		// read tenant from http header if audience claim is in whitelist
 
 		var audienceWhitelist = properties.getSecurity().getTenantAudienceWhitelist();
-		if (get(attributes, JwtClaims.AUDIENCE).anyMatch(audience -> audienceWhitelist.contains(audience))) {
+		var audience = get(attributes, JwtClaims.AUDIENCE).filter(a -> audienceWhitelist.contains(a)).findFirst();
+		if (audience.isPresent()) {
 			var tenantId = ServerRequestContext.currentRequest()
 					.map(HttpRequest::getHeaders)
 					.flatMap(headers -> headers.getFirst(properties.getSecurity().getTenantHeaderName()));
+			log.trace("Audience {} found in JWT with tenantId {}.", audience.get(), tenantId.orElse(null));
 			if (tenantId.isPresent()) {
 				return tenantId.get();
 			}
