@@ -22,10 +22,12 @@ services:
     image: postgres:${docker.postgres.version}
     hostname: postgres
     environment:
-      - POSTGRES_USER=gateway-registry
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=changeMe
+    volumes:
+      - ${project.build.directory}/compose/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gateway-registry"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       retries: 30
 
@@ -91,18 +93,17 @@ services:
   ### Inoa
   ###
 
-  gateway-registry:
-    image: ${container.image.repository}/gateway-registry:${container.image.version}
-    hostname: gateway-registry
+  tenant-service:
+    image: ${container.image.repository}/tenant-service:${container.image.version}
+    hostname: tenant-service
     environment:
       - MICRONAUT_ENVIRONMENTS=postgres
       - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
-      - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/database
-      - REGISTRY_AUTH_ISSUER=http://gateway-registry:8080/
-      - REGISTRY_AUTH_GENERATE_KEY=TRUE
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - INOA_AUTH_KEY_ID=test
+      - INOA_AUTH_ISSUER=http://tenant-service
       - LOGGER_LEVELS_IO_INOA=TRACE
-    volumes:
-      - ${project.build.directory}/compose/gateway-registry/testdata.sql:/database/V999__testdata.sql
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s
@@ -112,6 +113,35 @@ services:
         condition: service_healthy
       postgres:
         condition: service_healthy
+      kafka:
+        condition: service_started
+
+  gateway-registry:
+    image: ${container.image.repository}/gateway-registry:${container.image.version}
+    hostname: gateway-registry
+    environment:
+      - MICRONAUT_ENVIRONMENTS=postgres
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+      - REGISTRY_AUTH_ISSUER=http://gateway-registry:8080/
+      - REGISTRY_AUTH_GENERATE_KEY=TRUE
+      - REGISTRY_SECURITY_TENANT_AUDIENCE_WHITELIST=gateway-registry-client
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+    healthcheck:
+      test: curl -sf http://localhost:8090/endpoints/health
+      interval: 5s
+      retries: 30
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      tenant-service:
+        condition: service_started
 
   gateway-registry-hono-bridge:
     image: ${container.image.repository}/gateway-registry-hono-bridge:${container.image.version}
@@ -127,7 +157,7 @@ services:
       - HONO_INOA_GATEWAYREGISTRYHOST=gateway-registry
       - HONO_INOA_GATEWAYREGISTRYPORT=8080
       - HONO_INOA_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
-      - HONO_INOA_CLIENT_ID=gateway-registry-hono-bridge
+      - HONO_INOA_CLIENT_ID=gateway-registry-client
       - HONO_INOA_CLIENT_SECRET=changeMe
     volumes:
       - ${project.build.directory}/compose/hono/auth-server-cert.pem:/etc/hono/auth-server-cert.pem
@@ -278,7 +308,7 @@ services:
     image: swaggerapi/swagger-ui
     hostname: swagger-ui
     environment:
-      - URLS=[{url:"/management.yaml",name:"Management API"},{url:"/gateway.yaml",name:"Gateway API"}]
+      - URLS=[{url:"/tenant-service-management.yaml",name:"Tenant Management API"},{url:"/gateway-registry-management.yaml",name:"Gateway Management API"},{url:"/gateway-registry-gateway.yaml",name:"Gateway API"}]
       - DISPLAY_OPERATION_ID=true
       - DISPLAY_REQUEST_DURATION=true
       - PERSIST_AUTHORIZATION=true
@@ -287,8 +317,9 @@ services:
       - OAUTH_CLIENT_ID=gateway-registry-ui
       - OAUTH_CLIENT_SECRET=changeMe
     volumes:
-      - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/management.yaml
-      - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway.yaml
+      - ${project.parent.basedir}/tenant-service/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/tenant-service-management.yaml
+      - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/gateway-registry-management.yaml
+      - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway-registry-gateway.yaml
     depends_on:
       gateway-registry:
         condition: service_started

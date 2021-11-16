@@ -93,18 +93,21 @@
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>openapi-gateway-generate</id>
+						<id>openapi-tenant-service-management-generate</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/gateway.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
+							<inputSpec>${project.basedir}/../tenant-service/src/main/resources/openapi/management.yaml</inputSpec>
+							<apiPackage>io.inoa.cloud.tenant</apiPackage>
+							<configOptions>
+								<clientId>tenant-service</clientId>
+							</configOptions>
 						</configuration>
 					</execution>
 					<execution>
-						<id>openapi-management-generate</id>
+						<id>openapi-gateway-registry-management-generate</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
@@ -112,14 +115,26 @@
 						<configuration>
 							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/management.yaml</inputSpec>
 							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
+							<configOptions>
+								<clientId>gateway-registry</clientId>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-gateway-registry-gateway-generate</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/gateway.yaml</inputSpec>
+							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
+							<configOptions>
+								<clientId>gateway-registry</clientId>
+							</configOptions>
 						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<configOptions>
-						<clientId>gateway-registry</clientId>
-					</configOptions>
-				</configuration>
 			</plugin>
 
 			<!-- add generated sources -->
