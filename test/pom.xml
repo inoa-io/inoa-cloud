@@ -31,6 +31,48 @@
 			<artifactId>messages</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>tenant-service</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>gateway-registry</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>gateway-registry-hono-bridge</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>gateway-command-service</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>gateway-logger</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>inoa-translator</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cloud</groupId>
+			<artifactId>inoa-exporter</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
+		</dependency>
 
 		<!-- micronaut -->
 		<dependency>
