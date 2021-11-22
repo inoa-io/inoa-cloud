@@ -39,7 +39,7 @@ jobs:
           java-version: 11
           cache: maven
       - run: mvn -B dependency:go-offline -q
-      - run: mvn -B install -Dcontainer.image.version='${project.version}-${maven.build.timestamp}' -DskipTests
+      - run: mvn -B install -Dcontainer.image.version='${project.version}-${maven.build.timestamp}' -DskipTests -T4C
       - uses: docker/login-action@v1
         with:
           registry: ghcr.io
