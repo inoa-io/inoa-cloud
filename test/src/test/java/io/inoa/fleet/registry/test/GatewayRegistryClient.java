@@ -8,12 +8,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.awaitility.Awaitility;
+
 import com.nimbusds.jose.jwk.JWKSet;
 
 import io.inoa.fleet.registry.infrastructure.TestAssertions;
 import io.inoa.fleet.registry.rest.gateway.PropertiesApiClient;
 import io.inoa.fleet.registry.rest.management.ConfigurationApiClient;
-import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionVO;
 import io.inoa.fleet.registry.rest.management.ConfigurationSetVO;
 import io.inoa.fleet.registry.rest.management.CredentialCreateVO;
 import io.inoa.fleet.registry.rest.management.CredentialTypeVO;
@@ -25,6 +26,7 @@ import io.inoa.fleet.registry.rest.management.SecretCreatePSKVO;
 import io.inoa.fleet.registry.rest.management.SecretCreatePasswordVO;
 import io.inoa.fleet.registry.rest.management.TenantVO;
 import io.inoa.fleet.registry.rest.management.TenantsApiClient;
+import io.micronaut.context.annotation.Value;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -44,28 +46,37 @@ public class GatewayRegistryClient {
 	private final PropertiesApiClient propertiesClient;
 	private final io.inoa.fleet.registry.rest.gateway.ConfigurationApiClient configurationGatewayClient;
 
+	@Value("${mqtt.client.server-uri}")
+	String mqttUri;
+
+	// tenant
+
 	public GatewayRegistryClient withTenantId(String tenantId) {
 		filter.setTenantId(tenantId);
 		return this;
 	}
 
-	@SneakyThrows
-	public JWKSet getJwkSet() {
-		return JWKSet.parse(assert200(() -> authClient.getKeys()).getBody(Map.class).orElseThrow());
+	/** Waits until tenant is created and updates mqtt configuration for test setup. */
+	public GatewayRegistryClient waitForTenant(String tenantId) {
+		withTenantId(tenantId);
+		Awaitility.await("tenant created in registry").until(() -> findTenant(tenantId).isPresent());
+		assert204(() -> configurationClient.setConfiguration(keycloak.auth(), "mqtt.uri",
+				new ConfigurationSetVO().setValue(mqttUri)));
+		return this;
 	}
 
 	public Optional<TenantVO> findTenant(String tenantId) {
 		return tenantsClient.findTenant(keycloak.auth(), tenantId).getBody();
 	}
 
-	public void createConfiguration(String key, ConfigurationDefinitionVO definition) {
-		assertions.assert201(() -> configurationClient.createConfigurationDefinition(keycloak.auth(), key, definition));
+	// gateway
+
+	@SneakyThrows
+	public JWKSet getJwkSet() {
+		return JWKSet.parse(assert200(() -> authClient.getKeys()).getBody(Map.class).orElseThrow());
 	}
 
-	public void setConfiguration(String key, Object value) {
-		assert204(() -> configurationClient.setConfiguration(keycloak.auth(), key,
-				new ConfigurationSetVO().setValue(value)));
-	}
+	// management
 
 	public GatewayClient createGateway() {
 		return createGateway("dev-" + UUID.randomUUID().toString().substring(0, 10), UUID.randomUUID().toString());

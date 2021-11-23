@@ -1,0 +1,12 @@
+registry:
+  auth:
+    issuer: http://gateway-registry:8080/
+    generate-key: true
+  security:
+    tenant-audience-whitelist: gateway-registry-client
+  tenant:
+    configurations:
+      - key: mqtt.uri
+        description: URI of mqtt server.
+        type: STRING
+        pattern: '(tcp|mqtt|ssl|mqtts)://[a-z0-9\.\-]+:[0-9]{3,5}'

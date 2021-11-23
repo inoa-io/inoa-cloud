@@ -322,6 +322,17 @@ public class Data {
 		return gatewayRepository.findByGatewayId(gateway.getGatewayId()).get();
 	}
 
+	public ConfigurationDefinition findConfigurationDefinition(Tenant tenant, String key) {
+		return configurationDefinitionRepository.findByTenantAndKey(tenant, key).orElse(null);
+	}
+
+	public String findConfigurationValue(ConfigurationDefinition definition) {
+		return tenantConfigurationRepository
+				.findByDefinition(definition)
+				.map(TenantConfiguration::getValue)
+				.orElse(null);
+	}
+
 	public List<GatewayProperty> findProperties(Gateway gateway) {
 		return gatewayPropertyRepository.findByGateway(gateway);
 	}

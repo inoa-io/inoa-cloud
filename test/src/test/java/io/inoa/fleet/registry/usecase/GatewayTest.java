@@ -10,14 +10,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.UUID;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 
 import io.inoa.fleet.registry.infrastructure.ComposeTest;
-import io.inoa.fleet.registry.rest.management.ConfigurationDefinitionStringVO;
 import io.inoa.fleet.registry.test.GatewayClient;
 import lombok.SneakyThrows;
 
@@ -26,7 +24,7 @@ import lombok.SneakyThrows;
  *
  * @author Stephan Schnabel
  */
-@DisplayName("Gateway")
+@DisplayName("gateway")
 public class GatewayTest extends ComposeTest {
 
 	static Instant timestamp = Instant.now().truncatedTo(ChronoUnit.MILLIS);
@@ -48,18 +46,7 @@ public class GatewayTest extends ComposeTest {
 	@DisplayName("02. create tenant in gateway registry")
 	@Test
 	void createTenantInGatewayRegistry() {
-		gatewayRegistry.withTenantId(tenantId);
-		Awaitility.await("tenant created in registry").until(() -> gatewayRegistry.findTenant(tenantId).isPresent());
-	}
-
-	@DisplayName("03. configure hono mqtt endpoint")
-	@Test
-	void configureHonoMqttUrl() {
-		var def = new ConfigurationDefinitionStringVO()
-				.setKey("mqtt.url")
-				.setDescription("meh");
-		gatewayRegistry.createConfiguration(def.getKey(), def);
-		gatewayRegistry.setConfiguration(def.getKey(), mqttUrl);
+		gatewayRegistry.waitForTenant(tenantId);
 	}
 
 	@DisplayName("11. create gateway with psk secret")

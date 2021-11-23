@@ -121,14 +121,14 @@ services:
     hostname: gateway-registry
     environment:
       - MICRONAUT_ENVIRONMENTS=postgres
+      - MICRONAUT_CONFIG_FILES=/application.yaml
       - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
-      - REGISTRY_AUTH_ISSUER=http://gateway-registry:8080/
-      - REGISTRY_AUTH_GENERATE_KEY=TRUE
-      - REGISTRY_SECURITY_TENANT_AUDIENCE_WHITELIST=gateway-registry-client
       - LOGGER_LEVELS_IO_INOA=TRACE
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+    volumes:
+      - ${project.build.directory}/compose/gateway-registry/application.yaml:/application.yaml:ro
     healthcheck:
       test: curl -sf http://localhost:8090/endpoints/health
       interval: 5s

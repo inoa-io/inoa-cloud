@@ -1,6 +1,9 @@
 package io.inoa.fleet.registry.service;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.net.URI;
 import java.time.Instant;
@@ -26,6 +29,7 @@ import io.cloudevents.kafka.CloudEventSerializer;
 import io.inoa.cloud.messages.TenantVO;
 import io.inoa.fleet.registry.AbstractTest;
 import io.inoa.fleet.registry.domain.Tenant;
+import io.inoa.fleet.registry.rest.management.ConfigurationTypeVO;
 import io.micronaut.test.support.TestPropertyProvider;
 import jakarta.inject.Inject;
 
@@ -60,7 +64,40 @@ public class TenantMessageListenerTest extends AbstractTest implements TestPrope
 		send("delete", vo.setDeleted(Instant.now()), t -> t.getDeleted() != null);
 	}
 
-	private void send(String action, TenantVO vo, Predicate<Tenant> predicate) {
+	@DisplayName("configuration")
+	@Test
+	void configuration() {
+
+		var vo = new TenantVO()
+				.setTenantId(data.tenantId())
+				.setName(data.tenantName())
+				.setEnabled(true)
+				.setCreated(Instant.now())
+				.setUpdated(Instant.now());
+		var tenant = send("create", vo, t -> t != null);
+
+		var ntp = data.findConfigurationDefinition(tenant, "ntp.host");
+		assertNotNull(ntp, "ntp definition");
+		assertAll("ntp",
+				() -> assertNotNull(ntp.getDescription(), "description"),
+				() -> assertEquals(ConfigurationTypeVO.STRING, ntp.getType(), "type"),
+				() -> assertNull(ntp.getMinimum(), "minimum"),
+				() -> assertNull(ntp.getMaximum(), "maximum"),
+				() -> assertEquals("[a-z0-9\\.]{8,20}", ntp.getPattern(), "pattern"),
+				() -> assertEquals("pool.ntp.org", data.findConfigurationValue(ntp), "value"));
+
+		var mqtt = data.findConfigurationDefinition(tenant, "mqtt.uri");
+		assertNotNull(mqtt, "mqtt definition");
+		assertAll("mqtt",
+				() -> assertNotNull(mqtt.getDescription(), "description"),
+				() -> assertEquals(ConfigurationTypeVO.STRING, mqtt.getType(), "type"),
+				() -> assertNull(mqtt.getMinimum(), "minimum"),
+				() -> assertNull(mqtt.getMaximum(), "maximum"),
+				() -> assertEquals("(tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}", mqtt.getPattern(), "pattern"),
+				() -> assertNull(data.findConfigurationValue(mqtt), "value"));
+	}
+
+	private Tenant send(String action, TenantVO vo, Predicate<Tenant> predicate) {
 
 		var future = producer.send(new ProducerRecord<>("inoa.tenant", vo.getTenantId(), CloudEventBuilder.v1()
 				.withSource(URI.create("/inoa/tenant/" + vo.getTenantId()))
@@ -77,6 +114,8 @@ public class TenantMessageListenerTest extends AbstractTest implements TestPrope
 		assertEquals(vo.getCreated(), tenant.getCreated(), "created");
 		assertEquals(vo.getUpdated(), tenant.getUpdated(), "updated");
 		assertEquals(vo.getDeleted(), tenant.getDeleted(), "deleted");
+
+		return tenant;
 	}
 
 	@Override
