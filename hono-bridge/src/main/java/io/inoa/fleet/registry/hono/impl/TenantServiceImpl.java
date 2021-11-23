@@ -12,6 +12,7 @@ import org.eclipse.hono.util.TenantResult;
 import org.springframework.stereotype.Service;
 
 import io.inoa.fleet.registry.hono.rest.RegistryClient;
+import io.inoa.fleet.registry.hono.rest.RegistryProperties;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TenantServiceImpl implements TenantService {
 
 	private final RegistryClient registryClient;
+	private final RegistryProperties properties;
 
 	@Override
 	public Future<TenantResult<JsonObject>> get(String tenantId) {
@@ -31,8 +33,8 @@ public class TenantServiceImpl implements TenantService {
 				.map(tenant -> new Tenant()
 						.setEnabled(tenant.getEnabled())
 						.setDefaults(Map.of("tenantName", tenant.getName())))
-				.map(tenant -> TenantResult.from(HttpURLConnection.HTTP_OK,
-						DeviceRegistryUtils.convertTenant(tenantId, tenant)))
+				.map(tenant -> DeviceRegistryUtils.convertTenant(tenantId, tenant))
+				.map(json -> TenantResult.from(HttpURLConnection.HTTP_OK, json, properties.getTenantCache()))
 				.orElseGet(() -> TenantResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
 	}
 

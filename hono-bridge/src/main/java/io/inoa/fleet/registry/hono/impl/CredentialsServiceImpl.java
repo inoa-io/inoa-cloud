@@ -11,6 +11,7 @@ import org.eclipse.hono.util.RequestResponseApiConstants;
 import org.springframework.stereotype.Service;
 
 import io.inoa.fleet.registry.hono.rest.RegistryClient;
+import io.inoa.fleet.registry.hono.rest.RegistryProperties;
 import io.opentracing.Span;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonArray;
@@ -25,6 +26,7 @@ public class CredentialsServiceImpl implements CredentialsService {
 
 	private final HonoPasswordEncoder passwordEncoder = new SpringBasedHonoPasswordEncoder(10);
 	private final RegistryClient registryClient;
+	private final RegistryProperties properties;
 
 	@Override
 	public Future<CredentialsResult<JsonObject>> get(String tenantId, String type, String gatewayId,
@@ -38,7 +40,7 @@ public class CredentialsServiceImpl implements CredentialsService {
 								.add(passwordEncoder.encode(new String(password.getPassword()))))
 						.put(CredentialsConstants.FIELD_TYPE, CredentialsConstants.SECRETS_TYPE_HASHED_PASSWORD)
 						.put(CredentialsConstants.FIELD_AUTH_ID, gatewayId))
-				.map(json -> CredentialsResult.from(HttpURLConnection.HTTP_OK, json))
+				.map(json -> CredentialsResult.from(HttpURLConnection.HTTP_OK, json, properties.getCredentialsCache()))
 				.orElseGet(() -> CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
 	}
 
