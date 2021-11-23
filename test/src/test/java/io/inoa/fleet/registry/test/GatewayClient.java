@@ -23,8 +23,10 @@ import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.fleet.registry.rest.gateway.ConfigurationApiClient;
 import io.inoa.fleet.registry.rest.gateway.PropertiesApiClient;
+import io.inoa.fleet.registry.rest.gateway.TokenResponseVO;
 import io.inoa.hono.messages.HonoTelemetryMessageVO;
 import io.micronaut.http.HttpHeaderValues;
+import io.micronaut.http.HttpResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -48,7 +50,7 @@ public class GatewayClient {
 	// auth
 
 	@SneakyThrows
-	public GatewayClient fetchRegistryToken() {
+	public HttpResponse<TokenResponseVO> getRegistryTokenResponse() {
 
 		// create jwt from gateway secret as hmac
 
@@ -63,13 +65,15 @@ public class GatewayClient {
 		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
 		jwt.sign(new MACSigner(secret));
 
-		// call registry and store jwt
+		// call registry
 
+		return authClient.getToken("urn:ietf:params:oauth:grant-type:jwt-bearer", jwt.serialize());
+	}
+
+	public GatewayClient fetchRegistryToken() {
 		registryToken = HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER
 				+ " "
-				+ assert200(() -> authClient.getToken("urn:ietf:params:oauth:grant-type:jwt-bearer", jwt.serialize()))
-						.body().accessToken();
-
+				+ assert200(() -> getRegistryTokenResponse()).body().accessToken();
 		return this;
 	}
 
@@ -105,8 +109,8 @@ public class GatewayClient {
 
 	public GatewayMqttClient mqtt() {
 		if (mqttClient == null) {
-			var mqttUrl = getConfiguration().get("mqtt.url");
-			assertNotNull(mqttUrl, "mqtt.url is null");
+			var mqttUrl = getConfiguration().get("mqtt.uri");
+			assertNotNull(mqttUrl, "mqtt.uri is null");
 			mqttClient = new GatewayMqttClient(mqttUrl.toString(), tenantId, gatewayId, secret);
 		}
 		return mqttClient;
@@ -162,7 +166,7 @@ public class GatewayClient {
 
 		@SneakyThrows
 		public void close() {
-			client.disconnectForcibly();
+			client.disconnectForcibly(100, 100, true);
 		}
 	}
 }

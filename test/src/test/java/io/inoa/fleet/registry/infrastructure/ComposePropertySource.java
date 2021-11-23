@@ -97,8 +97,8 @@ public class ComposePropertySource implements PropertySourceLoader {
 						.withLogConsumer(CONTAINER_KEYCLOAK, new Slf4jLogConsumer(log).withPrefix(CONTAINER_KEYCLOAK))
 						.withLogConsumer(CONTAINER_TRANSLATE, new Slf4jLogConsumer(log).withPrefix(CONTAINER_TRANSLATE))
 						.withLogConsumer(CONTAINER_EXPORTER, new Slf4jLogConsumer(log).withPrefix(CONTAINER_EXPORTER))
-						.withRemoveImages(RemoveImages.ALL)
-						.withLocalCompose(false);
+						.withRemoveImages(RemoveImages.LOCAL)
+						.withLocalCompose(true);
 				container.start();
 				cache = Map.of(
 						"test.tenant-service.8080", "localhost:" + container.getServicePort(CONTAINER_TENANT, 8080),

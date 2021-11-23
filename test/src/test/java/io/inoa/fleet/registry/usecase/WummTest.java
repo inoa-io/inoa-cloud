@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,7 +21,6 @@ import lombok.SneakyThrows;
  * @author Stephan Schnabel
  */
 @DisplayName("Wumm")
-@Disabled("will be enabled with config default again")
 public class WummTest extends ComposeTest {
 
 	@DisplayName("DVH4013 with work/power in/out")
@@ -30,9 +28,10 @@ public class WummTest extends ComposeTest {
 	@SneakyThrows
 	void dvh4013() {
 
-		// create gateway
+		// create tenant & gateway
 
-		var gateway = gatewayRegistry.createGateway();
+		var tenant = tenantService.create();
+		var gateway = gatewayRegistry.waitForTenant(tenant.getTenantId()).createGateway();
 
 		// send telemetry
 
@@ -49,8 +48,8 @@ public class WummTest extends ComposeTest {
 		// check messages in influx
 
 		var fluxTables = influxdb.findByGateway(gateway);
-		assertEquals(4, fluxTables.size(), "flux tables");
 		assertAll("influxdb",
+				() -> assertEquals(4, fluxTables.size(), "flux tables"),
 				() -> assertAll("0x0000", influxdb.asserts(
 						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x0000"),
 						gateway, "urn:dvh4013:0815:0x0000", timestamp, 12.3D,

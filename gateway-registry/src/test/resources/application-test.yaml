@@ -34,6 +34,18 @@ registry:
   # allow audience test access to all tenants
   security:
     tenant-audience-whitelist: test
+  # add some default configurations
+  tenant:
+    configurations:
+      - key: ntp.host
+        description: Host of ntp server to use.
+        type: STRING
+        pattern: '[a-z0-9\.]{8,20}'
+        value: pool.ntp.org
+      - key: mqtt.uri
+        description: URI of mqtt server.
+        type: STRING
+        pattern: '(tcp|mqtt|ssl|mqtts)://[a-z0-9\.\-]+:[0-9]{3,5}'
 
 ## custom log configuration
 logger:
@@ -41,4 +53,5 @@ logger:
     io.inoa: INFO
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
+    org.apache.kafka: ERROR
     org.flywaydb.core.internal.sqlscript.DefaultSqlScriptExecutor: WARN

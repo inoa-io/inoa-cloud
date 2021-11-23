@@ -7,7 +7,6 @@ import io.inoa.fleet.registry.test.GatewayRegistryClient;
 import io.inoa.fleet.registry.test.InfluxDBClient;
 import io.inoa.fleet.registry.test.MonitoringClient;
 import io.inoa.fleet.registry.test.TenantServiceClient;
-import io.micronaut.context.annotation.Value;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
@@ -28,8 +27,4 @@ public abstract class ComposeTest {
 	public InfluxDBClient influxdb;
 	@Inject
 	public MonitoringClient monitoring;
-
-	// registry.setConfiguration("mqtt.url", mqttUrl);
-	@Value("${mqtt.client.server-uri}")
-	public String mqttUrl;
 }

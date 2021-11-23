@@ -7,6 +7,9 @@ import java.util.Optional;
 
 import javax.validation.constraints.NotNull;
 
+import io.inoa.fleet.registry.domain.ConfigurationDefinition;
+import io.inoa.fleet.registry.domain.Tenant;
+import io.inoa.fleet.registry.rest.management.ConfigurationTypeVO;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Context;
 import lombok.Getter;
@@ -25,6 +28,7 @@ public class ApplicationProperties {
 
 	private SecurityProperties security = new SecurityProperties();
 	private RegistryAuthProperties auth = new RegistryAuthProperties();
+	private TenantProperties tenant = new TenantProperties();
 	private GatewayProperties gateway = new GatewayProperties();
 
 	/** Micronaut security related properties. */
@@ -118,6 +122,44 @@ public class ApplicationProperties {
 			/** Reject tokens with claim <code>iat</code> older than this threshold (prevents eternal token). */
 			@NotNull
 			private Optional<Duration> issuedAtThreshold = Optional.of(Duration.ofMinutes(15));
+		}
+	}
+
+	/** Properties regarding tenants. */
+	@ConfigurationProperties("tenant")
+	@Getter
+	@Setter
+	public static class TenantProperties {
+
+		private List<ConfigurationDefinitionDefault> configurations = new ArrayList<>();
+
+		/** Represents a {@link ConfigurationDefinition} with default value. */
+		@Getter
+		@Setter
+		public static class ConfigurationDefinitionDefault {
+
+			@NotNull
+			private String key;
+			@NotNull
+			private ConfigurationTypeVO type;
+			@NotNull
+			private String description;
+
+			private Integer minimum;
+			private Integer maximum;
+			private String pattern;
+			private String value;
+
+			public ConfigurationDefinition toConfigurationDefinition(Tenant tenant) {
+				return new ConfigurationDefinition()
+						.setTenant(tenant)
+						.setKey(key)
+						.setDescription(description)
+						.setType(type)
+						.setMinimum(minimum)
+						.setMaximum(maximum)
+						.setPattern(pattern);
+			}
 		}
 	}
 }
