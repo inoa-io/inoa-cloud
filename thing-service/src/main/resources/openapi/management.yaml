@@ -1,0 +1,674 @@
+openapi: 3.0.3
+info:
+  title: "Thing: Management API"
+  description: |
+    * This API handles all thing related stuff
+  version: 1.0.0
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: inoa.io
+    url: https://github.com/inoa-io
+servers:
+  - url: http://thing-service:8080
+security:
+  - Keycloak: []
+  - BearerAuth: []
+paths:
+  /thing-types:
+    get:
+      tags:
+        - thingTypes
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/Sort'
+        - name: filter
+          description: 'Search in name. Supports wildcard *, is case insensitive.'
+          in: query
+          schema:
+            type: string
+            maxLength: 10
+            example: dvh
+      summary: 'Find thing types.'
+      description: 'Returns all thing types.'
+      operationId: findThingTypes
+      responses:
+        200:
+          description: 'Returns thing types.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingTypePage'
+        401:
+          description: 'Unauthorized.'
+    post:
+      tags:
+        - thingTypes
+      summary: 'Create thing type.'
+      description: TODO
+      operationId: createThingType
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingTypeCreate'
+      responses:
+        201:
+          description: 'Tenant created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+
+  /thing-types/{thing_type_id}:
+    parameters:
+      - $ref: '#/components/parameters/ThingTypeId'
+    get:
+      tags:
+        - thingTypes
+      summary: 'Find Thing type.'
+      description: 'return a single thing type'
+      operationId: findThingType
+      responses:
+        200:
+          description: 'Thing type found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing Type not found.'
+    put:
+      tags:
+        - thingTypes
+      summary: 'Update Thing type.'
+      description: TODO
+      operationId: updateThingType
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingTypeUpdate'
+      responses:
+        200:
+          description: 'Thing type updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing type not found.'
+
+    delete:
+      tags:
+        - thingTypes
+      summary: 'Delete thing type.'
+      description: TODO
+      operationId: deleteThingType
+      responses:
+        204:
+          description: 'Thing type deleted.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing type not found.'
+
+  /thing-types/{thing_type_id}/details:
+    parameters:
+      - $ref: '#/components/parameters/ThingTypeId'
+    get:
+      tags:
+        - thingTypes
+      summary: 'Find Thing type with its details.'
+      description: 'Find Thing type with its details.'
+      operationId: findThingTypeWithDetails
+      responses:
+        200:
+          description: 'Thing type with details found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingTypeDetail'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing Type not found.'
+  /things:
+    get:
+      tags:
+        - things
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/Sort'
+        - name: filter
+          description: 'Search in name. Supports wildcard *, is case insensitive.'
+          in: query
+          schema:
+            type: string
+            maxLength: 10
+            example: dvh
+      summary: 'Find things.'
+      description: 'Returns all things ordered by name.'
+      operationId: findThings
+      responses:
+        200:
+          description: 'Page with thing types.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingPage'
+        401:
+          description: 'Unauthorized.'
+    post:
+      tags:
+        - things
+      summary: 'Create thing type.'
+      description: TODO
+      operationId: createThing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingCreate'
+      responses:
+        201:
+          description: 'Thing created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thing'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+
+  /things/{thing_id}:
+    parameters:
+      - $ref: '#/components/parameters/ThingId'
+    get:
+      tags:
+        - things
+      summary: 'Find Thing.'
+      description: TODO
+      operationId: findThing
+      responses:
+        200:
+          description: 'Thing found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingDetail'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing not found.'
+    put:
+      tags:
+        - things
+      summary: 'Update Thing.'
+      description: TODO
+      operationId: updateThing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingUpdate'
+      responses:
+        200:
+          description: 'Thing updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Thing'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing not found.'
+    delete:
+      tags:
+        - things
+      summary: 'Delete thing.'
+      description: TODO
+      operationId: deleteThing
+      responses:
+        204:
+          description: 'Thing deleted.'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing type not found.'
+  /things/byGatewayId/{gateway_id}:
+    parameters:
+      - $ref: '#/components/parameters/GatewayId'
+    get:
+      tags:
+        - things
+      parameters:
+        - $ref: '#/components/parameters/PageablePage'
+        - $ref: '#/components/parameters/PageableSize'
+        - $ref: '#/components/parameters/Sort'
+        - name: filter
+          description: 'Search in name. Supports wildcard *, is case insensitive.'
+          in: query
+          schema:
+            type: string
+            maxLength: 10
+            example: dvh
+      summary: 'Find all things for a gateway.'
+      description: 'Returns all things.'
+      operationId: findThingsByGatewayId
+      responses:
+        200:
+          description: 'Page with thing types.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingPage'
+        401:
+          description: 'Unauthorized.'
+
+  /things/syncToGateway/{gateway_id}:
+    parameters:
+      - $ref: '#/components/parameters/GatewayId'
+    get:
+      tags:
+        - things
+      summary: 'Sync configuration to gateway.'
+      description: 'TODO'
+      operationId: syncConfigToGateway
+      responses:
+        200:
+          description: 'Page with thing types.'
+          content:
+            application/json:
+              schema:
+                type: object
+        401:
+          description: 'Unauthorized.'
+
+components:
+  schemas:
+    Timestamp:
+      description: 'Common timestamp for created/updated timestamps.'
+      type: string
+      format: date-time
+      example: '2021-01-01T00:00:00'
+    Id:
+      description: 'Id as technical reference (never changes).'
+      type: string
+      format: uuid
+    Enabled:
+      description: 'Flag if enabled or not.'
+      type: boolean
+      default: true
+      example: false
+    Name:
+      description: 'Name.'
+      type: string
+    Key:
+      description: 'key.'
+      type: string
+      pattern: '[a-z_\-]'
+
+    ###
+    ### Thing Type
+    ###
+
+    ThingType:
+      description: 'User with fields.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/Name'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - name
+        - created
+        - updated
+    ThingTypeDetail:
+      description: 'User with fields.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/Name'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingTypeChannel'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - name
+        - created
+        - updated
+    ThingTypePage:
+      description: 'Page for thing types.'
+      type: object
+      properties:
+        content:
+          description: 'List of entries on page.'
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingType'
+        total_size:
+          description: 'Total available entries.'
+          type: integer
+          format: int32
+          example: 0
+      required:
+        - content
+        - total_size
+    ThingTypeCreate:
+      description: 'User to create.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingTypeChannelCreate'
+      required:
+        - name
+    ThingTypeUpdate:
+      description: 'User to update.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingTypeChannelCreate'
+      required:
+        - name
+    ThingTypeChannel:
+      description: 'Thing Type Channel with fields.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/Name'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - name
+        - created
+        - updated
+
+    ThingTypeChannelCreate:
+      description: 'Thing Type Channel with fields.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/PropertyDefinition'
+      required:
+        - name
+
+    ###
+    ### Thing Type
+    ###
+
+    ThingPage:
+      description: 'Page for thing types.'
+      type: object
+      properties:
+        content:
+          description: 'List of entries on page.'
+          type: array
+          items:
+            $ref: '#/components/schemas/Thing'
+        total_size:
+          description: 'Total available entries.'
+          type: integer
+          format: int32
+          example: 0
+      required:
+        - content
+        - total_size
+    Thing:
+      description: 'Thing with fields.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/Name'
+        gateway_id:
+          $ref: '#/components/schemas/Id'
+        thing_type_id:
+          $ref: '#/components/schemas/Id'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - name
+        - created
+        - updated
+    ThingDetail:
+      description: 'Thing with fields and details.'
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/Id'
+        name:
+          $ref: '#/components/schemas/Name'
+        gateway_id:
+          $ref: '#/components/schemas/Id'
+        thing_type_id:
+          $ref: '#/components/schemas/Id'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingChannel'
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - id
+        - name
+        - created
+        - updated
+    ThingCreate:
+      description: 'Thing to create.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        gateway_id:
+          $ref: '#/components/schemas/Id'
+        thing_type_id:
+          $ref: '#/components/schemas/Id'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ThingChannel'
+      required:
+        - name
+        - thing_type_id
+    ThingUpdate:
+      description: 'Thing to update.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        gateway_id:
+          $ref: '#/components/schemas/Id'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+      required:
+        - name
+    ThingChannel:
+      description: 'Thing channel to create.'
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/Property'
+      required:
+        - name
+
+    ###
+    ### Common
+    ###
+
+    PropertyDefinition:
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/Name'
+        key:
+          type: string
+        inputType:
+          type: string
+    Property:
+      type: object
+      properties:
+        key:
+          $ref: '#/components/schemas/Name'
+        value:
+          type: object
+    Properties:
+      type: string
+      additionalProperties:
+        type: object
+      example:
+        test-a: this-is-a
+        test-b: this-is-b
+
+  parameters:
+    PageablePage:
+      description: 'Page number for pagination.'
+      name: page
+      in: query
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      example: 0
+    PageableSize:
+      description: 'Page size for pagination.'
+      name: size
+      in: query
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        maximum: 100
+      example: 50
+    Sort:
+      description: 'Sorting.'
+      name: sort
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+          pattern: '[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?'
+      example:
+        - name,asc
+        - name,desc
+    ThingTypeId:
+      name: thing_type_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    ThingId:
+      name: thing_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+    GatewayId:
+      name: gateway_id
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Id'
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    Keycloak:
+      type: openIdConnect
+      openIdConnectUrl: http://keycloak:8080/realms/inoa/.well-known/openid-configuration

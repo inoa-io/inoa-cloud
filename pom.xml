@@ -33,6 +33,7 @@
 		<module>hono-bridge</module>
 		<module>translator</module>
 		<module>exporter</module>
+		<module>thing-service</module>
 		<module>test</module>
 	</modules>
 
