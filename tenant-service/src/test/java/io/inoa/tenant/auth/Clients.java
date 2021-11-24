@@ -8,6 +8,7 @@ import io.micronaut.grpc.annotation.GrpcChannel;
 
 @Factory
 public class Clients {
+
 	@Bean
 	AuthorizationGrpc.AuthorizationStub reactiveStub(@GrpcChannel("istioAuth") ManagedChannel channel) {
 		return AuthorizationGrpc.newStub(channel);

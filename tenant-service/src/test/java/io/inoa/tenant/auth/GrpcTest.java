@@ -8,16 +8,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.security.oauth2.jwt.Jwt;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 import io.envoyproxy.envoy.config.core.v3.HeaderValueOption;
 import io.envoyproxy.envoy.service.auth.v3.AttributeContext;
@@ -67,12 +65,7 @@ public class GrpcTest extends AbstractTest {
 	void successTokenExchange() throws InterruptedException, ParseException, JOSEException {
 
 		TestStreamObserver responseStreamObserver = new TestStreamObserver();
-		Jwt mock = mock(Jwt.class);
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("sub", "test");
-		when(mock.getClaims()).thenReturn(claims);
-
-		when(jwtService.parseJwtToken(any())).thenReturn(mock);
+		when(jwtService.parseJwtToken(any())).thenReturn(new JWTClaimsSet.Builder().subject("test").build());
 		when(jwtService.createJwtToken(any(), any())).thenReturn("my_token");
 		// var authorization =
 		// request.getAttributes().getRequest().getHttp().getHeadersMap().get("authorization");
