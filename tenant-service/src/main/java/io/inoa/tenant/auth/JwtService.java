@@ -1,39 +1,38 @@
 package io.inoa.tenant.auth;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtDecoders;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.micronaut.context.exceptions.BeanInstantiationException;
-import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.io.ResourceResolver;
+import io.micronaut.security.token.jwt.signature.jwks.JwkValidator;
+import io.micronaut.security.token.jwt.signature.jwks.JwksSignature;
 import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -42,48 +41,51 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 public class JwtService {
 
-	private final Map<String, AuthenticationHelper> authenticationManagers = new ConcurrentHashMap<>();
-	@Getter
-	private final JWK jwk;
+	private final Map<String, JwksSignature> issuers = new HashMap<>();
 	private final InoaAuthProperties properties;
+	private final JwkValidator jwkValidator;
+	private final @Getter JWK jwk;
 
-	public JwtService(InoaAuthProperties properties, ResourceResolver resourceResolver) {
+	public JwtService(InoaAuthProperties properties, JwkValidator jwkValidator, ResourceResolver resourceResolver) {
 		this.properties = properties;
+		this.jwkValidator = jwkValidator;
 		this.jwk = loadPrivateKey(resourceResolver);
 	}
 
-	public String getKeyID() {
-		return properties.getKeyId();
+	public JWTClaimsSet parseJwtToken(String token) throws JOSEException, ParseException {
+
+		var jwt = SignedJWT.parse(token);
+		var claims = jwt.getJWTClaimsSet();
+
+		var remoteJwk = issuers.computeIfAbsent(claims.getIssuer(), i -> new JwksSignature(i, null, jwkValidator));
+		if (remoteJwk.verify(jwt)) {
+			throw new JOSEException("Signature invalid.");
+		}
+
+		return claims;
 	}
 
-	public Jwt parseJwtToken(String token) throws ParseException {
-		String issuer = JWTParser.parse(token).getJWTClaimsSet().getIssuer();
+	public String createJwtToken(JWTClaimsSet claims, String tenant) throws JOSEException {
 
-		AuthenticationHelper authenticationHelper = this.authenticationManagers.computeIfAbsent(issuer, k -> {
-			JwtDecoder jwtDecoder = JwtDecoders.fromIssuerLocation(k);
-			return new AuthenticationHelper(jwtDecoder);
-		});
-		return authenticationHelper.authenticate(token);
-	}
+		var now = Instant.now();
+		var jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
+				.keyID(properties.getKeyId())
+				.type(JOSEObjectType.JWT)
+				.build();
+		var jwtPayload = new JWTClaimsSet.Builder()
+				.subject(claims.getSubject())
+				.claim("uid", claims.getSubject())
+				.issuer(properties.getIssuer()).audience(List.of("inoa-cloud"))
+				.claim("tenant", tenant).claim("email", claims.getClaim("email"))
+				.claim("preferred_username", claims.getClaim("preferred_username"))
+				.issueTime(Date.from(now))
+				.expirationTime(Date.from(now.plusSeconds(60)))
+				.build();
+		var jwt = new SignedJWT(jwtHeader, jwtPayload);
 
-	public String createJwtToken(Jwt auth, String tenant) throws JOSEException {
-		JWTClaimsSet claimsSet = new JWTClaimsSet.Builder().subject(auth.getClaim("sub"))
-				.claim("uid", auth.getClaim("sub")).issuer(properties.getIssuer()).audience(List.of("inoa-cloud"))
-				.claim("tenant", tenant).claim("email", auth.getClaim("email"))
-				.claim("preferred_username", auth.getClaim("preferred_username")).issueTime(new Date())
-				.expirationTime(new Date(new Date().getTime() + 60 * 1000)).build();
-
-		SignedJWT signedJWT = new SignedJWT(
-				new JWSHeader.Builder(JWSAlgorithm.RS256).keyID(this.getKeyID()).type(JOSEObjectType.JWT).build(),
-				claimsSet);
-		JWSSigner signer = this.getJWSSigner();
-		// Compute the RSA signature
-		signedJWT.sign(signer);
-		return signedJWT.serialize();
-	}
-
-	private JWSSigner getJWSSigner() throws JOSEException {
-		return new RSASSASigner(jwk.toRSAKey());
+		var signer = new RSASSASigner(jwk.toRSAKey());
+		jwt.sign(signer);
+		return jwt.serialize();
 	}
 
 	private JWK loadPrivateKey(ResourceResolver resourceResolver) {
@@ -102,8 +104,11 @@ public class JwtService {
 			} catch (NoSuchAlgorithmException e) {
 				throw new BeanInstantiationException("Unable to generate key.", e);
 			}
-			return new RSAKey.Builder((RSAPublicKey) pair.getPublic()).privateKey((RSAPrivateKey) pair.getPrivate())
-					.keyUse(KeyUse.SIGNATURE).keyID(properties.getKeyId()).build();
+			return new RSAKey.Builder((RSAPublicKey) pair.getPublic())
+					.privateKey((RSAPrivateKey) pair.getPrivate())
+					.keyUse(KeyUse.SIGNATURE)
+					.keyID(properties.getKeyId())
+					.build();
 		}
 
 		// read key from resource
@@ -117,12 +122,16 @@ public class JwtService {
 		}
 
 		try {
-			var reader = new BufferedReader(new InputStreamReader(privateKeyAsStream.get()));
-			JWK jwk = JWK.parseFromPEMEncodedObjects(IOUtils.readText(reader));
-			return new RSAKey.Builder((RSAPublicKey) jwk.toRSAKey().toPublicKey())
-					.privateKey((RSAPrivateKey) jwk.toRSAKey().toPrivateKey()).keyUse(KeyUse.SIGNATURE)
-					.keyID(properties.getKeyId()).build();
-		} catch (JOSEException | IOException e) {
+			var bytes = privateKeyAsStream.get().readAllBytes();
+			var keyFactory = KeyFactory.getInstance("RSA");
+			var key = (RSAPrivateCrtKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(bytes));
+			var keySpec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
+			return new RSAKey.Builder((RSAPublicKey) keyFactory.generatePublic(keySpec))
+					.privateKey(key)
+					.keyUse(KeyUse.SIGNATURE)
+					.keyID(properties.getKeyId())
+					.build();
+		} catch (IOException | NoSuchAlgorithmException | InvalidKeySpecException e) {
 			var message = "Private key " + privateKey + " is not readable.";
 			log.error(message, e);
 			throw new BeanInstantiationException(message, e);
