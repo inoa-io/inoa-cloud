@@ -1,4 +1,6 @@
 micronaut:
+  server:
+    port: ${random.port}
 
   ## test client with increased read-timeout for debbuging
   http:
@@ -28,15 +30,15 @@ grpc:
       address: 'localhost:${grpc.server.port}'
       plaintext: true
       max-retry-attempts: 10
-inoa:
-  auth:
-    key-id: test
-    issuer: http://authz.inoa-cloud:8090
+
+tenant:
+  key-id: test
+  issuer: http://authz.inoa-cloud:8090
 
 ## Custom log configuration
 logger:
   levels:
-    io.inoa: DEBUG
-    io.micronaut.data: DEBUG
+    io.inoa: INFO
+    io.micronaut.data: INFO
     io.micronaut.http.client.exceptions.HttpClientResponseException: "OFF"
     org.apache.kafka: WARN

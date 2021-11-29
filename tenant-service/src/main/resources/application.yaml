@@ -23,11 +23,18 @@ micronaut:
 
   security:
 
+    ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#keys
+    endpoints:
+      keys:
+        path: /protocol/openid-connect/certs
+
     ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#interceptUrlMap
     intercept-url-map:
       - pattern: /endpoints/**
         access: isAnonymous()
       - pattern: /openapi/**
+        access: isAnonymous()
+      - pattern: /protocol/openid-connect/certs
         access: isAnonymous()
       - pattern: /**
         access: isAuthenticated()

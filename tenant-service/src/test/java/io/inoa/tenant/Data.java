@@ -96,6 +96,10 @@ public class Data {
 		return tenant(tenantId(), tenantName(), true, true);
 	}
 
+	public Tenant tenantDisabled() {
+		return tenant(tenantId(), tenantName(), false, false);
+	}
+
 	public Tenant tenant(String tenantId, String name, boolean enabled, boolean deleted) {
 		return tenantRepository.save(new Tenant()
 				.setTenantId(tenantId)
