@@ -1,6 +1,7 @@
 package io.inoa.cnpm.tenant.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,6 +11,9 @@ import java.util.Date;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.JWTClaimsSet;
 
 import io.envoyproxy.envoy.config.core.v3.HeaderValue;
 import io.envoyproxy.envoy.config.core.v3.HeaderValueOption;
@@ -25,6 +29,7 @@ import io.inoa.cnpm.tenant.test.TestJwkController;
 import io.inoa.cnpm.tenant.test.TestStreamObserver;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpHeaders;
+import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
 import jakarta.inject.Inject;
 
 /**
@@ -39,10 +44,12 @@ public class AuthorizationTest extends AbstractTest {
 	AuthorizationGrpc.AuthorizationStub grpc;
 	@Inject
 	TestJwkController test;
+	@Inject
+	SignatureGeneratorConfiguration signature;
 
-	@DisplayName("success")
+	@DisplayName("sucess with user")
 	@Test
-	void success() {
+	void successWithUser() {
 
 		var tenant = data.tenant();
 		var user = data.user(tenant);
@@ -57,6 +64,26 @@ public class AuthorizationTest extends AbstractTest {
 				.findAny().orElse(null);
 		assertNotNull(headerValue, "header value");
 		assertTrue(headerValue.startsWith(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " "), "bearer");
+		assertFalse(headerValue.endsWith(jwt), "jwt not changed");
+	}
+
+	@DisplayName("sucess with application")
+	@Test
+	void successWithApplcation() throws JOSEException {
+
+		var tenant = data.tenant();
+		var jwt = signature.sign(new JWTClaimsSet.Builder().build()).serialize();
+
+		var response = request(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
+		assertEquals(Code.OK.value(), response.getStatus().getCode(), "status");
+		var headerValue = response.getOkResponse().getHeadersList().stream()
+				.map(HeaderValueOption::getHeader)
+				.filter(header -> HttpHeaders.AUTHORIZATION.equals(header.getKey()))
+				.map(HeaderValue::getValue)
+				.findAny().orElse(null);
+		assertNotNull(headerValue, "header value");
+		assertTrue(headerValue.startsWith(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " "), "bearer");
+		assertTrue(headerValue.endsWith(jwt), "jwt changed");
 	}
 
 	@DisplayName("fail: token claim email not found")

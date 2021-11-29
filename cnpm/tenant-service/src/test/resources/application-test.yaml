@@ -43,5 +43,5 @@ logger:
   levels:
     io.inoa: INFO
     io.micronaut.data: INFO
-    io.micronaut.http.client.exceptions.HttpClientResponseException: "OFF"
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
     org.apache.kafka: WARN

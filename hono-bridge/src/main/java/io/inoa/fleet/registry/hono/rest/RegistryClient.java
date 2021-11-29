@@ -7,11 +7,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.HttpClientErrorException.NotFound;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
@@ -71,8 +71,8 @@ public class RegistryClient {
 			return Optional.of(type == null
 					? restTemplate.exchange(url, HttpMethod.GET, request, ref).getBody()
 					: restTemplate.exchange(url, HttpMethod.GET, request, type).getBody());
-		} catch (NotFound e) {
-			log.warn("Not found {} for tenant {}", uri, tenantId);
+		} catch (HttpStatusCodeException e) {
+			log.warn("Status {} for uri {} with tenant {}", e.getStatusCode(), uri, tenantId);
 			return Optional.empty();
 		} catch (RestClientException e) {
 			log.error("Unable to get {}.", url, e);
@@ -81,24 +81,29 @@ public class RegistryClient {
 	}
 
 	private String getAccessToken() {
-		HttpHeaders headers = new HttpHeaders();
+
+		var headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-		LinkedMultiValueMap<String, String> tokenRequest = new LinkedMultiValueMap<>();
-		tokenRequest.add("client_id", properties.getClientId());
-		tokenRequest.add("client_secret", properties.getClientSecret());
-		tokenRequest.add("grant_type", "client_credentials");
-		HttpEntity<?> request = new HttpEntity<>(tokenRequest, headers);
+
+		var payload = new LinkedMultiValueMap<String, String>();
+		payload.add("client_id", properties.getClientId());
+		payload.add("client_secret", properties.getClientSecret());
+		payload.add("grant_type", "client_credentials");
+
 		try {
-			ResponseEntity<AccessToken> result = restTemplate.exchange(properties.getKeycloakUrl(), HttpMethod.POST,
-					request, AccessToken.class);
-			if (result.getBody() == null) {
-				return "";
+			var result = restTemplate.exchange(
+					properties.getKeycloakUrl(),
+					HttpMethod.POST,
+					new HttpEntity<>(payload, headers),
+					AccessToken.class);
+			if (result.getStatusCode() == HttpStatus.OK) {
+				return result.getBody().getAccessToken();
 			}
-			return result.getBody().getAccessToken();
+			log.warn("Failed to obtain token with status {} from keycloak.", result.getStatusCode());
 		} catch (Exception e) {
-			log.error(e.getMessage());
-			return "";
+			log.warn("Failed to obtain token from keycloak.", e);
 		}
+		return null;
 	}
 
 	@Data

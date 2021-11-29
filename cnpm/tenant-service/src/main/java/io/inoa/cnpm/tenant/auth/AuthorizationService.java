@@ -2,11 +2,12 @@ package io.inoa.cnpm.tenant.auth;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.MDC;
 
 import com.google.rpc.Status;
-import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.envoyproxy.envoy.config.core.v3.HeaderValue;
@@ -27,6 +28,7 @@ import io.inoa.cnpm.tenant.domain.UserRepository;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpHeaders;
+import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBase {
 
 	private final String prefix = HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " ";
+	private final Set<SignatureConfiguration> upstreamSignatures;
 	private final ApplicationProperties properties;
 	private final TokenService service;
 	private final TenantRepository tenantRepository;
@@ -74,33 +77,37 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 		} finally {
 			MDC.remove("tenantId");
 			MDC.remove("userId");
+			MDC.remove("azp");
+			MDC.remove("aud");
 		}
 	}
 
 	private Optional<SignedJWT> exchangeTokenForRequest(CheckRequest request) {
 		var headers = request.getAttributes().getRequest().getHttp().getHeadersMap();
 
+		var token = getToken(headers);
+		if (token.isEmpty()) {
+			return Optional.empty();
+		}
+
 		var tenant = getTenantFromRequest(headers);
 		if (tenant.isEmpty()) {
 			return Optional.empty();
 		}
 
-		var claims = getClaimsFromRequest(headers);
-		if (claims.isEmpty()) {
-			return Optional.empty();
+		// bypass?
+
+		if (isByPassRequestFromUpstream(token.get())) {
+			log.debug("Bybass signature from upstream oidc.");
+			return Optional.of(token.get().getJwt());
 		}
 
-		var user = getUserFromClaims(claims.get());
-		if (user.isEmpty()) {
-			return Optional.empty();
-		}
+		// get user with assignment
 
-		var assignemnt = getAssignemnt(tenant.get(), user.get());
-		if (assignemnt.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(service.exchange(claims.get(), assignemnt.get()));
+		return token.filter(service::isValid)
+				.flatMap(this::getUserFromClaims)
+				.flatMap(user -> getAssignemnt(tenant.get(), user))
+				.map(assignment -> service.exchange(token.get(), assignment));
 	}
 
 	private Optional<Tenant> getTenantFromRequest(Map<String, String> headers) {
@@ -129,24 +136,31 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 		return tenant;
 	}
 
-	private Optional<JWTClaimsSet> getClaimsFromRequest(Map<String, String> headers) {
+	private Optional<Token> getToken(Map<String, String> headers) {
 		return Optional
 				// headers provided by envoy are always lowercase, so adjust header name
 				.ofNullable(headers.get(HttpHeaders.AUTHORIZATION.toLowerCase()))
 				.filter(value -> value.startsWith(prefix))
 				.map(value -> value.substring(prefix.length()))
-				.flatMap(service::parse);
+				.flatMap(service::toToken);
 	}
 
-	private Optional<User> getUserFromClaims(JWTClaimsSet claims) {
+	private boolean isByPassRequestFromUpstream(Token token) {
+		return token.getEmailClaim().isEmpty() && upstreamSignatures.stream().anyMatch(signature -> {
+			try {
+				return signature.verify(token.getJwt());
+			} catch (JOSEException e) {
+				return false;
+			}
+		});
+	}
 
-		var email = Optional
-				.ofNullable(claims.getClaim("email"))
-				.filter(String.class::isInstance)
-				.map(String.class::cast);
+	private Optional<User> getUserFromClaims(Token token) {
+
+		var email = token.getEmailClaim();
 		if (email.isEmpty()) {
 			log.info("Ignore request because email claim not found for token from iss={} with aud={} and azp={}.",
-					claims.getIssuer(), claims.getAudience(), claims.getClaim("azp"));
+					token.getClaims().getIssuer(), token.getClaims().getAudience(), token.getClaims().getClaim("azp"));
 			return Optional.empty();
 		}
 

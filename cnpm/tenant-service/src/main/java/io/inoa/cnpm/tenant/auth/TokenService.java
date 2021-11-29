@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.MDC;
+
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -75,69 +77,74 @@ public class TokenService implements JwkProvider {
 	}
 
 	/**
-	 * Parse token and validate signature against issuer.
+	 * Parse token.
 	 *
 	 * @param token Provided token.
-	 * @return Optional with claims of provided token.
+	 * @return Optional with jwt and claims of provided token.
 	 */
-	@SneakyThrows(JOSEException.class)
-	public Optional<JWTClaimsSet> parse(String token) {
-
-		// parse
-
-		SignedJWT jwt = null;
-		JWTClaimsSet claims;
+	public Optional<Token> toToken(String token) {
 		try {
-			jwt = SignedJWT.parse(token);
-			claims = jwt.getJWTClaimsSet();
+			var jwt = SignedJWT.parse(token);
+			var claims = jwt.getJWTClaimsSet();
+			MDC.put("azp", String.valueOf(claims.getClaim("azp")));
+			MDC.put("aud", String.valueOf(claims.getAudience()));
+			return Optional.of(new Token(jwt, claims));
 		} catch (ParseException e) {
 			log.info("Ignored token because parsing failed: {}", e.getMessage());
 			return Optional.empty();
 		}
+	}
 
-		// validate
+	/**
+	 * Validate signature against issuer.
+	 *
+	 * @param token Token with jwt and claims.
+	 * @return <code>true</code> if valid.
+	 */
+	@SneakyThrows(JOSEException.class)
+	public boolean isValid(Token token) {
 
-		var issuer = claims.getIssuer() + "/protocol/openid-connect/certs";
+		var issuer = token.getClaims().getIssuer() + "/protocol/openid-connect/certs";
 		try {
 			new URL(issuer).toURI();
 		} catch (MalformedURLException | URISyntaxException e) {
 			log.info("Ignored token with unsupported issuer: {}", issuer);
-			return Optional.empty();
+			return false;
 		}
 
 		var jwks = jwkSignatures.computeIfAbsent(issuer, i -> new JwksSignature(i, null, new DefaultJwkValidator()));
-		if (!jwks.verify(jwt)) {
+		if (!jwks.verify(token.getJwt())) {
 			log.info("Ignored token with invalid signature.");
-			return Optional.empty();
+			return false;
 		}
-		if (!jwtClaimsValidator.stream().allMatch(v -> v.validate(new JwtClaimsSetAdapter(claims), null))) {
+		if (!jwtClaimsValidator.stream().allMatch(v -> v.validate(new JwtClaimsSetAdapter(token.getClaims()), null))) {
 			log.info("Ignored token with invalid content.");
-			return Optional.empty();
+			return false;
 		}
 
-		return Optional.of(claims);
+		return true;
 	}
 
 	/**
 	 * Copy claims and set tenant & email.
 	 *
-	 * @param claims     Claim set from request token.
+	 * @param token      Token with claims from request.
 	 * @param assignment Tenant to user assignemnt to get token for.
 	 * @return Signed token.
 	 */
 	@SneakyThrows(JOSEException.class)
-	public SignedJWT exchange(JWTClaimsSet claims, TenantUser assignment) {
+	public SignedJWT exchange(Token token, TenantUser assignment) {
 
-		log.debug("Exchange token for {}/{} with issuer {}.",
+		log.debug("Exchange token for with issuer {}.",
 				assignment.getTenant().getTenantId(),
 				assignment.getUser().getEmail(),
-				claims.getIssuer());
+				token.getClaims().getIssuer());
 
 		var jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
 				.keyID(properties.getKeyId())
 				.type(JOSEObjectType.JWT)
 				.build();
-		var jwtPayload = new JWTClaimsSet.Builder(claims)
+		var jwtPayload = new JWTClaimsSet.Builder(token.getClaims())
 				.claim("tenant", assignment.getTenant().getTenantId())
 				.issuer(properties.getIssuer())
 				.issueTime(Date.from(Instant.now()))

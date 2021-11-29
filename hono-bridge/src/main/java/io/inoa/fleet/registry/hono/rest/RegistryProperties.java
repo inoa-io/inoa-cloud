@@ -22,7 +22,7 @@ public class RegistryProperties {
 	private String clientSecret;
 	private Duration tenantCacheDuration;
 	private Duration gatewayCacheDuration;
-	private Duration credentialsCacheDuration;
+	private Duration credentialCacheDuration;
 
 	public CacheDirective getTenantCache() {
 		return tenantCacheDuration == null
@@ -36,9 +36,9 @@ public class RegistryProperties {
 				: CacheDirective.maxAgeDirective(gatewayCacheDuration);
 	}
 
-	public CacheDirective getCredentialsCache() {
-		return credentialsCacheDuration == null
+	public CacheDirective getCredentialCache() {
+		return credentialCacheDuration == null
 				? CacheDirective.noCacheDirective()
-				: CacheDirective.maxAgeDirective(credentialsCacheDuration);
+				: CacheDirective.maxAgeDirective(credentialCacheDuration);
 	}
 }

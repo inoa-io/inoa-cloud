@@ -40,7 +40,7 @@ public class CredentialsServiceImpl implements CredentialsService {
 								.add(passwordEncoder.encode(new String(password.getPassword()))))
 						.put(CredentialsConstants.FIELD_TYPE, CredentialsConstants.SECRETS_TYPE_HASHED_PASSWORD)
 						.put(CredentialsConstants.FIELD_AUTH_ID, gatewayId))
-				.map(json -> CredentialsResult.from(HttpURLConnection.HTTP_OK, json, properties.getCredentialsCache()))
+				.map(json -> CredentialsResult.from(HttpURLConnection.HTTP_OK, json, properties.getCredentialCache()))
 				.orElseGet(() -> CredentialsResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
 	}
 

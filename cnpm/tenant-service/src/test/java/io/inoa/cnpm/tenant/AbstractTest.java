@@ -41,6 +41,9 @@ import jakarta.inject.Inject;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractTest implements TestPropertyProvider {
 
+	private static final KafkaContainer KAFKA = new KafkaContainer(
+			DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
+
 	@Inject
 	public Data data;
 	@Inject
@@ -102,10 +105,9 @@ public abstract class AbstractTest implements TestPropertyProvider {
 
 	@Override
 	public Map<String, String> getProperties() {
-		var kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
-		kafka.start();
+		KAFKA.start();
 		return Map.of(
-				"kafka.bootstrap.servers", kafka.getBootstrapServers(),
+				"kafka.bootstrap.servers", KAFKA.getBootstrapServers(),
 				"kafka.consumers.default.key.deserializer", StringDeserializer.class.getName(),
 				"kafka.consumers.default.value.deserializer", CloudEventDeserializer.class.getName(),
 				"kafka.consumers.default.metadata.max.age.ms", "200");
