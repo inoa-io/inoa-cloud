@@ -133,7 +133,6 @@ public class TokenService implements JwkProvider {
 				assignment.getUser().getEmail(),
 				claims.getIssuer());
 
-		var now = Instant.now();
 		var jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
 				.keyID(properties.getKeyId())
 				.type(JOSEObjectType.JWT)
@@ -141,8 +140,7 @@ public class TokenService implements JwkProvider {
 		var jwtPayload = new JWTClaimsSet.Builder(claims)
 				.claim("tenant", assignment.getTenant().getTenantId())
 				.issuer(properties.getIssuer())
-				.issueTime(Date.from(now))
-				.expirationTime(Date.from(now.plusSeconds(60)))
+				.issueTime(Date.from(Instant.now()))
 				.build();
 		var jwt = new SignedJWT(jwtHeader, jwtPayload);
 
