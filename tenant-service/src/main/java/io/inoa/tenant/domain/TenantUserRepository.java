@@ -24,6 +24,8 @@ public interface TenantUserRepository extends GenericRepository<TenantUser, Void
 
 	List<Tenant> findTenantByUserEmail(String email);
 
+	Optional<TenantUser> findByTenantAndUser(Tenant tenant, User user);
+
 	Optional<Tenant> findTenantByTenantTenantIdAndUserEmail(String tenantId, String email);
 
 	Page<User> findUserByTenant(Tenant tenant, Pageable pageable);

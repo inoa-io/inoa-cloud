@@ -15,25 +15,21 @@ import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 import com.nimbusds.jose.jwk.KeyType;
 import com.nimbusds.jose.jwk.KeyUse;
 
+import io.inoa.tenant.ApplicationProperties;
 import io.micronaut.context.exceptions.BeanInstantiationException;
-import io.micronaut.core.io.ResourceResolver;
-import io.micronaut.security.token.jwt.signature.jwks.DefaultJwkValidator;
-import io.micronaut.security.token.jwt.signature.jwks.JwkValidator;
 
 /**
- * Test for {@link JwtService}.
+ * Test for {@link TokenService}.
  *
+ * @author Rico Pahlisch
  * @author Stephan Schnabel
  */
-public class JwtServiceTest {
-
-	private final ResourceResolver resolver = new ResourceResolver();
-	private final JwkValidator validator = new DefaultJwkValidator();
+public class TokenServiceTest {
 
 	@DisplayName("generateToken")
 	@Test
 	void generateToken() {
-		var jwk = new JwtService(new InoaAuthProperties(), validator, resolver).getJwk();
+		var jwk = new TokenService(new ApplicationProperties()).retrieveJsonWebKeys().get(0);
 		assertEquals(KeyType.RSA, jwk.getKeyType(), "keyType");
 		assertEquals(KeyUse.SIGNATURE, jwk.getKeyUse(), "keyUse");
 	}
@@ -45,8 +41,8 @@ public class JwtServiceTest {
 		var keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
 		FileUtils.writeByteArrayToFile(keyFile.toFile(), keyPair.getPrivate().getEncoded());
 		assertTrue(keyFile.toFile().exists(), "file not exists");
-		var properties = new InoaAuthProperties().setPrivateKey("file://" + keyFile);
-		var jwk = new JwtService(properties, validator, resolver).getJwk();
+		var properties = new ApplicationProperties().setPrivateKey("file://" + keyFile);
+		var jwk = new TokenService(properties).retrieveJsonWebKeys().get(0);
 		assertEquals(KeyType.RSA, jwk.getKeyType(), "keyType");
 		assertEquals(KeyUse.SIGNATURE, jwk.getKeyUse(), "keyUse");
 	}
@@ -56,8 +52,8 @@ public class JwtServiceTest {
 	void readTokenNotFound() {
 		var keyFile = Paths.get("nope.key").toAbsolutePath();
 		assertFalse(keyFile.toFile().exists(), "file exists");
-		var properties = new InoaAuthProperties().setPrivateKey("file://" + keyFile);
-		assertThrows(BeanInstantiationException.class, () -> new JwtService(properties, validator, resolver));
+		var properties = new ApplicationProperties().setPrivateKey("file://" + keyFile);
+		assertThrows(BeanInstantiationException.class, () -> new TokenService(properties));
 	}
 
 	@DisplayName("readToken: pk not valid")
@@ -65,7 +61,7 @@ public class JwtServiceTest {
 	void readTokenInvalid() {
 		var keyFile = Paths.get("pom.xml").toAbsolutePath();
 		assertTrue(keyFile.toFile().exists(), "file not exists");
-		var properties = new InoaAuthProperties().setPrivateKey("file://" + keyFile);
-		assertThrows(BeanInstantiationException.class, () -> new JwtService(properties, validator, resolver));
+		var properties = new ApplicationProperties().setPrivateKey("file://" + keyFile);
+		assertThrows(BeanInstantiationException.class, () -> new TokenService(properties));
 	}
 }
