@@ -1,0 +1,65 @@
+openapi: 3.0.3
+info:
+  title: INOA Tenant Messaging Definitions
+  description: Model definitions for messages produced by INOA CNPM.
+  version: ${project.version}
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: GrayC GmbH
+    url: https://grayc.de
+paths: {}
+components:
+  schemas:
+
+    Tenant:
+      description: Tenant with fields.
+      type: object
+      properties:
+        tenant_id:
+          description: Id of tenant (cannot change).
+          type: string
+          minLength: 4
+          maxLength: 30
+          pattern: ^[a-z0-9\-]*$
+          example: inoa
+        name:
+          description: Human friendly display name (can change).
+          type: string
+          minLength: 3
+          maxLength: 100
+          example: inoa.io Project
+        enabled:
+          description: Flag if enabled or not.
+          type: boolean
+          default: true
+          example: false
+        created:
+          description: Timestamp for created.
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00
+        updated:
+          description: Timestamp for updated.
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00
+        deleted:
+          description: Timestamp for deleted.
+          type: string
+          nullable: false
+          format: date-time
+          example: "2021-01-01T00:00:00"
+      required:
+        - tenant_id
+        - name
+        - enabled
+        - created
+        - updated
+      example:
+        tenant_id: inoa
+        name: inoa.io Project
+        enabled: true
+        created: 2021-01-01T00:00:00
+        updated: 2021-02-01T00:00:00

@@ -94,14 +94,14 @@ services:
   ###
 
   tenant-service:
-    image: ${container.image.repository}/tenant-service:${container.image.version}
+    image: ${container.image.repository}/inoa/cnpm/tenant-service:${container.image.version}
     hostname: tenant-service
     environment:
       - MICRONAUT_ENVIRONMENTS=postgres
       - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - INOA_AUTH_KEY_ID=test
-      - INOA_AUTH_ISSUER=http://tenant-service
+      - INOA_CNPM_TENANT_KEY_ID=test
+      - INOA_CNPM_TENANT_ISSUER=http://tenant-service
       - LOGGER_LEVELS_IO_INOA=TRACE
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
     healthcheck:
@@ -109,10 +109,10 @@ services:
       interval: 5s
       retries: 30
     depends_on:
-      keycloak:
-        condition: service_healthy
       postgres:
         condition: service_healthy
+      keycloak:
+        condition: service_started
       kafka:
         condition: service_started
 
@@ -308,7 +308,7 @@ services:
     image: swaggerapi/swagger-ui
     hostname: swagger-ui
     environment:
-      - URLS=[{url:"/tenant-service-management.yaml",name:"Tenant Management API"},{url:"/gateway-registry-management.yaml",name:"Gateway Management API"},{url:"/gateway-registry-gateway.yaml",name:"Gateway API"}]
+      - URLS=[{url:"/tenant-management.yaml",name:"Tenant Management API"},{url:"/gateway-registry-management.yaml",name:"Gateway Management API"},{url:"/gateway-registry-gateway.yaml",name:"Gateway API"}]
       - DISPLAY_OPERATION_ID=true
       - DISPLAY_REQUEST_DURATION=true
       - PERSIST_AUTHORIZATION=true
@@ -317,7 +317,7 @@ services:
       - OAUTH_CLIENT_ID=gateway-registry-ui
       - OAUTH_CLIENT_SECRET=changeMe
     volumes:
-      - ${project.parent.basedir}/tenant-service/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/tenant-service-management.yaml
+      - ${project.parent.basedir}/cnpm/tenant-api-management/src/main/resources/openapi/spec.yaml:/usr/share/nginx/html/tenant-management.yaml
       - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/management.yaml:/usr/share/nginx/html/gateway-registry-management.yaml
       - ${project.parent.basedir}/gateway-registry/src/main/resources/openapi/gateway.yaml:/usr/share/nginx/html/gateway-registry-gateway.yaml
     depends_on:

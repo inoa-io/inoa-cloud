@@ -2,10 +2,10 @@ package io.inoa.fleet.registry.test;
 
 import java.util.UUID;
 
-import io.inoa.cloud.tenant.TenantCreateVO;
-import io.inoa.cloud.tenant.TenantUpdateVO;
-import io.inoa.cloud.tenant.TenantVO;
-import io.inoa.cloud.tenant.TenantsApiClient;
+import io.inoa.cnpm.tenant.management.TenantCreateVO;
+import io.inoa.cnpm.tenant.management.TenantUpdateVO;
+import io.inoa.cnpm.tenant.management.TenantVO;
+import io.inoa.cnpm.tenant.management.TenantsApiClient;
 import io.inoa.fleet.registry.infrastructure.TestAssertions;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
