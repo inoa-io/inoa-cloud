@@ -128,6 +128,11 @@ public class TokenService implements JwkProvider {
 	@SneakyThrows(JOSEException.class)
 	public SignedJWT exchange(JWTClaimsSet claims, TenantUser assignment) {
 
+		log.debug("Exchange token for {}/{} with issuer {}.",
+				assignment.getTenant().getTenantId(),
+				assignment.getUser().getEmail(),
+				claims.getIssuer());
+
 		var now = Instant.now();
 		var jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
 				.keyID(properties.getKeyId())

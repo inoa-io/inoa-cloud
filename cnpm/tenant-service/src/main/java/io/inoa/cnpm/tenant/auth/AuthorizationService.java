@@ -1,5 +1,6 @@
 package io.inoa.cnpm.tenant.auth;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.MDC;
@@ -10,7 +11,6 @@ import com.nimbusds.jwt.SignedJWT;
 
 import io.envoyproxy.envoy.config.core.v3.HeaderValue;
 import io.envoyproxy.envoy.config.core.v3.HeaderValueOption;
-import io.envoyproxy.envoy.service.auth.v3.AttributeContext.Request;
 import io.envoyproxy.envoy.service.auth.v3.AuthorizationGrpc;
 import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import io.envoyproxy.envoy.service.auth.v3.CheckResponse;
@@ -78,13 +78,14 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 	}
 
 	private Optional<SignedJWT> exchangeTokenForRequest(CheckRequest request) {
+		var headers = request.getAttributes().getRequest().getHttp().getHeadersMap();
 
-		var tenant = getTenantFromRequest(request.getAttributes().getRequest());
+		var tenant = getTenantFromRequest(headers);
 		if (tenant.isEmpty()) {
 			return Optional.empty();
 		}
 
-		var claims = getClaimsFromRequest(request.getAttributes().getRequest());
+		var claims = getClaimsFromRequest(headers);
 		if (claims.isEmpty()) {
 			return Optional.empty();
 		}
@@ -102,14 +103,15 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 		return Optional.of(service.exchange(claims.get(), assignemnt.get()));
 	}
 
-	private Optional<Tenant> getTenantFromRequest(Request request) {
+	private Optional<Tenant> getTenantFromRequest(Map<String, String> headers) {
 
 		var tenantId = Optional
-				.ofNullable(request.getHttp().getHeadersMap().get(properties.getHttpHeader()))
+				.ofNullable(headers.get(properties.getHttpHeader()))
 				.map(String::strip)
 				.filter(StringUtils::isNotEmpty);
 		if (tenantId.isEmpty()) {
-			log.info("Ignore request because tenantId header not found.");
+			// probes are without tenantId header, so do not log expected event on info
+			log.debug("Ignore request because tenantId header not found.");
 			return Optional.empty();
 		}
 		MDC.put("tenantId", tenantId.get());
@@ -127,9 +129,10 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 		return tenant;
 	}
 
-	private Optional<JWTClaimsSet> getClaimsFromRequest(Request request) {
+	private Optional<JWTClaimsSet> getClaimsFromRequest(Map<String, String> headers) {
 		return Optional
-				.ofNullable(request.getHttp().getHeadersMap().get(HttpHeaders.AUTHORIZATION))
+				// headers provided by envoy are always lowercase, so adjust header name
+				.ofNullable(headers.get(HttpHeaders.AUTHORIZATION.toLowerCase()))
 				.filter(value -> value.startsWith(prefix))
 				.map(value -> value.substring(prefix.length()))
 				.flatMap(service::parse);
