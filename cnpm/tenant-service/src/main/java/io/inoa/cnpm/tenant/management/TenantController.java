@@ -38,38 +38,42 @@ public class TenantController implements TenantsApi {
 
 	@Override
 	public HttpResponse<TenantVO> findTenant(String tenantId) {
-		MDC.put("tenantId", tenantId);
-		return service.findTenant(tenantId)
-				.map(mapper::toTenant)
-				.map(HttpResponse::ok)
-				.orElseGet(HttpResponse::notFound);
+		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {
+			return service.findTenant(tenantId)
+					.map(mapper::toTenant)
+					.map(HttpResponse::ok)
+					.orElseGet(HttpResponse::notFound);
+		}
 	}
 
 	@Override
 	public HttpResponse<TenantVO> createTenant(String tenantId, @Valid TenantCreateVO vo) {
-		MDC.put("tenantId", tenantId);
-		if (service.existsTenant(tenantId)) {
-			throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {
+			if (service.existsTenant(tenantId)) {
+				throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+			}
+			var tenant = service.createTenant(new Tenant()
+					.setTenantId(tenantId)
+					.setEnabled(vo.getEnabled())
+					.setName(vo.getName()));
+			return HttpResponse.created(mapper.toTenant(tenant));
 		}
-		var tenant = service.createTenant(new Tenant()
-				.setTenantId(tenantId)
-				.setEnabled(vo.getEnabled())
-				.setName(vo.getName()));
-		return HttpResponse.created(mapper.toTenant(tenant));
 	}
 
 	@Override
 	public HttpResponse<TenantVO> updateTenant(String tenantId, @Valid TenantUpdateVO vo) {
-		MDC.put("tenantId", tenantId);
-		return service.updateTenant(tenantId, vo)
-				.map(mapper::toTenant)
-				.map(HttpResponse::ok)
-				.orElseGet(HttpResponse::notFound);
+		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {
+			return service.updateTenant(tenantId, vo)
+					.map(mapper::toTenant)
+					.map(HttpResponse::ok)
+					.orElseGet(HttpResponse::notFound);
+		}
 	}
 
 	@Override
 	public HttpResponse<Object> deleteTenant(String tenantId) {
-		MDC.put("tenantId", tenantId);
-		return service.deleteTenant(tenantId) ? HttpResponse.noContent() : HttpResponse.notFound();
+		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {
+			return service.deleteTenant(tenantId) ? HttpResponse.noContent() : HttpResponse.notFound();
+		}
 	}
 }

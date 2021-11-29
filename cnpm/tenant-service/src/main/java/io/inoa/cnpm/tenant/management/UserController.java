@@ -47,40 +47,56 @@ public class UserController implements UsersApi {
 			Optional<Integer> size,
 			Optional<List<String>> sort,
 			Optional<String> filter) {
-		MDC.put("tenantId", tenantId);
-		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
-		return service.findUsers(tenantId, filter, pageable)
-				.map(mapper::toUserPage)
-				.map(HttpResponse::ok)
-				.orElseGet(HttpResponse::notFound);
+		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {
+			var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
+			return service.findUsers(tenantId, filter, pageable)
+					.map(mapper::toUserPage)
+					.map(HttpResponse::ok)
+					.orElseGet(HttpResponse::notFound);
+		}
 	}
 
 	@Override
 	public HttpResponse<UserVO> findUser(String tenantId, UUID userId) {
-		MDC.put("tenantId", tenantId);
-		MDC.put("userId", userId.toString());
-		return service.findUser(tenantId, userId)
-				.map(mapper::toUser)
-				.map(HttpResponse::ok)
-				.orElseGet(HttpResponse::notFound);
+		try {
+			MDC.put("tenantId", tenantId);
+			MDC.put("userId", userId.toString());
+			return service.findUser(tenantId, userId)
+					.map(mapper::toUser)
+					.map(HttpResponse::ok)
+					.orElseGet(HttpResponse::notFound);
+		} finally {
+			MDC.remove("tenantId");
+			MDC.remove("userId");
+		}
 	}
 
 	@Override
 	public HttpResponse<UserVO> createUser(String tenantId, @Valid UserCreateVO vo) {
-		MDC.put("tenantId", tenantId);
-		if (service.existsUserByEmail(tenantId, vo.getEmail())) {
-			throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+		try {
+			MDC.put("tenantId", tenantId);
+			if (service.existsUserByEmail(tenantId, vo.getEmail())) {
+				throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");
+			}
+			return service.createUser(tenantId, new User().setEmail(vo.getEmail()))
+					.map(mapper::toUser)
+					.map(HttpResponse::created)
+					.orElseGet(HttpResponse::notFound);
+		} finally {
+			MDC.remove("tenantId");
+			MDC.remove("userId");
 		}
-		return service.createUser(tenantId, new User().setEmail(vo.getEmail()))
-				.map(mapper::toUser)
-				.map(HttpResponse::created)
-				.orElseGet(HttpResponse::notFound);
 	}
 
 	@Override
 	public HttpResponse<Object> deleteUser(String tenantId, UUID userId) {
-		MDC.put("tenantId", tenantId);
-		MDC.put("userId", userId.toString());
-		return service.deleteUser(tenantId, userId) ? HttpResponse.noContent() : HttpResponse.notFound();
+		try {
+			MDC.put("tenantId", tenantId);
+			MDC.put("userId", userId.toString());
+			return service.deleteUser(tenantId, userId) ? HttpResponse.noContent() : HttpResponse.notFound();
+		} finally {
+			MDC.remove("tenantId");
+			MDC.remove("userId");
+		}
 	}
 }

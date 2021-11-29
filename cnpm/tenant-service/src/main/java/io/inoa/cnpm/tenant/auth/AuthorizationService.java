@@ -51,24 +51,30 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 
 	@Override
 	public void check(CheckRequest request, StreamObserver<CheckResponse> responseObserver) {
+		try {
 
-		var checkResponse = exchangeTokenForRequest(request)
-				.map(jwt -> HeaderValue.newBuilder()
-						.setKey(HttpHeaders.AUTHORIZATION)
-						.setValue(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + jwt.serialize())
-						.build())
-				.map(header -> CheckResponse.newBuilder()
-						.setStatus(Status.newBuilder().setCode(Code.OK.value()).build())
-						.setOkResponse(OkHttpResponse.newBuilder()
-								.addHeaders(HeaderValueOption.newBuilder().setHeader(header).build())
-								.build())
-						.build())
-				.orElseGet(() -> CheckResponse.newBuilder()
-						.setStatus(Status.newBuilder().setCode(Code.UNAUTHENTICATED.value()).build())
-						.build());
+			var checkResponse = exchangeTokenForRequest(request)
+					.map(jwt -> HeaderValue.newBuilder()
+							.setKey(HttpHeaders.AUTHORIZATION)
+							.setValue(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + jwt.serialize())
+							.build())
+					.map(header -> CheckResponse.newBuilder()
+							.setStatus(Status.newBuilder().setCode(Code.OK.value()).build())
+							.setOkResponse(OkHttpResponse.newBuilder()
+									.addHeaders(HeaderValueOption.newBuilder().setHeader(header).build())
+									.build())
+							.build())
+					.orElseGet(() -> CheckResponse.newBuilder()
+							.setStatus(Status.newBuilder().setCode(Code.UNAUTHENTICATED.value()).build())
+							.build());
 
-		responseObserver.onNext(checkResponse);
-		responseObserver.onCompleted();
+			responseObserver.onNext(checkResponse);
+			responseObserver.onCompleted();
+
+		} finally {
+			MDC.remove("tenantId");
+			MDC.remove("userId");
+		}
 	}
 
 	private Optional<SignedJWT> exchangeTokenForRequest(CheckRequest request) {
