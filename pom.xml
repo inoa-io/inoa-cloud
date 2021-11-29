@@ -25,7 +25,7 @@
 	</licenses>
 
 	<modules>
-		<module>tenant-service</module>
+		<module>cnpm</module>
 		<module>messages</module>
 		<module>gateway-registry</module>
 		<module>gateway-command-service</module>

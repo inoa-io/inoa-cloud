@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.inoa.cloud</groupId>
-		<artifactId>parent</artifactId>
+		<groupId>io.inoa.cnpm</groupId>
+		<artifactId>cnpm-parent</artifactId>
 		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>gateway-registry</artifactId>
+	<artifactId>tenant-service</artifactId>
 
-	<name>INOA Cloud :: Gateway Registry</name>
+	<name>INOA CNPM :: Tenant Service</name>
 
 	<dependencyManagement>
 		<dependencies>
@@ -39,16 +39,17 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut.kafka</groupId>
-			<artifactId>micronaut-kafka</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.reactor</groupId>
-			<artifactId>micronaut-reactor</artifactId>
+			<groupId>io.micronaut.grpc</groupId>
+			<artifactId>micronaut-grpc-server-runtime</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.micronaut.security</groupId>
 			<artifactId>micronaut-security-jwt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.kafka</groupId>
+			<artifactId>micronaut-kafka</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
@@ -82,18 +83,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- avoid compiler warning, see https://docs.micronaut.io/latest/guide/#_nullable_annotations -->
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- libraries -->
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>io.cloudevents</groupId>
 			<artifactId>cloudevents-kafka</artifactId>
@@ -107,6 +97,7 @@
 		<dependency>
 			<groupId>io.cloudevents</groupId>
 			<artifactId>cloudevents-json-jackson</artifactId>
+			<scope>test</scope>
 			<exclusions>
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
@@ -117,6 +108,14 @@
 					<artifactId>jackson-databind</artifactId>
 				</exclusion>
 			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.envoyproxy.controlplane</groupId>
+			<artifactId>api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
 		</dependency>
 
 		<!-- monitoring -->
@@ -157,6 +156,11 @@
 			<artifactId>kafka</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
 
@@ -174,6 +178,34 @@
 			</testResource>
 		</testResources>
 		<plugins>
+
+			<!-- copy project dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-spec</id>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<phase>generate-sources</phase>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>io.inoa.cnpm</groupId>
+									<artifactId>tenant-api-management</artifactId>
+									<classifier>spec</classifier>
+									<type>yaml</type>
+									<version>${project.version}</version>
+									<destFileName>spec.yaml</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.outputDirectory}/openapi</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!-- add generated sources -->
 			<plugin>
@@ -214,26 +246,15 @@
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>openapi-gateway-generate</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi/gateway.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
-							<generateSupportingFiles>false</generateSupportingFiles>
-						</configuration>
-					</execution>
-					<execution>
 						<id>openapi-management-generate</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi/management.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
+							<inputSpec>${project.build.outputDirectory}/openapi/spec.yaml</inputSpec>
+							<apiPackage>io.inoa.cnpm.tenant.management</apiPackage>
+							<invokerPackage>io.inoa.cnpm.tenant</invokerPackage>
 							<configOptions>
 								<pageable>true</pageable>
 							</configOptions>
@@ -266,11 +287,6 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-validation</artifactId>
-							<version>${version.io.micronaut}</version>
-						</path>
-						<path>
-							<groupId>io.micronaut</groupId>
-							<artifactId>micronaut-http-validation</artifactId>
 							<version>${version.io.micronaut}</version>
 						</path>
 						<path>
@@ -312,7 +328,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<runOrder>alphabetical</runOrder>
 					<failIfNoTests>true</failIfNoTests>
 				</configuration>
 			</plugin>
@@ -333,48 +348,4 @@
 
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>check</id>
-			<activation>
-				<file>
-					<exists>pom.xml</exists>
-				</file>
-			</activation>
-			<build>
-				<plugins>
-
-					<!-- validate openapi specs -->
-					<plugin>
-						<groupId>org.openapitools.openapistylevalidator</groupId>
-						<artifactId>openapi-style-validator-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>openapi-gateway-validate</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>validate</goal>
-								</goals>
-								<configuration>
-									<inputFile>${project.basedir}/src/main/resources/openapi/gateway.yaml</inputFile>
-								</configuration>
-							</execution>
-							<execution>
-								<id>openapi-management-validate</id>
-								<phase>validate</phase>
-								<goals>
-									<goal>validate</goal>
-								</goals>
-								<configuration>
-									<inputFile>${project.basedir}/src/main/resources/openapi/management.yaml</inputFile>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>

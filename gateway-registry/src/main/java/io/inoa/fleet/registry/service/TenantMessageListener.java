@@ -7,7 +7,7 @@ import org.slf4j.MDC;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.data.PojoCloudEventData;
 import io.cloudevents.rw.CloudEventDataMapper;
-import io.inoa.cloud.messages.TenantVO;
+import io.inoa.cnpm.tenant.messaging.TenantVO;
 import io.inoa.fleet.registry.ApplicationProperties;
 import io.inoa.fleet.registry.domain.ConfigurationDefinitionRepository;
 import io.inoa.fleet.registry.domain.Tenant;

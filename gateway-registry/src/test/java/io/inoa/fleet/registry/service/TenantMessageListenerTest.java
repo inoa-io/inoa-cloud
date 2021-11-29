@@ -26,7 +26,7 @@ import io.cloudevents.CloudEvent;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.data.PojoCloudEventData;
 import io.cloudevents.kafka.CloudEventSerializer;
-import io.inoa.cloud.messages.TenantVO;
+import io.inoa.cnpm.tenant.messaging.TenantVO;
 import io.inoa.fleet.registry.AbstractTest;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.fleet.registry.rest.management.ConfigurationTypeVO;

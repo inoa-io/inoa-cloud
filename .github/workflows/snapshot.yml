@@ -45,7 +45,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GIT_ACTION_TOKEN }}
-      - run: docker push --all-tags ghcr.io/grayc-de/tenant-service
+      - run: docker push --all-tags ghcr.io/grayc-de/inoa/cnpm/tenant-service
       - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry
       - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry-hono-bridge
       - run: docker push --all-tags ghcr.io/grayc-de/gateway-command-service
