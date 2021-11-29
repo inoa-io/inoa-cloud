@@ -145,7 +145,8 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 				.filter(String.class::isInstance)
 				.map(String.class::cast);
 		if (email.isEmpty()) {
-			log.info("Ignore request because email claim not found.");
+			log.info("Ignore request because email claim not found for token from iss={} with aud={} and azp={}.",
+					claims.getIssuer(), claims.getAudience(), claims.getClaim("azp"));
 			return Optional.empty();
 		}
 
