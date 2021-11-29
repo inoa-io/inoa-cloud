@@ -190,7 +190,9 @@ public class AuthorizationTest extends AbstractTest {
 
 		var httpRequest = HttpRequest.newBuilder();
 		if (token != null) {
-			httpRequest.putHeaders(HttpHeaders.AUTHORIZATION, (prefix == null ? "" : prefix + " ") + token).build();
+			httpRequest
+					.putHeaders(HttpHeaders.AUTHORIZATION.toLowerCase(), (prefix == null ? "" : prefix + " ") + token)
+					.build();
 		}
 		if (tenant != null) {
 			httpRequest.putHeaders("x-tenant-id", tenant).build();
