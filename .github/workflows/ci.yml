@@ -37,4 +37,5 @@ jobs:
           java-version: 11
           cache: maven
       - run: mvn -B dependency:go-offline -q
-      - run: mvn -B install -T1C
+      - run: mvn -B install -pl !test -T2C
+      - run: mvn -B install -pl test
