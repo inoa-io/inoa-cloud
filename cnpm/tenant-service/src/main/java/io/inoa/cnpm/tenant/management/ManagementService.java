@@ -130,7 +130,7 @@ public class ManagementService {
 	}
 
 	User createUser(Tenant tenant, User user) {
-		MDC.put("userId", user.setUserId(UUID.randomUUID()).toString());
+		MDC.put("userId", user.setUserId(UUID.randomUUID()).getUserId().toString());
 		return userRepository.findByEmail(user.getEmail())
 				.map(existingUser -> {
 					tenantUserRepository.save(new TenantUser(tenant, existingUser));
