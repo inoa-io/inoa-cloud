@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.Map;
 
+import org.awaitility.Awaitility;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,10 @@ public class TenantTest extends ComposeTest {
 
 		// gateway should not be able to communicate
 
+		Awaitility.await("tenant disabeld in gateway regsitry").until(() -> gatewayRegistry
+				.findTenant(tenantId)
+				.filter(t -> !t.getEnabled())
+				.isPresent());
 		var errorJson = assert400(() -> gateway.getRegistryTokenResponse()).getBody(Map.class).get();
 		assertEquals("invalid_grant", errorJson.get("error"), "error");
 		assertEquals("tenant " + tenantId + " disabled", errorJson.get("error_description"), "description");

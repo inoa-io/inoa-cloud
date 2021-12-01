@@ -1,7 +1,7 @@
 package io.inoa.cnpm.tenant.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -25,6 +25,7 @@ import io.envoyproxy.envoy.service.auth.v3.CheckRequest;
 import io.envoyproxy.envoy.service.auth.v3.CheckResponse;
 import io.grpc.Status.Code;
 import io.inoa.cnpm.tenant.AbstractTest;
+import io.inoa.cnpm.tenant.domain.Tenant;
 import io.inoa.cnpm.tenant.test.TestJwkController;
 import io.inoa.cnpm.tenant.test.TestStreamObserver;
 import io.micronaut.http.HttpHeaderValues;
@@ -47,43 +48,45 @@ public class AuthorizationTest extends AbstractTest {
 	@Inject
 	SignatureGeneratorConfiguration signature;
 
-	@DisplayName("sucess with user")
+	@DisplayName("success with user")
 	@Test
 	void successWithUser() {
+		var tenant = data.tenant();
+		var user = data.user(tenant);
+		var tokenRequest = test.jwt(user);
+		var response = assertOk(tenant, tokenRequest);
+		var tokenResponse = getAuthorizationToken(response);
+		assertNotEquals(tokenRequest, tokenResponse, "jwt not changed");
+	}
+
+	@DisplayName("success with application")
+	@Test
+	void successWithApplcation() throws JOSEException {
+		var tenant = data.tenant();
+		var tokenRequest = signature.sign(new JWTClaimsSet.Builder().build()).serialize();
+		var response = assertOk(tenant, tokenRequest);
+		var tokenResponse = getAuthorizationToken(response);
+		assertNotEquals(tokenRequest, tokenResponse, "jwt not changed");
+	}
+
+	@DisplayName("success with local signature")
+	@Test
+	void successWithLocalSignature() {
+
+		// xchange user token
 
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user);
+		var tokenRequest = test.jwt(user);
+		var response = assertOk(tenant, tokenRequest);
+		var tokenResponse = getAuthorizationToken(response);
+		assertNotEquals(tokenRequest, tokenResponse, "jwt not changed");
 
-		var response = request(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
-		assertEquals(Code.OK.value(), response.getStatus().getCode(), "status");
-		var headerValue = response.getOkResponse().getHeadersList().stream()
-				.map(HeaderValueOption::getHeader)
-				.filter(header -> HttpHeaders.AUTHORIZATION.equals(header.getKey()))
-				.map(HeaderValue::getValue)
-				.findAny().orElse(null);
-		assertNotNull(headerValue, "header value");
-		assertTrue(headerValue.startsWith(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " "), "bearer");
-		assertFalse(headerValue.endsWith(jwt), "jwt not changed");
-	}
+		// send exchanged token again
 
-	@DisplayName("sucess with application")
-	@Test
-	void successWithApplcation() throws JOSEException {
-
-		var tenant = data.tenant();
-		var jwt = signature.sign(new JWTClaimsSet.Builder().build()).serialize();
-
-		var response = request(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
-		assertEquals(Code.OK.value(), response.getStatus().getCode(), "status");
-		var headerValue = response.getOkResponse().getHeadersList().stream()
-				.map(HeaderValueOption::getHeader)
-				.filter(header -> HttpHeaders.AUTHORIZATION.equals(header.getKey()))
-				.map(HeaderValue::getValue)
-				.findAny().orElse(null);
-		assertNotNull(headerValue, "header value");
-		assertTrue(headerValue.startsWith(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " "), "bearer");
-		assertTrue(headerValue.endsWith(jwt), "jwt changed");
+		var response2 = assertOk(tenant, tokenResponse);
+		var tokenResponse2 = getAuthorizationToken(response2);
+		assertEquals(tokenResponse, tokenResponse2, "local token exchanged");
 	}
 
 	@DisplayName("fail: token claim email not found")
@@ -119,6 +122,15 @@ public class AuthorizationTest extends AbstractTest {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
 		var jwt = test.jwt("nope", user.getEmail(), claims -> {});
+		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
+	}
+
+	@DisplayName("fail: token claim issuer is local but signature is invalid")
+	@Test
+	void failTokenClaimIssuerFakedLocal() {
+		var tenant = data.tenant();
+		var user = data.user(tenant);
+		var jwt = test.jwt("nope", user.getEmail(), claims -> claims.issuer(properties.getIssuer()));
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -209,11 +221,17 @@ public class AuthorizationTest extends AbstractTest {
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
-	private void assertUnauthenticated(String tenant, String prefix, String token) {
-		assertEquals(Code.UNAUTHENTICATED.value(), request(tenant, prefix, token).getStatus().getCode(), "status");
+	private CheckResponse assertOk(Tenant tenant, String token) {
+		var response = request(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, token);
+		assertEquals(Code.OK.value(), response.getStatus().getCode(), "status");
+		return response;
 	}
 
-	private CheckResponse request(String tenant, String prefix, String token) {
+	private void assertUnauthenticated(String tenantId, String prefix, String token) {
+		assertEquals(Code.UNAUTHENTICATED.value(), request(tenantId, prefix, token).getStatus().getCode(), "status");
+	}
+
+	private CheckResponse request(String tenantId, String prefix, String token) {
 
 		var httpRequest = HttpRequest.newBuilder();
 		if (token != null) {
@@ -221,8 +239,8 @@ public class AuthorizationTest extends AbstractTest {
 					.putHeaders(HttpHeaders.AUTHORIZATION.toLowerCase(), (prefix == null ? "" : prefix + " ") + token)
 					.build();
 		}
-		if (tenant != null) {
-			httpRequest.putHeaders("x-tenant-id", tenant).build();
+		if (tenantId != null) {
+			httpRequest.putHeaders("x-tenant-id", tenantId).build();
 		}
 		var request = Request.newBuilder().setHttp(httpRequest).build();
 		var attributeContext = AttributeContext.newBuilder().setRequest(request).build();
@@ -233,5 +251,19 @@ public class AuthorizationTest extends AbstractTest {
 		Awaitility.await("wait for auth request finished").until(observer::isCompleted);
 
 		return observer.getResponse().get();
+	}
+
+	private String getHeader(CheckResponse response, String headerName) {
+		return response.getOkResponse().getHeadersList().stream()
+				.map(HeaderValueOption::getHeader)
+				.filter(header -> headerName.toLowerCase().equals(header.getKey().toLowerCase()))
+				.map(HeaderValue::getValue).findAny().orElse(null);
+	}
+
+	private String getAuthorizationToken(CheckResponse response) {
+		var authorization = getHeader(response, HttpHeaders.AUTHORIZATION);
+		assertNotNull(authorization, "header value");
+		assertTrue(authorization.startsWith(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " "), "bearer");
+		return authorization.substring(7);
 	}
 }

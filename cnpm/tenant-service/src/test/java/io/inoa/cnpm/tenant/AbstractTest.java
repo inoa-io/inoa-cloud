@@ -45,6 +45,8 @@ public abstract class AbstractTest implements TestPropertyProvider {
 			DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
 
 	@Inject
+	public ApplicationProperties properties;
+	@Inject
 	public Data data;
 	@Inject
 	Validator validator;
