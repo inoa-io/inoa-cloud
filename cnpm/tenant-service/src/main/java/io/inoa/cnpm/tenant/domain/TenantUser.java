@@ -3,15 +3,19 @@ package io.inoa.cnpm.tenant.domain;
 import java.time.Instant;
 
 import io.micronaut.data.annotation.DateCreated;
+import io.micronaut.data.annotation.GeneratedValue;
+import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @MappedEntity
 @Data
-@NoArgsConstructor
 public class TenantUser {
+
+	@Id
+	@GeneratedValue
+	private Long id;
 
 	@Relation(Relation.Kind.MANY_TO_ONE)
 	private Tenant tenant;
@@ -20,9 +24,4 @@ public class TenantUser {
 
 	@DateCreated
 	private Instant created;
-
-	public TenantUser(Tenant tenant, User user) {
-		this.tenant = tenant;
-		this.user = user;
-	}
 }

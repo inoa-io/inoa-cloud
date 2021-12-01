@@ -122,7 +122,9 @@ public class Data {
 
 	public User user(String email, Tenant... tenants) {
 		var user = userRepository.save(new User().setUserId(UUID.randomUUID()).setEmail(email));
-		Stream.of(tenants).forEach(tenant -> tenantUserRepository.save(new TenantUser(tenant, user)));
+		Stream.of(tenants).forEach(tenant -> tenantUserRepository.save(new TenantUser()
+				.setTenant(tenant)
+				.setUser(user)));
 		return user;
 	}
 
@@ -137,8 +139,9 @@ public class Data {
 				.stream(userRepository.findAll().spliterator(), false)
 				.anyMatch(user -> user.getEmail().equals(email)), "user not found");
 		assertEquals(Set.of(expectedTenantIds), tenantUserRepository
-				.findTenantByUserEmail(email).stream().map(Tenant::getTenantId).collect(Collectors.toSet()),
-				"assignments");
+				.findTenantByUserEmail(email).stream()
+				.map(Tenant::getTenantId)
+				.collect(Collectors.toSet()), "assignments");
 	}
 
 	public void assertTenantSoftDelete(String tenantId) {

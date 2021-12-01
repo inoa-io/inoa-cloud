@@ -45,7 +45,9 @@ public class ManagementService {
 	}
 
 	Optional<Tenant> findTenant(String tenantId) {
-		return tenantUserRepository.findTenantByTenantTenantIdAndUserEmail(tenantId, getUserEmail());
+		return tenantUserRepository
+				.findByTenantTenantIdAndUserEmail(tenantId, getUserEmail())
+				.map(TenantUser::getTenant);
 	}
 
 	public boolean existsTenant(String tenantId) {
@@ -115,13 +117,14 @@ public class ManagementService {
 	}
 
 	Optional<User> findUser(String tenantId, UUID userId) {
-		return findTenant(tenantId)
-				.flatMap(tenant -> tenantUserRepository.findUserByTenantAndUserUserId(tenant, userId));
+		return findTenant(tenantId).flatMap(tenant -> tenantUserRepository
+				.findByTenantAndUserUserId(tenant, userId)
+				.map(TenantUser::getUser));
 	}
 
 	boolean existsUserByEmail(String tenantId, String email) {
 		return findTenant(tenantId)
-				.flatMap(tenant -> tenantUserRepository.findUserByTenantAndUserEmail(tenant, email))
+				.flatMap(tenant -> tenantUserRepository.findByTenantAndUserEmail(tenant, email))
 				.isPresent();
 	}
 
@@ -133,13 +136,13 @@ public class ManagementService {
 		MDC.put("userId", user.setUserId(UUID.randomUUID()).getUserId().toString());
 		return userRepository.findByEmail(user.getEmail())
 				.map(existingUser -> {
-					tenantUserRepository.save(new TenantUser(tenant, existingUser));
+					tenantUserRepository.save(new TenantUser().setTenant(tenant).setUser(existingUser));
 					log.info("Tenant {} assigned existing user {}: {}",
 							tenant.getTenantId(), existingUser.getUserId(), existingUser);
 					return existingUser;
 				}).orElseGet(() -> {
 					userRepository.save(user);
-					tenantUserRepository.save(new TenantUser(tenant, user));
+					tenantUserRepository.save(new TenantUser().setTenant(tenant).setUser(user));
 					log.info("Tenant {} user {} created: {}", tenant.getTenantId(), user.getUserId(), user);
 					return user;
 				});
@@ -147,11 +150,11 @@ public class ManagementService {
 
 	boolean deleteUser(String tenantId, UUID userId) {
 		return findTenant(tenantId).flatMap(tenant -> tenantUserRepository
-				.findUserByTenantAndUserUserId(tenant, userId)
-				.map(user -> {
-					tenantUserRepository.delete(tenant.getId(), user.getId());
-					log.info("Tenant {} user {} deleted.", tenantId, userId, user);
-					return user;
+				.findByTenantAndUserUserId(tenant, userId)
+				.map(assignment -> {
+					tenantUserRepository.deleteById(assignment.getId());
+					log.info("Tenant {} user {} deleted.", tenantId, userId);
+					return assignment;
 				}))
 				.isPresent();
 	}

@@ -19,25 +19,26 @@ import io.micronaut.data.repository.GenericRepository;
  */
 @JdbcRepository
 @Join(value = "tenant", alias = "tenant_user_tenant_")
+@Join(value = "user", alias = "tenant_user_user_")
 @Where("tenant_user_tenant_.deleted IS NULL")
-public interface TenantUserRepository extends GenericRepository<TenantUser, Void> {
+public interface TenantUserRepository extends GenericRepository<TenantUser, Long> {
 
 	List<Tenant> findTenantByUserEmail(String email);
-
-	Optional<TenantUser> findByTenantAndUser(Tenant tenant, User user);
-
-	Optional<Tenant> findTenantByTenantTenantIdAndUserEmail(String tenantId, String email);
 
 	Page<User> findUserByTenant(Tenant tenant, Pageable pageable);
 
 	Page<User> findUserByTenantAndUserEmailIlikeFilter(Tenant tenant, String filter, Pageable pageable);
 
-	Optional<User> findUserByTenantAndUserUserId(Tenant tenant, UUID userId);
+	Optional<TenantUser> findByTenantTenantIdAndUserEmail(String tenantId, String email);
 
-	Optional<User> findUserByTenantAndUserEmail(Tenant tenant, String email);
+	Optional<TenantUser> findByTenantAndUser(Tenant tenant, User user);
+
+	Optional<TenantUser> findByTenantAndUserUserId(Tenant tenant, UUID userId);
+
+	Optional<TenantUser> findByTenantAndUserEmail(Tenant tenant, String email);
 
 	void save(TenantUser tenantUser);
 
-	@Query("DELETE FROM tenant_user WHERE tenant_id = :tenant AND user_id = :user")
-	long delete(long tenant, long user);
+	@Query("DELETE FROM tenant_user WhERE id = :id")
+	void deleteById(Long id);
 }
