@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.slf4j.MDC;
@@ -28,6 +29,7 @@ import com.nimbusds.jose.JOSEObjectType;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -35,7 +37,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.cnpm.tenant.ApplicationProperties;
-import io.inoa.cnpm.tenant.domain.TenantUser;
+import io.inoa.cnpm.tenant.domain.Tenant;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.exceptions.BeanInstantiationException;
 import io.micronaut.core.io.ResourceResolver;
@@ -61,26 +63,31 @@ public class TokenService implements JwkProvider {
 
 	private final ApplicationProperties properties;
 	private final Map<String, JwksSignature> jwkSignatures;
-	private final JWK jwk;
 	private final List<JwtClaimsValidator> jwtClaimsValidator;
+	private final RSAKey key;
+	private final RSASSASigner signer;
+	private final RSASSAVerifier verifier;
 
+	@SneakyThrows(JOSEException.class)
 	TokenService(ApplicationProperties properties) {
 		this.properties = properties;
+		this.key = loadRSAKey();
+		this.signer = new RSASSASigner(key);
+		this.verifier = new RSASSAVerifier(key);
 		this.jwkSignatures = new HashMap<>();
-		this.jwk = loadJwk();
 		this.jwtClaimsValidator = List.of(new ExpirationJwtClaimsValidator(), new NotBeforeJwtClaimsValidator());
 	}
 
 	@Override
 	public List<JWK> retrieveJsonWebKeys() {
-		return List.of(jwk);
+		return List.of(key);
 	}
 
 	/**
 	 * Parse token.
 	 *
 	 * @param token Provided token.
-	 * @return Optional with jwt and claims of provided token.
+	 * @return Optional token with jwt and claims of provided token.
 	 */
 	public Optional<Token> toToken(String token) {
 		try {
@@ -96,13 +103,24 @@ public class TokenService implements JwkProvider {
 	}
 
 	/**
-	 * Validate signature against issuer.
+	 * Validate with local signature.
 	 *
 	 * @param token Token with jwt and claims.
 	 * @return <code>true</code> if valid.
 	 */
 	@SneakyThrows(JOSEException.class)
-	public boolean isValid(Token token) {
+	public boolean isValidLocalToken(Token token) {
+		return Objects.equals(properties.getIssuer(), token.getClaims().getIssuer()) && token.getJwt().verify(verifier);
+	}
+
+	/**
+	 * Validate with remote signature.
+	 *
+	 * @param token Token with jwt and claims.
+	 * @return <code>true</code> if valid.
+	 */
+	@SneakyThrows(JOSEException.class)
+	public boolean isValidRemoteToken(Token token) {
 
 		var issuer = token.getClaims().getIssuer() + "/protocol/openid-connect/certs";
 		try {
@@ -128,41 +146,36 @@ public class TokenService implements JwkProvider {
 	/**
 	 * Copy claims and set tenant & email.
 	 *
-	 * @param token      Token with claims from request.
-	 * @param assignment Tenant to user assignemnt to get token for.
+	 * @param token  Token with claims from request.
+	 * @param tenant Tenant to get token for.
 	 * @return Signed token.
 	 */
 	@SneakyThrows(JOSEException.class)
-	public SignedJWT exchange(Token token, TenantUser assignment) {
+	public SignedJWT exchange(Token token, Tenant tenant) {
 
-		log.debug("Exchange token for with issuer {}.",
-				assignment.getTenant().getTenantId(),
-				assignment.getUser().getEmail(),
-				token.getClaims().getIssuer());
+		log.debug("Exchange token for with issuer {}.", token.getClaims().getIssuer());
 
 		var jwtHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)
 				.keyID(properties.getKeyId())
 				.type(JOSEObjectType.JWT)
 				.build();
 		var jwtPayload = new JWTClaimsSet.Builder(token.getClaims())
-				.claim("tenant", assignment.getTenant().getTenantId())
+				.claim("tenant", tenant.getTenantId())
 				.issuer(properties.getIssuer())
 				.issueTime(Date.from(Instant.now()))
 				.build();
 		var jwt = new SignedJWT(jwtHeader, jwtPayload);
-
-		var signer = new RSASSASigner(jwk.toRSAKey());
 		jwt.sign(signer);
 		return jwt;
 	}
 
 	@SneakyThrows(NoSuchAlgorithmException.class)
-	private JWK loadJwk() {
+	private RSAKey loadRSAKey() {
 
 		// no key - test mode
 
-		var privateKey = properties.getPrivateKey();
-		if (privateKey == null) {
+		var privateKeyResource = properties.getPrivateKey();
+		if (privateKeyResource == null) {
 			log.warn("Generate random key. Do not use in Production!");
 			var pair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
 			return new RSAKey.Builder((RSAPublicKey) pair.getPublic())
@@ -174,10 +187,10 @@ public class TokenService implements JwkProvider {
 
 		// read key from resource
 
-		log.info("Loading private key from location: {}", privateKey);
-		var privateKeyAsStream = new ResourceResolver().getResourceAsStream(privateKey);
+		log.info("Loading private key from location: {}", privateKeyResource);
+		var privateKeyAsStream = new ResourceResolver().getResourceAsStream(privateKeyResource);
 		if (privateKeyAsStream.isEmpty()) {
-			var message = "Private key " + privateKey + " not found.";
+			var message = "Private key " + privateKeyResource + " not found.";
 			log.error(message);
 			throw new BeanInstantiationException(message);
 		}
@@ -185,15 +198,15 @@ public class TokenService implements JwkProvider {
 		try {
 			var bytes = privateKeyAsStream.get().readAllBytes();
 			var keyFactory = KeyFactory.getInstance("RSA");
-			var key = (RSAPrivateCrtKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(bytes));
-			var keySpec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
-			return new RSAKey.Builder((RSAPublicKey) keyFactory.generatePublic(keySpec))
-					.privateKey(key)
+			var privateKey = (RSAPrivateCrtKey) keyFactory.generatePrivate(new PKCS8EncodedKeySpec(bytes));
+			var publicKeySpec = new RSAPublicKeySpec(privateKey.getModulus(), privateKey.getPublicExponent());
+			return new RSAKey.Builder((RSAPublicKey) keyFactory.generatePublic(publicKeySpec))
+					.privateKey(privateKey)
 					.keyUse(KeyUse.SIGNATURE)
 					.keyID(properties.getKeyId())
 					.build();
 		} catch (IOException | InvalidKeySpecException e) {
-			var message = "Private key " + privateKey + " is not readable.";
+			var message = "Private key " + privateKeyResource + " is not readable.";
 			log.error(message, e);
 			throw new BeanInstantiationException(message, e);
 		}

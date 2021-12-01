@@ -90,24 +90,33 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 			return Optional.empty();
 		}
 
+		// got request with local signature
+
+		if (service.isValidLocalToken(token.get())) {
+			log.trace("Bybass local signature.");
+			return token.map(Token::getJwt);
+		}
+
+		// get tenant from request
+
 		var tenant = getTenantFromRequest(headers);
 		if (tenant.isEmpty()) {
 			return Optional.empty();
 		}
 
-		// bypass?
+		// handle application token
 
-		if (isByPassRequestFromUpstream(token.get())) {
+		if (isApplicationToken(token.get())) {
 			log.debug("Bybass signature from upstream oidc.");
-			return Optional.of(token.get().getJwt());
+			return Optional.of(service.exchange(token.get(), tenant.get()));
 		}
 
-		// get user with assignment
+		// handle user token
 
-		return token.filter(service::isValid)
+		return token.filter(service::isValidRemoteToken)
 				.flatMap(this::getUserFromClaims)
 				.flatMap(user -> getAssignemnt(tenant.get(), user))
-				.map(assignment -> service.exchange(token.get(), assignment));
+				.map(assignment -> service.exchange(token.get(), assignment.getTenant()));
 	}
 
 	private Optional<Tenant> getTenantFromRequest(Map<String, String> headers) {
@@ -145,7 +154,7 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 				.flatMap(service::toToken);
 	}
 
-	private boolean isByPassRequestFromUpstream(Token token) {
+	private boolean isApplicationToken(Token token) {
 		return token.getEmailClaim().isEmpty() && upstreamSignatures.stream().anyMatch(signature -> {
 			try {
 				return signature.verify(token.getJwt());
