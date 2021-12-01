@@ -11,9 +11,8 @@ import javax.validation.Valid;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import io.inoa.fleet.thing.CRC16;
-import io.inoa.fleet.thing.InoaSateliteModbusRTUBuilder;
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingChannel;
 import io.inoa.fleet.thing.domain.ThingChannelRepository;
@@ -23,6 +22,8 @@ import io.inoa.fleet.thing.domain.ThingTypeChannel;
 import io.inoa.fleet.thing.domain.ThingTypeChannelRepository;
 import io.inoa.fleet.thing.domain.ThingTypeRepository;
 import io.inoa.fleet.thing.mapper.ThingMapper;
+import io.inoa.fleet.thing.modbus.CRC16;
+import io.inoa.fleet.thing.modbus.InoaSatelliteModbusRTUBuilder;
 import io.inoa.fleet.thing.rest.management.ThingCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingDetailVO;
 import io.inoa.fleet.thing.rest.management.ThingPageVO;
@@ -62,6 +63,7 @@ public class ThingsController implements ThingsApi {
 	private final PageableProvider pageableProvider;
 	private final Security security;
 	private final ObjectMapper objectMapper;
+	private final GatewayCommandClient gatewayCommandClient;
 
 	@Override
 	public HttpResponse<ThingVO> createThing(@Valid ThingCreateVO thingCreateVO) {
@@ -79,9 +81,9 @@ public class ThingsController implements ThingsApi {
 		thing = thingRepository.save(thing);
 		if (thingCreateVO.getChannels() != null) {
 			for (var channel : thingCreateVO.getChannels()) {
-				thingChannelRepository.save(new ThingChannel().setName(channel.getName()).setThing(thing)
-						.setThingChannelId(UUID.randomUUID())
-						.setProperties(thingMapper.toPropertyList(channel.properties())));
+				thingChannelRepository.save(
+						new ThingChannel().setKey(channel.getKey()).setThing(thing).setThingChannelId(UUID.randomUUID())
+								.setProperties(thingMapper.toPropertyList(channel.properties())));
 			}
 		}
 		return HttpResponse.created(thingMapper.toThingVO(thing));
@@ -125,7 +127,7 @@ public class ThingsController implements ThingsApi {
 	}
 
 	// TODO filter
-	@Get("/things/byGatewayId/{gateway_id}")
+	@Get("/things/by-gateway-id/{gateway_id}")
 	@Override
 	public HttpResponse<ThingPageVO> findThingsByGatewayId(@PathVariable(name = "gateway_id") UUID gatewayId,
 			Optional<Integer> page, Optional<Integer> size, Optional<List<String>> sort, Optional<String> filter) {
@@ -138,7 +140,7 @@ public class ThingsController implements ThingsApi {
 	public HttpResponse<Object> syncConfigToGateway(UUID gatewayId) {
 		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
-		InoaSateliteModbusRTUBuilder builder = new InoaSateliteModbusRTUBuilder(objectMapper, new CRC16());
+		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper, new CRC16());
 		for (var thing : things) {
 			List<ThingTypeChannel> thingTypeChannels = thingTypeChannelRepository.findByThingType(thing.getThingType());
 			List<ThingChannel> channels = thingChannelRepository.findByThing(thing);
@@ -147,7 +149,11 @@ public class ThingsController implements ThingsApi {
 				result.add(node);
 			}
 		}
-		return HttpResponse.ok(result);
+		ObjectNode objectNode = objectMapper.createObjectNode();
+		objectNode.put("type", "metering.config.write");
+		objectNode.set("data", result);
+		gatewayCommandClient.sendGatewayCommand(security.getTenantId(), gatewayId, objectNode);
+		return HttpResponse.noContent();
 	}
 
 	@Override
@@ -158,5 +164,21 @@ public class ThingsController implements ThingsApi {
 		}
 		thingRepository.delete(optionalThing.get());
 		return HttpResponse.noContent();
+	}
+
+	@Override
+	public HttpResponse<Object> downloadConfigToGateway(UUID gatewayId) {
+		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
+		ArrayNode result = objectMapper.createArrayNode();
+		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper, new CRC16());
+		for (var thing : things) {
+			List<ThingTypeChannel> thingTypeChannels = thingTypeChannelRepository.findByThingType(thing.getThingType());
+			List<ThingChannel> channels = thingChannelRepository.findByThing(thing);
+			JsonNode nodes = builder.build(thing, thingTypeChannels, channels);
+			for (var node : nodes) {
+				result.add(node);
+			}
+		}
+		return HttpResponse.ok(result);
 	}
 }

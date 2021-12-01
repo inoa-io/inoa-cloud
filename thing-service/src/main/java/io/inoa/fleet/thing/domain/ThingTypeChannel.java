@@ -28,7 +28,11 @@ public class ThingTypeChannel {
 	@Relation(Relation.Kind.MANY_TO_ONE)
 	private ThingType thingType;
 	@MappedProperty
+	private String key;
+	@MappedProperty
 	private String name;
+	@MappedProperty
+	private String description;
 	@TypeDef(type = DataType.JSON)
 	private List<Property> properties = new ArrayList<>();
 	@DateCreated

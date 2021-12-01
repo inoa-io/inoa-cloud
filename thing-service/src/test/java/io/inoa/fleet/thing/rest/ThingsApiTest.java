@@ -1,5 +1,10 @@
 package io.inoa.fleet.thing.rest;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static io.inoa.fleet.thing.rest.HttpResponseAssertions.assert204;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,7 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 
 import io.inoa.fleet.thing.AbstractTest;
 import io.inoa.fleet.thing.domain.Property;
@@ -43,6 +53,20 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	@Inject
 	ThingTypeChannelRepository thingTypeChannelRepository;
 
+	WireMockServer wireMockServer;
+
+	@BeforeEach
+	public void setup() {
+		wireMockServer = new WireMockServer(WireMockConfiguration.options().port(35000));
+
+		wireMockServer.start();
+	}
+
+	@AfterEach
+	public void teardown() {
+		wireMockServer.stop();
+	}
+
 	@Test
 	@Override
 	public void createThing201() throws Exception {
@@ -54,7 +78,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 				.setGatewayId(UUID.randomUUID());
 		thingTypeCreateVO.addPropertiesItem(new PropertyVO().key("test").value(1));
 		thingTypeCreateVO.addChannelsItem(
-				new ThingChannelVO().name("power").addPropertiesItem(new PropertyVO().value("test").setKey("serial")));
+				new ThingChannelVO().key("power").addPropertiesItem(new PropertyVO().value("test").setKey("serial")));
 
 		var created = assert201(() -> client.createThing(auth("test"), thingTypeCreateVO));
 		Optional<Thing> thing = thingRepository.findByThingId(created.id());
@@ -110,6 +134,16 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	@Override
 	public void deleteThing404() throws Exception {
 		assert404("Not Found", () -> client.deleteThing(auth("test"), UUID.randomUUID()));
+	}
+
+	@Override
+	public void downloadConfigToGateway200() throws Exception {
+
+	}
+
+	@Override
+	public void downloadConfigToGateway401() throws Exception {
+
 	}
 
 	@Test
@@ -191,7 +225,8 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 
 	@Test
 	@Override
-	public void syncConfigToGateway200() throws Exception {
+	public void syncConfigToGateway204() throws Exception {
+
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 		List<Property> properties = new ArrayList<>();
@@ -202,20 +237,26 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 				.setGatewayId(gatewayId).setProperties(properties).setTenantId("test");
 		thingRepository.save(thing);
 
-		ThingChannel thingChannel = new ThingChannel().setThing(thing).setName("power")
+		ThingChannel thingChannel = new ThingChannel().setThing(thing).setKey("power")
 				.setThingChannelId(UUID.randomUUID());
 		thingChannelRepository.save(thingChannel);
 
-		ThingTypeChannel powerChannel = new ThingTypeChannel().setName("power").setThingTypeChannelId(UUID.randomUUID())
-				.setThingType(thingType);
+		ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("power").setName("power")
+				.setThingTypeChannelId(UUID.randomUUID()).setThingType(thingType);
 		powerChannel.getProperties().add(new Property().setKey("name").setValue("power"));
 		powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
 		powerChannel.getProperties().add(new Property().setKey("urnPostfix").setValue("0x4001"));
 		powerChannel.getProperties().add(new Property().setKey("registerOffset").setValue(16385));
 		thingTypeChannelRepository.save(powerChannel);
+		String auth = auth("test");
+		wireMockServer.stubFor(post(urlEqualTo(String.format("/api/iot-commands/command/%s/%s", "test", gatewayId)))
+				.withHeader("Authorization", equalTo(auth))
+				.willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("{}")));
 
-		Object test = assert200(() -> client.syncConfigToGateway(auth("test"), gatewayId));
-		System.out.println(test.toString());
+		assert204(() -> client.syncConfigToGateway(auth, gatewayId));
+		wireMockServer.verify(
+				postRequestedFor(urlEqualTo(String.format("/api/iot-commands/command/%s/%s", "test", gatewayId)))
+						.withHeader("Authorization", equalTo(auth)));
 	}
 
 	@Test

@@ -43,11 +43,11 @@ public class ThingTypeRepositoryTest extends AbstractTest {
 		thingType = thingTypeRepository.save(thingType);
 
 		ThingTypeChannel thingTypeChannelPower = new ThingTypeChannel().setThingType(thingType)
-				.setThingTypeChannelId(UUID.randomUUID()).setName("Power");
+				.setThingTypeChannelId(UUID.randomUUID()).setKey("power").setName("Power");
 		thingTypeChannelRepository.save(thingTypeChannelPower);
 
 		ThingTypeChannel thingTypeChannelFrequency = new ThingTypeChannel().setThingType(thingType)
-				.setThingTypeChannelId(UUID.randomUUID()).setName("Frequency");
+				.setThingTypeChannelId(UUID.randomUUID()).setKey("frequency").setName("Frequency");
 		thingTypeChannelRepository.save(thingTypeChannelFrequency);
 	}
 }

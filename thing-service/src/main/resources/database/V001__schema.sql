@@ -14,7 +14,9 @@ CREATE TABLE thing_type_channel
     id                    SERIAL       NOT NULL,
     thing_type_id         INTEGER      NOT NULL,
     thing_type_channel_id UUID         NOT NULL,
+    key                   VARCHAR(100) NOT NULL,
     name                  VARCHAR(100) NOT NULL,
+    description           VARCHAR(100) NULL,
     properties            JSON         NOT NULL,
     created               TIMESTAMP    NOT NULL,
     updated               TIMESTAMP    NOT NULL,
@@ -41,7 +43,7 @@ CREATE TABLE thing_channel
 (
     id               SERIAL       NOT NULL,
     thing_channel_id UUID         NOT NULL,
-    name             VARCHAR(100) NOT NULL,
+    key              VARCHAR(100) NOT NULL,
     properties       JSON         NOT NULL,
     thing_id         INTEGER      NOT NULL,
     created          TIMESTAMP    NOT NULL,

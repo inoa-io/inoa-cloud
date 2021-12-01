@@ -256,7 +256,7 @@ paths:
           description: 'Unauthorized.'
         404:
           description: 'Thing type not found.'
-  /things/byGatewayId/{gateway_id}:
+  /things/by-gateway-id/{gateway_id}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
@@ -286,7 +286,7 @@ paths:
         401:
           description: 'Unauthorized.'
 
-  /things/syncToGateway/{gateway_id}:
+  /things/sync-to-gateway/{gateway_id}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
@@ -296,15 +296,29 @@ paths:
       description: 'TODO'
       operationId: syncConfigToGateway
       responses:
+        204:
+          description: 'accepted sync request.'
+        401:
+          description: 'Unauthorized.'
+
+  /things/download-for-gateway/{gateway_id}:
+    parameters:
+      - $ref: '#/components/parameters/GatewayId'
+    get:
+      tags:
+        - things
+      summary: 'Sync configuration to gateway.'
+      description: 'TODO'
+      operationId: downloadConfigToGateway
+      responses:
         200:
-          description: 'Page with thing types.'
+          description: 'json with thing config.'
           content:
             application/json:
               schema:
                 type: object
         401:
           description: 'Unauthorized.'
-
 components:
   schemas:
     Timestamp:
@@ -434,8 +448,16 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/Id'
+        key:
+          type: string
+          example: power
+          description: key for the channel type
         name:
           $ref: '#/components/schemas/Name'
+        description:
+          type: string
+          example: 1-0:1.8.0*255
+          description: description for the channel type
         properties:
           type: array
           items:
@@ -456,6 +478,10 @@ components:
       properties:
         name:
           $ref: '#/components/schemas/Name'
+        key:
+          type: string
+          example: power
+          description: key for the channel type
         properties:
           type: array
           items:
@@ -577,14 +603,16 @@ components:
       description: 'Thing channel to create.'
       type: object
       properties:
-        name:
-          $ref: '#/components/schemas/Name'
+        key:
+          type: string
+          example: power
+          description: key for the channel
         properties:
           type: array
           items:
             $ref: '#/components/schemas/Property'
       required:
-        - name
+        - key
 
     ###
     ### Common
@@ -597,8 +625,13 @@ components:
           $ref: '#/components/schemas/Name'
         key:
           type: string
-        inputType:
+          example: serialId
+          description: key for the property
+        input_type:
           type: string
+          example: text
+          enum: [text, number]
+          description: input type for the frontend
     Property:
       type: object
       properties:
@@ -606,6 +639,8 @@ components:
           $ref: '#/components/schemas/Name'
         value:
           type: object
+          example: 1234567
+          description: value for the property
     Properties:
       type: string
       additionalProperties:

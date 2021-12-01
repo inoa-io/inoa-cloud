@@ -1,4 +1,4 @@
-package io.inoa.fleet.thing;
+package io.inoa.fleet.thing.modbus;
 
 import java.util.Base64;
 import java.util.List;
@@ -15,7 +15,7 @@ import io.inoa.fleet.thing.domain.ThingTypeChannel;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class InoaSateliteModbusRTUBuilder {
+public class InoaSatelliteModbusRTUBuilder {
 
 	private final ObjectMapper objectMapper;
 	private final CRC16 crc16;
@@ -25,7 +25,7 @@ public class InoaSateliteModbusRTUBuilder {
 		ArrayNode datapoints = objectMapper.createArrayNode();
 		for (var channel : thingChannels) {
 			Optional<ThingTypeChannel> optionalThingTypeChannel = thingTypeChannels.stream()
-					.filter(t -> t.getName().equals(channel.getName())).findFirst();
+					.filter(t -> t.getKey().equals(channel.getKey())).findFirst();
 			if (optionalThingTypeChannel.isEmpty()) {
 				continue;
 			}

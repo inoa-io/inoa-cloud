@@ -10,11 +10,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import io.inoa.fleet.thing.domain.Property;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.thing.AbstractTest;
-import io.inoa.fleet.thing.domain.PropertyDefinition;
+import io.inoa.fleet.thing.domain.Property;
 import io.inoa.fleet.thing.domain.ThingType;
 import io.inoa.fleet.thing.domain.ThingTypeChannel;
 import io.inoa.fleet.thing.domain.ThingTypeChannelRepository;
@@ -39,7 +38,7 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	@Override
 	public void createThingType201() throws Exception {
 		var thingTypeCreateVO = new ThingTypeCreateVO().setName("test").setChannels(new ArrayList<>());
-		thingTypeCreateVO.getChannels().add(new ThingTypeChannelCreateVO().name("test"));
+		thingTypeCreateVO.getChannels().add(new ThingTypeChannelCreateVO().key("test").name("test"));
 		var created = assert201(() -> client.createThingType(auth(), thingTypeCreateVO));
 		Optional<ThingType> thingType = thingTypeRepository.findByThingTypeId(created.id());
 		assertTrue(thingType.isPresent());
@@ -115,8 +114,8 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	public void findThingTypeWithDetails200() throws Exception {
 		var dvh4013 = new ThingType().setThingTypeId(UUID.randomUUID()).setName("dvh4013");
 		dvh4013 = thingTypeRepository.save(dvh4013);
-		ThingTypeChannel powerChannel = new ThingTypeChannel().setThingTypeChannelId(UUID.randomUUID()).setName("power")
-				.setThingType(dvh4013);
+		ThingTypeChannel powerChannel = new ThingTypeChannel().setThingTypeChannelId(UUID.randomUUID()).setKey("power")
+				.setName("power").setThingType(dvh4013);
 		powerChannel.getProperties().add(new Property().setKey("name").setValue("power"));
 		powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
 		powerChannel.getProperties().add(new Property().setKey("urnPostfix").setValue("0x4001"));

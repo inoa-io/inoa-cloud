@@ -39,3 +39,8 @@ jobs:
       - run: mvn -B dependency:go-offline -q
       - run: mvn -B install -pl !test -T2C
       - run: mvn -B install -pl test
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: test-results
+          path: '*/target/surefire-reports/*.xml'

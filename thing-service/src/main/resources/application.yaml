@@ -22,6 +22,11 @@ micronaut:
           - DELETE
 
   security:
+    token:
+      propagation:
+        header:
+          enabled: true
+        enabled: true
 
     ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#interceptUrlMap
     intercept-url-map:
