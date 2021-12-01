@@ -45,6 +45,7 @@ import io.micronaut.security.token.jwt.endpoints.JwkProvider;
 import io.micronaut.security.token.jwt.generator.claims.JwtClaimsSetAdapter;
 import io.micronaut.security.token.jwt.signature.jwks.DefaultJwkValidator;
 import io.micronaut.security.token.jwt.signature.jwks.JwksSignature;
+import io.micronaut.security.token.jwt.signature.jwks.JwksSignatureConfigurationProperties;
 import io.micronaut.security.token.jwt.validator.ExpirationJwtClaimsValidator;
 import io.micronaut.security.token.jwt.validator.JwtClaimsValidator;
 import io.micronaut.security.token.jwt.validator.NotBeforeJwtClaimsValidator;
@@ -130,7 +131,11 @@ public class TokenService implements JwkProvider {
 			return false;
 		}
 
-		var jwks = jwkSignatures.computeIfAbsent(issuer, i -> new JwksSignature(i, null, new DefaultJwkValidator()));
+		var jwks = jwkSignatures.computeIfAbsent(issuer, url -> {
+			var configuration = new JwksSignatureConfigurationProperties();
+			configuration.setUrl(url);
+			return new JwksSignature(configuration, new DefaultJwkValidator());
+		});
 		if (!jwks.verify(token.getJwt())) {
 			log.info("Ignored token with invalid signature.");
 			return false;
