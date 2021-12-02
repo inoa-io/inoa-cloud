@@ -1,5 +1,7 @@
 package io.inoa.cnpm.tenant;
 
+import java.util.UUID;
+
 import javax.validation.constraints.NotNull;
 
 import io.micronaut.context.annotation.ConfigurationProperties;
@@ -19,18 +21,27 @@ import lombok.Setter;
 @Setter
 public class ApplicationProperties {
 
-	/** HTTP header to use for tenant. */
-	@NotNull
-	private String httpHeader = "x-tenant-id";
+	private TokenExchangeProperties tokenExchange = new TokenExchangeProperties();
 
-	/** Issuer to add to generated tokens. */
-	@NotNull
-	private String issuer;
+	/** Configuration for token exchange. */
+	@ConfigurationProperties("token-exchange")
+	@Getter
+	@Setter
+	public static class TokenExchangeProperties {
 
-	/** Key id to use for JWK */
-	@NotNull
-	private String keyId;
+		/** HTTP header to get for tenant id from. */
+		@NotNull
+		private String httpHeader = "x-tenant-id";
 
-	/** Private key path. */
-	private String privateKey;
+		/** Issuer to add to generated tokens. */
+		@NotNull
+		private String issuer = UUID.randomUUID().toString();
+
+		/** Key id to use for JWK */
+		@NotNull
+		private String keyId = UUID.randomUUID().toString();
+
+		/** Resource path for RSA key to use. */
+		private String keyPath;
+	}
 }

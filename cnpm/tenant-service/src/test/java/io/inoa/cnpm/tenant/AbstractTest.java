@@ -23,6 +23,7 @@ import org.testcontainers.utility.DockerImageName;
 import io.cloudevents.kafka.CloudEventDeserializer;
 import io.inoa.cnpm.tenant.domain.Tenant;
 import io.inoa.cnpm.tenant.domain.User;
+import io.inoa.cnpm.tenant.test.TestSecurity;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.hateoas.JsonError;
 import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
@@ -48,6 +49,8 @@ public abstract class AbstractTest implements TestPropertyProvider {
 	public ApplicationProperties properties;
 	@Inject
 	public Data data;
+	@Inject
+	public TestSecurity security;
 	@Inject
 	Validator validator;
 	@Inject
@@ -90,7 +93,7 @@ public abstract class AbstractTest implements TestPropertyProvider {
 
 	private <T> T assertValid(T object) {
 		if (object instanceof Iterable) {
-			Iterable.class.cast(object).forEach(this::assertValid);
+			((Iterable<?>) object).forEach(this::assertValid);
 		} else {
 			var violations = validator.validate(object);
 			assertTrue(violations.isEmpty(), () -> "validation failed with:" + violations.stream()

@@ -100,8 +100,8 @@ services:
       - MICRONAUT_ENVIRONMENTS=postgres
       - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - INOA_CNPM_TENANT_KEY_ID=test
-      - INOA_CNPM_TENANT_ISSUER=http://tenant-service
+      - INOA_CNPM_TENANT_TOKEN_EXCHANGE_KEY_ID=test
+      - INOA_CNPM_TENANT_TOKEN_EXCHANGE_ISSUER=http://tenant-service
       - LOGGER_LEVELS_IO_INOA=TRACE
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
     healthcheck:

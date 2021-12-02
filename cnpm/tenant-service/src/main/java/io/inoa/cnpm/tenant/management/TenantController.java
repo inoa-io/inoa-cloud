@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.mapstruct.factory.Mappers;
@@ -46,6 +47,7 @@ public class TenantController implements TenantsApi {
 		}
 	}
 
+	@Transactional
 	@Override
 	public HttpResponse<TenantVO> createTenant(String tenantId, @Valid TenantCreateVO vo) {
 		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {
@@ -60,6 +62,7 @@ public class TenantController implements TenantsApi {
 		}
 	}
 
+	@Transactional
 	@Override
 	public HttpResponse<TenantVO> updateTenant(String tenantId, @Valid TenantUpdateVO vo) {
 		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {
@@ -70,6 +73,7 @@ public class TenantController implements TenantsApi {
 		}
 	}
 
+	@Transactional
 	@Override
 	public HttpResponse<Object> deleteTenant(String tenantId) {
 		try (var mdc = MDC.putCloseable("tenantId", tenantId)) {

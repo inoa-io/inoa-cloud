@@ -41,7 +41,8 @@ public class TokenServiceTest {
 		var keyPair = KeyPairGenerator.getInstance("RSA").generateKeyPair();
 		FileUtils.writeByteArrayToFile(keyFile.toFile(), keyPair.getPrivate().getEncoded());
 		assertTrue(keyFile.toFile().exists(), "file not exists");
-		var properties = new ApplicationProperties().setPrivateKey("file://" + keyFile);
+		var properties = new ApplicationProperties();
+		properties.getTokenExchange().setKeyPath("file://" + keyFile);
 		var jwk = new TokenService(properties).retrieveJsonWebKeys().get(0);
 		assertEquals(KeyType.RSA, jwk.getKeyType(), "keyType");
 		assertEquals(KeyUse.SIGNATURE, jwk.getKeyUse(), "keyUse");
@@ -52,7 +53,8 @@ public class TokenServiceTest {
 	void readTokenNotFound() {
 		var keyFile = Paths.get("nope.key").toAbsolutePath();
 		assertFalse(keyFile.toFile().exists(), "file exists");
-		var properties = new ApplicationProperties().setPrivateKey("file://" + keyFile);
+		var properties = new ApplicationProperties();
+		properties.getTokenExchange().setKeyPath("file://" + keyFile);
 		assertThrows(BeanInstantiationException.class, () -> new TokenService(properties));
 	}
 
@@ -61,7 +63,8 @@ public class TokenServiceTest {
 	void readTokenInvalid() {
 		var keyFile = Paths.get("pom.xml").toAbsolutePath();
 		assertTrue(keyFile.toFile().exists(), "file not exists");
-		var properties = new ApplicationProperties().setPrivateKey("file://" + keyFile);
+		var properties = new ApplicationProperties();
+		properties.getTokenExchange().setKeyPath("file://" + keyFile);
 		assertThrows(BeanInstantiationException.class, () -> new TokenService(properties));
 	}
 }

@@ -109,27 +109,21 @@ public class ManagementService {
 
 	// user
 
-	Optional<Page<User>> findUsers(String tenantId, Optional<String> optionalFilter, Pageable pageable) {
-		return findTenant(tenantId).map(tenant -> optionalFilter
+	Page<User> findUsers(Tenant tenant, Optional<String> optionalFilter, Pageable pageable) {
+		return optionalFilter
 				.map(filter -> "%" + filter.replace("*", "%") + "%")
 				.map(filter -> tenantUserRepository.findUserByTenantAndUserEmailIlikeFilter(tenant, filter, pageable))
-				.orElseGet(() -> tenantUserRepository.findUserByTenant(tenant, pageable)));
+				.orElseGet(() -> tenantUserRepository.findUserByTenant(tenant, pageable));
 	}
 
-	Optional<User> findUser(String tenantId, UUID userId) {
-		return findTenant(tenantId).flatMap(tenant -> tenantUserRepository
+	Optional<User> findUser(Tenant tenant, UUID userId) {
+		return tenantUserRepository
 				.findByTenantAndUserUserId(tenant, userId)
-				.map(TenantUser::getUser));
+				.map(TenantUser::getUser);
 	}
 
-	boolean existsUserByEmail(String tenantId, String email) {
-		return findTenant(tenantId)
-				.flatMap(tenant -> tenantUserRepository.findByTenantAndUserEmail(tenant, email))
-				.isPresent();
-	}
-
-	Optional<User> createUser(String tenantId, User user) {
-		return findTenant(tenantId).map(tenant -> createUser(tenant, user));
+	boolean existsUserByEmail(Tenant tenant, String email) {
+		return tenantUserRepository.findByTenantAndUserEmail(tenant, email).isPresent();
 	}
 
 	User createUser(Tenant tenant, User user) {
@@ -148,14 +142,14 @@ public class ManagementService {
 				});
 	}
 
-	boolean deleteUser(String tenantId, UUID userId) {
-		return findTenant(tenantId).flatMap(tenant -> tenantUserRepository
+	boolean deleteUser(Tenant tenant, UUID userId) {
+		return tenantUserRepository
 				.findByTenantAndUserUserId(tenant, userId)
 				.map(assignment -> {
 					tenantUserRepository.deleteById(assignment.getId());
-					log.info("Tenant {} user {} deleted.", tenantId, userId);
+					log.info("Tenant {} user {} deleted.", tenant.getTenantId(), userId);
 					return assignment;
-				}))
+				})
 				.isPresent();
 	}
 

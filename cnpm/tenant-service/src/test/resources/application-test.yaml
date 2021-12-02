@@ -27,7 +27,7 @@ grpc:
     port: ${random.port}
   channels:
     istioAuth:
-      address: 'localhost:${grpc.server.port}'
+      address: localhost:${grpc.server.port}
       plaintext: true
       max-retry-attempts: 10
 
@@ -35,8 +35,9 @@ grpc:
 inoa:
   cnpm:
     tenant:
-      key-id: test
-      issuer: http://localhost:${micronaut.server.port}
+      token-exchange:
+        key-id: test
+        issuer: http://localhost:${micronaut.server.port}
 
 ## Custom log configuration
 logger:
@@ -44,4 +45,4 @@ logger:
     io.inoa: INFO
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
-    org.apache.kafka: WARN
+    org.apache.kafka: ERROR

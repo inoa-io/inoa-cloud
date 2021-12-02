@@ -122,7 +122,7 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 	private Optional<Tenant> getTenantFromRequest(Map<String, String> headers) {
 
 		var tenantId = Optional
-				.ofNullable(headers.get(properties.getHttpHeader()))
+				.ofNullable(headers.get(properties.getTokenExchange().getHttpHeader()))
 				.map(String::strip)
 				.filter(StringUtils::isNotEmpty);
 		if (tenantId.isEmpty()) {

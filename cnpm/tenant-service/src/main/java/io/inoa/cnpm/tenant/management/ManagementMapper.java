@@ -16,7 +16,7 @@ public interface ManagementMapper {
 
 	UserVO toUser(User user);
 
-	UserPageVO toUserPage(Page<User> page);
+	UserPageVO toUsers(Page<User> page);
 
 	TenantVO toTenant(Tenant tenant);
 }

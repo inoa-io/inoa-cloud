@@ -37,6 +37,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.cnpm.tenant.ApplicationProperties;
+import io.inoa.cnpm.tenant.ApplicationProperties.TokenExchangeProperties;
 import io.inoa.cnpm.tenant.domain.Tenant;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.exceptions.BeanInstantiationException;
@@ -62,7 +63,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TokenService implements JwkProvider {
 
-	private final ApplicationProperties properties;
+	private final TokenExchangeProperties properties;
 	private final Map<String, JwksSignature> jwkSignatures;
 	private final List<JwtClaimsValidator> jwtClaimsValidator;
 	private final RSAKey key;
@@ -71,7 +72,7 @@ public class TokenService implements JwkProvider {
 
 	@SneakyThrows(JOSEException.class)
 	TokenService(ApplicationProperties properties) {
-		this.properties = properties;
+		this.properties = properties.getTokenExchange();
 		this.key = loadRSAKey();
 		this.signer = new RSASSASigner(key);
 		this.verifier = new RSASSAVerifier(key);
@@ -179,7 +180,7 @@ public class TokenService implements JwkProvider {
 
 		// no key - test mode
 
-		var privateKeyResource = properties.getPrivateKey();
+		var privateKeyResource = properties.getKeyPath();
 		if (privateKeyResource == null) {
 			log.warn("Generate random key. Do not use in Production!");
 			var pair = KeyPairGenerator.getInstance("RSA").generateKeyPair();

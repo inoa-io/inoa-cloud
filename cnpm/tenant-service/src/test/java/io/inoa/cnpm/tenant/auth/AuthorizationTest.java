@@ -26,7 +26,6 @@ import io.envoyproxy.envoy.service.auth.v3.CheckResponse;
 import io.grpc.Status.Code;
 import io.inoa.cnpm.tenant.AbstractTest;
 import io.inoa.cnpm.tenant.domain.Tenant;
-import io.inoa.cnpm.tenant.test.TestJwkController;
 import io.inoa.cnpm.tenant.test.TestStreamObserver;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpHeaders;
@@ -44,8 +43,6 @@ public class AuthorizationTest extends AbstractTest {
 	@Inject
 	AuthorizationGrpc.AuthorizationStub grpc;
 	@Inject
-	TestJwkController test;
-	@Inject
 	SignatureGeneratorConfiguration signature;
 
 	@DisplayName("success with user")
@@ -53,7 +50,7 @@ public class AuthorizationTest extends AbstractTest {
 	void successWithUser() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var tokenRequest = test.jwt(user);
+		var tokenRequest = security.jwt(user);
 		var response = assertOk(tenant, tokenRequest);
 		var tokenResponse = getAuthorizationToken(response);
 		assertNotEquals(tokenRequest, tokenResponse, "jwt not changed");
@@ -77,7 +74,7 @@ public class AuthorizationTest extends AbstractTest {
 
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var tokenRequest = test.jwt(user);
+		var tokenRequest = security.jwt(user);
 		var response = assertOk(tenant, tokenRequest);
 		var tokenResponse = getAuthorizationToken(response);
 		assertNotEquals(tokenRequest, tokenResponse, "jwt not changed");
@@ -94,7 +91,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTokenClaimEmailNotFound() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user.getEmail(), claims -> claims.claim("email", null));
+		var jwt = security.jwt(user.getEmail(), claims -> claims.claim("email", null));
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -103,7 +100,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTokenClaimIssuerNotAvailable() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user.getEmail(), claims -> claims.issuer(null));
+		var jwt = security.jwt(user.getEmail(), claims -> claims.issuer(null));
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -112,7 +109,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTokenClaimIssuerNotUrl() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user.getEmail(), claims -> claims.issuer("nope"));
+		var jwt = security.jwt(user.getEmail(), claims -> claims.issuer("nope"));
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -121,7 +118,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTokenClaimIssuerNotFound() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt("nope", user.getEmail(), claims -> {});
+		var jwt = security.jwt("nope", user.getEmail(), claims -> {});
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -130,7 +127,8 @@ public class AuthorizationTest extends AbstractTest {
 	void failTokenClaimIssuerFakedLocal() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt("nope", user.getEmail(), claims -> claims.issuer(properties.getIssuer()));
+		var tokenExchangeIssuer = properties.getTokenExchange().getIssuer();
+		var jwt = security.jwt("nope", user.getEmail(), claims -> claims.issuer(tokenExchangeIssuer));
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -139,7 +137,8 @@ public class AuthorizationTest extends AbstractTest {
 	void failTokenExpired() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user.getEmail(), claims -> claims.expirationTime(Date.from(Instant.now().minusSeconds(5))));
+		var jwt = security.jwt(user.getEmail(),
+				claims -> claims.expirationTime(Date.from(Instant.now().minusSeconds(5))));
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -155,7 +154,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failBearerMissing() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user);
+		var jwt = security.jwt(user);
 		assertUnauthenticated(tenant.getTenantId(), null, jwt);
 	}
 
@@ -164,7 +163,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failBearerInvalid() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user);
+		var jwt = security.jwt(user);
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BASIC, jwt);
 	}
 
@@ -173,7 +172,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTenantHeaderMissing() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user);
+		var jwt = security.jwt(user);
 		assertUnauthenticated(null, HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -182,7 +181,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTenantNotFound() {
 		var tenant = data.tenant();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user);
+		var jwt = security.jwt(user);
 		assertUnauthenticated(data.tenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -191,7 +190,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTenantDisabled() {
 		var tenant = data.tenantDisabled();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user);
+		var jwt = security.jwt(user);
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -200,7 +199,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failTenantDeleted() {
 		var tenant = data.tenantDeleted();
 		var user = data.user(tenant);
-		var jwt = test.jwt(user);
+		var jwt = security.jwt(user);
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -208,7 +207,7 @@ public class AuthorizationTest extends AbstractTest {
 	@Test
 	void failUserFotFound() {
 		var tenant = data.tenant();
-		var jwt = test.jwt("not-existing-email");
+		var jwt = security.jwt("not-existing-email");
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 
@@ -217,7 +216,7 @@ public class AuthorizationTest extends AbstractTest {
 	void failUserNotAssigned() {
 		var tenant = data.tenant();
 		var user = data.user();
-		var jwt = test.jwt(user);
+		var jwt = security.jwt(user);
 		assertUnauthenticated(tenant.getTenantId(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, jwt);
 	}
 

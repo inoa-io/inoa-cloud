@@ -19,5 +19,4 @@ public interface UserRepository extends GenericRepository<User, Long> {
 	User save(User user);
 
 	void deleteByUserId(UUID userId);
-
 }

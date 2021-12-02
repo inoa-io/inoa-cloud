@@ -36,7 +36,7 @@ import lombok.SneakyThrows;
  */
 @Controller
 @Getter
-public class TestJwkController {
+public class TestSecurity {
 
 	private final Map<String, JWK> jwks = Map.of("1", jwk("1"), "2", jwk("2"));
 
@@ -49,6 +49,10 @@ public class TestJwkController {
 		return new JWKSet(jwks.getOrDefault(id, jwk("null"))).toJSONObject(true);
 	}
 
+	public String getOpenIDBase(String id) {
+		return "http://localhost:" + port + "/endpoints/test/" + id;
+	}
+
 	public JWTClaimsSet claims(String id, String email) {
 		return claims(id, email, claims -> {});
 	}
@@ -57,7 +61,7 @@ public class TestJwkController {
 		var now = Instant.now();
 		var claims = new JWTClaimsSet.Builder()
 				.subject(UUID.randomUUID().toString())
-				.issuer("http://localhost:" + port + "/endpoints/test/" + id)
+				.issuer(getOpenIDBase(id))
 				.claim("email", email)
 				.issueTime(Date.from(now))
 				.expirationTime(Date.from(now.plusSeconds(60)));
