@@ -12,7 +12,7 @@ jobs:
         with:
           artifact: test-results
           name: Java Tests
-          path: '*.xml'
+          path: '*/target/surefire-reports/*.xml'
           reporter: java-junit
           list-suites: 'failed'
           list-tests: 'failed'
