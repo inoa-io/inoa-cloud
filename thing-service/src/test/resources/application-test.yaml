@@ -5,6 +5,11 @@ micronaut:
     client:
       logger-name: io.inoa.Test
       read-timeout: 5m
+    services:
+      gateway-command:
+        url: http://localhost:35000
+        path: /api/iot-commands/
+        read-timeout: 10s
 
   ## used for tokens issued/checked at management api
   security:
@@ -14,6 +19,9 @@ micronaut:
           secret:
             generator:
               secret: pleaseChangeThisSecretForANewOne
+      propagation:
+        enabled: true
+        service-id-regex: "gateway-command"
 
 logger:
   levels:

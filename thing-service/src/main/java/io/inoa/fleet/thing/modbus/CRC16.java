@@ -1,4 +1,4 @@
-package io.inoa.fleet.thing;
+package io.inoa.fleet.thing.modbus;
 
 public class CRC16 {
 

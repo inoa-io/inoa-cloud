@@ -50,8 +50,8 @@ public class ThingTypeCreator implements ApplicationEventListener<ServerStartupE
 				.findByThingTypeChannelId(THING_TYPE_DVH4013_POWER_IN);
 
 		if (optionalThingTypeChannel.isEmpty()) {
-			ThingTypeChannel powerChannel = new ThingTypeChannel().setName("power_in")
-					.setThingTypeChannelId(THING_TYPE_DVH4013_POWER_IN).setThingType(dvh4013);
+			ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("power_in").setName("Power In")
+					.setDescription(null).setThingTypeChannelId(THING_TYPE_DVH4013_POWER_IN).setThingType(dvh4013);
 			powerChannel.getProperties().add(new Property().setKey("name").setValue("power_in"));
 			powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
 			powerChannel.getProperties().add(new Property().setKey("urnPostfix").setValue("0x0000"));
@@ -63,8 +63,8 @@ public class ThingTypeCreator implements ApplicationEventListener<ServerStartupE
 		optionalThingTypeChannel = thingTypeChannelRepository.findByThingTypeChannelId(THING_TYPE_DVH4013_POWER_OUT);
 
 		if (optionalThingTypeChannel.isEmpty()) {
-			ThingTypeChannel powerChannel = new ThingTypeChannel().setName("power_out")
-					.setThingTypeChannelId(THING_TYPE_DVH4013_POWER_OUT).setThingType(dvh4013);
+			ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("power_out").setName("Power Out")
+					.setDescription(null).setThingTypeChannelId(THING_TYPE_DVH4013_POWER_OUT).setThingType(dvh4013);
 			powerChannel.getProperties().add(new Property().setKey("name").setValue("power_out"));
 			powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
 			powerChannel.getProperties().add(new Property().setKey("urnPostfix").setValue("0x0002"));
@@ -76,8 +76,9 @@ public class ThingTypeCreator implements ApplicationEventListener<ServerStartupE
 		optionalThingTypeChannel = thingTypeChannelRepository.findByThingTypeChannelId(THING_TYPE_DVH4013_WORK_IN);
 
 		if (optionalThingTypeChannel.isEmpty()) {
-			ThingTypeChannel powerChannel = new ThingTypeChannel().setName("work_in")
-					.setThingTypeChannelId(THING_TYPE_DVH4013_WORK_IN).setThingType(dvh4013);
+			ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("work_in").setName("Work Out")
+					.setDescription("1-0:1.8.0*255").setThingTypeChannelId(THING_TYPE_DVH4013_WORK_IN)
+					.setThingType(dvh4013);
 			powerChannel.getProperties().add(new Property().setKey("name").setValue("work_in"));
 			powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
 			powerChannel.getProperties().add(new Property().setKey("urnPostfix").setValue("0x4001"));
@@ -89,8 +90,9 @@ public class ThingTypeCreator implements ApplicationEventListener<ServerStartupE
 		optionalThingTypeChannel = thingTypeChannelRepository.findByThingTypeChannelId(THING_TYPE_DVH4013_WORK_OUT);
 
 		if (optionalThingTypeChannel.isEmpty()) {
-			ThingTypeChannel powerChannel = new ThingTypeChannel().setName("work_out")
-					.setThingTypeChannelId(THING_TYPE_DVH4013_WORK_OUT).setThingType(dvh4013);
+			ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("work_out").setName("Work Out")
+					.setDescription("1-0:2.8.0*255").setThingTypeChannelId(THING_TYPE_DVH4013_WORK_OUT)
+					.setThingType(dvh4013);
 			powerChannel.getProperties().add(new Property().setKey("name").setValue("work_out"));
 			powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
 			powerChannel.getProperties().add(new Property().setKey("urnPostfix").setValue("0x4101"));

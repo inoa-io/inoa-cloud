@@ -26,7 +26,7 @@ public class ThingChannel {
 	@MappedProperty
 	private UUID thingChannelId;
 	@MappedProperty
-	private String name;
+	private String key;
 	@Relation(Relation.Kind.MANY_TO_ONE)
 	private Thing thing;
 	@TypeDef(type = DataType.JSON)
