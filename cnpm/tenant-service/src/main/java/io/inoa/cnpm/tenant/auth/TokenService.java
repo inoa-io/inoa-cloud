@@ -1,9 +1,6 @@
 package io.inoa.cnpm.tenant.auth;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
@@ -123,15 +120,7 @@ public class TokenService implements JwkProvider {
 	 */
 	@SneakyThrows(JOSEException.class)
 	public boolean isValidRemoteToken(Token token) {
-
 		var issuer = token.getClaims().getIssuer() + "/protocol/openid-connect/certs";
-		try {
-			new URL(issuer).toURI();
-		} catch (MalformedURLException | URISyntaxException e) {
-			log.info("Ignored token with unsupported issuer: {}", issuer);
-			return false;
-		}
-
 		var jwks = jwkSignatures.computeIfAbsent(issuer, url -> {
 			var configuration = new JwksSignatureConfigurationProperties();
 			configuration.setUrl(url);
@@ -145,7 +134,6 @@ public class TokenService implements JwkProvider {
 			log.info("Ignored token with invalid content.");
 			return false;
 		}
-
 		return true;
 	}
 

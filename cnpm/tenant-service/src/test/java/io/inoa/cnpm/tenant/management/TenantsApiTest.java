@@ -73,6 +73,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
 		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
+		assertDefaultIssuer(actual);
 	}
 
 	@DisplayName("findTenant(401): no token")
@@ -117,6 +118,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertEquals(vo.getName(), created.getName(), "name");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
+		assertDefaultIssuer(created);
 		assertEquals(created, assert200(() -> client.findTenant(auth(email), tenantId)), "vo");
 		data.assertAssignment(email, tenantId);
 		data.assertEvent(tenantId, MessagingClient.ACTION_CREATE);
@@ -134,6 +136,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		assertEquals(vo.getEnabled(), created.getEnabled(), "enabled");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
+		assertDefaultIssuer(created);
 		assertEquals(created, assert200(() -> client.findTenant(auth(email), tenantId)), "vo");
 		data.assertAssignment(email, tenantId);
 		data.assertEvent(tenantId, MessagingClient.ACTION_CREATE);
@@ -147,6 +150,7 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		var tenantId = data.tenantId();
 		var vo = new TenantCreateVO().setName(data.tenantName());
 		var created = assert201(() -> client.createTenant(auth(user), tenantId, vo));
+		assertDefaultIssuer(created);
 		assertEquals(created, assert200(() -> client.findTenant(auth(user), tenantId)), "vo");
 		data.assertAssignment(user.getEmail(), tenantId, otherTenant.getTenantId());
 		data.assertEvent(tenantId, MessagingClient.ACTION_CREATE);
@@ -363,4 +367,15 @@ public class TenantsApiTest extends AbstractTest implements TenantsApiTestSpec {
 		var user = data.user(tenant);
 		assert404(() -> client.deleteTenant(auth(user), tenant.getTenantId()));
 	}
+
+	private void assertDefaultIssuer(TenantVO tenant) {
+		assertEquals(1, tenant.getIssuers().size(), "issuers");
+		var issuer = tenant.getIssuers().iterator().next();
+		assertEquals(properties.getIssuerDefaults().getName(), issuer.getName(), "issuer.name");
+		assertEquals(properties.getIssuerDefaults().getUrl(), issuer.getUrl(), "issuer.url");
+		assertEquals(properties.getIssuerDefaults().getCacheDuration(), issuer.getCacheDuration(), "issuer.cache");
+		assertNotNull(issuer.getCreated(), "issuer.created");
+		assertNotNull(issuer.getUpdated(), "issuer.updated");
+	}
+
 }

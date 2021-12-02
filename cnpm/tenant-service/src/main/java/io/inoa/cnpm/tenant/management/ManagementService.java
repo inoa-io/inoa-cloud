@@ -2,10 +2,15 @@ package io.inoa.cnpm.tenant.management;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
 
+import io.inoa.cnpm.tenant.ApplicationProperties;
+import io.inoa.cnpm.tenant.domain.Issuer;
+import io.inoa.cnpm.tenant.domain.IssuerRepository;
 import io.inoa.cnpm.tenant.domain.Tenant;
 import io.inoa.cnpm.tenant.domain.TenantRepository;
 import io.inoa.cnpm.tenant.domain.TenantUser;
@@ -32,8 +37,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ManagementService {
 
+	private final ApplicationProperties properties;
 	private final SecurityService security;
 	private final TenantRepository tenantRepository;
+	private final IssuerRepository issuerRepository;
 	private final TenantUserRepository tenantUserRepository;
 	private final UserRepository userRepository;
 	private final MessagingClient messaging;
@@ -41,13 +48,18 @@ public class ManagementService {
 	// tenant
 
 	List<Tenant> findTenants() {
-		return tenantUserRepository.findTenantByUserEmail(getUserEmail());
+		return tenantUserRepository
+				.findByUserEmail(getUserEmail())
+				.stream()
+				.map(TenantUser::getTenant)
+				.collect(Collectors.toList());
 	}
 
 	Optional<Tenant> findTenant(String tenantId) {
-		return tenantUserRepository
-				.findByTenantTenantIdAndUserEmail(tenantId, getUserEmail())
-				.map(TenantUser::getTenant);
+		var email = getUserEmail();
+		return tenantRepository
+				.findByTenantId(tenantId)
+				.filter(tenant -> tenantUserRepository.existsByTenantAndUserEmail(tenant, email));
 	}
 
 	public boolean existsTenant(String tenantId) {
@@ -56,7 +68,12 @@ public class ManagementService {
 
 	Tenant createTenant(Tenant tenant) {
 		var user = new User().setEmail(getUserEmail());
-		tenantRepository.save(tenant);
+		var defaults = properties.getIssuerDefaults();
+		tenantRepository.save(tenant).setIssuers(Set.of(issuerRepository.save(new Issuer()
+				.setTenant(tenant)
+				.setName(defaults.getName())
+				.setUrl(defaults.getUrl())
+				.setCacheDuration(defaults.getCacheDuration()))));
 		messaging.sendCloudEvent(tenant, MessagingClient.ACTION_CREATE);
 		log.info("Tenant {} created: {}", tenant.getTenantId(), tenant);
 		createUser(tenant, user);
@@ -107,6 +124,79 @@ public class ManagementService {
 				.isPresent();
 	}
 
+	// issuers
+
+	Optional<Issuer> findIssuer(Tenant tenant, String name) {
+		return tenant.getIssuers().stream().filter(r -> r.getName().equals(name)).findAny();
+	}
+
+	public Issuer createIssuer(Tenant tenant, String name, IssuerCreateVO vo) {
+		if (issuerRepository.existsByTenantAndUrl(tenant, vo.getUrl())) {
+			throw new HttpStatusException(HttpStatus.CONFLICT, "Url already exists.");
+		}
+		if (findIssuer(tenant, name).isPresent()) {
+			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
+		}
+		var issuer = issuerRepository.save(new Issuer()
+				.setTenant(tenant)
+				.setName(name)
+				.setUrl(vo.getUrl())
+				.setCacheDuration(vo.getCacheDuration() == null
+						? properties.getIssuerDefaults().getCacheDuration()
+						: vo.getCacheDuration()));
+		log.info("Tenant {} issuer created: {}", tenant.getTenantId(), issuer);
+		return issuer;
+	}
+
+	public Optional<Issuer> updateIssuer(Tenant tenant, String name, IssuerUpdateVO vo) {
+		return findIssuer(tenant, name).map(issuer -> {
+			var changed = false;
+
+			if (vo.getUrl() != null) {
+				if (issuer.getUrl().equals(vo.getUrl())) {
+					log.trace("Tenant {} issuer {}: skip update of name {} because not changed.",
+							tenant.getTenantId(), name, vo.getUrl());
+				} else {
+					if (issuerRepository.existsByTenantAndUrl(tenant, vo.getUrl())) {
+						throw new HttpStatusException(HttpStatus.CONFLICT, "Url already exists.");
+					}
+					log.info("Tenant {} issuer {}: updated url from {} to {}.",
+							tenant.getTenantId(), name, issuer.getUrl(), vo.getUrl());
+					changed = true;
+					issuer.setUrl(vo.getUrl());
+				}
+			}
+
+			if (vo.getCacheDuration() != null) {
+				if (issuer.getCacheDuration().equals(vo.getCacheDuration())) {
+					log.trace("Tenant {} issuer {}: skip update of name {} because not changed.",
+							tenant.getTenantId(), name, vo.getUrl());
+				} else {
+					log.info("Tenant {} issuer {}: updated cache from {} to {}.",
+							tenant.getTenantId(), name, issuer.getCacheDuration(), vo.getCacheDuration());
+					changed = true;
+					issuer.setCacheDuration(vo.getCacheDuration());
+				}
+			}
+
+			if (changed) {
+				issuerRepository.update(issuer);
+			}
+
+			return issuer;
+		});
+	}
+
+	public boolean deleteIssuer(Tenant tenant, String name) {
+		return findIssuer(tenant, name)
+				.map(issuer -> {
+					issuerRepository.delete(issuer);
+					log.info("Tenant {} issuer {} deleted.", tenant.getTenantId(), name);
+					return issuer;
+				})
+				.isPresent();
+	}
+
 	// user
 
 	Page<User> findUsers(Tenant tenant, Optional<String> optionalFilter, Pageable pageable) {
@@ -123,7 +213,7 @@ public class ManagementService {
 	}
 
 	boolean existsUserByEmail(Tenant tenant, String email) {
-		return tenantUserRepository.findByTenantAndUserEmail(tenant, email).isPresent();
+		return tenantUserRepository.existsByTenantAndUserEmail(tenant, email);
 	}
 
 	User createUser(Tenant tenant, User user) {

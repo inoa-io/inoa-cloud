@@ -2,12 +2,10 @@ package io.inoa.cnpm.tenant.auth;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.slf4j.MDC;
 
 import com.google.rpc.Status;
-import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.envoyproxy.envoy.config.core.v3.HeaderValue;
@@ -28,7 +26,6 @@ import io.inoa.cnpm.tenant.domain.UserRepository;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpHeaders;
-import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,8 +41,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBase {
 
-	private final String prefix = HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " ";
-	private final Set<SignatureConfiguration> upstreamSignatures;
+	private static final CheckResponse UNAUTHENTICATED = CheckResponse.newBuilder()
+			.setStatus(Status.newBuilder().setCode(Code.UNAUTHENTICATED.value()).build())
+			.build();
+	private static final String PREFIX = HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " ";
+
 	private final ApplicationProperties properties;
 	private final TokenService service;
 	private final TenantRepository tenantRepository;
@@ -53,10 +53,9 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 	private final TenantUserRepository tenantUserRepository;
 
 	@Override
-	public void check(CheckRequest request, StreamObserver<CheckResponse> responseObserver) {
+	public void check(CheckRequest request, StreamObserver<CheckResponse> observer) {
 		try {
-
-			var checkResponse = exchangeTokenForRequest(request)
+			observer.onNext(exchangeTokenForRequest(request)
 					.map(jwt -> HeaderValue.newBuilder()
 							.setKey(HttpHeaders.AUTHORIZATION)
 							.setValue(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + jwt.serialize())
@@ -67,14 +66,12 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 									.addHeaders(HeaderValueOption.newBuilder().setHeader(header).build())
 									.build())
 							.build())
-					.orElseGet(() -> CheckResponse.newBuilder()
-							.setStatus(Status.newBuilder().setCode(Code.UNAUTHENTICATED.value()).build())
-							.build());
-
-			responseObserver.onNext(checkResponse);
-			responseObserver.onCompleted();
-
+					.orElse(UNAUTHENTICATED));
+		} catch (RuntimeException e) {
+			log.error("Error while token exchange.", e);
+			observer.onNext(UNAUTHENTICATED);
 		} finally {
+			observer.onCompleted();
 			MDC.remove("tenantId");
 			MDC.remove("userId");
 			MDC.remove("azp");
@@ -101,6 +98,9 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 
 		var tenant = getTenantFromRequest(headers);
 		if (tenant.isEmpty()) {
+			return Optional.empty();
+		}
+		if (!isValidIssuerForTenant(tenant.get(), token.get())) {
 			return Optional.empty();
 		}
 
@@ -149,19 +149,31 @@ public class AuthorizationService extends AuthorizationGrpc.AuthorizationImplBas
 		return Optional
 				// headers provided by envoy are always lowercase, so adjust header name
 				.ofNullable(headers.get(HttpHeaders.AUTHORIZATION.toLowerCase()))
-				.filter(value -> value.startsWith(prefix))
-				.map(value -> value.substring(prefix.length()))
+				.filter(value -> value.startsWith(PREFIX))
+				.map(value -> value.substring(PREFIX.length()))
 				.flatMap(service::toToken);
 	}
 
+	private boolean isValidIssuerForTenant(Tenant tenant, Token token) {
+		var issuer = token.getClaims().getIssuer();
+
+		if (issuer == null) {
+			log.info("Ignore request because issuer claim not found for token with aud={} and azp={}.",
+					token.getClaims().getAudience(), token.getClaims().getClaim("azp"));
+			return false;
+		}
+
+		if (tenant.getIssuers().stream().noneMatch(i -> i.getUrl().toString().equals(issuer))) {
+			log.info("Ignore request because issuer is invalid for token from iss={} with aud={} and azp={}.",
+					token.getClaims().getIssuer(), token.getClaims().getAudience(), token.getClaims().getClaim("azp"));
+			return false;
+		}
+
+		return true;
+	}
+
 	private boolean isApplicationToken(Token token) {
-		return token.getEmailClaim().isEmpty() && upstreamSignatures.stream().anyMatch(signature -> {
-			try {
-				return signature.verify(token.getJwt());
-			} catch (JOSEException e) {
-				return false;
-			}
-		});
+		return token.getEmailClaim().isEmpty();
 	}
 
 	private Optional<User> getUserFromClaims(Token token) {

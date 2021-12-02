@@ -51,6 +51,12 @@
 					<artifactId>openapi-generator-maven-plugin</artifactId>
 					<configuration>
 						<ignoreFileOverride>${project.basedir}/../../.openapi-ignore</ignoreFileOverride>
+						<typeMappings>
+							<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
+							<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
+							<typeMapping>Singleton=jakarta.inject.Singleton</typeMapping>
+							<typeMapping>url=java.net.URL</typeMapping>
+						</typeMappings>
 					</configuration>
 				</plugin>
 				<plugin>

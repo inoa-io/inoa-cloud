@@ -38,11 +38,15 @@ inoa:
       token-exchange:
         key-id: test
         issuer: http://localhost:${micronaut.server.port}
+      issuer-defaults:
+        name: test
+        url: http://localhost:${micronaut.server.port}/endpoints/test/0
+        cache-duration: PT0s
 
 ## Custom log configuration
 logger:
   levels:
-    io.inoa: INFO
-    io.micronaut.data: INFO
+    io.inoa: TRACE
+    io.micronaut.data: TRACE
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
     org.apache.kafka: ERROR

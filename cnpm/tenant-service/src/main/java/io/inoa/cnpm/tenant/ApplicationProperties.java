@@ -1,5 +1,7 @@
 package io.inoa.cnpm.tenant;
 
+import java.net.URL;
+import java.time.Duration;
 import java.util.UUID;
 
 import javax.validation.constraints.NotNull;
@@ -22,6 +24,7 @@ import lombok.Setter;
 public class ApplicationProperties {
 
 	private TokenExchangeProperties tokenExchange = new TokenExchangeProperties();
+	private IssuerDefaultProperties issuerDefaults = new IssuerDefaultProperties();
 
 	/** Configuration for token exchange. */
 	@ConfigurationProperties("token-exchange")
@@ -43,5 +46,24 @@ public class ApplicationProperties {
 
 		/** Resource path for RSA key to use. */
 		private String keyPath;
+	}
+
+	/** Configuration for tenant issuer defaults. */
+	@ConfigurationProperties("issuer-defaults")
+	@Getter
+	@Setter
+	public static class IssuerDefaultProperties {
+
+		/** Default issuer name for new tenants. */
+		@NotNull
+		private String name = "default";
+
+		/** Default issuer url for new tenants. */
+		@NotNull
+		private URL url;
+
+		/** Default cache duration for issuers. */
+		@NotNull
+		private Duration cacheDuration = Duration.ofMinutes(5);
 	}
 }

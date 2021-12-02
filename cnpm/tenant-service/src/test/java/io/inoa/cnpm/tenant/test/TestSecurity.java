@@ -1,5 +1,6 @@
 package io.inoa.cnpm.tenant.test;
 
+import java.net.URL;
 import java.security.KeyPairGenerator;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
@@ -38,7 +39,7 @@ import lombok.SneakyThrows;
 @Getter
 public class TestSecurity {
 
-	private final Map<String, JWK> jwks = Map.of("1", jwk("1"), "2", jwk("2"));
+	private final Map<String, JWK> jwks = Map.of("0", jwk("0"), "1", jwk("1"), "2", jwk("2"));
 
 	@Value("${micronaut.server.port}")
 	int port;
@@ -49,20 +50,16 @@ public class TestSecurity {
 		return new JWKSet(jwks.getOrDefault(id, jwk("null"))).toJSONObject(true);
 	}
 
-	public String getOpenIDBase(String id) {
-		return "http://localhost:" + port + "/endpoints/test/" + id;
+	@SneakyThrows
+	public URL getOpenIDBase(String id) {
+		return new URL("http://localhost:" + port + "/endpoints/test/" + id);
 	}
 
-	public JWTClaimsSet claims(String id, String email) {
-		return claims(id, email, claims -> {});
-	}
-
-	public JWTClaimsSet claims(String id, String email, Consumer<JWTClaimsSet.Builder> claimsModifier) {
+	public JWTClaimsSet claims(String id, Consumer<JWTClaimsSet.Builder> claimsModifier) {
 		var now = Instant.now();
 		var claims = new JWTClaimsSet.Builder()
 				.subject(UUID.randomUUID().toString())
-				.issuer(getOpenIDBase(id))
-				.claim("email", email)
+				.issuer(getOpenIDBase(id).toString())
 				.issueTime(Date.from(now))
 				.expirationTime(Date.from(now.plusSeconds(60)));
 		claimsModifier.accept(claims);
@@ -82,21 +79,24 @@ public class TestSecurity {
 		return jwt;
 	}
 
-	public String jwt(User user) {
-		return jwt(user.getEmail());
+	public String jwtUser(User user) {
+		return jwtUser(user.getEmail());
 	}
 
-	public String jwt(String email) {
-		return jwt(email, claims -> {});
+	public String jwtUser(String email) {
+		return jwtUser("0", email, claims -> {});
 	}
 
-	public String jwt(String email, Consumer<JWTClaimsSet.Builder> claimsModifier) {
-		var id = jwks.keySet().iterator().next();
-		return sign(id, claims(id, email, claimsModifier)).serialize();
+	public String jwtUser(String email, Consumer<JWTClaimsSet.Builder> claimsModifier) {
+		return jwtUser("0", email, claimsModifier);
 	}
 
-	public String jwt(String id, String email, Consumer<JWTClaimsSet.Builder> claimsModifier) {
-		return sign(id, claims(id, email, claimsModifier)).serialize();
+	public String jwtUser(String id, String email, Consumer<JWTClaimsSet.Builder> claimsModifier) {
+		return sign(id, claims(id, claimsModifier.andThen(claims -> claims.claim("email", email)))).serialize();
+	}
+
+	public String jwtApplication(String id, Consumer<JWTClaimsSet.Builder> claimsModifier) {
+		return sign(id, claims(id, claimsModifier)).serialize();
 	}
 
 	@SneakyThrows

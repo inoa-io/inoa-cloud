@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URL;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,6 +22,8 @@ import org.awaitility.Awaitility;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.jackson.PojoCloudEventDataMapper;
+import io.inoa.cnpm.tenant.domain.Issuer;
+import io.inoa.cnpm.tenant.domain.IssuerRepository;
 import io.inoa.cnpm.tenant.domain.Tenant;
 import io.inoa.cnpm.tenant.domain.TenantTestRepository;
 import io.inoa.cnpm.tenant.domain.TenantUser;
@@ -42,7 +47,9 @@ public class Data {
 	private final List<ConsumerRecord<String, CloudEvent>> records = new ArrayList<>();
 	private final PojoCloudEventDataMapper<TenantVO> mapper = PojoCloudEventDataMapper
 			.from(MessagingClient.MAPPER, TenantVO.class);
+	private final ApplicationProperties properties;
 	private final TenantTestRepository tenantRepository;
+	private final IssuerRepository issuerRepository;
 	private final TenantUserRepository tenantUserRepository;
 	private final UserTestRepository userRepository;
 
@@ -101,11 +108,31 @@ public class Data {
 	}
 
 	public Tenant tenant(String tenantId, String name, boolean enabled, boolean deleted) {
-		return tenantRepository.save(new Tenant()
+		var tenant = tenantRepository.save(new Tenant()
 				.setTenantId(tenantId)
 				.setName(name)
 				.setEnabled(enabled)
 				.setDeleted(deleted ? Instant.now() : null));
+		var issuer = issuerRepository.save(new Issuer()
+				.setTenant(tenant)
+				.setName(properties.getIssuerDefaults().getName())
+				.setUrl(properties.getIssuerDefaults().getUrl())
+				.setCacheDuration(properties.getIssuerDefaults().getCacheDuration()));
+		return tenant.setIssuers(new HashSet<>(Set.of(issuer)));
+	}
+
+	public String issuerName() {
+		return UUID.randomUUID().toString().substring(0, 10);
+	}
+
+	public Issuer issuer(Tenant tenant, String name, URL url, Duration cacheDuration) {
+		var issuer = issuerRepository.save(new Issuer()
+				.setTenant(tenant)
+				.setName(name)
+				.setUrl(url)
+				.setCacheDuration(cacheDuration));
+		tenant.getIssuers().add(issuer);
+		return issuer;
 	}
 
 	public String userEmail() {
@@ -139,7 +166,9 @@ public class Data {
 				.stream(userRepository.findAll().spliterator(), false)
 				.anyMatch(user -> user.getEmail().equals(email)), "user not found");
 		assertEquals(Set.of(expectedTenantIds), tenantUserRepository
-				.findTenantByUserEmail(email).stream()
+				.findByUserEmail(email)
+				.stream()
+				.map(TenantUser::getTenant)
 				.map(Tenant::getTenantId)
 				.collect(Collectors.toSet()), "assignments");
 	}

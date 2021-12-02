@@ -45,6 +45,12 @@ micronaut:
       max-page-size: 100
       default-page-size: 10
 
+## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
+jackson:
+  bean-introspection-module: true
+  serialization:
+    writeDatesAsTimestamps: false
+
 ## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
 endpoints:
   all:
