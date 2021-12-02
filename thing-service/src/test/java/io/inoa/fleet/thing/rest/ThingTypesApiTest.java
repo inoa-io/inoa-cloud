@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import io.inoa.fleet.thing.domain.PropertyDefinition;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.thing.AbstractTest;
@@ -113,6 +114,8 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	@Override
 	public void findThingTypeWithDetails200() throws Exception {
 		var dvh4013 = new ThingType().setThingTypeId(UUID.randomUUID()).setName("dvh4013");
+		dvh4013.getProperties().add(new PropertyDefinition().setInputType("TEXT").setName("serialId").setKey("serialId"));
+		dvh4013.getProperties().add(new PropertyDefinition().setInputType("NUMBER").setName("slaveId").setKey("serialId"));
 		dvh4013 = thingTypeRepository.save(dvh4013);
 		ThingTypeChannel powerChannel = new ThingTypeChannel().setThingTypeChannelId(UUID.randomUUID()).setKey("power")
 				.setName("power").setThingType(dvh4013);

@@ -38,9 +38,9 @@ public class ThingTypeCreator implements ApplicationEventListener<ServerStartupE
 		if (optionalThingType.isEmpty()) {
 			dvh4013 = new ThingType().setThingTypeId(THING_TYPE_DVH4013).setName("dvh4013");
 			dvh4013.getProperties()
-					.add(new PropertyDefinition().setName("serial").setKey("serial").setInputType("text"));
+					.add(new PropertyDefinition().setName("serial").setKey("serial").setInputType("TEXT"));
 			dvh4013.getProperties()
-					.add(new PropertyDefinition().setName("slaveId").setKey("slaveId").setInputType("number"));
+					.add(new PropertyDefinition().setName("slaveId").setKey("slaveId").setInputType("NUMBER"));
 			dvh4013 = thingTypeRepository.save(dvh4013);
 		} else {
 			dvh4013 = optionalThingType.get();
