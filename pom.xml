@@ -59,10 +59,12 @@
 		<docker.kafka.version>6.1.2</docker.kafka.version>
 		<docker.postgres.version>13.1</docker.postgres.version>
 
-		<container.image.repository>ghcr.io/grayc-de</container.image.repository>
-		<container.image.name>${project.artifactId}</container.image.name>
-		<container.image.version>${project.version}</container.image.version>
-		<container.image>${container.image.repository}/${container.image.name}:${container.image.version}</container.image>
+		<jib.container.jvmFlags>-XX:+ExitOnOutOfMemoryError</jib.container.jvmFlags>
+		<jib.from.image>eclipse-temurin:11.0.13_8-jdk@sha256:a264006eaa925d1a9acb64b0df0347476130d9e245f4c826b9ca061363d5670b</jib.from.image>
+		<jib.to.image.repository>ghcr.io/grayc-de</jib.to.image.repository>
+		<jib.to.image.name>${project.artifactId}</jib.to.image.name>
+		<jib.to.image.version>${project.version}</jib.to.image.version>
+		<jib.to.image>${jib.to.image.repository}/${jib.to.image.name}:${jib.to.image.version}</jib.to.image>
 
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
@@ -200,22 +202,6 @@
 							<exclude>**/*VO.class</exclude>
 							<exclude>**/*MapperImpl.class</exclude>
 						</excludes>
-					</configuration>
-				</plugin>
-
-				<!-- create container -->
-				<plugin>
-					<groupId>com.google.cloud.tools</groupId>
-					<artifactId>jib-maven-plugin</artifactId>
-					<configuration>
-						<container>
-							<jvmFlags>
-								<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
-							</jvmFlags>
-						</container>
-						<to>
-							<image>${container.image}</image>
-						</to>
 					</configuration>
 				</plugin>
 
