@@ -1,5 +1,6 @@
 package io.inoa.fleet.command;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Optional;
 import org.eclipse.hono.application.client.ApplicationClient;
 import org.eclipse.hono.application.client.MessageContext;
 import org.eclipse.hono.client.ServiceInvocationException;
+import org.slf4j.MDC;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,25 +84,34 @@ public class CommandController {
 	@PostMapping("/{tenantId}/{deviceId}/rpc")
 	public DeferredResult<ResponseEntity<?>> sendRpcCommand(@PathVariable String tenantId,
 			@PathVariable String deviceId, @RequestBody RpcCommand data) throws JsonProcessingException {
+		MDC.put("tenantId", tenantId);
+		MDC.put("gatewayId", deviceId);
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(data.getId());
 		Objects.requireNonNull(data.getMethod());
 
 		DeferredResult<ResponseEntity<?>> output = new DeferredResult<>();
 		var now = OffsetDateTime.now();
+		var id = "rpc@" + now;
 		CloudEvent cloudEvent = CloudEventBuilder.v1()
-				.withSource(URI.create(String.format("/command/%s/%s/rpc", tenantId, deviceId))).withId("rpc@" + now)
+				.withSource(URI.create(String.format("/command/%s/%s/rpc", tenantId, deviceId))).withId(id)
 				.withSubject("rpc").withType("io.inoa.fleet.rpc").withTime(OffsetDateTime.now())
 				.withDataContentType(MediaType.APPLICATION_JSON_VALUE)
 				.withData(PojoCloudEventData.wrap(data, objectMapper::writeValueAsBytes)).build();
-
 		final Buffer commandBuffer = buildCommandPayload(objectMapper.writeValueAsBytes(cloudEvent));
 		final String command = "cloudEventRpc";
+		log.info("start sending command with id {} to gateway {} for tenant {}", id, deviceId, tenantId);
 		honoClient.sendCommand(tenantId, deviceId, command, "application/json", commandBuffer, new HashMap<>())
 				.map(result -> {
-					log.info("Successfully sent command payload: [{}].", commandBuffer.toString());
+					log.info("Successfully sent command payload: [{}].", commandBuffer);
 					log.info("And received response: [{}].",
-							Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString());
+							Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer));
+					try {
+						var resultCloudEvent = objectMapper.readValue(result.getPayload().getBytes(), CloudEvent.class);
+						resultCloudEvent.getData().toBytes();
+					} catch (IOException e) {
+						log.error(e.getMessage(), e);
+					}
 					output.setResult(ResponseEntity
 							.ok(Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString()));
 					return result;
@@ -114,6 +125,9 @@ public class CommandController {
 						output.setResult(ResponseEntity.status(503).build());
 					}
 					return null;
+				}).onComplete(f -> {
+					MDC.remove("tenantId");
+					MDC.remove("gatewayId");
 				});
 		return output;
 	}
