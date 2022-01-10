@@ -3,55 +3,53 @@ micronaut:
   ## http clients for testing
   http:
     services:
+      grafana:
+        url: http://${test.grafana.3000}
+        logger-name: io.inoa.Grafana
       keycloak:
         url: http://${test.keycloak.8080}
         logger-name: io.inoa.Keycloak
-      gateway-registry:
-        url: http://${test.gateway-registry.8080}
-        logger-name: io.inoa.fleet.registry.Client
+      echo:
+        url: http://${test.envoy.8080}
+        logger-name: io.inoa.cnpm.envoy.Client
+        path: /echo
+      auth:
+        url: http://${test.envoy.8080}
+        logger-name: io.inoa.cnpm.auth.Client
       tenant-management:
-        url: http://${test.tenant-service.8080}
-        logger-name: io.inoa.cloud.tenant.Client
-      gateway-registry-management:
-        url: http://${test.gateway-registry.8090}
-        logger-name: io.inoa.fleet.registry.Management
-      inoa-translator-management:
-        url: http://${test.inoa-translator.8090}
-        logger-name: io.inoa.cloud.translator.Management
-      inoa-exporter-management:
-        url: http://${test.inoa-exporter.8090}
-        logger-name: io.inoa.cloud.exporter.Management
-
-## see https://micronaut-projects.github.io/micronaut-mqtt/latest/guide/#v3config
-mqtt:
-  enabled: false
-  client.server-uri: tcp://${test.mqtt.1883}
+        url: http://${test.envoy.8080}
+        logger-name: io.inoa.cnpm.tenant.Client
+        path: /api/tenant/v1
+      registry-management:
+        url: http://${test.envoy.8080}
+        logger-name: io.inoa.fleet.registry.Client
+        path: /api/registry/v1
+      registry-gateway:
+        url: http://${test.envoy.8080}
+        logger-name: io.inoa.fleet.registry.Client
+        path: /api/registry/v1
 
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
   serialization:
     indentOutput: true
 
-## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
-kafka:
-  bootstrap:
-    servers: ${test.kafka.9092}
-
-## influxdb
+## see https://github.com/kokuwaio/micronaut-influxdb
 influxdb:
   url: http://${test.influxdb.8086}
-  username: influxdb
-  password: changeMe
-  org: test
-  bucket: export
+  org: master
+  token: changeMe
+grafana:
+  url: http://${test.grafana.3000}
+  username: admin
+  password: password
 
 ## custom log configuration
 logger:
   levels:
     io.inoa: TRACE
-    # DEBUG to avoid prometheus endpoint spam
-    io.inoa.fleet.registry.Management: DEBUG
-    io.inoa.cloud.translator.Management: DEBUG
-    io.inoa.cloud.exporter.Management: DEBUG
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
-    org.testcontainers.DockerClientFactory: WARN
+
+## disable dependencies from artifacts
+kafka:
+  enabled: false

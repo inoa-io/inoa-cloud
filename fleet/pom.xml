@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.inoa</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<groupId>io.inoa.fleet</groupId>
+	<artifactId>fleet-parent</artifactId>
+	<packaging>pom</packaging>
+
+	<name>INOA :: Fleet</name>
+
+	<modules>
+		<module>registry-api-management</module>
+		<module>registry-api-gateway</module>
+		<module>registry-service</module>
+		<module>registry-hono-bridge</module>
+		<module>gateway-telemetry</module>
+		<module>gateway-event</module>
+		<module>gateway-logger</module>
+		<module>gateway-command-service</module>
+	</modules>
+</project>

@@ -23,19 +23,5 @@ docker-compose -f test/target/compose/docker-compose.yaml --no-cache build keycl
 Add environment variable to your service you want to debug in your **docker-compose.yaml**
 
 ```yaml
-service:
-  environment:
-  - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
-```
-
-Expose port 8000 to a port of your choice to avoid port conflicts, e.g.:
-
-```yaml
-burner-selector-service:
-  ports:
-  - 50054:8000
-```
-
-Copy your ressources and run **docker-compose**.
-
-Create a Remote-Debug-Session in your IDE with the project open you want to debug.
+cls && mvn resources:copy-resources@compose && docker-compose -f target/compose/docker-compose.yaml up -d --build kafka zookeep
+docker-compose -f target/compose/docker-compose.yaml up auth-service tenant-service

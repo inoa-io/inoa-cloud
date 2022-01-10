@@ -1,0 +1,38 @@
+micronaut:
+  application:
+    name: ${project.artifactId}
+    version: ${project.version}
+
+  ## https://docs.micronaut.io/latest/guide/index.html#clientConfiguration
+  http:
+    services:
+      grafana:
+        url: ${grafana.url}
+        path: ${grafana.path:/}
+        follow-redirects: ${grafana.follow-redirects:false}
+        connect-timeout: ${grafana.connect-timeout:1s}
+        read-timeout: ${grafana.read-timeout:5s}
+        logger-name: io.inoa.measurement.provisioner.grafana.Client
+
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    path: /endpoints
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
+kafka:
+  consumers:
+    default:
+      key:
+        deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value:
+        deserializer: io.cloudevents.kafka.CloudEventDeserializer
+
+## Custom log configuration
+logger:
+  levels:
+    # in client we log issues without useless exception stacktrace
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"

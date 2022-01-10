@@ -2,35 +2,11 @@ name: Snapshot
 
 "on":
   workflow_dispatch: {}
-  push:
-    branches:
-      - main
-      - '*.x'
+  push: {}
 
 jobs:
-
-  lint-yaml:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ibiqlik/action-yamllint@v3
-        with:
-          format: colored
-          strict: true
-
-  lint-markdown:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: docker://avtodev/markdown-lint:v1
-        with:
-          args: /github/workspace
-
   build:
     runs-on: ubuntu-latest
-    needs:
-      - lint-markdown
-      - lint-yaml
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
@@ -38,18 +14,31 @@ jobs:
           distribution: temurin
           java-version: 11
           cache: maven
-      - run: mvn -B dependency:go-offline -q
-      - run: mvn -B install -Dcontainer.image.version='${project.version}-${maven.build.timestamp}' -DskipTests -T4C
-      - uses: docker/login-action@v1
+      - run: mvn -B -ntp install -Djib.to.image.version=`date +"%Y%m%d-%H%M%S"`
+      - uses: dorny/test-reporter@v1
+        if: failure()
+        with:
+          name: surefire
+          path: '**/target/surefire-reports/*.xml'
+          reporter: java-junit
+          list-suites: failed
+          list-tests: failed
+      - name: docker login
+        uses: docker/login-action@v1
+        if: github.ref == 'refs/heads/main'
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GIT_ACTION_TOKEN }}
-      - run: docker push --all-tags ghcr.io/grayc-de/inoa/cnpm/tenant-service
-      - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry
-      - run: docker push --all-tags ghcr.io/grayc-de/gateway-registry-hono-bridge
-      - run: docker push --all-tags ghcr.io/grayc-de/gateway-command-service
-      - run: docker push --all-tags ghcr.io/grayc-de/gateway-logger
-      - run: docker push --all-tags ghcr.io/grayc-de/inoa-translator
-      - run: docker push --all-tags ghcr.io/grayc-de/inoa-exporter
-      - run: docker push --all-tags ghcr.io/grayc-de/thing-service
+      - name: docker push
+        if: github.ref == 'refs/heads/main'
+        run: |
+          docker push --all-tags ghcr.io/grayc-de/inoa/cnpm-auth-service
+          docker push --all-tags ghcr.io/grayc-de/inoa/cnpm-tenant-service
+          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-registry-service
+          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-registry-hono-bridge
+          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-gateway-logger
+          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-gateway-command-service
+          docker push --all-tags ghcr.io/grayc-de/inoa/measurement-provisioner
+          docker push --all-tags ghcr.io/grayc-de/inoa/measurement-telemetry-translator
+          docker push --all-tags ghcr.io/grayc-de/inoa/measurement-telemetry-exporter

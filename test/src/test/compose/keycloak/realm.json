@@ -1,7 +1,10 @@
 {
 	"enabled": true,
 	"realm": "inoa",
-	"accessTokenLifespan": 1440000,
+	"attributes": {
+		"frontendUrl": "http://keycloak:8080",
+		"hostname": "keycloak"
+	},
 	"users": [
 		{
 			"enabled": true,
@@ -11,74 +14,26 @@
 			"firstName": "Admin",
 			"lastName": "Istrator",
 			"credentials": [ { "type": "password", "value": "password" } ]
+		},{
+			"enabled": true,
+			"username": "user1",
+			"email": "user1@example.org",
+			"emailVerified": true,
+			"firstName": "User",
+			"lastName": "!",
+			"credentials": [ { "type": "password", "value": "password" } ]
+		},{
+			"enabled": true,
+			"username": "user2",
+			"email": "user2@example.org",
+			"emailVerified": true,
+			"firstName": "User",
+			"lastName": "2",
+			"credentials": [ { "type": "password", "value": "password" } ]
 		}
 	],
 	"clients": [
 		{
-			"enabled": true,
-			"clientId": "inoa-ui",
-			"publicClient": false,
-			"secret": "changeMe",
-			"standardFlowEnabled": false,
-			"implicitFlowEnabled": false,
-			"directAccessGrantsEnabled": true,
-			"serviceAccountsEnabled": false,
-			"protocol": "openid-connect",
-			"protocolMappers": [
-				{
-					"name": "tenant",
-					"protocol": "openid-connect",
-					"protocolMapper": "oidc-group-membership-mapper",
-					"config": {
-						"claim.name": "tenant",
-						"full.path": "false",
-						"multivalued": "false",
-						"id.token.claim": "true",
-						"access.token.claim": "true",
-						"userinfo.token.claim": "true"
-					}
-				},{
-					"name": "email",
-					"protocol": "openid-connect",
-					"protocolMapper": "oidc-usermodel-property-mapper",
-					"config": {
-						"claim.name": "email",
-						"user.attribute":"email",
-						"jsonType.label":"String",
-						"access.token.claim": "true"
-					}
-				}
-			],
-			"redirectUris": [ "*" ],
-			"webOrigins": [ "*" ],
-			"defaultClientScopes": [],
-			"optionalClientScopes": []
-		},{
-			"enabled": true,
-			"clientId": "gateway-registry-client",
-			"publicClient": false,
-			"secret": "changeMe",
-			"standardFlowEnabled": false,
-			"implicitFlowEnabled": false,
-			"directAccessGrantsEnabled": true,
-			"serviceAccountsEnabled": true,
-			"protocol": "openid-connect",
-			"protocolMappers": [
-				{
-					"name": "aud",
-					"protocol": "openid-connect",
-					"protocolMapper": "oidc-hardcoded-claim-mapper",
-					"config": {
-						"claim.name": "aud",
-						"claim.value":"gateway-registry-client",
-						"jsonType.label":"String",
-						"access.token.claim": "true"
-					}
-				}
-			],
-			"defaultClientScopes": [],
-			"optionalClientScopes": []
-		},{
 			"enabled": true,
 			"clientId": "grafana",
 			"publicClient": false,
@@ -88,24 +43,86 @@
 			"directAccessGrantsEnabled": false,
 			"serviceAccountsEnabled": false,
 			"protocol": "openid-connect",
+			"protocolMappers": [],
+			"redirectUris": [ "http://grafana:3000/*" ],
+			"webOrigins": [ "http://grafana:3000/*" ],
+			"defaultClientScopes": [ "email" ],
+			"optionalClientScopes": []
+		},{
+			"enabled": true,
+			"clientId": "inoa-ui",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": true,
+			"protocol": "openid-connect",
+			"protocolMappers": [],
+			"redirectUris": [ "*" ],
+			"webOrigins": [ "*" ],
+			"defaultClientScopes": [ "email" ],
+			"optionalClientScopes": []
+		},{
+			"enabled": true,
+			"clientId": "inoa-backend",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": true,
+			"protocol": "openid-connect",
 			"protocolMappers": [
 				{
-					"name": "roles - admin",
+					"name": "audience-inoa-backend",
 					"protocol": "openid-connect",
-					"protocolMapper": "oidc-hardcoded-claim-mapper",
+					"protocolMapper": "oidc-audience-mapper",
 					"config": {
-						"claim.name": "role",
-						"claim.value":"Admin",
-						"jsonType.label":"String",
-						"access.token.claim": "true",
-						"userinfo.token.claim": "true",
-						"id.token.claim": "true"
+						"included.client.audience": "inoa-backend",
+						"id.token.claim": "false",
+						"access.token.claim": "true"
+					}
+				},{
+					"name": "audience-bar",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-audience-mapper",
+					"config": {
+						"included.client.audience": "bar",
+						"id.token.claim": "false",
+						"access.token.claim": "true"
 					}
 				}
 			],
 			"redirectUris": [ "*" ],
 			"webOrigins": [ "*" ],
-			"defaultClientScopes": [ "profile", "email" ],
+			"defaultClientScopes": [ "email" ],
+			"optionalClientScopes": []
+		},{
+			"enabled": true,
+			"clientId": "inoa-cnpm-auth-service",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": true,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "audience-inoa-backend",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-audience-mapper",
+					"config": {
+						"included.client.audience": "tenant-management",
+						"id.token.claim": "false",
+						"access.token.claim": "true"
+					}
+				}
+			],
+			"redirectUris": [],
+			"webOrigins": [],
+			"defaultClientScopes": [],
 			"optionalClientScopes": []
 		}
 	]

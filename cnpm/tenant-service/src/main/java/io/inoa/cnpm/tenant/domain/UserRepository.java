@@ -8,16 +8,13 @@ import io.micronaut.data.repository.GenericRepository;
 
 /**
  * Repository for {@link User}.
- *
- * @author Stephan Schnabel
  */
 @JdbcRepository
 public interface UserRepository extends GenericRepository<User, Long> {
 
 	Optional<User> findByEmail(String email);
 
-	User save(User user);
+	User save(String email);
 
 	void deleteByUserId(UUID userId);
-
 }
