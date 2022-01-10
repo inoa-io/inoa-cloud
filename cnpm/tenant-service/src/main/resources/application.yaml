@@ -18,43 +18,31 @@ micronaut:
         allowedMethods:
           - GET
           - POST
-          - PUT
+          - PATCH
           - DELETE
 
+  ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#interceptUrlMap
   security:
-
-    ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#keys
-    endpoints:
-      keys:
-        path: /protocol/openid-connect/certs
-
-    ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#interceptUrlMap
     intercept-url-map:
       - pattern: /endpoints/**
         access: isAnonymous()
-      - pattern: /openapi/**
-        access: isAnonymous()
-      - pattern: /protocol/openid-connect/certs
+      - pattern: /openapi/spec.yaml
         access: isAnonymous()
       - pattern: /**
         access: isAuthenticated()
 
-  # see https://micronaut-projects.github.io/micronaut-data/latest/guide/configurationreference.html
-  data:
-    pageable:
-      max-page-size: 100
-      default-page-size: 10
-
 ## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
 endpoints:
   all:
-    port: 8090
     path: /endpoints
     sensitive: false
   health:
     details-visible: ANONYMOUS
-  loggers:
-    write-sensitive: false
+
+## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
+jackson:
+  serialization:
+    writeDatesAsTimestamps: false
 
 ## see https://micronaut-projects.github.io/micronaut-sql/latest/guide/#jdbc
 datasources:
@@ -65,6 +53,12 @@ datasources:
     password: changeMe
     dialect: POSTGRES
 
+## see https://micronaut-projects.github.io/micronaut-flyway/latest/guide/index.html#additionalConfig
+flyway:
+  datasources:
+    default:
+      locations: classpath:database
+
 ## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
 kafka:
   producers:
@@ -73,9 +67,3 @@ kafka:
         serializer: org.apache.kafka.common.serialization.StringSerializer
       value:
         serializer: io.cloudevents.kafka.CloudEventSerializer
-
-## see https://micronaut-projects.github.io/micronaut-flyway/latest/guide/index.html#additionalConfig
-flyway:
-  datasources:
-    default:
-      locations: classpath:database

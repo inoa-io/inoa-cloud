@@ -1,0 +1,235 @@
+openapi: 3.0.3
+info:
+  title: INOA Registry Gateway API
+  description: |
+     * create gateway jwt signed with gateway secret
+     * get registry token with gateway jwt
+     * call endpoints with registry token
+  version: ${project.version}
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: Kokuwa.io
+    url: https://github.com/kokuwaio
+servers:
+  - url: /api/registry/v1
+security:
+  - BearerAuth: []
+paths:
+  /auth/keys:
+    get:
+      tags:
+        - auth
+      summary: Get public jwks.
+      description: TODO
+      operationId: getKeys
+      security: []
+      responses:
+        200:
+          description: JWKs.
+          content:
+            application/json:
+              schema: {}
+  /auth/token:
+    post:
+      tags:
+        - auth
+      summary: Get registry token with gateway token.
+      description: TODO
+      externalDocs:
+        description: rfc7523#section-2.1
+        url: https://tools.ietf.org/html/rfc7523#section-2.1
+      operationId: getToken
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRequest'
+      responses:
+        200:
+          description: Registry token with extra data.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        400:
+          description: Issuing token failed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenError'
+  /gateway/configuration:
+    get:
+      tags:
+        - configuration
+      summary: Get gateway configuration.
+      description: TODO
+      operationId: getConfiguration
+      responses:
+        200:
+          description: Configuration for gateway.
+          content:
+            application/json:
+              schema:
+                type: string
+                additionalProperties: {}
+        401:
+          description: Unauthorized.
+  /gateway/properties:
+    get:
+      tags:
+        - properties
+      summary: Get gateway properties.
+      description: TODO
+      operationId: getProperties
+      responses:
+        200:
+          description: Properties for gateway.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Properties'
+        401:
+          description: Unauthorized.
+    put:
+      tags:
+        - properties
+      summary: Set multiple gateway properties.
+      description: TODO
+      operationId: setProperties
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Properties'
+      responses:
+        200:
+          description: Properties for gateway after manipulation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Properties'
+        401:
+          description: Unauthorized.
+  /gateway/properties/{key}:
+    parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/PropertyKey'
+    put:
+      tags:
+        - properties
+      summary: Set gateway property.
+      description: TODO
+      operationId: setProperty
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              $ref: '#/components/schemas/PropertyValue'
+      responses:
+        204:
+          description: Property updated.
+        401:
+          description: Unauthorized.
+    delete:
+      tags:
+        - properties
+      summary: Delete gateway property.
+      description: TODO
+      operationId: deleteProperty
+      responses:
+        204:
+          description: Property deleted.
+        401:
+          description: Unauthorized.
+        404:
+          description: Key not found.
+components:
+  schemas:
+    TokenError:
+      externalDocs:
+        description: token error response
+        url: https://tools.ietf.org/html/rfc7523#section-3.1
+      properties:
+        error:
+          description: error key
+          type: string
+          example: invalid_grant
+        error_description:
+          description: error description
+          type: string
+          example: gateway unknown
+      required:
+        - error
+        - error_description
+    TokenRequest:
+      description: Request for access token.
+      externalDocs:
+        description: token request
+        url: https://tools.ietf.org/html/rfc7523#section-2.1
+      properties:
+        grant_type:
+          description: Fixed request grant type.
+          type: string
+          example: urn:ietf:params:oauth:grant-type:jwt-bearer
+        assertion:
+          description: Token from gateway.
+          type: string
+          example: ey....
+      required:
+        - grant_type
+        - assertion
+    TokenResponse:
+      externalDocs:
+        description: token success response
+        url: https://tools.ietf.org/html/rfc6749#section-5.1
+      properties:
+        access_token:
+          description: The access token to use.
+          type: string
+          example: ey....
+        token_type:
+          description: Type of token.
+          type: string
+          example: bearer
+        expires_in:
+          description: Token expires in n seconds.
+          type: integer
+          format: int64
+          example: 300
+        tenant_id:
+          description: Tenant id of current gateway.
+          type: string
+          example: inoa
+      required:
+        - access_token
+        - token_type
+        - expires_in
+        - tenant_id
+    PropertyKey:
+      type: string
+      pattern: '^[a-z0-9_\-\.]{2,100}$'
+      example: test-key
+    PropertyValue:
+      type: string
+      maxLength: 1000
+      example: test-value
+    Properties:
+      type: string
+      additionalProperties:
+        type: string
+      example:
+        test-a: this-is-a
+        test-b: this-is-b
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer

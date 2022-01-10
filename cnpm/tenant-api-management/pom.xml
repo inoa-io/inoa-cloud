@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>io.inoa.cnpm</groupId>
 		<artifactId>cnpm-parent</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>tenant-api-management</artifactId>
+	<artifactId>cnpm-tenant-api-management</artifactId>
 
-	<name>INOA CNPM :: Tenant API Management</name>
+	<name>INOA :: CNPM :: Tenant API Management</name>
 
 	<dependencyManagement>
 		<dependencies>
@@ -32,13 +32,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- avoid compiler warning, see https://docs.micronaut.io/latest/guide/#_nullable_annotations -->
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -56,7 +49,6 @@
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -67,6 +59,7 @@
 							<generateApiTests>false</generateApiTests>
 							<configOptions>
 								<clientId>tenant-management</clientId>
+								<useOptional>false</useOptional>
 							</configOptions>
 						</configuration>
 					</execution>
@@ -80,7 +73,6 @@
 				<executions>
 					<execution>
 						<id>openapi-sources</id>
-						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-source</goal>
 						</goals>
@@ -92,7 +84,6 @@
 					</execution>
 					<execution>
 						<id>attach-artifacts</id>
-						<phase>package</phase>
 						<goals>
 							<goal>attach-artifact</goal>
 						</goals>

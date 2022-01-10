@@ -3,65 +3,22 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.inoa.cloud</groupId>
+		<groupId>io.inoa</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<groupId>io.inoa.cnpm</groupId>
 	<artifactId>cnpm-parent</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>INOA CNPM</name>
+	<name>INOA :: CNPM</name>
 
 	<modules>
-		<module>tenant-api-messaging</module>
 		<module>tenant-api-management</module>
+		<module>tenant-api-messaging</module>
 		<module>tenant-service</module>
+		<module>auth-service</module>
 	</modules>
-
-	<properties>
-
-		<!-- ===================================================================== -->
-		<!-- =============================== Build =============================== -->
-		<!-- ===================================================================== -->
-
-		<container.image.repository>ghcr.io/grayc-de</container.image.repository>
-		<container.image.name>inoa/cnpm/${project.artifactId}</container.image.name>
-		<container.image.version>${project.version}</container.image.version>
-		<container.image>${container.image.repository}/${container.image.name}:${container.image.version}</container.image>
-
-		<!-- ===================================================================== -->
-		<!-- ============================== Libaries ============================= -->
-		<!-- ===================================================================== -->
-
-		<version.io.micronaut>3.2.0</version.io.micronaut>
-		<version.io.micronaut.data>3.2.0</version.io.micronaut.data>
-		<version.io.kokuwa.micronaut.logging>3.0.0-M2</version.io.kokuwa.micronaut.logging>
-
-	</properties>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-
-				<!-- generate sources from openapi spec -->
-				<plugin>
-					<groupId>org.openapitools</groupId>
-					<artifactId>openapi-generator-maven-plugin</artifactId>
-					<configuration>
-						<ignoreFileOverride>${project.basedir}/../../.openapi-ignore</ignoreFileOverride>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.openapitools.openapistylevalidator</groupId>
-					<artifactId>openapi-style-validator-maven-plugin</artifactId>
-					<configuration>
-						<validateModelPropertiesExample>false</validateModelPropertiesExample>
-					</configuration>
-				</plugin>
-
-			</plugins>
-		</pluginManagement>
-	</build>
 </project>

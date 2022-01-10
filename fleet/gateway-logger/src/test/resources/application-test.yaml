@@ -1,0 +1,13 @@
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    enabled: false
+
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
+kafka:
+  enabled: false
+
+## custom log configuration
+logger:
+  levels:
+    io.inoa: TRACE

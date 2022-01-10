@@ -1,0 +1,54 @@
+micronaut:
+
+  ## test client with increased read-timeout for debbuging
+  http:
+    client:
+      logger-name: io.inoa.Test
+      read-timeout: 5m
+
+  ## used for tokens issued/checked at management api
+  security:
+    token:
+      jwt:
+        signatures:
+          secret:
+            generator:
+              secret: pleaseChangeThisSecretForANewOne
+
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    enabled: false
+
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
+kafka:
+  enabled: false
+
+## config for registry
+inoa.fleet.registry:
+  # use random key and set issuer
+  auth:
+    generate-key: true
+    issuer: test
+  # allow audience test access to all tenants
+  security:
+    tenant-audience-whitelist: test
+  # add some default configurations
+  tenant:
+    configurations:
+      - key: ntp.host
+        description: Host of ntp server to use.
+        type: STRING
+        pattern: '[a-z0-9\.]{8,20}'
+        value: pool.ntp.org
+      - key: mqtt.uri
+        description: URI of mqtt server.
+        type: STRING
+        pattern: '(tcp|mqtt|ssl|mqtts)://[a-z0-9\.\-]+:[0-9]{3,5}'
+
+## custom log configuration
+logger:
+  levels:
+    io.inoa: INFO
+    io.micronaut.data: INFO
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"

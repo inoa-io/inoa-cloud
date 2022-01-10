@@ -4,8 +4,6 @@ import io.micronaut.runtime.Micronaut;
 
 /**
  * Micronaut base application class.
- *
- * @author Stephan Schnabel
  */
 public class Application {
 
