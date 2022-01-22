@@ -53,7 +53,9 @@ public class InoaSatelliteModbusRTUBuilder {
 			header.put("type", "RS485");
 			header.put("interval", 30000);
 			node.set("header", header);
-			node.put("interface", 1);
+			Optional<Property> interfaceProperty = thing.getProperties().stream()
+					.filter(p -> p.getKey().equals("slaveId")).findFirst();
+			node.put("interface", Integer.parseInt(interfaceProperty.get().getValue().toString()));
 			node.put("frame", toBase64(buildFrame((byte) slaveId, (byte) 3, (short) registerOffset, (short) 2)));
 			node.put("timeout", 500);
 			datapoints.add(node);
