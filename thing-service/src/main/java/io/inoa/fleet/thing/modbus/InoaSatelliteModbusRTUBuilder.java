@@ -54,7 +54,7 @@ public class InoaSatelliteModbusRTUBuilder {
 			header.put("interval", 30000);
 			node.set("header", header);
 			Optional<Property> interfaceProperty = thing.getProperties().stream()
-					.filter(p -> p.getKey().equals("slaveId")).findFirst();
+					.filter(p -> p.getKey().equals("interface")).findFirst();
 			node.put("interface", Integer.parseInt(interfaceProperty.get().getValue().toString()));
 			node.put("frame", toBase64(buildFrame((byte) slaveId, (byte) 3, (short) registerOffset, (short) 2)));
 			node.put("timeout", 500);
