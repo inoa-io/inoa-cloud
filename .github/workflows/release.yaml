@@ -33,6 +33,7 @@ jobs:
           docker push --all-tags ghcr.io/grayc-de/inoa/fleet-registry-hono-bridge
           docker push --all-tags ghcr.io/grayc-de/inoa/fleet-gateway-logger
           docker push --all-tags ghcr.io/grayc-de/inoa/fleet-gateway-command-service
+          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-thing-service
           docker push --all-tags ghcr.io/grayc-de/inoa/measurement-provisioner
           docker push --all-tags ghcr.io/grayc-de/inoa/measurement-telemetry-translator
           docker push --all-tags ghcr.io/grayc-de/inoa/measurement-telemetry-exporter

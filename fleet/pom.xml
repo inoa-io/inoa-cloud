@@ -23,5 +23,6 @@
 		<module>gateway-event</module>
 		<module>gateway-logger</module>
 		<module>gateway-command-service</module>
+		<module>thing-service</module>
 	</modules>
 </project>
