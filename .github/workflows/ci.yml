@@ -37,8 +37,7 @@ jobs:
           java-version: 11
           cache: maven
       - run: mvn -B dependency:go-offline -q
-      - run: mvn -B install -pl !test -T2C
-      - run: mvn -B install -pl test
+      - run: mvn -B install
       - uses: actions/upload-artifact@v2
         if: always()
         with:
