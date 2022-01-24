@@ -59,12 +59,12 @@ public class WummTest extends ComposeTest {
 						gateway, "urn:dvh4013:0815:0x0002", timestamp, 45.6D,
 						Map.of("label", "power_out"))),
 				() -> assertAll("0x4000", influxdb.asserts(
-						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x4001"),
-						gateway, "urn:dvh4013:0815:0x4001", timestamp, 123D,
+						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x4000"),
+						gateway, "urn:dvh4013:0815:0x4000", timestamp, 123D,
 						Map.of("label", "work_in", "obis", "1-0:1.8.0*255"))),
-				() -> assertAll("0x8102", influxdb.asserts(
-						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x4101"),
-						gateway, "urn:dvh4013:0815:0x4101", timestamp, 456D,
+				() -> assertAll("0x4100", influxdb.asserts(
+						influxdb.filterByDeviceTypeAndSensor(fluxTables, "dvh4013", "0x4100"),
+						gateway, "urn:dvh4013:0815:0x4100", timestamp, 456D,
 						Map.of("label", "work_out", "obis", "1-0:2.8.0*255"))));
 	}
 }
