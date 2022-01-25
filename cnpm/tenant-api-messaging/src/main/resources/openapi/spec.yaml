@@ -7,23 +7,41 @@ info:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
   contact:
-    name: GrayC GmbH
-    url: https://grayc.de
+    name: inoa.io
+    url: https://github.com/inoa-io
 paths: {}
 components:
   schemas:
 
+    CloudEventSubject:
+      description: Subject for cloud events.
+      type: string
+      enum:
+        - create
+        - update
+        - delete
+      example: create
+    CloudEventType:
+      description: Subject for cloud events.
+      type: string
+      enum:
+        - io.inoa.cnpm.tenant
+        - io.inoa.cnpm.user
+      example: io.inoa.cnpm.tenant
+
+    TenantId:
+      description: Id of tenant (cannot change).
+      type: string
+      minLength: 4
+      maxLength: 30
+      pattern: ^[a-z0-9\-]*$
+      example: inoa
     Tenant:
       description: Tenant with fields.
       type: object
       properties:
         tenant_id:
-          description: Id of tenant (cannot change).
-          type: string
-          minLength: 4
-          maxLength: 30
-          pattern: ^[a-z0-9\-]*$
-          example: inoa
+          $ref: '#/components/schemas/TenantId'
         name:
           description: Human friendly display name (can change).
           type: string
@@ -61,5 +79,58 @@ components:
         tenant_id: inoa
         name: inoa.io Project
         enabled: true
+        created: 2021-01-01T00:00:00
+        updated: 2021-02-01T00:00:00
+
+    UserId:
+      description: Id as technical reference (never changes).
+      type: string
+      format: uuid
+      example: e867459e-f1b2-47b7-91f5-c0e6c9675ce6
+    UserEmail:
+      description: User email.
+      type: string
+      format: email
+      example: user@example.org
+    UserRole:
+      description: User role in context of INOA.
+      type: string
+      pattern: ^[a-z]+$
+      maxLength: 10
+      example: viewer
+    User:
+      description: User.
+      type: object
+      properties:
+        tenant_id:
+          $ref: '#/components/schemas/TenantId'
+        user_id:
+          $ref: '#/components/schemas/UserId'
+        email:
+          $ref: '#/components/schemas/UserEmail'
+        role:
+          $ref: '#/components/schemas/UserRole'
+        created:
+          description: Timestamp for created.
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00
+        updated:
+          description: Timestamp for updated.
+          type: string
+          format: date-time
+          example: 2021-01-01T00:00:00
+      required:
+        - tenant_id
+        - user_id
+        - email
+        - role
+        - created
+        - updated
+      example:
+        tenant_id: inoa
+        user_id: e867459e-f1b2-47b7-91f5-c0e6c9675ce6
+        email: test@example.org
+        role: true
         created: 2021-01-01T00:00:00
         updated: 2021-02-01T00:00:00

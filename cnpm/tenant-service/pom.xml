@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>io.inoa.cnpm</groupId>
 		<artifactId>cnpm-parent</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>tenant-service</artifactId>
+	<artifactId>cnpm-tenant-service</artifactId>
 
-	<name>INOA CNPM :: Tenant Service</name>
+	<name>INOA :: CNPM :: Tenant Service</name>
 
 	<dependencyManagement>
 		<dependencies>
@@ -28,8 +28,16 @@
 		<!-- project -->
 		<dependency>
 			<groupId>io.inoa.cnpm</groupId>
-			<artifactId>tenant-api-messaging</artifactId>
+			<artifactId>cnpm-tenant-api-messaging</artifactId>
 			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cnpm</groupId>
+			<artifactId>cnpm-tenant-api-management</artifactId>
+			<version>${project.version}</version>
+			<type>yaml</type>
+			<classifier>spec</classifier>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- micronaut -->
@@ -39,17 +47,17 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut.grpc</groupId>
-			<artifactId>micronaut-grpc-server-runtime</artifactId>
-			<scope>runtime</scope>
+			<groupId>io.micronaut.kafka</groupId>
+			<artifactId>micronaut-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.micronaut.security</groupId>
 			<artifactId>micronaut-security-jwt</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.kafka</groupId>
-			<artifactId>micronaut-kafka</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
@@ -87,31 +95,11 @@
 		<dependency>
 			<groupId>io.cloudevents</groupId>
 			<artifactId>cloudevents-kafka</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.kafka</groupId>
-					<artifactId>kafka-clients</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.cloudevents</groupId>
 			<artifactId>cloudevents-json-jackson</artifactId>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.envoyproxy.controlplane</groupId>
-			<artifactId>api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
@@ -142,23 +130,8 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.awaitility</groupId>
-			<artifactId>awaitility</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>kafka</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-junit-jupiter</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -186,15 +159,15 @@
 				<executions>
 					<execution>
 						<id>openapi-spec</id>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>copy</goal>
 						</goals>
-						<phase>generate-sources</phase>
 						<configuration>
 							<artifactItems>
 								<artifactItem>
 									<groupId>io.inoa.cnpm</groupId>
-									<artifactId>tenant-api-management</artifactId>
+									<artifactId>cnpm-tenant-api-management</artifactId>
 									<classifier>spec</classifier>
 									<type>yaml</type>
 									<version>${project.version}</version>
@@ -214,7 +187,6 @@
 				<executions>
 					<execution>
 						<id>openapi-sources</id>
-						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-source</goal>
 						</goals>
@@ -227,7 +199,6 @@
 					</execution>
 					<execution>
 						<id>openapi-test-sources</id>
-						<phase>generate-test-sources</phase>
 						<goals>
 							<goal>add-test-source</goal>
 						</goals>
@@ -247,13 +218,12 @@
 				<executions>
 					<execution>
 						<id>openapi-management-generate</id>
-						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<inputSpec>${project.build.outputDirectory}/openapi/spec.yaml</inputSpec>
-							<apiPackage>io.inoa.cnpm.tenant.management</apiPackage>
+							<apiPackage>io.inoa.cnpm.tenant.rest</apiPackage>
 							<invokerPackage>io.inoa.cnpm.tenant</invokerPackage>
 							<configOptions>
 								<pageable>true</pageable>
@@ -287,6 +257,11 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-validation</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-http-validation</artifactId>
 							<version>${version.io.micronaut}</version>
 						</path>
 						<path>
@@ -327,9 +302,6 @@
 						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<failIfNoTests>true</failIfNoTests>
-				</configuration>
 			</plugin>
 
 			<!-- create container -->

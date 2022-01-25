@@ -2,21 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.kokuwa</groupId>
-		<artifactId>maven-parent</artifactId>
-		<version>0.5.5</version>
-		<relativePath />
-	</parent>
-
-	<groupId>io.inoa.cloud</groupId>
+	<groupId>io.inoa</groupId>
 	<artifactId>parent</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>INOA Cloud</name>
-	<url>https://github.com/grayc-de/inoa-cloud</url>
-	<inceptionYear>2020</inceptionYear>
+	<name>INOA</name>
+	<url>https://github.com/inoa-io/cloud</url>
+	<inceptionYear>2021</inceptionYear>
 	<licenses>
 		<license>
 			<name>Apache License 2.0</name>
@@ -26,21 +19,15 @@
 
 	<modules>
 		<module>cnpm</module>
-		<module>messages</module>
-		<module>gateway-registry</module>
-		<module>gateway-command-service</module>
-		<module>gateway-logger</module>
-		<module>hono-bridge</module>
-		<module>translator</module>
-		<module>exporter</module>
-		<module>thing-service</module>
+		<module>fleet</module>
+		<module>measurement</module>
 		<module>test</module>
 	</modules>
 
 	<scm>
-		<url>https://github.com/grayc-de/inoa-cloud</url>
-		<connection>scm:git:https://github.com/grayc-de/inoa-cloud.git</connection>
-		<developerConnection>scm:git:https://github.com/grayc-de/inoa-cloud.git</developerConnection>
+		<url>https://github.com/inoa-io/cloud</url>
+		<connection>scm:git:https://github.com/inoa-io/cloud.git</connection>
+		<developerConnection>scm:git:https://github.com/inoa-io/cloud.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
@@ -51,36 +38,82 @@
 	<properties>
 
 		<!-- ===================================================================== -->
-		<!-- =============================== Build =============================== -->
+		<!-- ============================== Build ================================ -->
 		<!-- ===================================================================== -->
 
-		<docker.influxdb.version>2.0-alpine</docker.influxdb.version>
-		<docker.grafana.version>8.1.5</docker.grafana.version>
-		<docker.kafka.version>6.1.2</docker.kafka.version>
-		<docker.postgres.version>13.1</docker.postgres.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.propertiesEncoding>ISO-8859-1</project.build.propertiesEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<container.image.repository>ghcr.io/grayc-de</container.image.repository>
-		<container.image.name>${project.artifactId}</container.image.name>
-		<container.image.version>${project.version}</container.image.version>
-		<container.image>${container.image.repository}/${container.image.name}:${container.image.version}</container.image>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.parameters>true</maven.compiler.parameters>
+		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+
+		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+
+		<jib.container.jvmFlags>-XX:+ExitOnOutOfMemoryError</jib.container.jvmFlags>
+		<jib.from.image>eclipse-temurin:11.0.13_8-jre-focal@sha256:967349ef166d630bceda0370507b096edd6e7220e62e4539db70f04c04c2295f</jib.from.image>
+		<jib.to.image.repository>ghcr.io/grayc-de</jib.to.image.repository>
+		<jib.to.image.name>inoa/${project.artifactId}</jib.to.image.name>
+		<jib.to.image.version>${project.version}</jib.to.image.version>
+		<jib.to.image>${jib.to.image.repository}/${jib.to.image.name}:${jib.to.image.version}</jib.to.image>
+
+		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+		<checkstyle.suppressions.location>checkstyle-suppression.xml</checkstyle.suppressions.location>
+		<checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
 
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.io.cloudevents>2.2.0</version.io.cloudevents>
+		<!-- plugins -->
+
+		<version.org.apache.maven.plugins.checkstyle>3.1.2</version.org.apache.maven.plugins.checkstyle>
+		<version.org.apache.maven.plugins.clean>3.1.0</version.org.apache.maven.plugins.clean>
+		<version.org.apache.maven.plugins.compiler>3.9.0</version.org.apache.maven.plugins.compiler>
+		<version.org.apache.maven.plugins.deploy>3.0.0-M2</version.org.apache.maven.plugins.deploy>
+		<version.org.apache.maven.plugins.install>3.0.0-M1</version.org.apache.maven.plugins.install>
+		<version.org.apache.maven.plugins.jar>3.2.2</version.org.apache.maven.plugins.jar>
+		<version.org.apache.maven.plugins.release>3.0.0-M5</version.org.apache.maven.plugins.release>
+		<version.org.apache.maven.plugins.resources>3.2.0</version.org.apache.maven.plugins.resources>
+		<version.org.apache.maven.plugins.source>3.2.1</version.org.apache.maven.plugins.source>
+		<version.org.apache.maven.plugins.surefire>3.0.0-M5</version.org.apache.maven.plugins.surefire>
+		<version.org.codehaus.mojo.build-helper>3.3.0</version.org.codehaus.mojo.build-helper>
+		<version.org.codehaus.mojo.tidy>1.1.0</version.org.codehaus.mojo.tidy>
+		<version.org.openapitools>5.3.1</version.org.openapitools>
+		<version.org.openapitools.stylevalidator>1.7</version.org.openapitools.stylevalidator>
+		<version.com.google.cloud.tools.jib>3.2.0</version.com.google.cloud.tools.jib>
+		<version.com.puppycrawl.tools.checkstyle>9.2.1</version.com.puppycrawl.tools.checkstyle>
+		<version.io.kokuwa.checkstyle>0.5.6</version.io.kokuwa.checkstyle>
+
+		<!-- dependencies -->
+
+		<version.io.cloudevents>2.3.0</version.io.cloudevents>
 		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
+		<version.io.micronaut>3.2.7</version.io.micronaut>
+		<version.io.micronaut.data>3.2.2</version.io.micronaut.data>
 		<version.io.kokuwa.micronaut.codegen>2.2.1</version.io.kokuwa.micronaut.codegen>
-		<version.io.kokuwa.micronaut.logging>3.0.0-M1</version.io.kokuwa.micronaut.logging>
 		<version.io.kokuwa.micronaut.influxdb>3.0.0-M1</version.io.kokuwa.micronaut.influxdb>
-		<version.io.micronaut>3.1.4</version.io.micronaut>
-		<version.io.micronaut.data>3.1.2</version.io.micronaut.data>
+		<version.io.kokuwa.micronaut.logging>3.0.4</version.io.kokuwa.micronaut.logging>
 		<version.org.awaitility>4.1.1</version.org.awaitility>
 		<version.org.eclipse.hono>1.10.0</version.org.eclipse.hono>
 		<version.org.keycloak>15.0.2</version.org.keycloak>
-		<version.org.mapstruct>1.5.0.Beta1</version.org.mapstruct>
+		<version.org.mapstruct>1.5.0.Beta2</version.org.mapstruct>
+		<version.org.projectlombok>1.18.22</version.org.projectlombok>
 		<!-- spring version aligned with version from hono-pom -->
 		<version.org.springframework.boot>2.4.8</version.org.springframework.boot>
+
+		<!-- images -->
+
+		<docker.envoy.version>v1.20.1</docker.envoy.version>
+		<docker.grafana.version>8.3.3</docker.grafana.version>
+		<docker.hono.version>${version.org.eclipse.hono}</docker.hono.version>
+		<docker.influxdb.version>2.0-alpine</docker.influxdb.version>
+		<docker.kafka.version>6.1.2</docker.kafka.version>
+		<docker.keycloak.version>${version.org.keycloak}</docker.keycloak.version>
+		<docker.postgres.version>13.5</docker.postgres.version>
 
 	</properties>
 
@@ -107,6 +140,16 @@
 				<groupId>io.kokuwa.micronaut</groupId>
 				<artifactId>micronaut-influxdb</artifactId>
 				<version>${version.io.kokuwa.micronaut.influxdb}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.code.findbugs</groupId>
+						<artifactId>jsr305</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>io.swagger</groupId>
+						<artifactId>swagger-annotations</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 
 			<!-- spring -->
@@ -121,11 +164,32 @@
 				<groupId>io.cloudevents</groupId>
 				<artifactId>cloudevents-json-jackson</artifactId>
 				<version>${version.io.cloudevents}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.core</groupId>
+						<artifactId>jackson-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.fasterxml.jackson.core</groupId>
+						<artifactId>jackson-databind</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>io.cloudevents</groupId>
 				<artifactId>cloudevents-kafka</artifactId>
 				<version>${version.io.cloudevents}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.kafka</groupId>
+						<artifactId>kafka-clients</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>io.envoyproxy.controlplane</groupId>
+				<artifactId>api</artifactId>
+				<version>${version.io.envoyproxy.controlplane}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.hono</groupId>
@@ -138,6 +202,11 @@
 				<version>${version.org.keycloak}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${version.org.projectlombok}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct</artifactId>
 				<version>${version.org.mapstruct}</version>
@@ -147,28 +216,120 @@
 				<artifactId>awaitility</artifactId>
 				<version>${version.org.awaitility}</version>
 			</dependency>
-			<dependency>
-				<groupId>io.envoyproxy.controlplane</groupId>
-				<artifactId>api</artifactId>
-				<version>${version.io.envoyproxy.controlplane}</version>
-			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
+	<dependencies>
+
+		<!-- avoid compiler warning, see https://docs.micronaut.io/latest/guide/#_nullable_annotations -->
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>3.0.2</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- build -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
 
 	<build>
 		<pluginManagement>
 			<plugins>
-
-				<!-- generate sources from openapi spec -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.checkstyle}</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${version.com.puppycrawl.tools.checkstyle}</version>
+						</dependency>
+						<dependency>
+							<groupId>io.kokuwa</groupId>
+							<artifactId>maven-parent</artifactId>
+							<version>${version.io.kokuwa.checkstyle}</version>
+							<type>zip</type>
+							<classifier>checkstyle</classifier>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.clean}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.compiler}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.deploy}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.install}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.jar}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.release}</version>
+					<configuration>
+						<tagNameFormat>@{project.version}</tagNameFormat>
+						<releaseProfiles>release</releaseProfiles>
+						<localCheckout>true</localCheckout>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.resources}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.surefire}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.source}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.build-helper}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>tidy-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.tidy}</version>
+				</plugin>
 				<plugin>
 					<groupId>org.openapitools</groupId>
 					<artifactId>openapi-generator-maven-plugin</artifactId>
+					<version>${version.org.openapitools}</version>
 					<configuration>
 						<generatorName>micronaut</generatorName>
 						<modelNameSuffix>VO</modelNameSuffix>
-						<invokerPackage>io.inoa.fleet.registry.rest</invokerPackage>
 						<output>${project.build.directory}</output>
+						<strictSpec>true</strictSpec>
+						<skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
 						<configOptions>
 							<useLombokGenerated>true</useLombokGenerated>
 							<dateTimeRelaxed>false</dateTimeRelaxed>
@@ -178,8 +339,8 @@
 							<typeMapping>Nullable=io.micronaut.core.annotation.Nullable</typeMapping>
 							<typeMapping>Nonnull=io.micronaut.core.annotation.NonNull</typeMapping>
 							<typeMapping>Singleton=jakarta.inject.Singleton</typeMapping>
+							<typeMapping>url=java.net.URL</typeMapping>
 						</typeMappings>
-						<ignoreFileOverride>${project.basedir}/../.openapi-ignore</ignoreFileOverride>
 					</configuration>
 					<dependencies>
 						<dependency>
@@ -189,63 +350,82 @@
 						</dependency>
 					</dependencies>
 				</plugin>
-
-				<!-- adjust jacoco excludes -->
 				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
+					<groupId>org.openapitools.openapistylevalidator</groupId>
+					<artifactId>openapi-style-validator-maven-plugin</artifactId>
+					<version>${version.org.openapitools.stylevalidator}</version>
 					<configuration>
-						<excludes>
-							<exclude>**/*Application.class</exclude>
-							<exclude>**/*VO.class</exclude>
-							<exclude>**/*MapperImpl.class</exclude>
-						</excludes>
+						<!-- see https://opensource.zalando.com/restful-api-guidelines -->
+						<ignoreHeaderXNaming>false</ignoreHeaderXNaming>
+						<headerNamingConvention>AnyCase</headerNamingConvention>
+						<pathNamingConvention>HyphenCase</pathNamingConvention>
+						<parameterNamingConvention>UnderscoreCase</parameterNamingConvention>
+						<propertyNamingConvention>UnderscoreCase</propertyNamingConvention>
+						<!-- skip examples -->
+						<validateModelPropertiesExample>false</validateModelPropertiesExample>
 					</configuration>
 				</plugin>
-
-				<!-- create container -->
 				<plugin>
 					<groupId>com.google.cloud.tools</groupId>
 					<artifactId>jib-maven-plugin</artifactId>
-					<configuration>
-						<container>
-							<jvmFlags>
-								<jvmFlag>-XX:+ExitOnOutOfMemoryError</jvmFlag>
-							</jvmFlags>
-						</container>
-						<to>
-							<image>${container.image}</image>
-						</to>
-					</configuration>
+					<version>${version.com.google.cloud.tools.jib}</version>
 				</plugin>
-
-				<!-- speed up release -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<configuration>
-						<autoVersionSubmodules>true</autoVersionSubmodules>
-						<preparationGoals>clean</preparationGoals>
-						<goals>clean install -Dmaven.test.skip.exec=true</goals>
-					</configuration>
-				</plugin>
-
 			</plugins>
 		</pluginManagement>
-		<plugins>
-
-			<!-- do not deploy anything -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-deploy-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default-deploy</id>
-						<phase />
-					</execution>
-				</executions>
-			</plugin>
-
-		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>check</id>
+			<activation>
+				<file>
+					<exists>pom.xml</exists>
+				</file>
+			</activation>
+			<build>
+				<plugins>
+
+					<!-- add source for downstream projects -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- fail if any pom is dirty -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>tidy-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- fail if checkstyle reports problems -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-checkstyle-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

@@ -1,0 +1,53 @@
+micronaut:
+  application:
+    name: ${project.artifactId}
+    version: ${project.version}
+
+  ## https://docs.micronaut.io/latest/guide/index.html#clientConfiguration
+  http:
+    services:
+      tenant-management:
+        path: /
+        follow-redirects: false
+        connect-timeout: 1s
+        read-timeout: 5s
+        logger-name: io.inoa.cnpm.auth.rest.TenantManagement
+
+  security:
+
+    ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#interceptUrlMap
+    intercept-url-map:
+      - pattern: /**
+        access: isAnonymous()
+
+    ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#keys
+    endpoints:
+      keys:
+        path: /protocol/openid-connect/certs
+
+  ## see https://micronaut-projects.github.io/micronaut-cache/latest/guide/index.html
+  caches:
+    tenant:
+      expire-after-write: 15m
+      expire-after-access: 1m
+      record-stats: true
+    user:
+      expire-after-write: 15m
+      expire-after-access: 1m
+      record-stats: true
+
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    path: /endpoints
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+  caches:
+    enabled: true
+
+## Custom log configuration
+logger:
+  levels:
+    # in data client we log issues without useless exception stacktrace
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"

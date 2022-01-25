@@ -1,0 +1,58 @@
+openapi: 3.0.3
+info:
+  title: INOA Gateway messages
+  version: ${project.version}
+  description: |
+    Model definitions for JSON logs.
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: inoa.io
+    url: https://github.com/inoa-io
+paths: {}
+components:
+  schemas:
+
+    CloudEventType:
+      description: Subject for cloud events.
+      type: string
+      enum:
+        - io.inoa.log.emitted
+      example: io.inoa.log.emitted
+
+    LogEvent:
+      description: Log event.
+      type: object
+      properties:
+        tag:
+          description: Log tag
+          type: string
+          example: METERING
+        level:
+          description: Log level
+          type: integer
+          format: int32
+          minimum: 0
+          maximum: 5
+          example: 0
+        time:
+          description: Log time
+          type: integer
+          format: int64
+          minimum: 0
+          example: 123456789
+        msg:
+          description: Log message
+          type: string
+          example: 'OK'
+      required:
+        - tag
+        - level
+        - time
+        - msg
+      example:
+        tag: METERING
+        level: 0
+        time: 1636116540627
+        msg: OK

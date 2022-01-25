@@ -3,14 +3,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>io.inoa.cloud</groupId>
+		<groupId>io.inoa</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>test</artifactId>
 
-	<name>INOA Cloud :: Test</name>
+	<name>INOA :: Integration Test</name>
 
 	<dependencyManagement>
 		<dependencies>
@@ -27,47 +27,277 @@
 
 		<!-- project -->
 		<dependency>
-			<groupId>io.inoa.cloud</groupId>
-			<artifactId>messages</artifactId>
+			<groupId>io.inoa.cnpm</groupId>
+			<artifactId>cnpm-tenant-api-management</artifactId>
 			<version>${project.version}</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.inoa.cnpm</groupId>
-			<artifactId>tenant-api-management</artifactId>
+			<artifactId>cnpm-tenant-service</artifactId>
 			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micronaut.micrometer</groupId>
+					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.flyway</groupId>
+					<artifactId>micronaut-flyway</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-http-server-netty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.sql</groupId>
+					<artifactId>micronaut-jdbc-hikari</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-management</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.cnpm</groupId>
+			<artifactId>cnpm-auth-service</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-http-server-netty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-management</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.grpc</groupId>
+					<artifactId>micronaut-grpc-server-runtime</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.cache</groupId>
+					<artifactId>micronaut-cache-management</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.cache</groupId>
+					<artifactId>micronaut-cache-caffeine</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.micrometer</groupId>
+					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.envoyproxy.controlplane</groupId>
+					<artifactId>api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-registry-api-gateway</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-registry-api-management</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-registry-service</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-http-server-netty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.sql</groupId>
+					<artifactId>micronaut-jdbc-hikari</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.flyway</groupId>
+					<artifactId>micronaut-flyway</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-management</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.micrometer</groupId>
+					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.h2database</groupId>
+					<artifactId>h2</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-registry-hono-bridge</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.hono</groupId>
+					<artifactId>hono-service-device-registry-base</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.hono</groupId>
+					<artifactId>hono-service-base-spring</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-web</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-actuator-autoconfigure</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-gateway-logger</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-http-server-netty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-management</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.micrometer</groupId>
+					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micrometer</groupId>
+					<artifactId>micrometer-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.measurement</groupId>
+			<artifactId>measurement-telemetry-translator</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-http-server-netty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-management</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.micrometer</groupId>
+					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micrometer</groupId>
+					<artifactId>micrometer-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.measurement</groupId>
+			<artifactId>measurement-telemetry-exporter</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micronaut.micrometer</groupId>
+					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-http-server-netty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-management</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.measurement</groupId>
+			<artifactId>measurement-provisioner</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-http-server-netty</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut</groupId>
+					<artifactId>micronaut-management</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.micronaut.micrometer</groupId>
+					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- micronaut -->
 		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-client</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-validation</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut.mqtt</groupId>
-			<artifactId>micronaut-mqttv3</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut.security</groupId>
-			<artifactId>micronaut-security-jwt</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-influxdb</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-logging</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.kokuwa.micronaut</groupId>
-			<artifactId>micronaut-influxdb</artifactId>
 		</dependency>
 
 		<!-- test -->
@@ -92,74 +322,6 @@
 	<build>
 		<plugins>
 
-			<!-- generate sources from openapi spec -->
-			<plugin>
-				<groupId>org.openapitools</groupId>
-				<artifactId>openapi-generator-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>openapi-gateway-registry-management-generate</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/management.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
-							<configOptions>
-								<clientId>gateway-registry</clientId>
-							</configOptions>
-						</configuration>
-					</execution>
-					<execution>
-						<id>openapi-gateway-registry-gateway-generate</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-						<configuration>
-							<inputSpec>${project.basedir}/../gateway-registry/src/main/resources/openapi/gateway.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
-							<configOptions>
-								<clientId>gateway-registry</clientId>
-							</configOptions>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<!-- add generated sources -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>build-helper-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>openapi-sources</id>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>add-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-sources/openapi</source>
-							</sources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>openapi-test-sources</id>
-						<phase>generate-test-sources</phase>
-						<goals>
-							<goal>add-test-source</goal>
-						</goals>
-						<configuration>
-							<sources>
-								<source>${project.build.directory}/generated-test-sources/openapi</source>
-							</sources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- configure annotation processors -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -178,6 +340,12 @@
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase />
+					</execution>
+				</executions>
 			</plugin>
 
 			<!-- copy compose -->
@@ -201,16 +369,40 @@
 							<outputDirectory>${project.build.directory}/compose</outputDirectory>
 						</configuration>
 					</execution>
+					<execution>
+						<id>default-resources</id>
+						<phase />
+					</execution>
 				</executions>
 			</plugin>
 
-			<!-- do not install anything -->
+			<!-- skip useless executions -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-install-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>default-install</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
 						<phase />
 					</execution>
 				</executions>

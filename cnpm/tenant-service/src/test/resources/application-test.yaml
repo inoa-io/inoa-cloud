@@ -1,11 +1,9 @@
 micronaut:
-  server:
-    port: ${random.port}
 
   ## test client with increased read-timeout for debbuging
   http:
     client:
-      logger-name: io.inoa.Test
+      logger-name: io.inoa.cnpm.Test
       read-timeout: 5m
 
   ## used for tokens issued/checked at management api
@@ -22,26 +20,21 @@ endpoints:
   all:
     enabled: false
 
-grpc:
-  server:
-    port: ${random.port}
-  channels:
-    istioAuth:
-      address: 'localhost:${grpc.server.port}'
-      plaintext: true
-      max-retry-attempts: 10
-
 ## INOA configuration
 inoa:
   cnpm:
     tenant:
-      key-id: test
-      issuer: http://localhost:${micronaut.server.port}
+      default-issuer:
+        name: test
+        url: http://localhost/cert
+        cache-duration: PT0s
+        services:
+          - foo
+          - bar
 
 ## Custom log configuration
 logger:
   levels:
-    io.inoa: INFO
+    io.inoa: TRACE
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
-    org.apache.kafka: WARN

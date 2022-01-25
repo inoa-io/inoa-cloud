@@ -7,8 +7,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     CREATE DATABASE "tenant-service";
     GRANT ALL PRIVILEGES ON DATABASE "tenant-service" TO "tenant-service";
 
-    CREATE USER "gateway-registry" WITH ENCRYPTED PASSWORD 'changeMe';
-    CREATE DATABASE "gateway-registry";
-    GRANT ALL PRIVILEGES ON DATABASE "gateway-registry" TO "gateway-registry";
+    CREATE USER "registry" WITH ENCRYPTED PASSWORD 'changeMe';
+    CREATE DATABASE "registry";
+    GRANT ALL PRIVILEGES ON DATABASE "registry" TO "registry";
 
 EOSQL

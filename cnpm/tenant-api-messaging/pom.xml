@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>io.inoa.cnpm</groupId>
 		<artifactId>cnpm-parent</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>tenant-api-messaging</artifactId>
+	<artifactId>cnpm-tenant-api-messaging</artifactId>
 
-	<name>INOA CNPM :: Tenant API Messaging</name>
+	<name>INOA :: CNPM :: Tenant API Messaging</name>
 
 	<dependencyManagement>
 		<dependencies>
@@ -61,7 +61,6 @@
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
@@ -86,7 +85,6 @@
 				<executions>
 					<execution>
 						<id>openapi-sources</id>
-						<phase>generate-sources</phase>
 						<goals>
 							<goal>add-source</goal>
 						</goals>
@@ -98,7 +96,6 @@
 					</execution>
 					<execution>
 						<id>attach-artifacts</id>
-						<phase>package</phase>
 						<goals>
 							<goal>attach-artifact</goal>
 						</goals>
