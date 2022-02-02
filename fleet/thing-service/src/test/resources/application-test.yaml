@@ -22,4 +22,3 @@ micronaut:
       propagation:
         enabled: true
         service-id-regex: "gateway-command"
-

@@ -78,8 +78,8 @@ public class ThingTypeCreator implements ApplicationEventListener<ServerStartupE
 		optionalThingTypeChannel = thingTypeChannelRepository.findByThingTypeChannelId(THING_TYPE_DVH4013_WORK_IN);
 
 		if (optionalThingTypeChannel.isEmpty()) {
-			ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("work_in").setName("Work Out")
-					.setDescription("1-0:1.8.0*255").setThingTypeChannelId(THING_TYPE_DVH4013_WORK_IN)
+			ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("work_in").setName("Work In")
+					.setDescription("(OBIS-Code: 1-0:1.8.0*255)").setThingTypeChannelId(THING_TYPE_DVH4013_WORK_IN)
 					.setThingType(dvh4013);
 			powerChannel.getProperties().add(new Property().setKey("name").setValue("work_in"));
 			powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
@@ -93,7 +93,7 @@ public class ThingTypeCreator implements ApplicationEventListener<ServerStartupE
 
 		if (optionalThingTypeChannel.isEmpty()) {
 			ThingTypeChannel powerChannel = new ThingTypeChannel().setKey("work_out").setName("Work Out")
-					.setDescription("1-0:2.8.0*255").setThingTypeChannelId(THING_TYPE_DVH4013_WORK_OUT)
+					.setDescription("(OBIS-Code: 1-0:2.8.0*255)").setThingTypeChannelId(THING_TYPE_DVH4013_WORK_OUT)
 					.setThingType(dvh4013);
 			powerChannel.getProperties().add(new Property().setKey("name").setValue("work_out"));
 			powerChannel.getProperties().add(new Property().setKey("urnPrefix").setValue("dvh4013"));
