@@ -91,7 +91,7 @@
 		<!-- dependencies -->
 
 		<version.io.cloudevents>2.3.0</version.io.cloudevents>
-		<version.io.envoyproxy.controlplane>0.1.28</version.io.envoyproxy.controlplane>
+		<version.io.envoyproxy.controlplane>0.1.29</version.io.envoyproxy.controlplane>
 		<version.io.micronaut>3.2.7</version.io.micronaut>
 		<version.io.micronaut.data>3.2.2</version.io.micronaut.data>
 		<version.io.kokuwa.micronaut.codegen>2.2.1</version.io.kokuwa.micronaut.codegen>
