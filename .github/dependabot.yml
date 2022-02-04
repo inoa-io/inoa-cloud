@@ -5,12 +5,10 @@ updates:
     schedule:
       interval: daily
     assignees:
-      - stephanschnabel
+      - sschnabe
       - rpahli
       - fabian-schlegel
     ignore:
-      - dependency-name: io.micronaut:micronaut-bom
-        update-types: ["version-update:semver-major"]
       - dependency-name: org.keycloak.bom:*           # keycloak is an external dependency
       - dependency-name: org.eclipse.hono:*           # hono is an external dependency
       - dependency-name: org.springframework.boot:*   # spring version aligned with version from hono-pom
