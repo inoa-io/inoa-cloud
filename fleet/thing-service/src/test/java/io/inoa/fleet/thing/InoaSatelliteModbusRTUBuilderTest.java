@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.inoa.fleet.thing.modbus.CRC16;
-import io.inoa.fleet.thing.modbus.InoaSatelliteModbusRTUBuilder;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,12 +15,13 @@ import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingChannel;
 import io.inoa.fleet.thing.domain.ThingType;
 import io.inoa.fleet.thing.domain.ThingTypeChannel;
+import io.inoa.fleet.thing.modbus.InoaSatelliteModbusRTUBuilder;
 
 public class InoaSatelliteModbusRTUBuilderTest {
 
 	@Test
 	public void testFrameCreation() {
-		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(new ObjectMapper(), new CRC16());
+		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(new ObjectMapper());
 		var frame = builder.buildFrame((byte) 9, (byte) 3, (short) 16385, (short) 2);
 		String base64 = builder.toBase64(frame);
 		assertEquals("CQNAAQACgUM=", base64);
@@ -39,7 +38,7 @@ public class InoaSatelliteModbusRTUBuilderTest {
 
 		List<ThingTypeChannel> thingTypeChannels = new ArrayList<>();
 		thingTypeChannels.add(powerChannel);
-		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(new ObjectMapper(), new CRC16());
+		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(new ObjectMapper());
 		var thing = new Thing().setThingType(thingType);
 		thing.getProperties().add(new Property().setKey("serial").setValue("12345-01"));
 		thing.getProperties().add(new Property().setKey("slaveId").setValue(9));
@@ -49,7 +48,6 @@ public class InoaSatelliteModbusRTUBuilderTest {
 				.setThingChannelId(UUID.randomUUID());
 		channels.add(thingChannel);
 
-		var node = builder.build(thing, thingTypeChannels, channels);
-		System.out.println(node.toString());
+		builder.build(thing, thingTypeChannels, channels);
 	}
 }
