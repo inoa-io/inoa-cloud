@@ -2,13 +2,12 @@ package io.inoa.fleet.thing.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 
 import io.inoa.fleet.thing.domain.ThingTypeChannel;
 import io.inoa.fleet.thing.rest.management.ThingTypeChannelCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingTypeChannelVO;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.JSR330)
+@Mapper
 public interface ThingTypeChannelMapper {
 
 	@Mapping(source = "thingTypeChannelId", target = "id")

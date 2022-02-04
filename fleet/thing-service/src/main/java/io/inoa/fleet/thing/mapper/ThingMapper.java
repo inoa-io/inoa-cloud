@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 
 import io.inoa.fleet.thing.domain.Property;
 import io.inoa.fleet.thing.domain.Thing;
@@ -17,8 +16,9 @@ import io.inoa.fleet.thing.rest.management.ThingPageVO;
 import io.inoa.fleet.thing.rest.management.ThingVO;
 import io.micronaut.data.model.Page;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.JSR330)
+@Mapper
 public interface ThingMapper {
+
 	@Mapping(source = "thingId", target = "id")
 	@Mapping(source = "thingType.thingTypeId", target = "thingTypeId")
 	ThingVO toThingVO(Thing thing);
@@ -42,5 +42,4 @@ public interface ThingMapper {
 	ThingChannelVO toThingChannelVO(ThingChannel thingChannel);
 
 	List<ThingChannelVO> toThingChannelVOList(List<ThingChannel> channels);
-
 }

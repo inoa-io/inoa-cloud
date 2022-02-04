@@ -3,12 +3,11 @@ package io.inoa.fleet.thing.rest;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Singleton;
-
 import io.inoa.fleet.thing.ApplicationProperties;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.security.utils.SecurityService;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
