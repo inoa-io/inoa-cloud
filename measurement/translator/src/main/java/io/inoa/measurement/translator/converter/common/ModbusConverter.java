@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import io.inoa.fleet.telemetry.TelemetryRawVO;
+import io.inoa.lib.modbus.CRC16;
 import io.inoa.measurement.telemetry.TelemetryVO;
 import io.inoa.measurement.translator.ApplicationProperties;
 import jakarta.inject.Singleton;
@@ -23,6 +24,9 @@ public class ModbusConverter extends CommonConverter {
 	 */
 	private static final Set<Integer> FUNCTION_CODE_EXCEPTION = Set.of(129, 130, 131, 132, 133, 134, 143, 144);
 
+	/** Minimum length: 1 byte functionCode + 1 byte slaveId + 1 byte byteCount + 2 byte crc */
+	private static final Integer MESSAGE_MIN_LENGTH = 5;
+
 	ModbusConverter(ApplicationProperties properties) {
 		super(properties, "modbus");
 	}
@@ -33,21 +37,29 @@ public class ModbusConverter extends CommonConverter {
 		// parse to hex
 
 		var hexString = toHexString(raw.getValue());
-		if (hexString.length() < 7) {
-			log.info("Retrieved invalid modbus message (too short): {}", hexString);
+		if (raw.getValue().length < MESSAGE_MIN_LENGTH) {
+			log.warn("Retrieved invalid modbus message (too short): {}", hexString);
+			return Stream.empty();
+		}
+
+		// check crc
+
+		if (!CRC16.isValid(raw.getValue())) {
+			log.info("Retrieved invalid modbus message (crc16): {}", hexString);
 			return Stream.empty();
 		}
 
 		// validate function code
 
-		var slaveId = Integer.parseInt(hexString.substring(0, 2), 16);
-		var functionCode = Integer.parseInt(hexString.substring(2, 4), 16);
+		var slaveIdHex = hexString.substring(0, 2);
+		var functionCodeHex = hexString.substring(2, 4);
+		var functionCode = Integer.parseInt(functionCodeHex, 16);
 		if (functionCode != 3) {
 			if (FUNCTION_CODE_EXCEPTION.contains(functionCode)) {
 				var error = Integer.parseInt(hexString.substring(4, 6), 16);
-				log.info("Retrieved modbus error message (functionCode {}) with error {}", functionCode, error);
+				log.info("Retrieved modbus error message (functionCode {}) with error {}", functionCodeHex, error);
 			} else {
-				log.info("Retrieved invalid modbus message (functionCode {}): {}", functionCode, hexString);
+				log.info("Retrieved invalid modbus message (functionCode {}): {}", functionCodeHex, hexString);
 			}
 			return Stream.empty();
 		}
@@ -60,14 +72,15 @@ public class ModbusConverter extends CommonConverter {
 			return Stream.empty();
 		}
 		var dataEndIndex = 2 * byteCount + 6;
-		if (hexString.length() < dataEndIndex) {
+		int hexLength = hexString.length() - 4;
+		if (hexLength < dataEndIndex) {
 			log.info("Retrieved invalid modbus message (data.length {} < byteCount {}): {}",
-					hexString.length() - 6, dataEndIndex - 6, hexString);
+					(hexLength - 6) / 2, (dataEndIndex - 6) / 2, hexString);
 			return Stream.empty();
 		}
 		var value = Long.parseLong(hexString.substring(6, dataEndIndex), 16);
 
-		log.trace("Modbus with slaveId {}, functionCode {} and value {}.", slaveId, functionCode, value);
+		log.trace("Modbus with slaveId {}, functionCode {} has value: {}", slaveIdHex, functionCodeHex, value);
 
 		return Stream.of(convert(type, sensor, (double) value));
 	}
