@@ -27,6 +27,11 @@
 
 		<!-- project -->
 		<dependency>
+			<groupId>io.inoa.lib</groupId>
+			<artifactId>lib-modbus</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.inoa.fleet</groupId>
 			<artifactId>fleet-gateway-telemetry-model</artifactId>
 			<version>${project.version}</version>
