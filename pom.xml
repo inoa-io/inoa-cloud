@@ -58,7 +58,8 @@
 		<jib.from.image>eclipse-temurin:11.0.13_8-jre-focal@sha256:967349ef166d630bceda0370507b096edd6e7220e62e4539db70f04c04c2295f</jib.from.image>
 		<jib.to.image.repository>ghcr.io/grayc-de</jib.to.image.repository>
 		<jib.to.image.name>inoa/${project.artifactId}</jib.to.image.name>
-		<jib.to.image.version>${project.version}</jib.to.image.version>
+		<jib.to.image.version>${project.version}${jib.to.image.version.suffix}</jib.to.image.version>
+		<jib.to.image.version.suffix />
 		<jib.to.image>${jib.to.image.repository}/${jib.to.image.name}:${jib.to.image.version}</jib.to.image>
 
 		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
