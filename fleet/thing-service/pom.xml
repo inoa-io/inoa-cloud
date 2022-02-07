@@ -25,6 +25,13 @@
 	</dependencyManagement>
 	<dependencies>
 
+		<!-- project -->
+		<dependency>
+			<groupId>io.inoa.lib</groupId>
+			<artifactId>lib-modbus</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut</groupId>

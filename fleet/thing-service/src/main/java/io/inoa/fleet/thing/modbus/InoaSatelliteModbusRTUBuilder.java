@@ -12,13 +12,13 @@ import io.inoa.fleet.thing.domain.Property;
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingChannel;
 import io.inoa.fleet.thing.domain.ThingTypeChannel;
+import io.inoa.lib.modbus.CRC16;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class InoaSatelliteModbusRTUBuilder {
 
 	private final ObjectMapper objectMapper;
-	private final CRC16 crc16;
 
 	public ArrayNode build(Thing thing, List<ThingTypeChannel> thingTypeChannels, List<ThingChannel> thingChannels) {
 
@@ -83,7 +83,7 @@ public class InoaSatelliteModbusRTUBuilder {
 		target[3] = bytes[3];
 		target[4] = bytes[4];
 		target[5] = bytes[5];
-		byte[] crc = crc16.getCRC(bytes);
+		byte[] crc = CRC16.getCRC(bytes);
 		target[6] = crc[0];
 		target[7] = crc[1];
 		return target;
@@ -92,5 +92,4 @@ public class InoaSatelliteModbusRTUBuilder {
 	public String toBase64(byte[] frame) {
 		return Base64.getEncoder().encodeToString(frame);
 	}
-
 }

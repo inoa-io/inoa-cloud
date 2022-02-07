@@ -22,7 +22,6 @@ import io.inoa.fleet.thing.domain.ThingTypeChannel;
 import io.inoa.fleet.thing.domain.ThingTypeChannelRepository;
 import io.inoa.fleet.thing.domain.ThingTypeRepository;
 import io.inoa.fleet.thing.mapper.ThingMapper;
-import io.inoa.fleet.thing.modbus.CRC16;
 import io.inoa.fleet.thing.modbus.InoaSatelliteModbusRTUBuilder;
 import io.inoa.fleet.thing.rest.management.ThingCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingDetailVO;
@@ -38,9 +37,7 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.exceptions.HttpStatusException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class ThingsController implements ThingsApi {
@@ -140,7 +137,7 @@ public class ThingsController implements ThingsApi {
 	public HttpResponse<Object> syncConfigToGateway(UUID gatewayId) {
 		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
-		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper, new CRC16());
+		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper);
 		for (var thing : things) {
 			List<ThingTypeChannel> thingTypeChannels = thingTypeChannelRepository.findByThingType(thing.getThingType());
 			List<ThingChannel> channels = thingChannelRepository.findByThing(thing);
@@ -170,7 +167,7 @@ public class ThingsController implements ThingsApi {
 	public HttpResponse<Object> downloadConfigToGateway(UUID gatewayId) {
 		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
-		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper, new CRC16());
+		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper);
 		for (var thing : things) {
 			List<ThingTypeChannel> thingTypeChannels = thingTypeChannelRepository.findByThingType(thing.getThingType());
 			List<ThingChannel> channels = thingChannelRepository.findByThing(thing);
