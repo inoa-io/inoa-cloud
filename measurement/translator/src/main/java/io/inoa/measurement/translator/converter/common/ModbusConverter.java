@@ -55,7 +55,7 @@ public class ModbusConverter extends CommonConverter {
 		var hexString = toHexString(raw.getValue());
 		if (raw.getValue().length < MESSAGE_MIN_LENGTH) {
 			log.warn("Retrieved invalid modbus message (too short): {}", hexString);
-			increment(COUNTER_FAIL_SHORT);
+			increment(type, COUNTER_FAIL_SHORT);
 			return Stream.empty();
 		}
 
@@ -63,7 +63,7 @@ public class ModbusConverter extends CommonConverter {
 
 		if (!CRC16.isValid(raw.getValue())) {
 			log.info("Retrieved invalid modbus message (crc16): {}", hexString);
-			increment(COUNTER_FAIL_CRC);
+			increment(type, COUNTER_FAIL_CRC);
 			return Stream.empty();
 		}
 
@@ -76,10 +76,10 @@ public class ModbusConverter extends CommonConverter {
 			if (FUNCTION_CODE_EXCEPTION.contains(functionCode)) {
 				var error = Integer.parseInt(hexString.substring(4, 6), 16);
 				log.info("Retrieved modbus error message (functionCode {}) with error {}", functionCodeHex, error);
-				increment(COUNTER_INGORE_ERROR_CODE);
+				increment(type, COUNTER_INGORE_ERROR_CODE);
 			} else {
 				log.info("Retrieved invalid modbus message (functionCode {}): {}", functionCodeHex, hexString);
-				increment(COUNTER_INGORE_FUNCTION_CODE);
+				increment(type, COUNTER_INGORE_FUNCTION_CODE);
 			}
 			return Stream.empty();
 		}
@@ -89,7 +89,7 @@ public class ModbusConverter extends CommonConverter {
 		var byteCount = Integer.parseInt(hexString.substring(4, 6), 16);
 		if (byteCount == 0) {
 			log.info("Retrieved invalid modbus message (byteCount == 0): {}", hexString);
-			increment(COUNTER_INGORE_EMPTY);
+			increment(type, COUNTER_INGORE_EMPTY);
 			return Stream.empty();
 		}
 		var dataEndIndex = 2 * byteCount + 6;
@@ -97,18 +97,18 @@ public class ModbusConverter extends CommonConverter {
 		if (hexLength < dataEndIndex) {
 			log.info("Retrieved invalid modbus message (data.length {} < byteCount {}): {}",
 					(hexLength - 6) / 2, (dataEndIndex - 6) / 2, hexString);
-			increment(COUNTER_FAIL_BYTE_COUNT);
+			increment(type, COUNTER_FAIL_BYTE_COUNT);
 			return Stream.empty();
 		}
 		var value = Long.parseLong(hexString.substring(6, dataEndIndex), 16);
 
 		log.trace("Modbus with slaveId {}, functionCode {} has value: {}", slaveIdHex, functionCodeHex, value);
-		increment(COUNTER_SUCCESS);
+		increment(type, COUNTER_SUCCESS);
 
 		return Stream.of(convert(type, sensor, (double) value));
 	}
 
-	private void increment(String counter) {
-		counters.computeIfAbsent(counter, string -> meterRegistry.counter(counter)).increment();
+	private void increment(String type, String counter) {
+		counters.computeIfAbsent(type + counter, string -> meterRegistry.counter(counter, "type", type)).increment();
 	}
 }
