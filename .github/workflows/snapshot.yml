@@ -15,7 +15,7 @@ jobs:
           java-version: 11
           cache: maven
       - run: mvn -B dependency:go-offline
-      - run: mvn -B install -Djib.to.image.version=`date +"%Y%m%d-%H%M%S"`
+      - run: mvn -B install -Djib.to.image.version.suffix=-`date +"%Y%m%d-%H%M%S"`
       - uses: dorny/test-reporter@v1
         if: failure()
         with:
