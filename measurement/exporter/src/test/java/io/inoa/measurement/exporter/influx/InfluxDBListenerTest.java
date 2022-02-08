@@ -1,4 +1,4 @@
-package io.inoa.measurement.exporter.messaging;
+package io.inoa.measurement.exporter.influx;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -15,14 +15,17 @@ import com.influxdb.client.InfluxDBClient;
 
 import io.inoa.measurement.exporter.AbstractTest;
 import io.inoa.measurement.telemetry.TelemetryVO;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Inject;
 
-public class TelemetryListenerTest extends AbstractTest {
+public class InfluxDBListenerTest extends AbstractTest {
 
 	@Inject
-	TelemetryListener listener;
+	InfluxDBListener listener;
 	@Inject
 	InfluxDBClient influx;
+	@Inject
+	MeterRegistry meterRegistry;
 
 	@DisplayName("write to influx")
 	@Test
@@ -60,5 +63,10 @@ public class TelemetryListenerTest extends AbstractTest {
 				() -> assertEquals("bar", record.getValueByKey("foo"), "ext.foo"),
 				() -> assertEquals(telemetry.getTimestamp(), record.getTime(), "timestamp"),
 				() -> assertEquals(telemetry.getValue(), record.getValue(), "value"));
+
+		// check metrics
+
+		assertEquals(1D, meterRegistry.counter(InfluxDBMetrics.COUNTER_SUCCESS).count(), "meter success");
+		assertEquals(0D, meterRegistry.counter(InfluxDBMetrics.COUNTER_FAILURE).count(), "meter failure");
 	}
 }
