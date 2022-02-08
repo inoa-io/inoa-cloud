@@ -58,6 +58,10 @@
 
 		<!-- monitoring -->
 		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-management</artifactId>
 			<scope>runtime</scope>
