@@ -44,7 +44,6 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.propertiesEncoding>ISO-8859-1</project.build.propertiesEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
@@ -56,11 +55,11 @@
 
 		<jib.container.jvmFlags>-XX:+ExitOnOutOfMemoryError</jib.container.jvmFlags>
 		<jib.from.image>eclipse-temurin:11.0.13_8-jre-focal@sha256:967349ef166d630bceda0370507b096edd6e7220e62e4539db70f04c04c2295f</jib.from.image>
-		<jib.to.image.repository>ghcr.io/grayc-de</jib.to.image.repository>
-		<jib.to.image.name>inoa/${project.artifactId}</jib.to.image.name>
+		<jib.to.image.registry>ghcr.io/grayc-de</jib.to.image.registry>
+		<jib.to.image.repository>inoa/${project.artifactId}</jib.to.image.repository>
 		<jib.to.image.version>${project.version}${jib.to.image.version.suffix}</jib.to.image.version>
 		<jib.to.image.version.suffix />
-		<jib.to.image>${jib.to.image.repository}/${jib.to.image.name}:${jib.to.image.version}</jib.to.image>
+		<jib.to.image>${jib.to.image.registry}/${jib.to.image.repository}:${jib.to.image.version}</jib.to.image>
 
 		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
 		<checkstyle.suppressions.location>checkstyle-suppression.xml</checkstyle.suppressions.location>
@@ -85,11 +84,12 @@
 		<version.org.apache.maven.plugins.surefire>3.0.0-M5</version.org.apache.maven.plugins.surefire>
 		<version.org.codehaus.mojo.build-helper>3.3.0</version.org.codehaus.mojo.build-helper>
 		<version.org.codehaus.mojo.tidy>1.1.0</version.org.codehaus.mojo.tidy>
-		<version.org.openapitools>5.4.0</version.org.openapitools>
+		<version.org.openapitools.generator>5.4.0</version.org.openapitools.generator>
 		<version.org.openapitools.stylevalidator>1.7</version.org.openapitools.stylevalidator>
 		<version.com.google.cloud.tools.jib>3.2.0</version.com.google.cloud.tools.jib>
 		<version.com.puppycrawl.tools.checkstyle>9.3</version.com.puppycrawl.tools.checkstyle>
 		<version.io.kokuwa.checkstyle>0.5.6</version.io.kokuwa.checkstyle>
+		<version.io.kokuwa.micronaut.codegen>2.2.1</version.io.kokuwa.micronaut.codegen>
 
 		<!-- dependencies -->
 
@@ -97,7 +97,6 @@
 		<version.io.envoyproxy.controlplane>0.1.30</version.io.envoyproxy.controlplane>
 		<version.io.micronaut>3.3.0</version.io.micronaut>
 		<version.io.micronaut.data>3.3.0-M1</version.io.micronaut.data>
-		<version.io.kokuwa.micronaut.codegen>2.2.1</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.influxdb>3.0.0-M1</version.io.kokuwa.micronaut.influxdb>
 		<version.io.kokuwa.micronaut.logging>3.0.4</version.io.kokuwa.micronaut.logging>
 		<version.org.awaitility>4.1.1</version.org.awaitility>
@@ -331,7 +330,7 @@
 				<plugin>
 					<groupId>org.openapitools</groupId>
 					<artifactId>openapi-generator-maven-plugin</artifactId>
-					<version>${version.org.openapitools}</version>
+					<version>${version.org.openapitools.generator}</version>
 					<configuration>
 						<generatorName>micronaut</generatorName>
 						<modelNameSuffix>VO</modelNameSuffix>
