@@ -12,6 +12,10 @@
 
 	<name>INOA :: Measurement :: Telemetry Translator</name>
 
+	<properties>
+		<version.com.jayway.jsonpath>2.7.0</version.com.jayway.jsonpath>
+	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -85,6 +89,13 @@
 			<groupId>io.micronaut.micrometer</groupId>
 			<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Misc -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>${version.com.jayway.jsonpath}</version>
 		</dependency>
 
 		<!-- test -->

@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import io.inoa.fleet.telemetry.TelemetryRawVO;
 import io.inoa.measurement.telemetry.TelemetryVO;
 import io.inoa.measurement.translator.ApplicationProperties;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Singleton;
 
 /**
@@ -13,8 +14,8 @@ import jakarta.inject.Singleton;
 @Singleton
 public class NumberConverter extends CommonConverter {
 
-	NumberConverter(ApplicationProperties properties) {
-		super(properties, "number");
+	NumberConverter(ApplicationProperties properties, MeterRegistry meterRegistry) {
+		super(properties, meterRegistry, "number");
 	}
 
 	@Override

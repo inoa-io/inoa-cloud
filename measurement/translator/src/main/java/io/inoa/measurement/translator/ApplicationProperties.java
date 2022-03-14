@@ -33,5 +33,6 @@ public class ApplicationProperties {
 		private boolean ignore = false;
 		private Optional<Double> modifier = Optional.empty();
 		private Map<String, String> ext = new HashMap<>();
+		private Map<String, Object> config = new HashMap<>();
 	}
 }

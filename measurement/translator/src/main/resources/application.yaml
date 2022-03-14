@@ -35,6 +35,15 @@ inoa.measurement.translator:
           converter: modbus
           modifier: 10
 
+    - name: shplg-s
+      sensors:
+        - name: status
+          converter: json-path
+          config:
+            power: "$.meters[:1].power"
+            work: "$.meters[:1].total"
+            temperature: "$.temperature"
+
     # source: https://www.dzg.de/fileadmin/dzg/content/downloads/produkte-zaehler/dvh4013/DZG_Modbus_Protocol.pdf
     - name: dvh4013
       sensors:
