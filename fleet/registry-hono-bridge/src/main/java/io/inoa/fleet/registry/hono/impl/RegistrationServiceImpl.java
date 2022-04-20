@@ -33,7 +33,9 @@ public class RegistrationServiceImpl implements RegistrationService {
 						.put(RequestResponseApiConstants.FIELD_PAYLOAD_DEVICE_ID, deviceId)
 						.put(RegistrationConstants.FIELD_DATA, JsonObject.mapFrom(new Device()
 								.setEnabled(device.getEnabled())
-								.setDefaults(Map.of("gatewayName", device.getName())))))
+								// TODO move the defaults to the database
+								// it is only a workaround for now
+								.setDefaults(Map.of("gatewayName", device.getName(), "gatewayType", "satellite")))))
 				.map(json -> RegistrationResult.from(HttpURLConnection.HTTP_OK, json, properties.getGatewayCache()))
 				.orElseGet(() -> RegistrationResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
 	}
