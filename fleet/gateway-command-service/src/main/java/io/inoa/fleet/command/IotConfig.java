@@ -8,10 +8,11 @@ import org.eclipse.hono.application.client.ApplicationClient;
 import org.eclipse.hono.application.client.DownstreamMessage;
 import org.eclipse.hono.application.client.MessageContext;
 import org.eclipse.hono.application.client.kafka.impl.KafkaApplicationClientImpl;
-import org.eclipse.hono.client.kafka.consumer.KafkaConsumerConfigProperties;
+import org.eclipse.hono.client.kafka.CommonKafkaClientConfigProperties;
+import org.eclipse.hono.client.kafka.consumer.MessagingKafkaConsumerConfigProperties;
 import org.eclipse.hono.client.kafka.producer.CachingKafkaProducerFactory;
-import org.eclipse.hono.client.kafka.producer.KafkaProducerConfigProperties;
 import org.eclipse.hono.client.kafka.producer.KafkaProducerFactory;
+import org.eclipse.hono.client.kafka.producer.MessagingKafkaProducerConfigProperties;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,14 +72,15 @@ public class IotConfig {
 		final Map<String, String> properties = new HashMap<>();
 		properties.put("bootstrap.servers", inoaConfig.getKafkaUrl());
 
-		final KafkaConsumerConfigProperties consumerConfig = new KafkaConsumerConfigProperties();
-		consumerConfig.setCommonClientConfig(properties);
-		consumerConfig.setDefaultClientIdPrefix(inoaConfig.getClientIdPrefix());
+		final CommonKafkaClientConfigProperties commonClientConfig = new CommonKafkaClientConfigProperties();
+		commonClientConfig.setCommonClientConfig(properties);
+
+		final MessagingKafkaConsumerConfigProperties consumerConfig = new MessagingKafkaConsumerConfigProperties();
+		consumerConfig.setCommonClientConfig(commonClientConfig);
 		consumerConfig.setConsumerConfig(Map.of("group.id", inoaConfig.getConsumerGroupId()));
 
-		final KafkaProducerConfigProperties producerConfig = new KafkaProducerConfigProperties();
-		producerConfig.setCommonClientConfig(properties);
-		producerConfig.setDefaultClientIdPrefix(inoaConfig.getClientIdPrefix());
+		final MessagingKafkaProducerConfigProperties producerConfig = new MessagingKafkaProducerConfigProperties();
+		producerConfig.setCommonClientConfig(commonClientConfig);
 
 		final KafkaProducerFactory<String, Buffer> producerFactory = CachingKafkaProducerFactory.sharedFactory(vertx);
 		return new KafkaApplicationClientImpl(vertx, consumerConfig, producerFactory, producerConfig);
