@@ -19,7 +19,7 @@ jobs:
       - run: mvn -B release:prepare
       - run: mvn -B release:perform
       - name: docker login
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
