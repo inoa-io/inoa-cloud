@@ -44,6 +44,15 @@ inoa.measurement.translator:
             work: "$.meters[:1].total"
             temperature: "$.temperature"
 
+    - name: shellyht
+      sensors:
+        - name: status
+          converter: json-path
+          config:
+            temperature: "$.tmp.value"
+            humidity: "$.hum.value"
+            battery: "$.bat.value"
+
     # source: https://www.dzg.de/fileadmin/dzg/content/downloads/produkte-zaehler/dvh4013/DZG_Modbus_Protocol.pdf
     - name: dvh4013
       sensors:
