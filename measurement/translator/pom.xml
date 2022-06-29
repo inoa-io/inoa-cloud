@@ -12,10 +12,6 @@
 
 	<name>INOA :: Measurement :: Telemetry Translator</name>
 
-	<properties>
-		<version.com.jayway.jsonpath>2.7.0</version.com.jayway.jsonpath>
-	</properties>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

@@ -106,6 +106,7 @@
 		<version.org.projectlombok>1.18.24</version.org.projectlombok>
 		<!-- spring version aligned with version from hono-pom -->
 		<version.org.springframework.boot>2.4.13</version.org.springframework.boot>
+		<version.com.jayway.jsonpath>2.7.0</version.com.jayway.jsonpath>
 
 		<!-- images -->
 
