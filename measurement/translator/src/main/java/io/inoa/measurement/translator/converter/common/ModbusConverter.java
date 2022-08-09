@@ -1,7 +1,5 @@
 package io.inoa.measurement.translator.converter.common;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -9,7 +7,6 @@ import io.inoa.fleet.telemetry.TelemetryRawVO;
 import io.inoa.lib.modbus.CRC16;
 import io.inoa.measurement.telemetry.TelemetryVO;
 import io.inoa.measurement.translator.ApplicationProperties;
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Singleton;
 
@@ -36,15 +33,14 @@ public class ModbusConverter extends CommonConverter {
 	 */
 	private static final Set<Integer> FUNCTION_CODE_EXCEPTION = Set.of(129, 130, 131, 132, 133, 134, 143, 144);
 
-	/** Minimum length: 1 byte functionCode + 1 byte slaveId + 1 byte byteCount + 2 byte crc */
+	/**
+	 * Minimum length: 1 byte functionCode + 1 byte slaveId + 1 byte byteCount + 2
+	 * byte crc
+	 */
 	private static final Integer MESSAGE_MIN_LENGTH = 5;
 
-	private final MeterRegistry meterRegistry;
-	private final Map<String, Counter> counters = new HashMap<>();
-
 	ModbusConverter(ApplicationProperties properties, MeterRegistry meterRegistry) {
-		super(properties, "modbus");
-		this.meterRegistry = meterRegistry;
+		super(properties, meterRegistry, "modbus");
 	}
 
 	@Override
@@ -95,8 +91,8 @@ public class ModbusConverter extends CommonConverter {
 		var dataEndIndex = 2 * byteCount + 6;
 		int hexLength = hexString.length() - 4;
 		if (hexLength < dataEndIndex) {
-			log.info("Retrieved invalid modbus message (data.length {} < byteCount {}): {}",
-					(hexLength - 6) / 2, (dataEndIndex - 6) / 2, hexString);
+			log.info("Retrieved invalid modbus message (data.length {} < byteCount {}): {}", (hexLength - 6) / 2,
+					(dataEndIndex - 6) / 2, hexString);
 			increment(type, COUNTER_FAIL_BYTE_COUNT);
 			return Stream.empty();
 		}
@@ -106,9 +102,5 @@ public class ModbusConverter extends CommonConverter {
 		increment(type, COUNTER_SUCCESS);
 
 		return Stream.of(convert(type, sensor, (double) value));
-	}
-
-	private void increment(String type, String counter) {
-		counters.computeIfAbsent(type + counter, string -> meterRegistry.counter(counter, "type", type)).increment();
 	}
 }

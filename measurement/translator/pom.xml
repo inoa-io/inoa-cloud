@@ -87,6 +87,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Misc -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>${version.com.jayway.jsonpath}</version>
+		</dependency>
+
 		<!-- test -->
 		<dependency>
 			<groupId>io.micronaut.test</groupId>

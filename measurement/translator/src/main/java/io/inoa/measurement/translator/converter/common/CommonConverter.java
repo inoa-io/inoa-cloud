@@ -1,6 +1,7 @@
 package io.inoa.measurement.translator.converter.common;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -9,6 +10,8 @@ import io.inoa.measurement.telemetry.TelemetryVO;
 import io.inoa.measurement.translator.ApplicationProperties;
 import io.inoa.measurement.translator.ApplicationProperties.SensorProperties;
 import io.inoa.measurement.translator.converter.AbstractConverter;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -18,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 public abstract class CommonConverter extends AbstractConverter {
 
 	private final ApplicationProperties properties;
+	private final MeterRegistry meterRegistry;
+	private final Map<String, Counter> counters = new HashMap<>();
 	private final String converter;
 
 	@Override
@@ -48,5 +53,9 @@ public abstract class CommonConverter extends AbstractConverter {
 						|| sensorProperties.getNamePattern() != null
 								&& Pattern.matches(sensorProperties.getNamePattern(), sensor))
 				.findFirst();
+	}
+
+	void increment(String type, String counter) {
+		counters.computeIfAbsent(type + counter, string -> meterRegistry.counter(counter, "type", type)).increment();
 	}
 }
