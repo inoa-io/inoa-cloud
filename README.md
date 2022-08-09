@@ -1,5 +1,9 @@
 # INOA Cloud
 
+[![License](https://img.shields.io/github/license/inoa-io/inoa-cloud.svg?label=License)](https://github.com/inoa-io/inoa-cloud/blob/main/LICENSE)
+[![Build](https://img.shields.io/github/workflow/status/inoa-io/inoa-cloud/Build?label=Build)](https://github.com/inoa-io/inoa-cloud/actions/workflows/build.yaml)
+[![Lint](https://img.shields.io/github/workflow/status/inoa-io/inoa-cloud/CI/main?label=CI)](https://github.com/inoa-io/inoa-cloud/actions/workflows/ci.yaml)
+
 ## Todos
 
 * graalvm
