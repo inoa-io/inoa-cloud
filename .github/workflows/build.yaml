@@ -2,9 +2,11 @@ name: Snapshot
 
 "on":
   workflow_dispatch: {}
-  push: {}
+  push:
+    branches: [main]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
     steps:
@@ -15,24 +17,13 @@ jobs:
           java-version: 11
           cache: maven
       - run: mvn -B dependency:go-offline
-      - run: mvn -B install -Djib.to.image.version.suffix=-`date +"%Y%m%d-%H%M%S"`
-      - uses: dorny/test-reporter@v1
-        if: failure()
-        with:
-          name: surefire
-          path: '**/target/surefire-reports/*.xml'
-          reporter: java-junit
-          list-suites: failed
-          list-tests: failed
-      - name: docker login
-        uses: docker/login-action@v2
-        if: github.ref == 'refs/heads/main'
+      - run: mvn -B install -Djib.to.image.version.suffix=-`date +"%Y%m%d-%H%M%S"` -T1C
+      - uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GIT_ACTION_TOKEN }}
       - name: docker push
-        if: github.ref == 'refs/heads/main'
         run: |
           docker push --all-tags ghcr.io/inoa-io/cnpm-auth-service
           docker push --all-tags ghcr.io/inoa-io/cnpm-tenant-service
