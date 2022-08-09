@@ -12,6 +12,10 @@
 
 	<name>INOA :: Integration Test</name>
 
+	<properties>
+		<maven.test.skip.exec>true</maven.test.skip.exec>
+	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>

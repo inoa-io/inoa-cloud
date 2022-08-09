@@ -130,7 +130,7 @@ services:
   ###
 
   cnpm-tenant-service:
-    image: ${jib.to.image.registry}/inoa/cnpm-tenant-service:${jib.to.image.version}
+    image: ${jib.to.image.registry}/cnpm-tenant-service:${jib.to.image.version}
     environment:
       - MICRONAUT_ENVIRONMENTS=postgres
       - MICRONAUT_SECURITY_ENABLED=FALSE
@@ -153,7 +153,7 @@ services:
         condition: service_started
 
   cnpm-auth-service:
-    image: ${jib.to.image.registry}/inoa/cnpm-auth-service:${jib.to.image.version}
+    image: ${jib.to.image.registry}/cnpm-auth-service:${jib.to.image.version}
     environment:
       - MICRONAUT_HTTP_SERVICES_TENANT_MANAGEMENT_URL=http://cnpm-tenant-service:8080
       - MICRONAUT_SECURITY_OAUTH2_CLIENTS_KEYCLOAK_CLIENT_ID=inoa-cnpm-auth-service
@@ -190,7 +190,7 @@ services:
   ###
 
   #  fleet-registry-service:
-  #    image: ${jib.to.image.registry}/inoa/fleet-registry-service:${jib.to.image.version}
+  #    image: ${jib.to.image.registry}/fleet-registry-service:${jib.to.image.version}
   #    environment:
   #      - MICRONAUT_ENVIRONMENTS=postgres
   #      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://cnpm-auth-service:8080/certs
@@ -216,7 +216,7 @@ services:
   #        condition: service_started
 
   #  fleet-registry-hono-bridge:
-  #    image: ${jib.to.image.registry}/inoa/fleet-registry-hono-bridge:${jib.to.image.version}
+  #    image: ${jib.to.image.registry}/fleet-registry-hono-bridge:${jib.to.image.version}
   #    env_file: ${project.build.directory}/compose/hono/base.env
   #    environment:
   #      - HONO_REGISTRY_AMQP_INSECUREPORTENABLED=true
@@ -241,7 +241,7 @@ services:
   #        condition: service_started#
 
   #  fleet-gateway-logger:
-  #    image: ${jib.to.image.registry}/inoa/fleet-gateway-logger:${jib.to.image.version}
+  #    image: ${jib.to.image.registry}/fleet-gateway-logger:${jib.to.image.version}
   #    environment:
   #      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
   #      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
@@ -303,7 +303,7 @@ services:
         condition: service_started
 
   measurement-provisioner:
-    image: ${jib.to.image.registry}/inoa/measurement-provisioner:${jib.to.image.version}
+    image: ${jib.to.image.registry}/measurement-provisioner:${jib.to.image.version}
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
@@ -324,7 +324,7 @@ services:
         condition: service_started
 
   measurement-telemetry-translator:
-    image: ${jib.to.image.registry}/inoa/measurement-telemetry-translator:${jib.to.image.version}
+    image: ${jib.to.image.registry}/measurement-telemetry-translator:${jib.to.image.version}
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
@@ -337,7 +337,7 @@ services:
         condition: service_started
 
   measurement-telemetry-exporter:
-    image: ${jib.to.image.registry}/inoa/measurement-telemetry-exporter:${jib.to.image.version}
+    image: ${jib.to.image.registry}/measurement-telemetry-exporter:${jib.to.image.version}
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
