@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 
 	<name>INOA</name>
-	<url>https://github.com/inoa-io/cloud</url>
+	<url>https://github.com/inoa-io/inoa-cloud</url>
 	<inceptionYear>2021</inceptionYear>
 	<licenses>
 		<license>
@@ -26,14 +26,14 @@
 	</modules>
 
 	<scm>
-		<url>https://github.com/inoa-io/cloud</url>
-		<connection>scm:git:https://github.com/inoa-io/cloud.git</connection>
-		<developerConnection>scm:git:https://github.com/inoa-io/cloud.git</developerConnection>
+		<url>${project.url}</url>
+		<connection>scm:git:${project.url}.git</connection>
+		<developerConnection>scm:git:${project.url}.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>jira</system>
-		<url>https://grayc.atlassian.net/browse/INOA</url>
+		<url>${project.url}/issues</url>
 	</issueManagement>
 
 	<properties>
@@ -54,9 +54,9 @@
 		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
 		<jib.container.jvmFlags>-XX:+ExitOnOutOfMemoryError</jib.container.jvmFlags>
-		<jib.from.image>eclipse-temurin:11.0.13_8-jre-focal@sha256:967349ef166d630bceda0370507b096edd6e7220e62e4539db70f04c04c2295f</jib.from.image>
-		<jib.to.image.registry>ghcr.io/grayc-de</jib.to.image.registry>
-		<jib.to.image.repository>inoa/${project.artifactId}</jib.to.image.repository>
+		<jib.from.image>gcr.io/distroless/java11:nonroot</jib.from.image>
+		<jib.to.image.registry>ghcr.io/inoa-io</jib.to.image.registry>
+		<jib.to.image.repository>${project.artifactId}</jib.to.image.repository>
 		<jib.to.image.version>${project.version}${jib.to.image.version.suffix}</jib.to.image.version>
 		<jib.to.image.version.suffix />
 		<jib.to.image>${jib.to.image.registry}/${jib.to.image.repository}:${jib.to.image.version}</jib.to.image>

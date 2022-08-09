@@ -1,2 +1,4 @@
 # https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners#codeowners-syntax
-* @grayc-de/grayc
+* @inoa-io/maintainer
+.github/workflows/* @grayc-de-bot @inoa-io/maintainer
+pom.xml @grayc-de-bot
