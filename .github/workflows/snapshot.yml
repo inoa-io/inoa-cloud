@@ -34,13 +34,13 @@ jobs:
       - name: docker push
         if: github.ref == 'refs/heads/main'
         run: |
-          docker push --all-tags ghcr.io/grayc-de/inoa/cnpm-auth-service
-          docker push --all-tags ghcr.io/grayc-de/inoa/cnpm-tenant-service
-          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-registry-service
-          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-registry-hono-bridge
-          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-gateway-logger
-          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-gateway-command-service
-          docker push --all-tags ghcr.io/grayc-de/inoa/fleet-thing-service
-          docker push --all-tags ghcr.io/grayc-de/inoa/measurement-provisioner
-          docker push --all-tags ghcr.io/grayc-de/inoa/measurement-telemetry-translator
-          docker push --all-tags ghcr.io/grayc-de/inoa/measurement-telemetry-exporter
+          docker push --all-tags ghcr.io/inoa-io/cnpm-auth-service
+          docker push --all-tags ghcr.io/inoa-io/cnpm-tenant-service
+          docker push --all-tags ghcr.io/inoa-io/fleet-registry-service
+          docker push --all-tags ghcr.io/inoa-io/fleet-registry-hono-bridge
+          docker push --all-tags ghcr.io/inoa-io/fleet-gateway-logger
+          docker push --all-tags ghcr.io/inoa-io/fleet-gateway-command-service
+          docker push --all-tags ghcr.io/inoa-io/fleet-thing-service
+          docker push --all-tags ghcr.io/inoa-io/measurement-provisioner
+          docker push --all-tags ghcr.io/inoa-io/measurement-telemetry-translator
+          docker push --all-tags ghcr.io/inoa-io/measurement-telemetry-exporter
