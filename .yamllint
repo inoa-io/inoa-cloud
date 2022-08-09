@@ -8,3 +8,24 @@ rules:
 
   # line length is not important
   line-length: disable
+
+  # force double quotes everywhere
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed
+    ignore: |
+      cnpm/tenant-api-management/src/main/resources/openapi/spec.yaml
+      cnpm/tenant-api-messaging/src/main/resources/openapi/spec.yaml
+      fleet/thing-service/src/main/resources/openapi/management.yaml
+      fleet/gateway-event/src/main/resources/openapi/spec.yaml
+      fleet/gateway-telemetry/src/main/resources/openapi/spec.yaml
+      fleet/registry-service/src/main/resources/openapi/gateway.yaml
+      fleet/registry-service/src/main/resources/openapi/management.yaml
+      fleet/registry-service/src/test/resources/application-test.yaml
+      fleet/registry-api-gateway/src/main/resources/openapi/spec.yaml
+      fleet/registry-api-management/src/main/resources/openapi/spec.yaml
+      measurement/model/src/main/resources/openapi/spec.yaml
+
+  # allow everything on keys
+  truthy:
+    check-keys: false

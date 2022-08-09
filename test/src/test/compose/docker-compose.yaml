@@ -1,4 +1,4 @@
-version: '2.3'
+version: '2.3'  # yamllint disable-line rule:quoted-strings
 services:
 
   ###
@@ -13,7 +13,7 @@ services:
     volumes:
       - ${project.build.directory}/compose/postgres/init.sh:/docker-entrypoint-initdb.d/init.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [CMD-SHELL, pg_isready -U postgres]
 
   keycloak:
     hostname: keycloak
@@ -365,7 +365,7 @@ services:
     image: defreitas/dns-proxy-server:2.19.0
     environment:
       - MG_LOG_LEVEL=WARNING
-    ports: ["5380:5380"]
+    ports: [5380:5380]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/resolv.conf:/etc/resolv.conf
