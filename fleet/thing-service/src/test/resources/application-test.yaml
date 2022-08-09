@@ -21,4 +21,4 @@ micronaut:
               secret: pleaseChangeThisSecretForANewOne
       propagation:
         enabled: true
-        service-id-regex: "gateway-command"
+        service-id-regex: gateway-command
