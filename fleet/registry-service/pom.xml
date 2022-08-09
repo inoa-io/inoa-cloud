@@ -27,11 +27,6 @@
 
 		<!-- project -->
 		<dependency>
-			<groupId>io.inoa.cnpm</groupId>
-			<artifactId>cnpm-tenant-api-messaging</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.inoa.fleet</groupId>
 			<artifactId>fleet-registry-api-management</artifactId>
 			<version>${project.version}</version>

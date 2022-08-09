@@ -302,27 +302,6 @@ services:
       influxdb:
         condition: service_started
 
-  measurement-provisioner:
-    image: ${jib.to.image.registry}/measurement-provisioner:${jib.to.image.version}
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
-      - GRAFANA_URL=http://grafana:3000
-      - GRAFANA_USERNAME=admin
-      - GRAFANA_PASSWORD=password
-      - INFLUXDB_URL=http://influxdb:8086
-      - INFLUXDB_ORG=master
-      - INFLUXDB_TOKEN=changeMe
-      - LOGGER_LEVELS_IO_INOA=TRACE
-      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
-    healthcheck:
-      test: curl -sf http://localhost:8080/endpoints/health
-    depends_on:
-      influxdb:
-        condition: service_started
-      grafana:
-        condition: service_started
-
   measurement-telemetry-translator:
     image: ${jib.to.image.registry}/measurement-telemetry-translator:${jib.to.image.version}
     environment:
@@ -369,24 +348,6 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /etc/resolv.conf:/etc/resolv.conf
-
-  swagger-ui:
-    hostname: swagger-ui
-    image: swaggerapi/swagger-ui:v3.52.5
-    environment:
-      - URLS=[{url:"/tenant-management.yaml",name:"Tenant Management API"}
-      - DISPLAY_OPERATION_ID=true
-      - DISPLAY_REQUEST_DURATION=true
-      - PERSIST_AUTHORIZATION=true
-      - VALIDATOR_URL=
-      - TRY_IT_OUT_ENABLED=true
-      - OAUTH_CLIENT_ID=gateway-registry-ui
-      - OAUTH_CLIENT_SECRET=changeMe
-    volumes:
-      - ${project.parent.basedir}/cnpm/tenant-api-management/src/main/resources/openapi/spec.yaml:/usr/share/nginx/html/tenant-management.yaml
-    depends_on:
-      cnpm-tenant-service:
-        condition: service_started
 
   kafka-ui:
     hostname: kafka-ui

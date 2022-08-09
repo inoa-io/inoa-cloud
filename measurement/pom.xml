@@ -15,7 +15,6 @@
 	<name>INOA :: Measurement</name>
 
 	<modules>
-		<module>provisioner</module>
 		<module>model</module>
 		<module>translator</module>
 		<module>exporter</module>
