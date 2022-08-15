@@ -208,10 +208,10 @@ public class AuthController implements AuthApi {
 	 */
 	private HttpResponse<TokenResponseVO> getTokenResponse(Gateway gateway) {
 		return HttpResponse.ok(new TokenResponseVO()
-				.setAccessToken(authService.createToken(gateway.getGatewayId()))
-				.setTokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
-				.setExpiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
-				.setTenantId(gateway.getTenant().getTenantId()));
+				.accessToken(authService.createToken(gateway.getGatewayId()))
+				.tokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
+				.expiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
+				.tenantId(gateway.getTenant().getTenantId()));
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class AuthController implements AuthApi {
 	private HttpStatusException error(String errorDescription) {
 		log.debug("Failure: {}", errorDescription);
 		return new HttpStatusException(HttpStatus.BAD_REQUEST, new TokenErrorVO()
-				.setError("invalid_grant")
-				.setErrorDescription(errorDescription));
+				.error("invalid_grant")
+				.errorDescription(errorDescription));
 	}
 }

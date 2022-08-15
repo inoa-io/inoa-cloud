@@ -15,8 +15,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.annotation.PostConstruct;
-
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -24,6 +22,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import io.inoa.fleet.registry.ApplicationProperties;
 import io.inoa.fleet.registry.ApplicationProperties.RegistryAuthProperties.RegistryAuthRSA;
 import io.micronaut.context.exceptions.BeanInstantiationException;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayGroup;
@@ -20,11 +21,14 @@ import io.micronaut.data.model.Page;
  *
  * @author Stephan Schnabel
  */
-@Mapper(uses = GroupMapper.class)
+@Mapper(uses = GroupMapper.class, componentModel = ComponentModel.JAKARTA)
 public interface GatewayMapper {
 
+	@Mapping(target = "removeContentItem", ignore = true)
 	GatewayPageVO toGatewayPage(Page<Gateway> gateways);
 
+	@Mapping(target = "removeGroupIdsItem", ignore = true)
+	@Mapping(target = "removePropertiesItem", ignore = true)
 	@Mapping(target = "groupIds", source = "groups")
 	GatewayDetailVO toGatewayDetail(Gateway gateway);
 

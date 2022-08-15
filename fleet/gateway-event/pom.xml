@@ -12,17 +12,6 @@
 
 	<name>INOA :: Fleet :: Gateway Event Model</name>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-bom</artifactId>
-				<version>${version.io.micronaut}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 
 		<!-- micronaut -->
@@ -66,7 +55,7 @@
 						</goals>
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/openapi/spec.yaml</inputSpec>
-							<modelPackage>io.inoa.fleet.event</modelPackage>
+							<packageName>io.inoa.fleet.event</packageName>
 							<generateApis>false</generateApis>
 							<generateApiTests>false</generateApiTests>
 							<generateApiDocumentation>false</generateApiDocumentation>

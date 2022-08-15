@@ -18,9 +18,9 @@ public class NumberConverterTest extends AbstractConverterTest {
 	@Test
 	void successLong() {
 		var raw = new TelemetryRawVO()
-				.setUrn("urn:example:0815:number")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue("1234".getBytes());
+				.urn("urn:example:0815:number")
+				.timestamp(Instant.now().toEpochMilli())
+				.value("1234".getBytes());
 		assertSingleValue(1234D, converter, raw, "example", "number");
 	}
 
@@ -28,9 +28,9 @@ public class NumberConverterTest extends AbstractConverterTest {
 	@Test
 	void successDouble() {
 		var raw = new TelemetryRawVO()
-				.setUrn("urn:example:0815:number")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue("-123.456".getBytes());
+				.urn("urn:example:0815:number")
+				.timestamp(Instant.now().toEpochMilli())
+				.value("-123.456".getBytes());
 		assertSingleValue(-123.456D, converter, raw, "example", "number");
 	}
 
@@ -38,9 +38,9 @@ public class NumberConverterTest extends AbstractConverterTest {
 	@Test
 	void successModifier() {
 		var raw = new TelemetryRawVO()
-				.setUrn("urn:example:0815:number-with-modifier")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue("9876".getBytes());
+				.urn("urn:example:0815:number-with-modifier")
+				.timestamp(Instant.now().toEpochMilli())
+				.value("9876".getBytes());
 		assertSingleValue(98760D, converter, raw, "example", "number-with-modifier");
 	}
 
@@ -48,9 +48,9 @@ public class NumberConverterTest extends AbstractConverterTest {
 	@Test
 	void failNoConvertable() {
 		var raw = new TelemetryRawVO()
-				.setUrn("urn:example:0815:number")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue("NAN".getBytes());
+				.urn("urn:example:0815:number")
+				.timestamp(Instant.now().toEpochMilli())
+				.value("NAN".getBytes());
 		assertEmpty(converter, raw, "example", "number");
 	}
 }

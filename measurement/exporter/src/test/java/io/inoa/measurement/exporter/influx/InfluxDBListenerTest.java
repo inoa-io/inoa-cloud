@@ -32,15 +32,15 @@ public class InfluxDBListenerTest extends AbstractTest {
 	void success() {
 
 		var telemetry = new TelemetryVO()
-				.setTenantId("inoa")
-				.setGatewayId(UUID.randomUUID())
-				.setUrn("urn")
-				.setDeviceId(UUID.randomUUID().toString())
-				.setDeviceType(UUID.randomUUID().toString())
-				.setSensor(UUID.randomUUID().toString())
-				.setExt(Map.of("sensor", "should be overidden by origing", "foo", "bar"))
-				.setTimestamp(Instant.now().minusSeconds(7200).truncatedTo(ChronoUnit.SECONDS))
-				.setValue(123.456D);
+				.tenantId("inoa")
+				.gatewayId(UUID.randomUUID())
+				.urn("urn")
+				.deviceId(UUID.randomUUID().toString())
+				.deviceType(UUID.randomUUID().toString())
+				.sensor(UUID.randomUUID().toString())
+				.ext(Map.of("sensor", "should be overidden by origing", "foo", "bar"))
+				.timestamp(Instant.now().minusSeconds(7200).truncatedTo(ChronoUnit.SECONDS))
+				.value(123.456D);
 
 		// send message
 

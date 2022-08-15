@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import io.inoa.fleet.thing.domain.PropertyDefinition;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.thing.AbstractTest;
 import io.inoa.fleet.thing.domain.Property;
+import io.inoa.fleet.thing.domain.PropertyDefinition;
 import io.inoa.fleet.thing.domain.ThingType;
 import io.inoa.fleet.thing.domain.ThingTypeChannel;
 import io.inoa.fleet.thing.domain.ThingTypeChannelRepository;
@@ -38,10 +38,10 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	@Test
 	@Override
 	public void createThingType201() throws Exception {
-		var thingTypeCreateVO = new ThingTypeCreateVO().setName("test").setChannels(new ArrayList<>());
+		var thingTypeCreateVO = new ThingTypeCreateVO().name("test").channels(new ArrayList<>());
 		thingTypeCreateVO.getChannels().add(new ThingTypeChannelCreateVO().key("test").name("test"));
 		var created = assert201(() -> client.createThingType(auth(), thingTypeCreateVO));
-		Optional<ThingType> thingType = thingTypeRepository.findByThingTypeId(created.id());
+		Optional<ThingType> thingType = thingTypeRepository.findByThingTypeId(created.getId());
 		assertTrue(thingType.isPresent());
 		List<ThingTypeChannel> channels = thingTypeChannelRepository.findByThingType(thingType.get());
 		assertNotNull(channels);
@@ -51,14 +51,14 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	@Test
 	@Override
 	public void createThingType400() throws Exception {
-		var thingTypeCreateVO = new ThingTypeCreateVO().setChannels(new ArrayList<>());
+		var thingTypeCreateVO = new ThingTypeCreateVO().channels(new ArrayList<>());
 		assert400(() -> client.createThingType(auth(), thingTypeCreateVO));
 	}
 
 	@Test
 	@Override
 	public void createThingType401() throws Exception {
-		var thingTypeCreateVO = new ThingTypeCreateVO().setChannels(new ArrayList<>());
+		var thingTypeCreateVO = new ThingTypeCreateVO().channels(new ArrayList<>());
 		assert401(() -> client.createThingType(null, thingTypeCreateVO));
 	}
 
@@ -114,8 +114,10 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	@Override
 	public void findThingTypeWithDetails200() throws Exception {
 		var dvh4013 = new ThingType().setThingTypeId(UUID.randomUUID()).setName("dvh4013");
-		dvh4013.getProperties().add(new PropertyDefinition().setInputType("TEXT").setName("serialId").setKey("serialId"));
-		dvh4013.getProperties().add(new PropertyDefinition().setInputType("NUMBER").setName("slaveId").setKey("serialId"));
+		dvh4013.getProperties()
+				.add(new PropertyDefinition().setInputType("TEXT").setName("serialId").setKey("serialId"));
+		dvh4013.getProperties()
+				.add(new PropertyDefinition().setInputType("NUMBER").setName("slaveId").setKey("serialId"));
 		dvh4013 = thingTypeRepository.save(dvh4013);
 		ThingTypeChannel powerChannel = new ThingTypeChannel().setThingTypeChannelId(UUID.randomUUID()).setKey("power")
 				.setName("power").setThingType(dvh4013);
@@ -164,7 +166,7 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	public void updateThingType200() throws Exception {
 		var dvh4013 = new ThingType().setThingTypeId(UUID.randomUUID()).setName("dvh4013");
 		ThingType finalThingType = thingTypeRepository.save(dvh4013);
-		var thingTypeUpdateVO = new ThingTypeUpdateVO().setName("test").setChannels(new ArrayList<>());
+		var thingTypeUpdateVO = new ThingTypeUpdateVO().name("test").channels(new ArrayList<>());
 		var updated = assert200(
 				() -> client.updateThingType(auth(), finalThingType.getThingTypeId(), thingTypeUpdateVO));
 		Optional<ThingType> byThingTypeId = thingTypeRepository.findByThingTypeId(finalThingType.getThingTypeId());
@@ -176,7 +178,7 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	public void updateThingType400() throws Exception {
 		var dvh4013 = new ThingType().setThingTypeId(UUID.randomUUID()).setName("dvh4013");
 		ThingType finalThingType = thingTypeRepository.save(dvh4013);
-		var thingTypeUpdateVO = new ThingTypeUpdateVO().setChannels(new ArrayList<>());
+		var thingTypeUpdateVO = new ThingTypeUpdateVO().channels(new ArrayList<>());
 		assert400(() -> client.updateThingType(auth(), finalThingType.getThingTypeId(), thingTypeUpdateVO));
 	}
 
@@ -185,7 +187,7 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	public void updateThingType401() throws Exception {
 		var dvh4013 = new ThingType().setThingTypeId(UUID.randomUUID()).setName("dvh4013");
 		ThingType finalThingType = thingTypeRepository.save(dvh4013);
-		var thingTypeUpdateVO = new ThingTypeUpdateVO().setChannels(new ArrayList<>());
+		var thingTypeUpdateVO = new ThingTypeUpdateVO().channels(new ArrayList<>());
 		assert401(() -> client.updateThingType(null, finalThingType.getThingTypeId(), thingTypeUpdateVO));
 	}
 
@@ -194,7 +196,7 @@ public class ThingTypesApiTest extends AbstractTest implements ThingTypesApiTest
 	public void updateThingType404() throws Exception {
 		var dvh4013 = new ThingType().setThingTypeId(UUID.randomUUID()).setName("dvh4013");
 		ThingType finalThingType = thingTypeRepository.save(dvh4013);
-		var thingTypeUpdateVO = new ThingTypeUpdateVO().setName("test").setChannels(new ArrayList<>());
+		var thingTypeUpdateVO = new ThingTypeUpdateVO().name("test").channels(new ArrayList<>());
 		assert404("Not Found", () -> client.updateThingType(auth(), UUID.randomUUID(), thingTypeUpdateVO));
 	}
 }

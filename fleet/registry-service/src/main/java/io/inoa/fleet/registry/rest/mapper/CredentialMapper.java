@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.registry.domain.Credential;
 import io.inoa.fleet.registry.domain.Gateway;
@@ -25,7 +26,7 @@ import io.inoa.fleet.registry.rest.management.SecretVO;
  *
  * @author Stephan Schnabel
  */
-@Mapper
+@Mapper(componentModel = ComponentModel.JAKARTA)
 public interface CredentialMapper {
 
 	// credential
@@ -37,6 +38,7 @@ public interface CredentialMapper {
 	@Mapping(target = "updated", ignore = true)
 	Credential toCredential(Gateway gateway, CredentialCreateVO credential);
 
+	@Mapping(target = "removeSecretsItem", ignore = true)
 	CredentialVO toCredential(Credential credential);
 
 	List<CredentialVO> toCredentials(List<Credential> credentials);
@@ -46,10 +48,13 @@ public interface CredentialMapper {
 	@Mapping(target = "type", source = "credential.type")
 	SecretVO toSecret(Secret secret);
 
+	@Mapping(target = "type", ignore = true)
 	SecretDetailPasswordVO toSecretDetailPassword(Secret secret);
 
+	@Mapping(target = "type", ignore = true)
 	SecretDetailPSKVO toSecretDetailPSK(Secret secret);
 
+	@Mapping(target = "type", ignore = true)
 	SecretDetailRSAVO toSecretDetailRSA(Secret secret);
 
 	@Mapping(target = "id", ignore = true)

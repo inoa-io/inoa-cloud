@@ -12,17 +12,6 @@
 
 	<name>INOA :: Fleet :: Registry Service</name>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-bom</artifactId>
-				<version>${version.io.micronaut}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 
 		<!-- project -->
@@ -91,13 +80,6 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
-		</dependency>
-
-		<!-- avoid compiler warning, see https://docs.micronaut.io/latest/guide/#_nullable_annotations -->
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<!-- libraries -->
@@ -226,23 +208,27 @@
 				<executions>
 					<execution>
 						<id>openapi-gateway-generate</id>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<inputSpec>${project.build.outputDirectory}/openapi/gateway.yaml</inputSpec>
 							<apiPackage>io.inoa.fleet.registry.rest.gateway</apiPackage>
+							<modelPackage>io.inoa.fleet.registry.rest.gateway</modelPackage>
 							<generateSupportingFiles>false</generateSupportingFiles>
 						</configuration>
 					</execution>
 					<execution>
 						<id>openapi-management-generate</id>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
 							<inputSpec>${project.build.outputDirectory}/openapi/management.yaml</inputSpec>
 							<apiPackage>io.inoa.fleet.registry.rest.management</apiPackage>
+							<modelPackage>io.inoa.fleet.registry.rest.management</modelPackage>
 							<configOptions>
 								<pageable>true</pageable>
 							</configOptions>
@@ -250,7 +236,7 @@
 					</execution>
 				</executions>
 				<configuration>
-					<invokerPackage>io.inoa.fleet.registry.rest</invokerPackage>
+					<packageName>io.inoa.fleet.registry.rest</packageName>
 				</configuration>
 			</plugin>
 

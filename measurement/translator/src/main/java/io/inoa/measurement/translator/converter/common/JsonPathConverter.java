@@ -2,7 +2,6 @@ package io.inoa.measurement.translator.converter.common;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.jayway.jsonpath.DocumentContext;
@@ -15,18 +14,15 @@ import io.inoa.measurement.telemetry.TelemetryVO;
 import io.inoa.measurement.translator.ApplicationProperties;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONArray;
 
 /**
- * This is a converter for JSON input strings based on JSON paths. One need to
- * specify the datapoint to json path correlation as config map in the sensor
- * entry of the application.yaml. Each path entry is mapped to a datapoint, so
+ * This is a converter for JSON input strings based on JSON paths. One need to specify the datapoint to json path
+ * correlation as config map in the sensor entry of the application.yaml. Each path entry is mapped to a datapoint, so
  * this converter is 1 sensor to N data points!
  *
- * {@see https://goessner.net/articles/JsonPath/}
+ * @see "https://goessner.net/articles/JsonPath"
  */
-@Slf4j
 @Singleton
 public class JsonPathConverter extends CommonConverter {
 
@@ -41,7 +37,8 @@ public class JsonPathConverter extends CommonConverter {
 
 	@Override
 	public Stream<TelemetryVO> convert(TelemetryRawVO raw, String type, String sensor) {
-		Optional<ApplicationProperties.SensorProperties> properties = get(type, sensor);
+
+		var properties = get(type, sensor);
 		if (!properties.isPresent()) {
 			// No config means no data
 			return Stream.empty();
@@ -61,7 +58,7 @@ public class JsonPathConverter extends CommonConverter {
 
 		// Iterate JSON paths and apply each of them
 		var result = new ArrayList<TelemetryVO>();
-		for (String datapoint : properties.get().getConfig().keySet()) {
+		for (var datapoint : properties.get().getConfig().keySet()) {
 			try {
 				// Get JSON path expression from config entry and apply it to the input JSON
 				var value = jsonContext.read(properties.get().getConfig().get(datapoint).toString());

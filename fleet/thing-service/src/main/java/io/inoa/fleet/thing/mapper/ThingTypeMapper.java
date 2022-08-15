@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.thing.domain.ThingType;
 import io.inoa.fleet.thing.domain.ThingTypeChannel;
@@ -14,7 +15,7 @@ import io.inoa.fleet.thing.rest.management.ThingTypePageVO;
 import io.inoa.fleet.thing.rest.management.ThingTypeVO;
 import io.micronaut.data.model.Page;
 
-@Mapper
+@Mapper(componentModel = ComponentModel.JAKARTA)
 public interface ThingTypeMapper {
 
 	@Mapping(source = "thingTypeId", target = "id")

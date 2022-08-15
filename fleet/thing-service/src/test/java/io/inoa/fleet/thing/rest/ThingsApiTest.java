@@ -74,14 +74,16 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 
-		var thingTypeCreateVO = new ThingCreateVO().setThingTypeId(thingType.getThingTypeId()).setName("test")
-				.setGatewayId(UUID.randomUUID());
+		var thingTypeCreateVO = new ThingCreateVO()
+				.thingTypeId(thingType.getThingTypeId())
+				.name("test")
+				.gatewayId(UUID.randomUUID());
 		thingTypeCreateVO.addPropertiesItem(new PropertyVO().key("test").value(1));
 		thingTypeCreateVO.addChannelsItem(
-				new ThingChannelVO().key("power").addPropertiesItem(new PropertyVO().value("test").setKey("serial")));
+				new ThingChannelVO().key("power").addPropertiesItem(new PropertyVO().key("serial").value("test")));
 
 		var created = assert201(() -> client.createThing(auth("test"), thingTypeCreateVO));
-		Optional<Thing> thing = thingRepository.findByThingId(created.id());
+		Optional<Thing> thing = thingRepository.findByThingId(created.getId());
 		assertTrue(thing.isPresent());
 		assertNotNull(thing.get().getGatewayId());
 		assertNotNull(thing.get().getThingId());
@@ -99,15 +101,16 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 
-		var thingTypeCreateVO = new ThingCreateVO().setThingTypeId(thingType.getThingTypeId())
-				.setGatewayId(UUID.randomUUID());
+		var thingTypeCreateVO = new ThingCreateVO()
+				.thingTypeId(thingType.getThingTypeId())
+				.gatewayId(UUID.randomUUID());
 		assert400(() -> client.createThing(auth("test"), thingTypeCreateVO));
 	}
 
 	@Test
 	@Override
 	public void createThing401() throws Exception {
-		var thingTypeCreateVO = new ThingCreateVO().setGatewayId(UUID.randomUUID());
+		var thingTypeCreateVO = new ThingCreateVO().gatewayId(UUID.randomUUID());
 		assert401(() -> client.createThing(null, thingTypeCreateVO));
 	}
 

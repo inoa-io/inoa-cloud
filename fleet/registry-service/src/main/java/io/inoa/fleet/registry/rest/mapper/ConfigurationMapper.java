@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingConstants.ComponentModel;
 import org.mapstruct.Named;
 
 import io.inoa.fleet.registry.domain.Configuration;
@@ -30,7 +31,7 @@ import io.micronaut.http.exceptions.HttpStatusException;
  *
  * @author Stephan Schnabel
  */
-@Mapper
+@Mapper(componentModel = ComponentModel.JAKARTA)
 public interface ConfigurationMapper {
 
 	// definition

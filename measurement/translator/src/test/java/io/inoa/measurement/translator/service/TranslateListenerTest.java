@@ -47,14 +47,14 @@ public class TranslateListenerTest extends AbstractTest {
 
 		var actual = messaging.getRecords().get(0).value();
 		var expected = new TelemetryVO()
-				.setTenantId(tenantId)
-				.setGatewayId(gatewayId)
-				.setUrn(urn)
-				.setDeviceType(deviceType)
-				.setDeviceId(deviceId)
-				.setSensor(sensor)
-				.setTimestamp(timestamp)
-				.setValue(2D);
+				.tenantId(tenantId)
+				.gatewayId(gatewayId)
+				.urn(urn)
+				.deviceType(deviceType)
+				.deviceId(deviceId)
+				.sensor(sensor)
+				.timestamp(timestamp)
+				.value(2D);
 		assertEquals(expected, actual, "inoa message");
 		assertEquals(countBefore + 1, counter.count(), "increment");
 	}
