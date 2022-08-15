@@ -6,10 +6,6 @@ import org.mapstruct.factory.Mappers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.cloudevents.core.data.PojoCloudEventData;
-import io.cloudevents.jackson.PojoCloudEventDataMapper;
-import io.cloudevents.rw.CloudEventDataMapper;
-import io.inoa.cnpm.tenant.messaging.TenantVO;
 import io.inoa.fleet.registry.rest.mapper.ConfigurationMapper;
 import io.inoa.fleet.registry.rest.mapper.CredentialMapper;
 import io.inoa.fleet.registry.rest.mapper.GatewayMapper;
@@ -34,11 +30,6 @@ public class ApplicationFactory {
 	@Singleton
 	ObjectMapper cloudEventObjectMapper() {
 		return new ObjectMapper().findAndRegisterModules();
-	}
-
-	@Singleton
-	CloudEventDataMapper<PojoCloudEventData<TenantVO>> cloudEventMapperforTenant(ObjectMapper cloudEventObjectMapper) {
-		return PojoCloudEventDataMapper.from(cloudEventObjectMapper, TenantVO.class);
 	}
 
 	@Singleton

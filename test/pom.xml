@@ -31,84 +31,6 @@
 
 		<!-- project -->
 		<dependency>
-			<groupId>io.inoa.cnpm</groupId>
-			<artifactId>cnpm-tenant-api-management</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa.cnpm</groupId>
-			<artifactId>cnpm-tenant-service</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut.micrometer</groupId>
-					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.flyway</groupId>
-					<artifactId>micronaut-flyway</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.sql</groupId>
-					<artifactId>micronaut-jdbc-hikari</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa.cnpm</groupId>
-			<artifactId>cnpm-auth-service</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.grpc</groupId>
-					<artifactId>micronaut-grpc-server-runtime</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.cache</groupId>
-					<artifactId>micronaut-cache-management</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.cache</groupId>
-					<artifactId>micronaut-cache-caffeine</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.micrometer</groupId>
-					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.envoyproxy.controlplane</groupId>
-					<artifactId>api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>io.inoa.fleet</groupId>
 			<artifactId>fleet-registry-api-gateway</artifactId>
 			<version>${project.version}</version>
@@ -166,7 +88,7 @@
 					<groupId>org.eclipse.hono</groupId>
 					<artifactId>hono-service-device-registry-base</artifactId>
 				</exclusion>
-				<exclusion>
+				<exclusion>				
 					<groupId>org.eclipse.hono</groupId>
 					<artifactId>hono-service-base-spring</artifactId>
 				</exclusion>
@@ -253,26 +175,6 @@
 				<exclusion>
 					<groupId>io.micronaut</groupId>
 					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa.measurement</groupId>
-			<artifactId>measurement-provisioner</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.micrometer</groupId>
-					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

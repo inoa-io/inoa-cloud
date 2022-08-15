@@ -25,13 +25,10 @@ jobs:
           password: ${{ secrets.GIT_ACTION_TOKEN }}
       - name: docker push
         run: |
-          docker push --all-tags ghcr.io/inoa-io/cnpm-auth-service
-          docker push --all-tags ghcr.io/inoa-io/cnpm-tenant-service
           docker push --all-tags ghcr.io/inoa-io/fleet-registry-service
           docker push --all-tags ghcr.io/inoa-io/fleet-registry-hono-bridge
           docker push --all-tags ghcr.io/inoa-io/fleet-gateway-logger
           docker push --all-tags ghcr.io/inoa-io/fleet-gateway-command-service
           docker push --all-tags ghcr.io/inoa-io/fleet-thing-service
-          docker push --all-tags ghcr.io/inoa-io/measurement-provisioner
           docker push --all-tags ghcr.io/inoa-io/measurement-telemetry-translator
           docker push --all-tags ghcr.io/inoa-io/measurement-telemetry-exporter

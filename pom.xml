@@ -19,7 +19,6 @@
 
 	<modules>
 		<module>lib</module>
-		<module>cnpm</module>
 		<module>fleet</module>
 		<module>measurement</module>
 		<module>test</module>

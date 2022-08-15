@@ -14,8 +14,6 @@ rules:
     quote-type: double
     required: only-when-needed
     ignore: |
-      cnpm/tenant-api-management/src/main/resources/openapi/spec.yaml
-      cnpm/tenant-api-messaging/src/main/resources/openapi/spec.yaml
       fleet/thing-service/src/main/resources/openapi/management.yaml
       fleet/gateway-event/src/main/resources/openapi/spec.yaml
       fleet/gateway-telemetry/src/main/resources/openapi/spec.yaml
