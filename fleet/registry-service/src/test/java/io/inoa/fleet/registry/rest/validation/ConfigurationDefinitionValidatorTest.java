@@ -61,7 +61,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("valid: string without minLength")
 	@Test
 	void validStringWithoutMinLength() {
-		var definition = new ConfigurationDefinitionStringVO().setMaxLength(5).setPattern("a*");
+		var definition = new ConfigurationDefinitionStringVO().maxLength(5).pattern("a*");
 		var context = new TestConstraintValidatorContext(definition);
 		assertTrue(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of(), context.getMessages(), "messages");
@@ -70,7 +70,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("valid: string without maxLength")
 	@Test
 	void validStringWithoutMaxLength() {
-		var definition = new ConfigurationDefinitionStringVO().setMinLength(5).setPattern("a*");
+		var definition = new ConfigurationDefinitionStringVO().minLength(5).pattern("a*");
 		var context = new TestConstraintValidatorContext(definition);
 		assertTrue(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of(), context.getMessages(), "messages");
@@ -79,7 +79,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("valid: string with all fields")
 	@Test
 	void validStringWithAllFields() {
-		var definition = new ConfigurationDefinitionStringVO().setMinLength(5).setMaxLength(5).setPattern("a*");
+		var definition = new ConfigurationDefinitionStringVO().minLength(5).maxLength(5).pattern("a*");
 		var context = new TestConstraintValidatorContext(definition);
 		assertTrue(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of(), context.getMessages(), "messages");
@@ -88,7 +88,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("invalid: string pattern invalid")
 	@Test
 	void invalidStringPattern() {
-		var definition = new ConfigurationDefinitionStringVO().setPattern("{");
+		var definition = new ConfigurationDefinitionStringVO().pattern("{");
 		var context = new TestConstraintValidatorContext(definition);
 		assertFalse(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of("pattern not valid: Illegal repetition"), context.getMessages(), "messages");
@@ -97,7 +97,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("invalid: string minLength > maxLength")
 	@Test
 	void invalidStringlength() {
-		var definition = new ConfigurationDefinitionStringVO().setMinLength(5).setMaxLength(4);
+		var definition = new ConfigurationDefinitionStringVO().minLength(5).maxLength(4);
 		var context = new TestConstraintValidatorContext(definition);
 		assertFalse(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of("minLength cannot be higher than maxLength"), context.getMessages(), "messages");
@@ -115,7 +115,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("valid: integer without minimum")
 	@Test
 	void validIntegerWithoutMinLength() {
-		var definition = new ConfigurationDefinitionIntegerVO().setMaximum(5);
+		var definition = new ConfigurationDefinitionIntegerVO().maximum(5);
 		var context = new TestConstraintValidatorContext(definition);
 		assertTrue(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of(), context.getMessages(), "messages");
@@ -124,7 +124,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("valid: integer without maximum")
 	@Test
 	void validIntegerWithoutMaxLength() {
-		var definition = new ConfigurationDefinitionIntegerVO().setMinimum(5);
+		var definition = new ConfigurationDefinitionIntegerVO().minimum(5);
 		var context = new TestConstraintValidatorContext(definition);
 		assertTrue(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of(), context.getMessages(), "messages");
@@ -133,7 +133,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("valid: integer with all fields")
 	@Test
 	void validIntegerWithAllFields() {
-		var definition = new ConfigurationDefinitionIntegerVO().setMinimum(5).setMaximum(5);
+		var definition = new ConfigurationDefinitionIntegerVO().minimum(5).maximum(5);
 		var context = new TestConstraintValidatorContext(definition);
 		assertTrue(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of(), context.getMessages(), "messages");
@@ -142,7 +142,7 @@ public class ConfigurationDefinitionValidatorTest {
 	@DisplayName("invalid: integer minimum > maximum")
 	@Test
 	void invalidIntegerRange() {
-		var definition = new ConfigurationDefinitionIntegerVO().setMinimum(5).setMaximum(4);
+		var definition = new ConfigurationDefinitionIntegerVO().minimum(5).maximum(4);
 		var context = new TestConstraintValidatorContext(definition);
 		assertFalse(validator.isValid(definition, null, context), "valid");
 		assertEquals(Set.of("minimum cannot be higher than maximum"), context.getMessages(), "messages");

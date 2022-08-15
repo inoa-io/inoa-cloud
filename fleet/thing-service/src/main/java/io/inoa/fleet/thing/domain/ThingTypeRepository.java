@@ -14,7 +14,7 @@ public interface ThingTypeRepository extends CrudRepository<ThingType, Long> {
 
 	Optional<ThingType> findByThingTypeId(UUID thingId);
 
-	Page<ThingType> findByNameIlikeFilter(String filter, Pageable pageable);
+	Page<ThingType> findByNameIlike(String filter, Pageable pageable);
 
 	Page<ThingType> findAll(Pageable pageable);
 }

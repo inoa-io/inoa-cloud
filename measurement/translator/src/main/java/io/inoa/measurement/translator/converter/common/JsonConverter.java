@@ -27,6 +27,7 @@ public class JsonConverter extends CommonConverter {
 						.map(Iterator::next))
 				.filter(node -> node.getValue().isNumber())
 				.map(node -> convert(type, sensor, node.getValue().asDouble())
-						.setUrn(raw.getUrn() + "." + node.getKey()).setSensor(sensor + "." + node.getKey()));
+						.urn(raw.getUrn() + "." + node.getKey())
+						.sensor(sensor + "." + node.getKey()));
 	}
 }

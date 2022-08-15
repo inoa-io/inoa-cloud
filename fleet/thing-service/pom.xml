@@ -12,17 +12,6 @@
 
 	<name>INOA :: Fleet :: Thing Service</name>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-bom</artifactId>
-				<version>${version.io.micronaut}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 
 		<!-- project -->
@@ -187,7 +176,7 @@
 						</goals>
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/openapi/management.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.thing.rest.management</apiPackage>
+							<packageName>io.inoa.fleet.thing.rest.management</packageName>
 							<invokerPackage>io.inoa.fleet.thing.rest</invokerPackage>
 							<configOptions>
 								<pageable>true</pageable>

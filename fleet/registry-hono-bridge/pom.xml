@@ -139,7 +139,7 @@
 						</goals>
 						<configuration>
 							<inputSpec>${project.build.outputDirectory}/openapi/spec.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.registry.rest</apiPackage>
+							<packageName>io.inoa.fleet.registry.rest</packageName>
 							<generateApis>false</generateApis>
 							<generateApiTests>false</generateApiTests>
 							<modelsToGenerate>Tenant,GatewayDetail,CredentialType,Credential,Secret,SecretDetail,SecretDetailPassword,SecretDetailRSA,SecretDetailPSK</modelsToGenerate>
@@ -148,6 +148,9 @@
 								<useBeanValidation>false</useBeanValidation>
 								<introspected>false</introspected>
 							</configOptions>
+							<typeMappings>
+								<typeMapping>Generated=</typeMapping>
+							</typeMappings>
 						</configuration>
 					</execution>
 				</executions>

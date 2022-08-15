@@ -37,7 +37,7 @@ public class ModbusConverterTest extends AbstractConverterTest {
 	@DisplayName("success: with modifier")
 	@Test
 	void successWithModifier() {
-		var telemetry = telemetry("08030240C85413").setUrn("urn:example:0815:modbus-with-modifier");
+		var telemetry = telemetry("08030240C85413").urn("urn:example:0815:modbus-with-modifier");
 		assertSingleValue(165840D, converter, telemetry, "example", "modbus-with-modifier");
 		assertMessage(ModbusConverter.class, "Modbus with slaveId 08, functionCode 03 has value: 16584");
 	}
@@ -93,8 +93,8 @@ public class ModbusConverterTest extends AbstractConverterTest {
 	@SneakyThrows
 	private TelemetryRawVO telemetry(String hex) {
 		return new TelemetryRawVO()
-				.setUrn("urn:example:0815:modbus")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue(Hex.decodeHex(hex));
+				.urn("urn:example:0815:modbus")
+				.timestamp(Instant.now().toEpochMilli())
+				.value(Hex.decodeHex(hex));
 	}
 }

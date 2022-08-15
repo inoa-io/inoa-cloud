@@ -12,17 +12,6 @@
 
 	<name>INOA :: Fleet :: Registry API Gateway</name>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-bom</artifactId>
-				<version>${version.io.micronaut}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 
 		<!-- micronaut -->
@@ -54,12 +43,11 @@
 						</goals>
 						<configuration>
 							<inputSpec>${project.basedir}/src/main/resources/openapi/spec.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.registry.gateway</apiPackage>
+							<packageName>io.inoa.fleet.registry.gateway</packageName>
 							<generateSupportingFiles>false</generateSupportingFiles>
 							<generateApiTests>false</generateApiTests>
 							<configOptions>
 								<clientId>registry-gateway</clientId>
-								<useOptional>false</useOptional>
 							</configOptions>
 						</configuration>
 					</execution>

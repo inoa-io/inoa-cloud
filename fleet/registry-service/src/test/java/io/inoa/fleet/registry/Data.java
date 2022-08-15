@@ -3,6 +3,7 @@ package io.inoa.fleet.registry;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -131,9 +132,9 @@ public class Data {
 				.setTenantId(tenantId())
 				.setName(tenantName())
 				.setEnabled(enabled)
-				.setCreated(Instant.now())
-				.setUpdated(Instant.now())
-				.setDeleted(deleted ? Instant.now() : null));
+				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+				.setUpdated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+				.setDeleted(deleted ? Instant.now().truncatedTo(ChronoUnit.MILLIS) : null));
 	}
 
 	public String groupName() {
@@ -145,7 +146,10 @@ public class Data {
 	}
 
 	public Group group(Tenant tenant, String name) {
-		return groupRepository.save(new Group().setGroupId(UUID.randomUUID()).setTenant(tenant).setName(name));
+		return groupRepository.save(new Group()
+				.setGroupId(UUID.randomUUID())
+				.setTenant(tenant)
+				.setName(name));
 	}
 
 	public String gatewayName() {
@@ -183,8 +187,13 @@ public class Data {
 	}
 
 	public Gateway gateway(Tenant tenant, String name, boolean enabled, List<Group> groups) {
-		Gateway gateway = gatewayRepository.save(
-				new Gateway().setGatewayId(UUID.randomUUID()).setTenant(tenant).setName(name).setEnabled(enabled));
+		Gateway gateway = gatewayRepository.save(new Gateway()
+				.setGatewayId(UUID.randomUUID())
+				.setTenant(tenant)
+				.setName(name)
+				.setEnabled(enabled)
+				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+				.setUpdated(Instant.now().truncatedTo(ChronoUnit.MILLIS)));
 		if (!groups.isEmpty()) {
 			gatewayGroupRepository.saveAll(groups.stream()
 					.map(group -> new GatewayGroup().setGateway(gateway).setGroup(group))
@@ -214,7 +223,9 @@ public class Data {
 				.setCredentialId(UUID.randomUUID())
 				.setAuthId(credentialAuthId())
 				.setEnabled(true)
-				.setType(type);
+				.setType(type)
+				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
+				.setUpdated(Instant.now().truncatedTo(ChronoUnit.MILLIS));
 		consumer.accept(credential);
 		return credentialRepository.save(credential);
 	}
@@ -224,7 +235,10 @@ public class Data {
 	}
 
 	public Secret secret(Credential credential, Consumer<Secret> consumer) {
-		var secret = new Secret().setSecretId(UUID.randomUUID()).setCredential(credential);
+		var secret = new Secret()
+				.setSecretId(UUID.randomUUID())
+				.setCredential(credential)
+				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS));
 		switch (credential.getType()) {
 			case PASSWORD:
 				secret.setPassword("password".getBytes());

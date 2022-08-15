@@ -32,12 +32,12 @@ public abstract class CommonConverter extends AbstractConverter {
 
 	TelemetryVO convert(String type, String sensor, Double value) {
 		var telemetry = new TelemetryVO()
-				.setDeviceType(type)
-				.setSensor(sensor)
-				.setValue(value);
+				.deviceType(type)
+				.sensor(sensor)
+				.value(value);
 		get(type, sensor).ifPresent(sensorProperties -> {
 			if (!sensorProperties.getExt().isEmpty()) {
-				telemetry.setExt(new HashMap<>(sensorProperties.getExt()));
+				telemetry.ext(new HashMap<>(sensorProperties.getExt()));
 			}
 			sensorProperties.getModifier().ifPresent(modifier -> telemetry.setValue(modifier * value));
 		});

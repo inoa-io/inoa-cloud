@@ -19,7 +19,7 @@ public interface ThingRepository extends CrudRepository<Thing, Long> {
 	@Join(value = "thingType", type = Join.Type.FETCH)
 	Optional<Thing> findByThingIdAndTenantId(UUID thingId, String tenantId);
 
-	Page<Thing> findByNameIlikeFilter(String filter, Pageable pageable);
+	Page<Thing> findByNameIlike(String filter, Pageable pageable);
 
 	Page<Thing> findByTenantId(String tenantId, Pageable pageable);
 

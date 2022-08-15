@@ -105,7 +105,7 @@ public class ThingTypesController implements ThingTypesApi {
 			Optional<List<String>> sort, Optional<String> optionalFilter) {
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
 		Page<ThingType> thingTypes = optionalFilter.map(filter -> "%" + filter.replace("*", "%") + "%")
-				.map(filter -> thingTypeRepository.findByNameIlikeFilter(filter, pageable))
+				.map(filter -> thingTypeRepository.findByNameIlike(filter, pageable))
 				.orElseGet(() -> thingTypeRepository.findAll(pageable));
 		return HttpResponse.ok(thingTypeMapper.toThingTypePage(thingTypes));
 	}

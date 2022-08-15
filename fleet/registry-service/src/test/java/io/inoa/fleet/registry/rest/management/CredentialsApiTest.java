@@ -173,9 +173,9 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var gateway = data.gateway(tenant);
 		var credential = data.credential(gateway, CredentialTypeVO.PASSWORD);
 		var expected = data.secret(credential);
-
 		var actual = assert200(() -> client.findSecret(
 				auth(tenant), gateway.getGatewayId(), credential.getCredentialId(), expected.getSecretId()));
+
 		assertEquals(expected.getSecretId(), actual.getSecretId(), "secretId");
 		assertEquals(expected.getCredential().getType(), actual.getType(), "type");
 		assertEquals(expected.getCreated(), actual.getCreated(), "created");
@@ -214,13 +214,13 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	@Test
 	@Override
 	public void createCredential201() {
+
 		var tenant = data.tenant();
 		var gatewayId = data.gateway(tenant).getGatewayId();
-		var vo = new CredentialCreateVO()
-				.setAuthId(data.credentialAuthId())
-				.setType(CredentialTypeVO.PASSWORD);
+		var vo = new CredentialCreateVO().authId(data.credentialAuthId()).type(CredentialTypeVO.PASSWORD);
 		var auth = auth(tenant);
 		var created = assert201(() -> client.createCredential(auth, gatewayId, vo));
+
 		assertNotNull(created.getCredentialId(), "credentialId");
 		assertEquals(vo.getAuthId(), created.getAuthId(), "authId");
 		assertEquals(true, created.getEnabled(), "enabled");
@@ -234,16 +234,18 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	@DisplayName("createCredential(201): with optional properties")
 	@Test
 	public void createCredential201All() {
+
 		var tenant = data.tenant();
 		var gatewayId = data.gateway(tenant).getGatewayId();
 		var password = UUID.randomUUID().toString().getBytes();
 		var vo = new CredentialCreateVO()
-				.setAuthId(data.credentialAuthId())
-				.setType(CredentialTypeVO.PASSWORD)
-				.setEnabled(false)
-				.setSecrets(List.of(new SecretCreatePasswordVO().setPassword(password)));
+				.authId(data.credentialAuthId())
+				.type(CredentialTypeVO.PASSWORD)
+				.enabled(false)
+				.secrets(List.of(new SecretCreatePasswordVO().password(password)));
 		var auth = auth(tenant);
 		var created = assert201(() -> client.createCredential(auth, gatewayId, vo));
+
 		assertNotNull(created.getCredentialId(), "credentialId");
 		assertEquals(vo.getAuthId(), created.getAuthId(), "authId");
 		assertEquals(false, created.getEnabled(), "enabled");
@@ -280,7 +282,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	public void createCredential404() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		var vo = new CredentialCreateVO().setAuthId(data.credentialAuthId()).setType(CredentialTypeVO.PASSWORD);
+		var vo = new CredentialCreateVO().authId(data.credentialAuthId()).type(CredentialTypeVO.PASSWORD);
 		assert404("Gateway not found.", () -> client.createCredential(auth(tenant), UUID.randomUUID(), vo));
 		assert404("Gateway not found.", () -> client.createCredential(auth(data.tenant()), gateway.getGatewayId(), vo));
 		assertEquals(0, data.countCredentials(gateway), "created");
@@ -293,7 +295,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var authId = data.credential(gateway, CredentialTypeVO.PSK).getAuthId();
-		var vo = new CredentialCreateVO().setAuthId(authId).setType(CredentialTypeVO.PASSWORD);
+		var vo = new CredentialCreateVO().authId(authId).type(CredentialTypeVO.PASSWORD);
 		assert409(() -> client.createCredential(auth(tenant), gateway.getGatewayId(), vo));
 		assertEquals(1, data.countCredentials(gateway), "created");
 	}
@@ -355,7 +357,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var credentialId = data.credential(gateway, CredentialTypeVO.PASSWORD).getCredentialId();
-		var vo = new SecretCreatePasswordVO().setPassword(UUID.randomUUID().toString().getBytes());
+		var vo = new SecretCreatePasswordVO().password(UUID.randomUUID().toString().getBytes());
 		var auth = auth(tenant);
 		var created = assert201(() -> client.createSecret(auth, gateway.getGatewayId(), credentialId, vo));
 
@@ -374,7 +376,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var credentialId = data.credential(gateway, CredentialTypeVO.PSK).getCredentialId();
-		var vo = new SecretCreatePSKVO().setSecret(UUID.randomUUID().toString().getBytes());
+		var vo = new SecretCreatePSKVO().secret(UUID.randomUUID().toString().getBytes());
 		var auth = auth(tenant);
 		var created = assert201(() -> client.createSecret(auth, gateway.getGatewayId(), credentialId, vo));
 
@@ -394,8 +396,8 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var gateway = data.gateway(tenant);
 		var credentialId = data.credential(gateway, CredentialTypeVO.RSA).getCredentialId();
 		var vo = new SecretCreateRSAVO()
-				.setPublicKey(UUID.randomUUID().toString().getBytes())
-				.setPrivateKey(UUID.randomUUID().toString().getBytes());
+				.publicKey(UUID.randomUUID().toString().getBytes())
+				.privateKey(UUID.randomUUID().toString().getBytes());
 		var auth = auth(tenant);
 		var created = assert201(() -> client.createSecret(auth, gateway.getGatewayId(), credentialId, vo));
 
@@ -414,7 +416,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var credentialId = data.credential(gateway, CredentialTypeVO.RSA).getCredentialId();
-		var vo = new SecretCreateRSAVO().setPublicKey(UUID.randomUUID().toString().getBytes());
+		var vo = new SecretCreateRSAVO().publicKey(UUID.randomUUID().toString().getBytes());
 		var auth = auth(tenant);
 		var created = assert201(() -> client.createSecret(auth, gateway.getGatewayId(), credentialId, vo));
 		assertNotNull(created.getSecretId(), "secretId");
@@ -455,7 +457,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var gatewayId = gateway.getGatewayId();
 		var credential = data.credential(gateway, CredentialTypeVO.PASSWORD);
 		var credentialId = credential.getCredentialId();
-		var vo = new SecretCreatePasswordVO().setPassword("".getBytes());
+		var vo = new SecretCreatePasswordVO().password("".getBytes());
 
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());

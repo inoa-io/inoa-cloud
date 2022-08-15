@@ -80,7 +80,7 @@ public class ThingsController implements ThingsApi {
 			for (var channel : thingCreateVO.getChannels()) {
 				thingChannelRepository.save(
 						new ThingChannel().setKey(channel.getKey()).setThing(thing).setThingChannelId(UUID.randomUUID())
-								.setProperties(thingMapper.toPropertyList(channel.properties())));
+								.setProperties(thingMapper.toPropertyList(channel.getProperties())));
 			}
 		}
 		return HttpResponse.created(thingMapper.toThingVO(thing));

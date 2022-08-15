@@ -18,9 +18,9 @@ public class JsonConverterTest extends AbstractConverterTest {
 	@Test
 	void success() {
 		var raw = new TelemetryRawVO()
-				.setUrn("urn:example:0815:json")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue("{\"string\":\"sdf\",\"int\":4,\"double\":34.01,\"bool\":true,\"obj\":{}}".getBytes());
+				.urn("urn:example:0815:json")
+				.timestamp(Instant.now().toEpochMilli())
+				.value("{\"string\":\"sdf\",\"int\":4,\"double\":34.01,\"bool\":true,\"obj\":{}}".getBytes());
 		var messages = convert(converter, raw, "example", "json");
 		assertCount(2, messages);
 	}
@@ -29,9 +29,9 @@ public class JsonConverterTest extends AbstractConverterTest {
 	@Test
 	void failEmptyJson() {
 		var raw = new TelemetryRawVO()
-				.setUrn("urn:example:0815:json")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue("{}".getBytes());
+				.urn("urn:example:0815:json")
+				.timestamp(Instant.now().toEpochMilli())
+				.value("{}".getBytes());
 		assertEmpty(converter, raw, "example", "json");
 	}
 
@@ -39,9 +39,9 @@ public class JsonConverterTest extends AbstractConverterTest {
 	@Test
 	void failInvalidJson() {
 		var raw = new TelemetryRawVO()
-				.setUrn("urn:example:0815:json")
-				.setTimestamp(Instant.now().toEpochMilli())
-				.setValue("nope".getBytes());
+				.urn("urn:example:0815:json")
+				.timestamp(Instant.now().toEpochMilli())
+				.value("nope".getBytes());
 		assertEmpty(converter, raw, "example", "json");
 	}
 }

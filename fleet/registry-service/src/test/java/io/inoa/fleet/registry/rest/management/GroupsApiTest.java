@@ -85,7 +85,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	public void createGroup201() {
 		var tenant = data.tenant();
 		var auth = auth(tenant);
-		var vo = new GroupCreateVO().setName(data.groupName());
+		var vo = new GroupCreateVO().name(data.groupName());
 		var created = assert201(() -> client.createGroup(auth, vo));
 		assertNotNull(created.getGroupId(), "groupId");
 		assertEquals(vo.getName(), created.getName(), "name");
@@ -99,7 +99,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	public void createGroup201All() {
 		var tenant = data.tenant();
 		var auth = auth(tenant);
-		var vo = new GroupCreateVO().setName(data.groupName()).setGroupId(UUID.randomUUID());
+		var vo = new GroupCreateVO().name(data.groupName()).groupId(UUID.randomUUID());
 		var created = assert201(() -> client.createGroup(auth, vo));
 		assertEquals(vo.getGroupId(), created.getGroupId(), "groupId");
 		assertEquals(vo.getName(), created.getName(), "name");
@@ -115,7 +115,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 		var otherGroup = data.group(otherTenant);
 		var tenant = data.tenant();
 		var auth = auth(tenant);
-		var vo = new GroupCreateVO().setName(data.groupName()).setGroupId(otherGroup.getGroupId());
+		var vo = new GroupCreateVO().name(data.groupName()).groupId(otherGroup.getGroupId());
 		var created = assert201(() -> client.createGroup(auth, vo));
 		assertEquals(vo.getGroupId(), created.getGroupId(), "groupId");
 		assertEquals(vo.getName(), created.getName(), "name");
@@ -131,7 +131,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 		var otherGroup = data.group(otherTenant);
 		var tenant = data.tenant();
 		var auth = auth(tenant);
-		var vo = new GroupCreateVO().setName(otherGroup.getName());
+		var vo = new GroupCreateVO().name(otherGroup.getName());
 		var created = assert201(() -> client.createGroup(auth, vo));
 		assertNotNull(created.getGroupId(), "groupId");
 		assertEquals(vo.getName(), created.getName(), "name");
@@ -145,7 +145,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	@Override
 	public void createGroup400() {
 		var tenant = data.tenant();
-		var vo = new GroupCreateVO().setName("");
+		var vo = new GroupCreateVO().name("");
 		assert400(() -> client.createGroup(auth(tenant), vo));
 		assertEquals(0, data.countGroups(), "created");
 	}
@@ -154,7 +154,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	@Test
 	@Override
 	public void createGroup401() {
-		var vo = new GroupCreateVO().setName(data.groupName());
+		var vo = new GroupCreateVO().name(data.groupName());
 		assert401(() -> client.createGroup(null, vo));
 		assertEquals(0, data.countGroups(), "created");
 	}
@@ -165,7 +165,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	public void createGroup409() {
 		var tenant = data.tenant();
 		var existing = data.group(tenant);
-		var vo = new GroupCreateVO().setName(data.groupName()).setGroupId(existing.getGroupId());
+		var vo = new GroupCreateVO().name(data.groupName()).groupId(existing.getGroupId());
 		assert409(() -> client.createGroup(auth(tenant), vo));
 		assertEquals(1, data.countGroups(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
@@ -176,7 +176,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	public void createGroup409Name() {
 		var tenant = data.tenant();
 		var existing = data.group(tenant);
-		var vo = new GroupCreateVO().setName(existing.getName());
+		var vo = new GroupCreateVO().name(existing.getName());
 		assert409(() -> client.createGroup(auth(tenant), vo));
 		assertEquals(1, data.countGroups(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
@@ -204,7 +204,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 		var tenant = data.tenant();
 		var group = data.group(tenant);
 		var auth = auth(tenant);
-		var vo = new GroupUpdateVO().setName(group.getName());
+		var vo = new GroupUpdateVO().name(group.getName());
 		var updated = assert200(() -> client.updateGroup(auth, group.getGroupId(), vo));
 		assertEquals(group.getGroupId(), updated.getGroupId(), "groupId");
 		assertEquals(group.getName(), updated.getName(), "name");
@@ -219,7 +219,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 		var tenant = data.tenant();
 		var group = data.group(tenant);
 		var auth = auth(tenant);
-		var vo = new GroupUpdateVO().setName(data.groupName());
+		var vo = new GroupUpdateVO().name(data.groupName());
 		var updated = assert200(() -> client.updateGroup(auth, group.getGroupId(), vo));
 		assertEquals(group.getGroupId(), updated.getGroupId(), "groupId");
 		assertEquals(vo.getName(), updated.getName(), "name");
@@ -234,7 +234,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	public void updateGroup400() {
 		var tenant = data.tenant();
 		var group = data.group(tenant);
-		var vo = new GroupUpdateVO().setName("");
+		var vo = new GroupUpdateVO().name("");
 		assert400(() -> client.updateGroup(auth(tenant), group.getGroupId(), vo));
 		assertEquals(group, data.find(group), "entity changed");
 	}
@@ -245,7 +245,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 	public void updateGroup401() {
 		var tenant = data.tenant();
 		var group = data.group(tenant);
-		var vo = new GroupUpdateVO().setName(data.groupName());
+		var vo = new GroupUpdateVO().name(data.groupName());
 		assert401(() -> client.updateGroup(null, group.getGroupId(), vo));
 		assertEquals(group, data.find(group), "entity changed");
 	}
@@ -268,7 +268,7 @@ public class GroupsApiTest extends AbstractTest implements GroupsApiTestSpec {
 		var tenant = data.tenant();
 		var group = data.group(tenant);
 		var other = data.group(tenant);
-		var vo = new GroupUpdateVO().setName(other.getName());
+		var vo = new GroupUpdateVO().name(other.getName());
 		assert409(() -> client.updateGroup(auth(tenant), group.getGroupId(), vo));
 		assertEquals(group, data.find(group), "group changed");
 		assertEquals(other, data.find(other), "other changed");
