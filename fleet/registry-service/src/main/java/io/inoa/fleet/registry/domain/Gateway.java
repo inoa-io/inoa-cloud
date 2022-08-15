@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,9 +38,9 @@ public class Gateway {
 	@MappedProperty
 	private Boolean enabled;
 
-	@DateCreated
+	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant created;
-	@DateUpdated
+	@DateUpdated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant updated;
 
 	@Transient

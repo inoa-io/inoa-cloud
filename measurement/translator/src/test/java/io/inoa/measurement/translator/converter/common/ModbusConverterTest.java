@@ -53,7 +53,7 @@ public class ModbusConverterTest extends AbstractConverterTest {
 	@DisplayName("fail: payload too short")
 	@Test
 	void failPayloadToShort() {
-		var hex = "FC";
+		var hex = "fc";
 		assertEmpty(converter, telemetry(hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (too short): " + hex);
 	}
@@ -77,7 +77,7 @@ public class ModbusConverterTest extends AbstractConverterTest {
 	@DisplayName("fail: byte count invalid")
 	@Test
 	void failByteCountInvalid() {
-		var hex = "01030210F174";
+		var hex = "01030210f174";
 		assertEmpty(converter, telemetry(hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (data.length 1 < byteCount 2): " + hex);
 	}
@@ -85,7 +85,7 @@ public class ModbusConverterTest extends AbstractConverterTest {
 	@DisplayName("fail: byte count empty")
 	@Test
 	void failByteCountEmpty() {
-		var hex = "01030020F0";
+		var hex = "01030020f0";
 		assertEmpty(converter, telemetry(hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (byteCount == 0): " + hex);
 	}

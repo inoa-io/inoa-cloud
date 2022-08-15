@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import io.micronaut.data.annotation.DateCreated;
@@ -43,6 +44,6 @@ public class Secret {
 	@ToString.Exclude
 	private byte[] privateKey;
 
-	@DateCreated
+	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant created;
 }

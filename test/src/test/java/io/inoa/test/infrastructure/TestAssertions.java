@@ -52,8 +52,8 @@ public class TestAssertions {
 	}
 
 	private <T> T assertValid(T object) {
-		if (object instanceof Iterable) {
-			((Iterable<?>) object).forEach(this::assertValid);
+		if (object instanceof Iterable<?> iterable) {
+			iterable.forEach(this::assertValid);
 		} else {
 			var violations = validator.validate(object);
 			assertTrue(violations.isEmpty(), () -> "validation failed with:" + violations.stream()

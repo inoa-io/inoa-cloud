@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 11
+          java-version: 17
       - run: mvn -B dependency:go-offline
       - run: mvn -B release:prepare
       - run: mvn -B release:perform

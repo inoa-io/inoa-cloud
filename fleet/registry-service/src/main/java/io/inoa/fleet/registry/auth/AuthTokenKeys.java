@@ -13,8 +13,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.KeyUse;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -54,7 +54,7 @@ public class AuthTokenKeys {
 		} else {
 			auth.getKeys().forEach(key -> keys.add(getKey(key)));
 		}
-		jwkSet = new JWKSet(keys.stream().map(RSAKey::toPublicJWK).collect(Collectors.toList()));
+		jwkSet = new JWKSet(keys.stream().map(RSAKey::toPublicJWK).map(JWK.class::cast).toList());
 	}
 
 	public RSAKey getSigningKey() {

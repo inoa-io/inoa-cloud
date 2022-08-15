@@ -63,10 +63,9 @@ public class JsonPathConverter extends CommonConverter {
 				// Get JSON path expression from config entry and apply it to the input JSON
 				var value = jsonContext.read(properties.get().getConfig().get(datapoint).toString());
 				// Result can either be an array or a single data object
-				if (value instanceof JSONArray) {
+				if (value instanceof JSONArray array) {
 					// Simply take the first result (by convention)
-					result.add(convert(type, datapoint,
-							Double.parseDouble(((JSONArray) value).iterator().next().toString())));
+					result.add(convert(type, datapoint, Double.parseDouble(array.iterator().next().toString())));
 				} else {
 					result.add(convert(type, datapoint, Double.parseDouble(value.toString())));
 				}

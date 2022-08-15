@@ -104,8 +104,8 @@ public abstract class AbstractTest {
 	}
 
 	private <T> T assertValid(T object) {
-		if (object instanceof Iterable) {
-			Iterable.class.cast(object).forEach(this::assertValid);
+		if (object instanceof Iterable<?> iterable) {
+			iterable.forEach(this::assertValid);
 		} else {
 			var violations = validator.validate(object);
 			assertTrue(violations.isEmpty(), () -> "validation failed with:" + violations.stream()
@@ -116,8 +116,8 @@ public abstract class AbstractTest {
 	}
 
 	public static <T> void assertSorted(List<T> content, Function<T, String> toKeyFunction, Comparator<T> comparator) {
-		var actual = content.stream().map(toKeyFunction).collect(Collectors.toList());
-		var expected = content.stream().sorted(comparator).map(toKeyFunction).collect(Collectors.toList());
+		var actual = content.stream().map(toKeyFunction).toList();
+		var expected = content.stream().sorted(comparator).map(toKeyFunction).toList();
 		assertEquals(expected, actual, "unsorted");
 	}
 }

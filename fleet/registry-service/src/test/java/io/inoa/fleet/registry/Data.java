@@ -191,9 +191,7 @@ public class Data {
 				.setGatewayId(UUID.randomUUID())
 				.setTenant(tenant)
 				.setName(name)
-				.setEnabled(enabled)
-				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
-				.setUpdated(Instant.now().truncatedTo(ChronoUnit.MILLIS)));
+				.setEnabled(enabled));
 		if (!groups.isEmpty()) {
 			gatewayGroupRepository.saveAll(groups.stream()
 					.map(group -> new GatewayGroup().setGateway(gateway).setGroup(group))
@@ -223,9 +221,7 @@ public class Data {
 				.setCredentialId(UUID.randomUUID())
 				.setAuthId(credentialAuthId())
 				.setEnabled(true)
-				.setType(type)
-				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
-				.setUpdated(Instant.now().truncatedTo(ChronoUnit.MILLIS));
+				.setType(type);
 		consumer.accept(credential);
 		return credentialRepository.save(credential);
 	}
@@ -237,8 +233,7 @@ public class Data {
 	public Secret secret(Credential credential, Consumer<Secret> consumer) {
 		var secret = new Secret()
 				.setSecretId(UUID.randomUUID())
-				.setCredential(credential)
-				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS));
+				.setCredential(credential);
 		switch (credential.getType()) {
 			case PASSWORD:
 				secret.setPassword("password".getBytes());

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
 
@@ -68,7 +67,7 @@ public class TranslateService {
 
 		var messages = converter.get().convert(raw, deviceType, sensor)
 				.peek(target -> fillMessage(raw, target, tenantId, gatewayId, deviceType, deviceId, sensor))
-				.collect(Collectors.toList());
+				.toList();
 		if (messages.isEmpty()) {
 			log.warn("Failed on value: {}", Base64.getEncoder().encode(raw.getValue()));
 			metrics.counterFailValue(tenantId, deviceType, sensor).increment();

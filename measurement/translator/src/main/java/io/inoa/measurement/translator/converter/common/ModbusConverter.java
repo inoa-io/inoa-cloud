@@ -1,5 +1,6 @@
 package io.inoa.measurement.translator.converter.common;
 
+import java.util.HexFormat;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -34,8 +35,7 @@ public class ModbusConverter extends CommonConverter {
 	private static final Set<Integer> FUNCTION_CODE_EXCEPTION = Set.of(129, 130, 131, 132, 133, 134, 143, 144);
 
 	/**
-	 * Minimum length: 1 byte functionCode + 1 byte slaveId + 1 byte byteCount + 2
-	 * byte crc
+	 * Minimum length: 1 byte functionCode + 1 byte slaveId + 1 byte byteCount + 2 byte crc
 	 */
 	private static final Integer MESSAGE_MIN_LENGTH = 5;
 
@@ -48,7 +48,7 @@ public class ModbusConverter extends CommonConverter {
 
 		// parse to hex
 
-		var hexString = toHexString(raw.getValue());
+		var hexString = HexFormat.of().formatHex(raw.getValue());
 		if (raw.getValue().length < MESSAGE_MIN_LENGTH) {
 			log.warn("Retrieved invalid modbus message (too short): {}", hexString);
 			increment(type, COUNTER_FAIL_SHORT);

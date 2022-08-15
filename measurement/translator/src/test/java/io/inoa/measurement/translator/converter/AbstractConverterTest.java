@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.inoa.fleet.telemetry.TelemetryRawVO;
 import io.inoa.measurement.telemetry.TelemetryVO;
@@ -18,7 +17,7 @@ public abstract class AbstractConverterTest extends AbstractTest {
 			String type,
 			String sensor) {
 		assertTrue(converter.supports(type, sensor), "converter supports");
-		return converter.convert(raw, type, sensor).collect(Collectors.toList());
+		return converter.convert(raw, type, sensor).toList();
 	}
 
 	protected static void assertEmpty(

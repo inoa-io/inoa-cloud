@@ -119,7 +119,7 @@ public interface ConfigurationMapper {
 				.sorted(Comparator.comparing(Configuration::getDefinition,
 						Comparator.comparing(ConfigurationDefinition::getKey)))
 				.map(this::toConfiguration)
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	default Map<String, Object> toConfigurationMap(List<Configuration> configurations) {
