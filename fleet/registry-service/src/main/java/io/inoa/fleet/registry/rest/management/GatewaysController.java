@@ -177,7 +177,7 @@ public class GatewaysController implements GatewaysApi {
 		return groupIds.stream()
 				.map(groupId -> groupRepository.findByTenantAndGroupId(tenant, groupId).orElseThrow(
 						() -> new HttpStatusException(HttpStatus.BAD_REQUEST, "Group " + groupId + " not found.")))
-				.collect(Collectors.toList());
+				.toList();
 	}
 
 	private GatewayDetailVO toGatewayDetail(Gateway gateway) {

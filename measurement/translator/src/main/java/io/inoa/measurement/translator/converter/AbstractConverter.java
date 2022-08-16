@@ -31,15 +31,4 @@ public abstract class AbstractConverter implements Converter {
 			return Optional.empty();
 		}
 	}
-
-	// FIXME Replace with jdk17: HexFormat.of().formatHex(bytes);
-	protected String toHexString(byte[] data) {
-		var digits = "0123456789ABCDEF".toCharArray();
-		var buf = new StringBuilder();
-		for (byte element : data) {
-			buf.append(digits[element >> 4 & 0x0f]);
-			buf.append(digits[element & 0x0f]);
-		}
-		return buf.toString();
-	}
 }

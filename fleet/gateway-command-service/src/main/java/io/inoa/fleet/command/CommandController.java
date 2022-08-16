@@ -58,8 +58,8 @@ public class CommandController {
 							.ok(Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString()));
 					return result;
 				}).otherwise(t -> {
-					if (t instanceof ServiceInvocationException) {
-						final int errorCode = ((ServiceInvocationException) t).getErrorCode();
+					if (t instanceof ServiceInvocationException sie) {
+						final int errorCode = sie.getErrorCode();
 						log.debug("Command was replied with error code [{}].", errorCode);
 						output.setResult(ResponseEntity.status(errorCode).build());
 					} else {
@@ -105,8 +105,8 @@ public class CommandController {
 							.ok(Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString()));
 					return result;
 				}).otherwise(t -> {
-					if (t instanceof ServiceInvocationException) {
-						final int errorCode = ((ServiceInvocationException) t).getErrorCode();
+					if (t instanceof ServiceInvocationException sie) {
+						final int errorCode = sie.getErrorCode();
 						log.debug("Command was replied with error code [{}].", errorCode);
 						output.setResult(ResponseEntity.status(errorCode).build());
 					} else {

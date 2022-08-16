@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import io.micronaut.data.annotation.DateCreated;
@@ -32,8 +33,8 @@ public class Group {
 	@MappedProperty
 	private String name;
 
-	@DateCreated
+	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant created;
-	@DateUpdated
+	@DateUpdated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant updated;
 }

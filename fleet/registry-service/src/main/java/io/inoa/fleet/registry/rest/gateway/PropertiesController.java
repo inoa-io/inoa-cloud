@@ -48,7 +48,7 @@ public class PropertiesController implements PropertiesApi {
 						properties.stream().filter(property -> !body.containsKey(property.getKey())),
 						body.entrySet().stream()
 								.map(entry -> updatedProperty(gateway, properties, entry.getKey(), entry.getValue())))
-				.collect(Collectors.toList())));
+				.toList()));
 	}
 
 	@Override

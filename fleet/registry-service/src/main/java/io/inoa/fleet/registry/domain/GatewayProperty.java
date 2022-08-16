@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
@@ -25,8 +26,8 @@ public class GatewayProperty {
 
 	@MappedProperty
 	private String value;
-	@DateCreated
+	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant created;
-	@DateUpdated
+	@DateUpdated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant updated;
 }

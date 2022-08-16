@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.MappedEntity;
@@ -20,6 +21,6 @@ public class GatewayGroup {
 	private Gateway gateway;
 	@Relation(Relation.Kind.MANY_TO_ONE)
 	private Group group;
-	@DateCreated
+	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant created;
 }

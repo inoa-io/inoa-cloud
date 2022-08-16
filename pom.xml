@@ -44,8 +44,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.propertiesEncoding>ISO-8859-1</project.build.propertiesEncoding>
 
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.parameters>true</maven.compiler.parameters>
 		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
 		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
@@ -53,7 +53,7 @@
 		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
 		<jib.container.jvmFlags>-XX:+ExitOnOutOfMemoryError</jib.container.jvmFlags>
-		<jib.from.image>gcr.io/distroless/java11:nonroot</jib.from.image>
+		<jib.from.image>gcr.io/distroless/java17:nonroot</jib.from.image>
 		<jib.to.image.registry>ghcr.io/inoa-io</jib.to.image.registry>
 		<jib.to.image.repository>${project.artifactId}</jib.to.image.repository>
 		<jib.to.image.version>${project.version}${jib.to.image.version.suffix}</jib.to.image.version>
