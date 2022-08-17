@@ -19,6 +19,7 @@
 		<module>registry-api-gateway</module>
 		<module>registry-service</module>
 		<module>registry-hono-bridge</module>
+		<module>gateway-mqtt-broker</module>
 		<module>gateway-telemetry</module>
 		<module>gateway-event</module>
 		<module>gateway-logger</module>

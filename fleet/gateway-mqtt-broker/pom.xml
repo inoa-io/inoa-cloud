@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.inoa.fleet</groupId>
+		<artifactId>fleet-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>fleet-gateway-mqtt-broker</artifactId>
+
+	<name>INOA :: Fleet :: MQTT Broker</name>
+
+	<dependencies>
+
+		<!-- project -->
+<!--
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-registry-api-management</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+-->
+		<dependency>
+			<groupId>io.inoa.lib</groupId>
+			<artifactId>lib-mqtt-client</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- micronaut -->
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.kafka</groupId>
+			<artifactId>micronaut-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-server-netty</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-logging</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- monitoring -->
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-management</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.micrometer</groupId>
+			<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- libraries -->
+		<dependency>
+			<groupId>io.moquette</groupId>
+			<artifactId>moquette-broker</artifactId>
+		</dependency>
+
+		<!-- test -->
+		<dependency>
+			<groupId>io.micronaut.test</groupId>
+			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.testresources</groupId>
+			<artifactId>micronaut-test-resources-kafka</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<plugins>
+
+			<!-- configure annotation processors -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${version.org.projectlombok}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- create container -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>dockerBuild</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
