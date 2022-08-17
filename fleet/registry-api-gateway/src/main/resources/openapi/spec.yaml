@@ -12,31 +12,28 @@ info:
   contact:
     name: Kokuwa.io
     url: https://github.com/kokuwaio
-servers:
-  - url: /api/registry/v1
+servers: []
 security:
   - BearerAuth: []
 paths:
   /auth/keys:
     get:
-      tags:
-        - auth
-      summary: Get public jwks.
-      description: TODO
+      tags: [auth]
+      summary: Get public jwks
+      description: Get public jwks
       operationId: getKeys
       security: []
       responses:
         200:
-          description: JWKs.
+          description: JWKs
           content:
             application/json:
               schema: {}
   /auth/token:
     post:
-      tags:
-        - auth
-      summary: Get registry token with gateway token.
-      description: TODO
+      tags: [auth]
+      summary: Get registry token
+      description: Get registry token with gateway token.
       externalDocs:
         description: rfc7523#section-2.1
         url: https://tools.ietf.org/html/rfc7523#section-2.1
@@ -50,27 +47,45 @@ paths:
               $ref: '#/components/schemas/TokenRequest'
       responses:
         200:
-          description: Registry token with extra data.
+          description: Registry token with extra data
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenResponse'
         400:
-          description: Issuing token failed.
+          description: Issuing token failed
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TokenError'
+  /gateway:
+    post:
+      tags: [gateway]
+      summary: Register gateway
+      description: Self register as gateway.
+      operationId: register
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        204:
+          description: Gateway registered
+        400:
+          description: Malformed
+        409:
+          description: Gateway already registered
   /gateway/configuration:
     get:
-      tags:
-        - configuration
-      summary: Get gateway configuration.
-      description: TODO
+      tags: [gateway]
+      summary: Get gateway configuration
+      description: Get gateway configuration.
       operationId: getConfiguration
       responses:
         200:
-          description: Configuration for gateway.
+          description: Configuration for gateway
           content:
             application/json:
               schema:
@@ -80,23 +95,21 @@ paths:
           description: Unauthorized.
   /gateway/properties:
     get:
-      tags:
-        - properties
-      summary: Get gateway properties.
+      tags: [properties]
+      summary: Get gateway properties
       description: TODO
       operationId: getProperties
       responses:
         200:
-          description: Properties for gateway.
+          description: Properties for gateway
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Properties'
         401:
-          description: Unauthorized.
+          description: Unauthorized
     put:
-      tags:
-        - properties
+      tags: [properties]
       summary: Set multiple gateway properties.
       description: TODO
       operationId: setProperties
@@ -114,7 +127,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Properties'
         401:
-          description: Unauthorized.
+          description: Unauthorized
   /gateway/properties/{key}:
     parameters:
       - name: key
@@ -123,10 +136,9 @@ paths:
         schema:
           $ref: '#/components/schemas/PropertyKey'
     put:
-      tags:
-        - properties
-      summary: Set gateway property.
-      description: TODO
+      tags: [properties]
+      summary: Set gateway property
+      description: Set gateway property.
       operationId: setProperty
       requestBody:
         required: true
@@ -136,22 +148,21 @@ paths:
               $ref: '#/components/schemas/PropertyValue'
       responses:
         204:
-          description: Property updated.
+          description: Property updated
         401:
-          description: Unauthorized.
+          description: Unauthorized
     delete:
-      tags:
-        - properties
-      summary: Delete gateway property.
-      description: TODO
+      tags: [properties]
+      summary: Delete gateway property
+      description: Delete gateway property.
       operationId: deleteProperty
       responses:
         204:
-          description: Property deleted.
+          description: Property deleted
         401:
-          description: Unauthorized.
+          description: Unauthorized
         404:
-          description: Key not found.
+          description: Key not found
 components:
   schemas:
     TokenError:
@@ -229,6 +240,41 @@ components:
       example:
         test-a: this-is-a
         test-b: this-is-b
+    GatewayName:
+      description: Human friendly shortname (can change).
+      type: string
+      minLength: 3
+      maxLength: 32
+      pattern: ^[a-zA-Z0-9\-]*$
+      example: GW-00001
+    CredentialType:
+      description: Types of supported credentials.
+      type: string
+      enum:
+        - psk
+        - rsa
+    CredentialValue:
+      description: Value for credential.
+      type: string
+      format: binary
+    Register:
+      description: Contains all informations needed to create a new gateway.
+      properties:
+        gateway_id:
+          description: Id as technical reference (never changes).
+          type: string
+          format: uuid
+        gateway_name:
+          $ref: '#/components/schemas/GatewayName'
+        credential_type:
+          $ref: '#/components/schemas/CredentialType'
+        credential_value:
+          $ref: '#/components/schemas/CredentialValue'
+      required:
+        - gateway_id
+        - gateway_name
+        - credential_type
+        - credential_value
   securitySchemes:
     BearerAuth:
       type: http

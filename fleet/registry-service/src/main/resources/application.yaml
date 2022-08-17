@@ -17,6 +17,7 @@ micronaut:
       default:
         allowedMethods:
           - GET
+          - PATCH
           - POST
           - PUT
           - DELETE
@@ -29,6 +30,9 @@ micronaut:
         access: isAnonymous()
       - pattern: /openapi/**
         access: isAnonymous()
+      - pattern: /gateway
+        access: isAnonymous()
+        http-method: POST
       - pattern: /**
         access: isAuthenticated()
 
@@ -69,12 +73,3 @@ flyway:
   datasources:
     default:
       locations: classpath:database
-
-## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
-kafka:
-  consumers:
-    default:
-      key:
-        deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value:
-        deserializer: io.cloudevents.kafka.CloudEventDeserializer

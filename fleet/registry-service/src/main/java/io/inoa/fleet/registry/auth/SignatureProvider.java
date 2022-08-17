@@ -8,7 +8,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.inoa.fleet.registry.ApplicationProperties;
 import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
@@ -34,54 +33,53 @@ public interface SignatureProvider {
 @RequiredArgsConstructor
 class DatabaseSignatureGeneratorConfigurationProvider implements SignatureProvider {
 
-	private final ApplicationProperties properties;
 	private final CredentialRepository repository;
 
 	@Override
 	public List<SignatureConfiguration> find(Gateway gateway) {
-
-		var authId = properties.getGateway().getCredentialAuthId();
-		var optionalCredential = repository.findByGatewayAndAuthId(gateway, authId);
-		if (optionalCredential.isEmpty()) {
-			log.debug("No credential for authId '{}' found.", authId);
-			return List.of();
-		}
-
-		var credential = optionalCredential.get();
-		if (!credential.getEnabled()) {
-			log.debug("Credential with authId '{}' is disabled.", authId);
-			return List.of();
-		}
-		log.debug("Found credential {} for authId '{}' with type {}.", credential.getCredentialId(), authId,
-				credential.getType());
-
 		var signatures = new ArrayList<SignatureConfiguration>();
-		for (var secret : credential.getSecrets()) {
+
+		var credentials = repository.findByGateway(gateway);
+		if (credentials.isEmpty()) {
+			log.debug("No credentials found");
+			return List.of();
+		}
+
+		for (var credential : credentials) {
+
+			if (!credential.getEnabled()) {
+				log.debug("Credential {} with name {} and type {} is disabled",
+						credential.getCredentialId(),
+						credential.getName(),
+						credential.getType());
+				continue;
+			}
+
 			switch (credential.getType()) {
 				case PSK: {
-					log.trace("Found secret {}.", secret.getSecretId());
-					var config = new SecretSignatureConfiguration(secret.getSecretId().toString());
-					config.setSecret(new String(secret.getSecret()));
+					var config = new SecretSignatureConfiguration(credential.getName());
+					config.setSecret(new String(credential.getValue()));
 					signatures.add(new SecretSignature(config));
 					break;
 				}
 				case RSA: {
-					log.trace("Found secret {}.", secret.getSecretId());
 					try {
 						var key = (RSAPublicKey) KeyFactory
 								.getInstance("RSA")
-								.generatePublic(new X509EncodedKeySpec(secret.getPublicKey()));
+								.generatePublic(new X509EncodedKeySpec(credential.getValue()));
 						signatures.add(new RSASignature(() -> key));
 					} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
 						log.error("Unable to parse public key.", e);
 					}
 					break;
 				}
-				default:
-					log.warn("Credential with authId '{}' has unsupported type {} for gateway auth.",
-							authId, credential.getType());
 			}
 		}
+
+		if (signatures.isEmpty()) {
+			log.debug("No valid signatures found");
+		}
+
 		return signatures;
 	}
 }

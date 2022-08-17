@@ -9,8 +9,6 @@ import io.inoa.fleet.registry.domain.Credential;
 import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
-import io.inoa.fleet.registry.domain.Secret;
-import io.inoa.fleet.registry.domain.SecretRepository;
 import io.inoa.fleet.registry.rest.mapper.CredentialMapper;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -33,7 +31,6 @@ public class CredentialsController implements CredentialsApi {
 	private final CredentialMapper mapper;
 	private final GatewayRepository gatewayRepository;
 	private final CredentialRepository credentialRepository;
-	private final SecretRepository secretRepository;
 
 	@Override
 	public HttpResponse<List<CredentialVO>> findCredentials(UUID gatewayId) {
@@ -46,15 +43,10 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<SecretDetailVO> findSecret(UUID gatewayId, UUID credentialId, UUID secretId) {
-		return HttpResponse.ok(mapper.toSecretDetail(getSecret(gatewayId, credentialId, secretId)));
-	}
-
-	@Override
 	public HttpResponse<CredentialVO> createCredential(UUID gatewayId, @Valid CredentialCreateVO vo) {
 		var gateway = getGateway(gatewayId);
-		if (credentialRepository.existsByGatewayAndAuthId(gateway, vo.getAuthId())) {
-			throw new HttpStatusException(HttpStatus.CONFLICT, "AuthId already exists.");
+		if (credentialRepository.existsByGatewayAndName(gateway, vo.getName())) {
+			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
 		}
 		var credential = credentialRepository.save(mapper.toCredential(gateway, vo));
 		log.info("Created credential: {}", credential);
@@ -62,11 +54,38 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<SecretDetailVO> createSecret(UUID gatewayId, UUID credentialId, @Valid SecretCreateVO vo) {
+	public HttpResponse<CredentialVO> updateCredential(UUID gatewayId, UUID credentialId,
+			@Valid CredentialUpdateVO vo) {
 		var credential = getCredential(gatewayId, credentialId);
-		var secret = secretRepository.save(mapper.toSecret(credential, vo));
-		log.info("Created secret: {}", secret);
-		return HttpResponse.created(mapper.toSecretDetail(secret));
+		var changed = false;
+
+		if (vo.getName() != null) {
+			if (credential.getName().equals(vo.getName())) {
+				log.trace("Credential {}: skip update of name because not changed.", credential.getName());
+			} else {
+				if (credentialRepository.existsByGatewayAndName(credential.getGateway(), vo.getName())) {
+					throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
+				}
+				log.info("Credential {}: updated name to {}.", credential.getCredentialId(), vo.getName());
+				changed = true;
+				credential.setName(vo.getName());
+			}
+		}
+
+		if (vo.getEnabled() != null) {
+			if (credential.getEnabled() == vo.getEnabled()) {
+				log.trace("Skip update of enabled {} because not changed.", credential.getEnabled());
+			} else {
+				log.info("Credential {}: updated enabled to {}.", credential.getCredentialId(), vo.getEnabled());
+				changed = true;
+				credential.setEnabled(vo.getEnabled());
+			}
+		}
+
+		if (changed) {
+			credentialRepository.update(credential);
+		}
+		return HttpResponse.ok(mapper.toCredential(credential));
 	}
 
 	@Override
@@ -74,14 +93,6 @@ public class CredentialsController implements CredentialsApi {
 		var credential = getCredential(gatewayId, credentialId);
 		credentialRepository.delete(credential);
 		log.info("Credential {} deleted.", credential.getCredentialId());
-		return HttpResponse.noContent();
-	}
-
-	@Override
-	public HttpResponse<Object> deleteSecret(UUID gatewayId, UUID credentialId, UUID secretId) {
-		var secret = getSecret(gatewayId, credentialId, secretId);
-		secretRepository.delete(secret);
-		log.info("Secret {} deleted.", secret.getSecretId());
 		return HttpResponse.noContent();
 	}
 
@@ -99,14 +110,5 @@ public class CredentialsController implements CredentialsApi {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Credential not found.");
 		}
 		return optional.get();
-	}
-
-	private Secret getSecret(UUID gatewayId, UUID credentialId, UUID secretId) {
-		var credential = getCredential(gatewayId, credentialId);
-		var optional = secretRepository.findByCredentialAndSecretId(credential, secretId);
-		if (optional.isEmpty()) {
-			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Secret not found.");
-		}
-		return optional.get().setCredential(credential);
 	}
 }

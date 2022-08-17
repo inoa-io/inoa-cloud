@@ -83,14 +83,19 @@ public class GatewaysController implements GatewaysApi {
 
 		// create gateway
 
-		var gateway = gatewayRepository.save(new Gateway().setTenant(tenant).setGatewayId(UUID.randomUUID())
-				.setName(vo.getName()).setEnabled(vo.getEnabled()).setGroups(groups));
+		var gateway = gatewayRepository.save(new Gateway()
+				.setTenant(tenant)
+				.setGatewayId(UUID.randomUUID())
+				.setName(vo.getName())
+				.setEnabled(vo.getEnabled())
+				.setGroups(groups));
 
 		// create group assignments
 
 		if (!groupIds.isEmpty()) {
 			gatewayGroupRepository.saveAll(gateway.getGroups().stream()
-					.map(group -> new GatewayGroup().setGateway(gateway).setGroup(group)).collect(Collectors.toSet()));
+					.map(group -> new GatewayGroup().setGateway(gateway).setGroup(group))
+					.collect(Collectors.toSet()));
 		}
 
 		log.info("Gateway created: {}", gateway);
@@ -110,7 +115,7 @@ public class GatewaysController implements GatewaysApi {
 				if (gatewayRepository.existsByTenantAndName(gateway.getTenant(), vo.getName())) {
 					throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
 				}
-				log.info("Tenant {}: updated name to {}.", gateway.getName(), vo.getName());
+				log.info("Gateway {}: updated name to {}.", gateway.getName(), vo.getName());
 				changed = true;
 				gateway.setName(vo.getName());
 			}
@@ -135,7 +140,8 @@ public class GatewaysController implements GatewaysApi {
 
 			// remove group
 
-			var removedGroups = oldGroups.stream().filter(oldGroup -> !newGroupIds.contains(oldGroup.getGroupId()))
+			var removedGroups = oldGroups.stream()
+					.filter(oldGroup -> !newGroupIds.contains(oldGroup.getGroupId()))
 					.collect(Collectors.toSet());
 			removedGroups.forEach(group -> gatewayGroupRepository.delete(gateway.getId(), group.getId()));
 

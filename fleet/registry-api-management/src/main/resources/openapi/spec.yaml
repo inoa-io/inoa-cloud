@@ -9,43 +9,21 @@ info:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
   contact:
-    name: Kokuwa.io
-    url: https://github.com/kokuwaio
-servers:
-  - url: /api/registry/v1
+    name: inoa.io
+    url: https://github.com/inoa-io
+servers: []
 security:
   - BearerAuth: []
 paths:
-  /tenants/{tenant_id}:
-    parameters:
-      - $ref: '#/components/parameters/TenantId'
-    get:
-      tags:
-        - tenants
-      summary: 'Find tenant.'
-      description: TODO
-      operationId: findTenant
-      responses:
-        200:
-          description: 'Tenant found.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tenant'
-        401:
-          description: 'Unauthorized.'
-        404:
-          description: 'Tenant not found.'
   /groups:
     get:
-      tags:
-        - groups
-      summary: 'Find groups.'
-      description: 'Returns all groups ordered by name.'
+      tags: [groups]
+      summary: Find groups
+      description: Returns all groups ordered by name.
       operationId: findGroups
       responses:
         200:
-          description: 'Returns groups.'
+          description: Sorted list of groups
           content:
             application/json:
               schema:
@@ -53,12 +31,11 @@ paths:
                 items:
                   $ref: '#/components/schemas/Group'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
     post:
-      tags:
-        - groups
-      summary: 'Create group.'
-      description: TODO
+      tags: [groups]
+      summary: Create group
+      description: Create group.
       operationId: createGroup
       requestBody:
         required: true
@@ -68,42 +45,40 @@ paths:
               $ref: '#/components/schemas/GroupCreate'
       responses:
         201:
-          description: 'Group created.'
+          description: Created group
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
         400:
-          description: 'Malformed.'
+          description: Malformed
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         409:
-          description: 'Group with name already exists.'
+          description: Group with name already exists
   /groups/{group_id}:
     parameters:
       - $ref: '#/components/parameters/GroupId'
     get:
-      tags:
-        - groups
-      summary: 'Fimd group.'
-      description: TODO
+      tags: [groups]
+      summary: Find group
+      description: Find group by id.
       operationId: findGroup
       responses:
         200:
-          description: 'Group found.'
+          description: Group found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Group not found.'
-    put:
-      tags:
-        - groups
-      summary: 'Update group.'
-      description: TODO
+          description: Group not found
+    patch:
+      tags: [groups]
+      summary: Update group
+      description: Update group name.
       operationId: updateGroup
       requestBody:
         required: true
@@ -113,66 +88,63 @@ paths:
               $ref: '#/components/schemas/GroupUpdate'
       responses:
         200:
-          description: 'Group updated.'
+          description: Group updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Group'
         400:
-          description: 'Malformed.'
+          description: Malformed
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Group not found.'
+          description: Group not found
         409:
-          description: 'Group with name already exists.'
+          description: Group with name already exists
     delete:
-      tags:
-        - groups
-      summary: 'Delete group.'
-      description: TODO
+      tags: [groups]
+      summary: Delete group
+      description: Delete group by id.
       operationId: deleteGroup
       responses:
         204:
-          description: 'Group deleted.'
+          description: Group deleted
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Group not found.'
+          description: Group not found
   /gateways:
     get:
-      tags:
-        - gateways
+      tags: [gateways]
+      summary: Find gateways
+      description: Returns all gateways ordered by name.
+      operationId: findGateways
       parameters:
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
         - $ref: '#/components/parameters/Sort'
         - name: filter
-          description: 'Search in name. Supports wildcard *, is case insensitive.'
+          description: Search in name. Supports wildcard *, is case insensitive.
           in: query
           schema:
             type: string
             maxLength: 100
             example: isrl
-      summary: 'Find gateways.'
-      description: 'Returns all gateways ordered by name.'
-      operationId: findGateways
       responses:
         200:
-          description: 'Returns gateways.'
+          description: Paged gateway list.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GatewayPage'
         400:
-          description: 'Illegal sort, allowed: name,enabled'
+          description: Illegal sort, allowed only name,enabled
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
     post:
-      tags:
-        - gateways
-      summary: 'Create gateway.'
-      description: TODO
+      tags: [gateways]
+      summary: Create gateway
+      description: Create gateway.
       operationId: createGateway
       requestBody:
         required: true
@@ -182,42 +154,40 @@ paths:
               $ref: '#/components/schemas/GatewayCreate'
       responses:
         201:
-          description: 'Gateway created.'
+          description: Gateway created.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GatewayDetail'
         400:
-          description: 'Malformed.'
+          description: Malformed
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         409:
-          description: 'Gateway with name already exists.'
+          description: Gateway with name already exists.
   /gateways/{gateway_id}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
-      tags:
-        - gateways
-      summary: 'Find gateway.'
-      description: TODO
+      tags: [gateways]
+      summary: Find gateway
+      description: Find gateway by id.
       operationId: findGateway
       responses:
         200:
-          description: 'Returns gateway.'
+          description: Returns gateway.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GatewayDetail'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway not found.'
-    put:
-      tags:
-        - gateways
-      summary: 'Update gateway.'
-      description: TODO
+          description: Gateway not found
+    patch:
+      tags: [gateways]
+      summary: Update gateway
+      description: Update gateway by id.
       operationId: updateGateway
       requestBody:
         required: true
@@ -227,44 +197,42 @@ paths:
               $ref: '#/components/schemas/GatewayUpdate'
       responses:
         200:
-          description: 'Tenant updated.'
+          description: Gateway updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/GatewayDetail'
         400:
-          description: 'Malformed or group not found.'
+          description: Malformed or group not found
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway not found.'
+          description: Gateway not found
         409:
-          description: 'Gateway with name already exists.'
+          description: Gateway with name already exists
     delete:
-      tags:
-        - gateways
-      summary: 'Delete gateway.'
-      description: TODO
+      tags: [gateways]
+      summary: Delete gateway
+      description: Delete gateway by id.
       operationId: deleteGateway
       responses:
         204:
-          description: 'Gateway deleted.'
+          description: Gateway deleted.
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway not found.'
+          description: Gateway not found.
   /gateways/{gateway_id}/credentials:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
-      tags:
-        - credentials
-      summary: 'Get credentials for gateway.'
-      description: 'Get credentials for gateway.'
+      tags: [credentials]
+      summary: Get credentials
+      description: Get credentials for gateway.
       operationId: findCredentials
       responses:
         200:
-          description: 'Returns credentials.'
+          description: Returns credentials
           content:
             application/json:
               schema:
@@ -272,14 +240,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Credential'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway not found.'
+          description: Gateway not found
     post:
-      tags:
-        - credentials
-      summary: 'Create credential.'
-      description: TODO
+      tags: [credentials]
+      summary: Create credential
+      description: Create credential.
       operationId: createCredential
       requestBody:
         required: true
@@ -289,127 +256,86 @@ paths:
               $ref: '#/components/schemas/CredentialCreate'
       responses:
         201:
-          description: 'Credential created.'
+          description: Credential created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Credential'
         400:
-          description: 'Malformed.'
+          description: Malformed
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway not found.'
+          description: Gateway not found
         409:
-          description: 'AuthId for gateway already exists.'
+          description: Name for credential already exists
   /gateways/{gateway_id}/credentials/{credential_id}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
       - $ref: '#/components/parameters/CredentialId'
     get:
-      tags:
-        - credentials
-      summary: 'Find credentials.'
-      description: TODO
+      tags: [credentials]
+      summary: Find credential
+      description: Find credential.
       operationId: findCredential
       responses:
         200:
-          description: 'Credential found.'
+          description: Credential found
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Credential'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway or credential not found.'
-    delete:
-      tags:
-        - credentials
-      summary: 'Delete credential.'
-      description: TODO
-      operationId: deleteCredential
-      responses:
-        204:
-          description: 'Credential deleted.'
-        401:
-          description: 'Unauthorized.'
-        404:
-          description: 'Gateway or credential not found.'
-  /gateways/{gateway_id}/credentials/{credential_id}/secrets:
-    parameters:
-      - $ref: '#/components/parameters/GatewayId'
-      - $ref: '#/components/parameters/CredentialId'
-    post:
-      tags:
-        - credentials
-      summary: 'Create secret.'
-      description: TODO
-      operationId: createSecret
+          description: Gateway or credential not found
+    patch:
+      tags: [credentials]
+      summary: Update credential
+      description: Update credential.
+      operationId: updateCredential
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SecretCreate'
-      responses:
-        201:
-          description: 'Secret created.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SecretDetail'
-        400:
-          description: 'Malformed.'
-        401:
-          description: 'Unauthorized.'
-        404:
-          description: 'Gateway not found.'
-  /gateways/{gateway_id}/credentials/{credential_id}/secrets/{secret_id}:
-    parameters:
-      - $ref: '#/components/parameters/GatewayId'
-      - $ref: '#/components/parameters/CredentialId'
-      - $ref: '#/components/parameters/SecretId'
-    get:
-      tags:
-        - credentials
-      summary: 'Get secret.'
-      description: TODO
-      operationId: findSecret
+              $ref: '#/components/schemas/CredentialUpdate'
       responses:
         200:
-          description: 'Secret found.'
+          description: Group updated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SecretDetail'
+                $ref: '#/components/schemas/Credential'
+        400:
+          description: Malformed
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway or credential or secret not found.'
+          description: Gateway or credential not found
+        409:
+          description: Name for credential already exists
     delete:
-      tags:
-        - credentials
-      summary: 'Delete secret.'
-      description: TODO
-      operationId: deleteSecret
+      tags: [credentials]
+      summary: Delete credential
+      description: Delete credential.
+      operationId: deleteCredential
       responses:
         204:
-          description: 'Secret deleted.'
+          description: Credential deleted
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway or credential or secret not found.'
+          description: Gateway or credential not found
   /configuration/definition:
     get:
-      tags:
-        - configuration
-      summary: 'Find configuration definitions.'
-      description: 'Find configurations definitions.'
+      tags: [configuration]
+      summary: Find configuration definitions
+      description: Find configurations definitions.
       operationId: findConfigurationDefinitions
       responses:
         200:
-          description: 'Configuration definitions found.'
+          description: Configuration definitions found
           content:
             application/json:
               schema:
@@ -417,15 +343,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/ConfigurationDefinition'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
   /configuration/definition/{configuration_key}:
     parameters:
       - $ref: '#/components/parameters/ConfigurationKey'
     post:
-      tags:
-        - configuration
-      summary: 'Save configuration definition.'
-      description: TODO
+      tags: [configuration]
+      summary: Save configuration definition
+      description: Save configuration definition.
       operationId: createConfigurationDefinition
       requestBody:
         required: true
@@ -435,40 +360,39 @@ paths:
               $ref: '#/components/schemas/ConfigurationDefinition'
       responses:
         201:
-          description: 'Configuration created.'
+          description: Configuration created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ConfigurationDefinition'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         400:
-          description: 'Malformed.'
+          description: Malformed
         409:
-          description: 'Key already in use.'
+          description: Key already in use
     delete:
       tags:
         - configuration
-      summary: 'Delete configuration definition.'
-      description: TODO
+      summary: Delete configuration definition
+      description: Delete configuration definition.
       operationId: deleteConfigurationDefinition
       responses:
         204:
-          description: 'Configuration definition deleted.'
+          description: Configuration definition deleted
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Configuration definition not found.'
+          description: Configuration definition not found
   /configuration:
     get:
-      tags:
-        - configuration
-      summary: 'Find configurations.'
-      description: 'Find configurations on tenant level ordered by key.'
+      tags: [configuration]
+      summary: Find configurations
+      description: Find configurations on tenant level ordered by key.
       operationId: findConfigurations
       responses:
         200:
-          description: 'Configurations found.'
+          description: Configurations found
           content:
             application/json:
               schema:
@@ -476,15 +400,14 @@ paths:
                 items:
                   $ref: '#/components/schemas/Configuration'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
   /configuration/{configuration_key}:
     parameters:
       - $ref: '#/components/parameters/ConfigurationKey'
     put:
-      tags:
-        - configuration
-      summary: 'Save configuration.'
-      description: TODO
+      tags: [configuration]
+      summary: Save configuration
+      description: Save configuration.
       operationId: setConfiguration
       requestBody:
         required: true
@@ -494,38 +417,36 @@ paths:
               $ref: '#/components/schemas/ConfigurationSet'
       responses:
         204:
-          description: 'Configuration set.'
+          description: Configuration set
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         400:
-          description: 'Malformed.'
+          description: Malformed
         404:
-          description: 'Configuration not found.'
+          description: Configuration not found
     delete:
-      tags:
-        - configuration
-      summary: 'Delete configuration.'
-      description: TODO
+      tags: [configuration]
+      summary: Delete configuration
+      description: Delete configuration.
       operationId: resetConfiguration
       responses:
         204:
-          description: 'Configuration deleted.'
+          description: Configuration deleted
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Configuration not found.'
+          description: Configuration not found.
   /groups/{group_id}/configuration:
     parameters:
       - $ref: '#/components/parameters/GroupId'
     get:
-      tags:
-        - configuration
-      summary: 'Find configuration.'
-      description: 'Find configurations on group level ordered by key.'
+      tags: [configuration]
+      summary: Find configuration.
+      description: Find configurations on group level ordered by key.
       operationId: findConfigurationsByGroup
       responses:
         200:
-          description: 'Configuration found.'
+          description: Configuration found
           content:
             application/json:
               schema:
@@ -533,18 +454,17 @@ paths:
                 items:
                   $ref: '#/components/schemas/Configuration'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Group not found.'
+          description: Group not found
   /groups/{group_id}/configuration/{configuration_key}:
     parameters:
       - $ref: '#/components/parameters/GroupId'
       - $ref: '#/components/parameters/ConfigurationKey'
     put:
-      tags:
-        - configuration
-      summary: 'Save configuration value.'
-      description: TODO
+      tags: [configuration]
+      summary: Save configuration value
+      description: Save configuration value.
       operationId: setConfigurationByGroup
       requestBody:
         required: true
@@ -554,38 +474,36 @@ paths:
               $ref: '#/components/schemas/ConfigurationSet'
       responses:
         204:
-          description: 'Configuration set.'
+          description: Configuration set
         400:
-          description: 'Malformed.'
+          description: Malformed
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Group of configuration key not found.'
+          description: Group of configuration key not found
     delete:
-      tags:
-        - configuration
-      summary: 'Delete configuration.'
-      description: TODO
+      tags: [configuration]
+      summary: Delete configuration
+      description: Delete configuration.
       operationId: resetConfigurationByGroup
       responses:
         204:
-          description: 'Configuration deleted.'
+          description: Configuration deleted
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Group of configuration key not found.'
+          description: Group of configuration key not found
   /gateway/{gateway_id}/configuration:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
-      tags:
-        - configuration
-      summary: 'Find configuration.'
-      description: 'Find configurations on gateway level ordered by key.'
+      tags: [configuration]
+      summary: Find configuration
+      description: Find configurations on gateway level ordered by key.
       operationId: findConfigurationsByGateway
       responses:
         200:
-          description: 'Configuration found.'
+          description: Configuration found
           content:
             application/json:
               schema:
@@ -593,18 +511,17 @@ paths:
                 items:
                   $ref: '#/components/schemas/Configuration'
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Group not found.'
+          description: Group not found
   /gateway/{gateway_id}/configuration/{configuration_key}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
       - $ref: '#/components/parameters/ConfigurationKey'
     put:
-      tags:
-        - configuration
-      summary: 'Save configuration value.'
-      description: TODO
+      tags: [configuration]
+      summary: Save configuration value
+      description: Save configuration value.
       operationId: setConfigurationByGateway
       requestBody:
         required: true
@@ -614,97 +531,58 @@ paths:
               $ref: '#/components/schemas/ConfigurationSet'
       responses:
         204:
-          description: 'Configuration set.'
+          description: Configuration set
         400:
-          description: 'Malformed.'
+          description: Malformed
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway of configuration key not found.'
+          description: Gateway of configuration key not found
     delete:
-      tags:
-        - configuration
-      summary: 'Delete configuration.'
-      description: TODO
+      tags: [configuration]
+      summary: Delete configuration
+      description: Delete configuration.
       operationId: resetConfigurationByGateway
       responses:
         204:
-          description: 'Configuration deleted.'
+          description: Configuration deleted
         401:
-          description: 'Unauthorized.'
+          description: Unauthorized
         404:
-          description: 'Gateway of configuration key not found.'
+          description: Gateway of configuration key not found
 
 components:
   schemas:
 
     Timestamp:
-      description: 'Common timestamp for created/updated timestamps.'
+      description: Common timestamp for created/updated timestamps.
       type: string
       format: date-time
-      example: '2021-01-01T00:00:00'
+      example: 2021-01-01T00:00:00
     Id:
-      description: 'Id as technical reference (never changes).'
+      description: Id as technical reference (never changes).
       type: string
       format: uuid
+      example: 00000000-0000-0000-0000-000000000000
     Enabled:
-      description: 'Flag if enabled or not.'
+      description: Flag if enabled or not.
       type: boolean
       default: true
       example: false
-
-    ###
-    ### Tenant
-    ###
-
-    TenantId:
-      description: 'Human friendly shortname (cannot change).'
-      type: string
-      minLength: 4
-      maxLength: 30
-      pattern: '^[a-z0-9\-]*$'
-      example: inoa
-    TenantName:
-      description: 'Human friendly display name (can change).'
-      type: string
-      minLength: 4
-      maxLength: 100
-      example: Kokuwa Project
-    Tenant:
-      description: 'Tenant with fields.'
-      type: object
-      properties:
-        tenant_id:
-          $ref: '#/components/schemas/TenantId'
-        name:
-          $ref: '#/components/schemas/TenantName'
-        enabled:
-          $ref: '#/components/schemas/Enabled'
-        created:
-          $ref: '#/components/schemas/Timestamp'
-        updated:
-          $ref: '#/components/schemas/Timestamp'
-      required:
-        - tenant_id
-        - enabled
-        - name
-        - created
-        - updated
 
     ###
     ### Group
     ###
 
     GroupName:
-      description: 'Human friendly shortname (can change).'
+      description: Name of a group.
       type: string
       minLength: 3
       maxLength: 20
-      pattern: '^[a-zA-Z0-9\-]*$'
+      pattern: ^[a-zA-Z0-9\-]*$
       example: production
     Group:
-      description: 'Group with fields.'
-      type: object
+      description: Group with fields.
       properties:
         group_id:
           $ref: '#/components/schemas/Id'
@@ -720,7 +598,7 @@ components:
         - created
         - updated
     GroupCreate:
-      description: 'Group to create.'
+      description: Group to create.
       type: object
       properties:
         group_id:
@@ -730,7 +608,7 @@ components:
       required:
         - name
     GroupUpdate:
-      description: 'Group to update.'
+      description: Group to update.
       type: object
       properties:
         name:
@@ -742,14 +620,14 @@ components:
     ###
 
     GatewayName:
-      description: 'Human friendly shortname (can change).'
+      description: Human friendly shortname (can change).
       type: string
       minLength: 3
       maxLength: 32
-      pattern: '^[a-zA-Z0-9\-]*$'
+      pattern: ^[a-zA-Z0-9\-]*$
       example: GW-00001
     GatewayGroups:
-      description: 'Ids of groups where gateway is member.'
+      description: Ids of groups where gateway is member.
       type: array
       items:
         $ref: '#/components/schemas/Id'
@@ -757,8 +635,7 @@ components:
       example:
         - 00000000-0000-0000-0000-000000000000
     Gateway:
-      description: 'Gateway with common fields.'
-      type: object
+      description: Gateway with common fields.
       properties:
         gateway_id:
           $ref: '#/components/schemas/Id'
@@ -777,16 +654,15 @@ components:
         - created
         - updated
     GatewayPage:
-      description: 'Page for gateway.'
-      type: object
+      description: Page for gateway list.
       properties:
         content:
-          description: 'List of entries on page.'
+          description: List of entries on page.
           type: array
           items:
             $ref: '#/components/schemas/Gateway'
         total_size:
-          description: 'Total available entries.'
+          description: Total available entries.
           type: integer
           format: int32
           example: 0
@@ -794,8 +670,7 @@ components:
         - content
         - total_size
     GatewayDetail:
-      description: 'Gateway with detailed fields.'
-      type: object
+      description: Gateway with detailed fields.
       properties:
         gateway_id:
           $ref: '#/components/schemas/Id'
@@ -806,7 +681,7 @@ components:
         group_ids:
           $ref: '#/components/schemas/GatewayGroups'
         properties:
-          description: 'Properties set by gateway.'
+          description: Properties set by gateway.
           type: string
           maxLength: 100
           additionalProperties:
@@ -828,7 +703,7 @@ components:
         - created
         - updated
     GatewayCreate:
-      description: 'Gateway to create.'
+      description: Gateway to create.
       type: object
       properties:
         gateway_id:
@@ -842,8 +717,7 @@ components:
       required:
         - name
     GatewayUpdate:
-      description: 'Gateway to update.'
-      type: object
+      description: Gateway to update.
       properties:
         name:
           $ref: '#/components/schemas/GatewayName'
@@ -856,215 +730,93 @@ components:
     ### Credential
     ###
 
-    CredentialAuthId:
-      description: 'Auth-ID to identify credentials.'
+    CredentialName:
+      description: Name to identify credential.
       type: string
       minLength: 3
       maxLength: 32
       pattern: '^[a-zA-Z0-9\-]*$'
       example: registry
     CredentialType:
-      description: 'Types of supported credentials.'
+      description: Types of supported credentials.
       type: string
       enum:
-        - password
         - psk
         - rsa
+    CredentialValue:
+      description: Value for credential.
+      type: string
+      format: binary
     Credential:
       properties:
         credential_id:
           $ref: '#/components/schemas/Id'
-        auth_id:
-          $ref: '#/components/schemas/CredentialAuthId'
+        name:
+          $ref: '#/components/schemas/CredentialName'
         enabled:
           $ref: '#/components/schemas/Enabled'
         type:
           $ref: '#/components/schemas/CredentialType'
-        secrets:
-          type: array
-          items:
-            $ref: '#/components/schemas/Secret'
+        value:
+          $ref: '#/components/schemas/CredentialValue'
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
           $ref: '#/components/schemas/Timestamp'
       required:
         - credential_id
-        - auth_id
+        - name
         - enabled
         - type
-        - secrets
         - created
         - updated
     CredentialCreate:
       type: object
       properties:
-        auth_id:
-          $ref: '#/components/schemas/CredentialAuthId'
+        name:
+          $ref: '#/components/schemas/CredentialName'
         enabled:
           $ref: '#/components/schemas/Enabled'
         type:
           $ref: '#/components/schemas/CredentialType'
-        secrets:
-          type: array
-          items:
-            $ref: '#/components/schemas/SecretCreate'
+        value:
+          $ref: '#/components/schemas/CredentialValue'
       required:
-        - auth_id
+        - name
         - type
-        - secrets
+        - value
     CredentialUpdate:
       type: object
       properties:
-        auth_id:
-          $ref: '#/components/schemas/CredentialAuthId'
+        name:
+          $ref: '#/components/schemas/CredentialName'
         enabled:
           $ref: '#/components/schemas/Enabled'
-
-    ###
-    ### Secret
-    ###
-
-    Secret:
-      description: 'Secret related to a credentail.'
-      type: object
-      properties:
-        secret_id:
-          $ref: '#/components/schemas/Id'
-        type:
-          $ref: '#/components/schemas/CredentialType'
-        created:
-          $ref: '#/components/schemas/Timestamp'
-      required:
-        - secret_id
-        - type
-        - created
-    SecretDetail:
-      description: 'Secret related to a credentail with meta informations.'
-      type: object
-      properties:
-        secret_id:
-          $ref: '#/components/schemas/Id'
-        type:
-          $ref: '#/components/schemas/CredentialType'
-        created:
-          $ref: '#/components/schemas/Timestamp'
-      discriminator:
-        propertyName: type
-        mapping:
-          rsa: '#/components/schemas/SecretDetailRSA'
-          psk: '#/components/schemas/SecretDetailPSK'
-          password: '#/components/schemas/SecretDetailPassword'
-      required:
-        - secret_id
-        - type
-        - created
-    SecretDetailPSK:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/SecretDetail'
-        - properties:
-            secret:
-              type: string
-              format: byte
-          required:
-            - secret
-    SecretDetailRSA:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/SecretDetail'
-        - properties:
-            public_key:
-              type: string
-              format: byte
-            private_key:
-              type: string
-              format: byte
-          required:
-            - public_key
-    SecretDetailPassword:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/SecretDetail'
-        - properties:
-            password:
-              type: string
-              format: byte
-          required:
-            - password
-
-    SecretCreate:
-      description: 'Create secret.'
-      type: object
-      properties:
-        type:
-          $ref: '#/components/schemas/CredentialType'
-      discriminator:
-        propertyName: type
-        mapping:
-          rsa: '#/components/schemas/SecretCreateRSA'
-          psk: '#/components/schemas/SecretCreatePSK'
-          password: '#/components/schemas/SecretCreatePassword'
-      required:
-        - type
-    SecretCreatePSK:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/SecretCreate'
-        - properties:
-            secret:
-              type: string
-              format: byte
-          required:
-            - secret
-    SecretCreateRSA:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/SecretCreate'
-        - properties:
-            public_key:
-              type: string
-              format: byte
-            private_key:
-              type: string
-              format: byte
-          required:
-            - public_key
-    SecretCreatePassword:
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/SecretCreate'
-        - properties:
-            password:
-              type: string
-              format: byte
-          required:
-            - password
 
     ###
     ### Configuration
     ###
 
     ConfigurationKey:
-      description: 'Key for configuration.'
+      description: Key for configuration.
       type: string
       minLength: 3
       maxLength: 48
       pattern: '^[a-zA-Z0-9\-\.\_]*$'
       example: kokuwa
     ConfigurationType:
-      description: 'Possible types of configuration values.'
+      description: Possible types of configuration values.
       enum:
         - INTEGER
         - BOOLEAN
         - STRING
         - URL
     ConfigurationDescription:
-      description: 'Describes a configuration.'
+      description: Describes a configuration.
       type: string
       maxLength: 200
     ConfigurationDefinition:
-      description: 'Defines a configuration.'
+      description: Defines a configuration.
       type: object
       properties:
         key:
@@ -1128,7 +880,7 @@ components:
       required:
         - value
     Configuration:
-      description: 'Defines a configuration.'
+      description: Defines a configuration.
       type: object
       properties:
         definition:
@@ -1141,7 +893,7 @@ components:
 
   parameters:
     PageablePage:
-      description: 'Page number for pagination.'
+      description: Page number for pagination.
       name: page
       in: query
       schema:
@@ -1150,7 +902,7 @@ components:
         minimum: 0
       example: 0
     PageableSize:
-      description: 'Page size for pagination.'
+      description: Page size for pagination.
       name: size
       in: query
       schema:
@@ -1160,20 +912,14 @@ components:
         maximum: 100
       example: 50
     Sort:
-      description: 'Sorting.'
+      description: Sorting.
       name: sort
       in: query
       schema:
         type: array
         items:
           type: string
-          pattern: '[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?'
-    TenantId:
-      name: tenant_id
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/TenantId'
+          pattern: "[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?"
     GroupId:
       name: group_id
       in: path

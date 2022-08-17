@@ -1,2 +1,0 @@
-ALTER TABLE tenant ADD COLUMN deleted TIMESTAMP;
-ALTER TABLE tenant DROP CONSTRAINT uq_tenant_name;

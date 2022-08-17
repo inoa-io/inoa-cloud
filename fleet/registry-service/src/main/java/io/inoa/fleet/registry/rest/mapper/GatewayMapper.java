@@ -27,13 +27,14 @@ public interface GatewayMapper {
 	@Mapping(target = "removeContentItem", ignore = true)
 	GatewayPageVO toGatewayPage(Page<Gateway> gateways);
 
+	@Mapping(target = "groupIds", source = "groups")
 	@Mapping(target = "removeGroupIdsItem", ignore = true)
 	@Mapping(target = "removePropertiesItem", ignore = true)
-	@Mapping(target = "groupIds", source = "groups")
 	GatewayDetailVO toGatewayDetail(Gateway gateway);
 
 	default Map<String, String> toMap(List<GatewayProperty> properties) {
-		return properties == null ? Map.of()
+		return properties == null
+				? Map.of()
 				: properties.stream().collect(Collectors.toMap(
 						GatewayProperty::getKey,
 						GatewayProperty::getValue,
