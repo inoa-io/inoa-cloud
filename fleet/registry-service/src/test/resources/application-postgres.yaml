@@ -1,4 +1,4 @@
 datasources:
   default:
     driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:${docker.postgres.version}:///${datasources.default.database}
+    url: jdbc:tc:postgresql:14.4-bullseye:///${datasources.default.database}

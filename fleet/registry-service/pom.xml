@@ -39,10 +39,6 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut.kafka</groupId>
-			<artifactId>micronaut-kafka</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.micronaut.reactor</groupId>
 			<artifactId>micronaut-reactor</artifactId>
 		</dependency>
