@@ -16,5 +16,6 @@
 
 	<modules>
 		<module>modbus</module>
+		<module>mqtt-client</module>
 	</modules>
 </project>
