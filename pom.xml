@@ -93,7 +93,7 @@
 		<!-- dependencies -->
 
 		<version.io.cloudevents>2.3.0</version.io.cloudevents>
-		<version.io.micronaut>3.6.0</version.io.micronaut>
+		<version.io.micronaut>3.6.1</version.io.micronaut>
 		<version.io.micronaut.data>3.7.2</version.io.micronaut.data>
 		<version.io.kokuwa.micronaut.influxdb>3.0.0-M1</version.io.kokuwa.micronaut.influxdb>
 		<version.io.kokuwa.micronaut.logging>3.0.4</version.io.kokuwa.micronaut.logging>
