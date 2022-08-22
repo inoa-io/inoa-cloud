@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: measurement-telemetry-exporter
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: measurement-telemetry-exporter
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: measurement-telemetry-exporter
+    spec:
+      initContainers:
+        - name: measurement-telemetry-exporter-influxdb
+          image: curlimages/curl
+          imagePullPolicy: IfNotPresent
+          command: [sh, -c, until curl -fs $URL; do sleep 2; done]
+          env:
+            - name: URL
+              valueFrom:
+                configMapKeyRef:
+                  name: measurement-telemetry-exporter-environment
+                  key: INFLUXDB_URL
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      containers:
+        - name: measurement-telemetry-exporter
+          image: ghcr.io/inoa-io/measurement-telemetry-exporter
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: inoa-environment
+                optional: true
+            - configMapRef:
+                name: measurement-telemetry-exporter-environment
+            - secretRef:
+                name: measurement-telemetry-exporter-environment
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: managment
+              containerPort: 8090
+          startupProbe:
+            httpGet:
+              path: /endpoints/health
+              port: managment
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /endpoints/health/readiness
+              port: managment
+          livenessProbe:
+            httpGet:
+              path: /endpoints/health/liveness
+              port: managment
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: false
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 5

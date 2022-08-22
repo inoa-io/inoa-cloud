@@ -12,10 +12,6 @@
 
 	<name>INOA :: Integration Test</name>
 
-	<properties>
-		<maven.test.skip.exec>true</maven.test.skip.exec>
-	</properties>
-
 	<dependencies>
 
 		<!-- project -->
@@ -33,107 +29,9 @@
 		</dependency>
 		<dependency>
 			<groupId>io.inoa.fleet</groupId>
-			<artifactId>fleet-registry-service</artifactId>
+			<artifactId>fleet-mqtt-client</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.sql</groupId>
-					<artifactId>micronaut-jdbc-hikari</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.flyway</groupId>
-					<artifactId>micronaut-flyway</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.micrometer</groupId>
-					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.postgresql</groupId>
-					<artifactId>postgresql</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.h2database</groupId>
-					<artifactId>h2</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa.fleet</groupId>
-			<artifactId>fleet-gateway-logger</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.micrometer</groupId>
-					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micrometer</groupId>
-					<artifactId>micrometer-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa.measurement</groupId>
-			<artifactId>measurement-telemetry-translator</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut.micrometer</groupId>
-					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micrometer</groupId>
-					<artifactId>micrometer-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa.measurement</groupId>
-			<artifactId>measurement-telemetry-exporter</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>io.micronaut.micrometer</groupId>
-					<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-http-server-netty</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.micronaut</groupId>
-					<artifactId>micronaut-management</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<!-- micronaut -->
@@ -170,11 +68,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.testcontainers</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
@@ -183,6 +76,16 @@
 	</dependencies>
 
 	<build>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<targetPath>${project.build.testOutputDirectory}</targetPath>
+			</testResource>
+			<testResource>
+				<directory>${project.basedir}/../deployment</directory>
+				<targetPath>${project.build.directory}/k3s</targetPath>
+			</testResource>
+		</testResources>
 		<plugins>
 
 			<!-- configure annotation processors -->
@@ -211,30 +114,60 @@
 				</executions>
 			</plugin>
 
-			<!-- copy compose -->
+			<!-- handle k3s lifecycle -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
+				<groupId>io.kokuwa.maven</groupId>
+				<artifactId>k3s-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>compose</id>
-						<phase>generate-test-resources</phase>
 						<goals>
-							<goal>copy-resources</goal>
+							<goal>create</goal>
+							<goal>start</goal>
+							<goal>image</goal>
+							<goal>kubectl</goal>
+							<goal>rm</goal>
 						</goals>
 						<configuration>
-							<resources>
-								<resource>
-									<directory>${project.basedir}/src/test/compose</directory>
-									<filtering>true</filtering>
-								</resource>
-							</resources>
-							<outputDirectory>${project.build.directory}/compose</outputDirectory>
+							<imageTag>v1.24.3-k3s1</imageTag>
+							<disableServicelb>false</disableServicelb>
+							<disableLocalStorage>false</disableLocalStorage>
+							<portBindings>
+								<portBinding>80:80</portBinding>
+								<portBinding>1883:1883</portBinding>
+							</portBindings>
+							<command>kubectl apply -k k3s-full</command>
+							<manifests>${project.build.directory}/k3s</manifests>
+							<ctrImages>
+								<ctrImage>postgres:14.4-bullseye</ctrImage>
+								<ctrImage>traefik:v2.8.3</ctrImage>
+								<ctrImage>influxdb:2.3</ctrImage>
+								<ctrImage>kokuwaio/keycloak:19</ctrImage>
+								<ctrImage>kiwigrid/k8s-sidecar:1.19.4</ctrImage>
+								<ctrImage>grafana/grafana:9.1.0</ctrImage>
+								<ctrImage>quay.io/strimzi/kafka:latest-kafka-2.8.1</ctrImage>
+							</ctrImages>
+							<tarFiles>
+								<tarFile>${project.basedir}/../fleet/gateway-logger/target/jib-image.tar</tarFile>
+								<tarFile>${project.basedir}/../fleet/mqtt-broker/target/jib-image.tar</tarFile>
+								<tarFile>${project.basedir}/../fleet/registry-service/target/jib-image.tar</tarFile>
+								<tarFile>${project.basedir}/../measurement/exporter/target/jib-image.tar</tarFile>
+								<tarFile>${project.basedir}/../measurement/translator/target/jib-image.tar</tarFile>
+							</tarFiles>
 						</configuration>
 					</execution>
+				</executions>
+			</plugin>
+
+			<!-- run tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
 					<execution>
-						<id>default-resources</id>
-						<phase />
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
@@ -242,10 +175,30 @@
 			<!-- skip useless executions -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-resources</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>default-jar</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-test</id>
 						<phase />
 					</execution>
 				</executions>

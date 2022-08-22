@@ -1,0 +1,14 @@
+namespace: inoa
+
+resources:
+  - namespace.yaml
+  - ../../templates/inoa/fleet-registry-service
+  - ../../templates/inoa/fleet-mqtt-broker
+  - ../../templates/inoa/measurement-telemetry-translator
+  - ../../templates/inoa/measurement-telemetry-exporter
+
+configMapGenerator:
+  - name: inoa-environment
+    literals:
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR

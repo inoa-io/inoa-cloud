@@ -1,0 +1,6 @@
+namespace: observability
+
+resources:
+  - namespace.yaml
+  - ../../templates/kafdrop
+  - ../../templates/kubernetesui

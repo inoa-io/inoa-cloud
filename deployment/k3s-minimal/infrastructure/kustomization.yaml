@@ -1,0 +1,10 @@
+namespace: infrastructure
+
+resources:
+  - namespace.yaml
+  - ../../templates/grafana
+  - ../../templates/influxdb
+  - ../../templates/kafka
+  - ../../templates/keycloak
+  - ../../templates/postgres
+  - ../../templates/traefik

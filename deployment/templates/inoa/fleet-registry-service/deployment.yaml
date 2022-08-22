@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet-registry-service
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fleet-registry-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fleet-registry-service
+    spec:
+      initContainers:
+        - name: fleet-registry-service-postgres
+          image: postgres:14.4-bullseye
+          imagePullPolicy: IfNotPresent
+          command: [sh, -c, until psql; do sleep 2; done]
+          env:
+            - name: PGHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: fleet-registry-service-environment
+                  key: DATASOURCES_DEFAULT_HOST
+            - name: PGUSER
+              valueFrom:
+                configMapKeyRef:
+                  name: fleet-registry-service-environment
+                  key: DATASOURCES_DEFAULT_USERNAME
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: fleet-registry-service-environment
+                  key: DATASOURCES_DEFAULT_PASSWORD
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      containers:
+        - name: fleet-registry-service
+          image: ghcr.io/inoa-io/fleet-registry-service
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: inoa-environment
+                optional: true
+            - configMapRef:
+                name: fleet-registry-service-environment
+            - secretRef:
+                name: fleet-registry-service-environment
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: managment
+              containerPort: 8090
+          startupProbe:
+            httpGet:
+              path: /endpoints/health
+              port: managment
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /endpoints/health/readiness
+              port: managment
+          livenessProbe:
+            httpGet:
+              path: /endpoints/health/liveness
+              port: managment
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: false
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 5
