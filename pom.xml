@@ -10,6 +10,10 @@
 	<name>INOA</name>
 	<url>https://github.com/inoa-io/inoa-cloud</url>
 	<inceptionYear>2021</inceptionYear>
+	<organization>
+		<name>INOA</name>
+		<url>https://github.com/inoa-io</url>
+	</organization>
 	<licenses>
 		<license>
 			<name>Apache License 2.0</name>
@@ -25,14 +29,14 @@
 	</modules>
 
 	<scm>
-		<url>${project.url}</url>
-		<connection>scm:git:${project.url}.git</connection>
-		<developerConnection>scm:git:${project.url}.git</developerConnection>
+		<url>https://github.com/inoa-io/inoa-cloud</url>
+		<connection>scm:git:https://github.com/inoa-io/inoa-cloud.git</connection>
+		<developerConnection>scm:git:https://github.com/inoa-io/inoa-cloud.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
 		<system>jira</system>
-		<url>${project.url}/issues</url>
+		<url>https://github.com/inoa-io/inoa-cloud/issues</url>
 	</issueManagement>
 
 	<properties>
@@ -49,16 +53,12 @@
 		<maven.compiler.parameters>true</maven.compiler.parameters>
 		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
 		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-
 		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+		<maven.deploy.skip>true</maven.deploy.skip>
 
 		<jib.container.jvmFlags>-XX:+ExitOnOutOfMemoryError</jib.container.jvmFlags>
-		<jib.from.image>gcr.io/distroless/java17:nonroot</jib.from.image>
-		<jib.to.image.registry>ghcr.io/inoa-io</jib.to.image.registry>
-		<jib.to.image.repository>${project.artifactId}</jib.to.image.repository>
-		<jib.to.image.version>${project.version}${jib.to.image.version.suffix}</jib.to.image.version>
-		<jib.to.image.version.suffix />
-		<jib.to.image>${jib.to.image.registry}/${jib.to.image.repository}:${jib.to.image.version}</jib.to.image>
+		<jib.from.image>eclipse-temurin:${maven.compiler.target}-jre</jib.from.image>
+		<jib.to.image>ghcr.io/inoa-io/${project.artifactId}</jib.to.image>
 
 		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
 		<checkstyle.suppressions.location>checkstyle-suppression.xml</checkstyle.suppressions.location>
@@ -88,6 +88,7 @@
 		<version.com.google.cloud.tools.jib>3.2.1</version.com.google.cloud.tools.jib>
 		<version.com.puppycrawl.tools.checkstyle>10.3.2</version.com.puppycrawl.tools.checkstyle>
 		<version.io.kokuwa.checkstyle>0.5.6</version.io.kokuwa.checkstyle>
+		<version.io.kokuwa.maven.k3s>0.6.0</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>3.0.1</version.io.kokuwa.micronaut.codegen>
 
 		<!-- dependencies -->
@@ -293,6 +294,11 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.surefire}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
 					<version>${version.org.apache.maven.plugins.install}</version>
 				</plugin>
@@ -374,6 +380,25 @@
 					<groupId>com.google.cloud.tools</groupId>
 					<artifactId>jib-maven-plugin</artifactId>
 					<version>${version.com.google.cloud.tools.jib}</version>
+					<configuration>
+						<container>
+							<labels>
+								<org.opencontainers.image.title>${project.name}</org.opencontainers.image.title>
+								<org.opencontainers.image.description>TODO</org.opencontainers.image.description>
+								<org.opencontainers.image.url>https://docs.inoa.io</org.opencontainers.image.url>
+								<org.opencontainers.image.source>https://github.com/inoa-io/inoa-cloud</org.opencontainers.image.source>
+								<org.opencontainers.image.vendor>${project.organization.name}</org.opencontainers.image.vendor>
+								<org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+								<org.opencontainers.image.authors>https://github.com/orgs/inoa-io/people</org.opencontainers.image.authors>
+							</labels>
+						</container>
+						<to></to>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>io.kokuwa.maven</groupId>
+					<artifactId>k3s-maven-plugin</artifactId>
+					<version>${version.io.kokuwa.maven.k3s}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

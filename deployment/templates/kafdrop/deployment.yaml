@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafdrop
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafdrop
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafdrop
+    spec:
+      containers:
+        - name: kafdrop
+          image: provectuslabs/kafka-ui
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: KAFKA_CLUSTERS_0_NAME
+              value: local
+            - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+              value: kafka.infrastructure:9092
+            - name: LOGGING_LEVEL_ROOT
+              value: info
+            - name: LOGGING_LEVEL_COM_PROVECTUS
+              value: info
+          ports:
+            - name: http
+              containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 100
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: http
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 5

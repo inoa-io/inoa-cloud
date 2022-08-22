@@ -1,0 +1,18 @@
+commonLabels:
+  app.kubernetes.io/component: dashboard
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: kubernetes-dashboard-settings
+    files: [_global=files/settings.json]
+secretGenerator:
+  - name: kubernetes-dashboard-certs
+  - name: kubernetes-dashboard-csrf
+  - name: kubernetes-dashboard-key-holder

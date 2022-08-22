@@ -1,0 +1,56 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: kubernetes-dashboard-metrics
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubernetes-dashboard
+      app.kubernetes.io/component: metrics
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kubernetes-dashboard
+        app.kubernetes.io/component: metrics
+    spec:
+      containers:
+        - name: kubernetes-dashboard-metrics
+          image: kubernetesui/metrics-scraper:v1.0.8
+          imagePullPolicy: IfNotPresent
+          args:
+            - --log-level=info
+            - --db-file=/tmp/metrics.db
+            - --metric-resolution=30s
+            - --metric-duration=24h
+          ports:
+            - name: http
+              containerPort: 8000
+          startupProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 55
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+      serviceAccountName: kubernetes-dashboard
+      automountServiceAccountToken: true
+      terminationGracePeriodSeconds: 0
+      volumes:
+        - name: tmp
+          emptyDir: {}

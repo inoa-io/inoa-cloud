@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: kubernetes-dashboard-dashboard
+spec:
+  ports:
+    - name: http
+      port: 8080
+  selector:
+    app.kubernetes.io/name: kubernetes-dashboard
+    app.kubernetes.io/component: dashboard

@@ -1,0 +1,8 @@
+{
+  "clusterName": "INOA",
+  "itemsPerPage": 25,
+  "labelsLimit": 10,
+  "logsAutoRefreshTimeInterval": 5,
+  "resourceAutoRefreshTimeInterval": 5,
+  "disableAccessDeniedNotifications": false
+}

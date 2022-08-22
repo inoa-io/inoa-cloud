@@ -1,0 +1,24 @@
+commonLabels:
+  app.kubernetes.io/name: fleet-registry-service
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: fleet-registry-service-environment
+    literals:
+      - ENDPOINTS_ALL_PORT=8090
+      - MICRONAUT_ENVIRONMENTS=postgres
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak.infrastructure/realms/inoa/protocol/openid-connect/certs
+      - DATASOURCES_DEFAULT_HOST=postgres.infrastructure
+      - DATASOURCES_DEFAULT_DATABASE=registry
+      - DATASOURCES_DEFAULT_USERNAME=registry
+      - INOA_FLEET_REGISTRY_AUTH_GENERATE_KEY=true
+      - INOA_FLEET_REGISTRY_AUTH_ISSUER=http://registry.inoa.127.0.0.1.nip.io
+      - INOA_FLEET_REGISTRY_SECURITY_TENANT_AUDIENCE_WHITELIST=inoa-registry
+
+secretGenerator:
+  - name: fleet-registry-service-environment
+    literals: [DATASOURCES_DEFAULT_PASSWORD=changeMe]

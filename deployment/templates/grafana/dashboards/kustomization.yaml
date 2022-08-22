@@ -1,0 +1,4 @@
+commonLabels:
+  grafana.io/instance: inoa
+
+configMapGenerator: []
