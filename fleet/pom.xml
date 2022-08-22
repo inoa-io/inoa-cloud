@@ -21,7 +21,8 @@
 <!--
 		<module>registry-hono-bridge</module>
 -->
-		<module>gateway-mqtt-broker</module>
+		<module>mqtt-client</module>
+		<module>mqtt-broker</module>
 		<module>gateway-telemetry</module>
 		<module>gateway-event</module>
 		<module>gateway-logger</module>

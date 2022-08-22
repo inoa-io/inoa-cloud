@@ -1,5 +1,6 @@
-package io.inoa.mqtt;
+package io.inoa.fleet.mqtt;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -8,8 +9,14 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.inoa.fleet.telemetry.TelemetryRawVO;
+import lombok.SneakyThrows;
+
 public class HonoMqttClient {
 
+	private final ObjectMapper mapper = new ObjectMapper();
 	private final MqttClient client;
 	private final MqttConnectOptions options;
 
@@ -38,6 +45,11 @@ public class HonoMqttClient {
 	public HonoMqttClient publish(String topic, byte[] payload) throws MqttException {
 		client.publish(topic, new MqttMessage(payload));
 		return this;
+	}
+
+	@SneakyThrows(IOException.class)
+	public HonoMqttClient publishTelemetry(TelemetryRawVO vo) throws MqttException {
+		return publish("telemetry", mapper.writeValueAsBytes(vo));
 	}
 
 	public HonoMqttClient publishTelemetry(byte[] payload) throws MqttException {
