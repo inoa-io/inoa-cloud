@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -33,7 +31,6 @@ import io.inoa.fleet.registry.auth.AuthTokenKeys;
 import io.inoa.fleet.registry.auth.AuthTokenService;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.rest.HttpResponseAssertions;
-import io.inoa.fleet.registry.rest.management.CredentialTypeVO;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpResponse;
@@ -69,7 +66,7 @@ public class AuthControllerTest extends AbstractTest {
 	@Test
 	void errorGrantType() {
 		var errorDescription = "grant_type is not urn:ietf:params:oauth:grant-type:jwt-bearer";
-		var jwt = token(UUID.randomUUID(), "pleaseChangeThisSecretForANewOne");
+		var jwt = token(UUID.randomUUID(), "pleaseChangeThisSecretForANewOne".getBytes());
 		assertError(() -> client.getToken("password", jwt), errorDescription);
 	}
 
@@ -163,41 +160,41 @@ public class AuthControllerTest extends AbstractTest {
 	@Test
 	void errorGatewayNotFound() {
 		var gatewayId = UUID.randomUUID();
-		var gatewaySecret = UUID.randomUUID().toString();
+		var gatewayPreSharedKey = UUID.randomUUID().toString().getBytes();
 		var errorDescription = "gateway " + gatewayId + " not found";
-		var jwt = token(gatewayId, gatewaySecret);
+		var jwt = token(gatewayId, gatewayPreSharedKey);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
 	@DisplayName("error: signature invalid")
 	@Test
 	void errorSignatureInvalid() {
-		var gatewayId = data.gateway(data.tenant()).getGatewayId();
-		var gatewaySecret = UUID.randomUUID().toString();
+		var gateway = data.gateway(data.tenant());
+		var gatewayPreSharedKey = UUID.randomUUID().toString().getBytes();
 		var errorDescription = "signature verification failed";
-		var jwt = token(gatewayId, gatewaySecret);
+		var jwt = token(gateway.getGatewayId(), gatewayPreSharedKey);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
 	@DisplayName("error: tenant disabled")
 	@Test
 	void errorTenantDisabled() {
-		var tenant = data.tenant(false, false);
+		var tenant = data.tenant("inoa", false, false);
 		var gateway = data.gateway(tenant);
-		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var credential = data.credentialPSK(gateway);
 		var errorDescription = "tenant " + tenant.getTenantId() + " disabled";
-		var jwt = token(gateway.getGatewayId(), gatewaySecret);
+		var jwt = token(gateway.getGatewayId(), credential.getValue());
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
 	@DisplayName("error: tenant deleted")
 	@Test
 	void errorTenantDeleted() {
-		var tenant = data.tenant(true, true);
+		var tenant = data.tenant("inoa", true, true);
 		var gateway = data.gateway(tenant);
-		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var credential = data.credentialPSK(gateway);
 		var errorDescription = "tenant " + tenant.getTenantId() + " deleted";
-		var jwt = token(gateway.getGatewayId(), gatewaySecret);
+		var jwt = token(gateway.getGatewayId(), credential.getValue());
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -206,9 +203,9 @@ public class AuthControllerTest extends AbstractTest {
 	void errorGatewayDisabled() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant, false);
-		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
+		var credential = data.credentialPSK(gateway);
 		var errorDescription = "gateway " + gateway.getGatewayId() + " disabled";
-		var jwt = token(gateway.getGatewayId(), gatewaySecret);
+		var jwt = token(gateway.getGatewayId(), credential.getValue());
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -222,25 +219,23 @@ public class AuthControllerTest extends AbstractTest {
 		assertTrue(properties.getGateway().getToken().getIssuedAtThreshold().isPresent(), "iat threshold missing");
 
 		var gateway = data.gateway(data.tenant());
-		var gatewaySecret = "pleaseChangeThisSecretForANewOne";
-		createAuthSecret(gateway, CredentialTypeVO.PSK, gatewaySecret.getBytes());
-		var jwt = token(gateway.getGatewayId(), gatewaySecret);
+		var credential = data.credentialPSK(gateway);
+		var jwt = token(gateway.getGatewayId(), credential.getValue());
 		assertSuccess(gateway, jwt);
 	}
 
 	@DisplayName("success: minimal token with RSA")
 	@Test
-	void successMinimalToken() throws NoSuchAlgorithmException, JOSEException {
+	void successMinimalToken() throws JOSEException {
 
 		properties.getGateway().getToken().setForceJwtId(false);
 		properties.getGateway().getToken().setForceNotBefore(false);
 		properties.getGateway().getToken().setForceIssuedAt(false);
 		properties.getGateway().getToken().setIssuedAtThreshold(Optional.empty());
 
-		var generator = KeyPairGenerator.getInstance("RSA");
-		var keyPair = generator.generateKeyPair();
+		var keyPair = data.generateKeyPair();
 		var gateway = data.gateway(data.tenant());
-		createAuthSecret(gateway, CredentialTypeVO.RSA, keyPair.getPublic().getEncoded());
+		data.credentialRSA(gateway, keyPair);
 
 		var claims = new JWTClaimsSet.Builder()
 				.audience(properties.getGateway().getToken().getAudience())
@@ -251,40 +246,22 @@ public class AuthControllerTest extends AbstractTest {
 		assertSuccess(gateway, jwt.serialize());
 	}
 
-	@DisplayName("error: with password")
+	@DisplayName("error: with psk")
 	@Test
-	void errorPassword() {
+	void errorPsk() {
 		var gateway = data.gateway(data.tenant());
-		var gatewaySecret = UUID.randomUUID().toString();
-		createAuthSecret(gateway, CredentialTypeVO.PASSWORD, gatewaySecret.getBytes());
+		var gatewayPreSharedKey = UUID.randomUUID().toString().getBytes();
+		data.credentialPSK(gateway);
 		var errorDescription = "signature verification failed";
-		var jwt = token(gateway.getGatewayId(), gatewaySecret);
+		var jwt = token(gateway.getGatewayId(), gatewayPreSharedKey);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
 	// internal
 
-	private void createAuthSecret(Gateway gateway, CredentialTypeVO type, byte[] bytes) {
-		var authId = properties.getGateway().getCredentialAuthId();
-		var credential = data.credential(gateway, type, c -> c.setAuthId(authId));
-		switch (type) {
-			case PSK:
-				data.secret(credential, s -> s.setSecret(bytes));
-				break;
-			case RSA:
-				data.secret(credential, s -> s.setPublicKey(bytes));
-				break;
-			case PASSWORD:
-				data.secret(credential, s -> s.setPassword(bytes));
-				break;
-			default:
-				break;
-		}
-	}
-
 	private void assertSuccess(Gateway gateway, String jwt) {
-		TokenResponseVO response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));
-		UUID uuidFromResponse = authTokenService.validateToken(response.getAccessToken()).orElse(null);
+		var response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));
+		var uuidFromResponse = authTokenService.validateToken(response.getAccessToken()).orElse(null);
 		assertEquals(gateway.getGatewayId(), uuidFromResponse, "access_token");
 		assertEquals(response.getTokenType(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, "token_type");
 		assertEquals(properties.getAuth().getExpirationDuration().getSeconds(), response.getExpiresIn(), "expires_in");
@@ -292,7 +269,7 @@ public class AuthControllerTest extends AbstractTest {
 	}
 
 	private void assertError(Consumer<JWTClaimsSet.Builder> claimsManipulator, String errorDescription) {
-		var jwt = token(UUID.randomUUID(), UUID.randomUUID().toString(), claimsManipulator);
+		var jwt = token(UUID.randomUUID(), UUID.randomUUID().toString().getBytes(), claimsManipulator);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -306,12 +283,12 @@ public class AuthControllerTest extends AbstractTest {
 				+ expectedDescription + "] but got [" + errorDescription + "]");
 	}
 
-	private String token(UUID gateway, String secret) {
+	private String token(UUID gateway, byte[] secret) {
 		return token(gateway, secret, claims -> {});
 	}
 
 	@SneakyThrows
-	private String token(UUID gateway, String secret, Consumer<JWTClaimsSet.Builder> claimsManipulator) {
+	private String token(UUID gateway, byte[] secret, Consumer<JWTClaimsSet.Builder> claimsManipulator) {
 
 		var claims = new JWTClaimsSet.Builder()
 				.audience(properties.getGateway().getToken().getAudience())

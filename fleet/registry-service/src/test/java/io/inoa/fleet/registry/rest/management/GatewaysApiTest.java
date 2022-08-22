@@ -458,11 +458,11 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 
 	@DisplayName("deleteGateway(204): with credential")
 	@Test
-	public void deleteGateway204WithCredentials() {
+	public void deleteGateway204WithCredential() {
 
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		data.credential(gateway, CredentialTypeVO.PASSWORD);
+		data.credentialPSK(gateway);
 
 		assert204(() -> client.deleteGateway(auth(tenant), gateway.getGatewayId()));
 		assertEquals(0, data.countGateways(), "gateway not deleted");

@@ -120,7 +120,7 @@ public class SecurityTest extends AbstractTest {
 	@DisplayName("getTenant(): fail with deleted tenant")
 	@Test
 	void getTenantFailDeleted() {
-		var tenantId = data.tenant(true, true).getTenantId();
+		var tenantId = data.tenant("inoa", true, true).getTenantId();
 		ServerRequestContext.with(request(tenantId, null, null), (Runnable) () -> {
 			try {
 				security.getTenant();

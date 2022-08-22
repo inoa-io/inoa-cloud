@@ -50,7 +50,7 @@ public class ApplicationProperties {
 
 		/** Value for <code>aud</code> claim. */
 		@NotNull
-		private String audience = "gateway";
+		private String audience = "inoa-registry";
 
 		/** Value for <code>iss</code> claim. */
 		@NotNull
@@ -86,10 +86,6 @@ public class ApplicationProperties {
 	public static class GatewayProperties {
 
 		private GatewayTokenProperties token = new GatewayTokenProperties();
-
-		/** Credentials authId to use for checking gateway jwt's. */
-		@NotNull
-		private String credentialAuthId = "registry";
 
 		/**
 		 * Configuration for verifying gateway jwt's.

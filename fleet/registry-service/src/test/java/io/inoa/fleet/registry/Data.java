@@ -38,8 +38,6 @@ import io.inoa.fleet.registry.domain.Group;
 import io.inoa.fleet.registry.domain.GroupConfiguration;
 import io.inoa.fleet.registry.domain.GroupConfigurationRepository;
 import io.inoa.fleet.registry.domain.GroupRepository;
-import io.inoa.fleet.registry.domain.Secret;
-import io.inoa.fleet.registry.domain.SecretRepository;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.fleet.registry.domain.TenantConfiguration;
 import io.inoa.fleet.registry.domain.TenantConfigurationRepository;
@@ -66,7 +64,6 @@ public class Data {
 	private final GatewayGroupRepository gatewayGroupRepository;
 	private final GatewayPropertyRepository gatewayPropertyRepository;
 	private final CredentialRepository credentialRepository;
-	private final SecretRepository secretRepository;
 	private final ConfigurationDefinitionRepository configurationDefinitionRepository;
 	private final TenantConfigurationRepository tenantConfigurationRepository;
 	private final GroupConfigurationRepository groupConfigurationRepository;
@@ -124,12 +121,16 @@ public class Data {
 	}
 
 	public Tenant tenant() {
-		return tenant(true, false);
+		return tenant(tenantId(), true, false);
 	}
 
-	public Tenant tenant(boolean enabled, boolean deleted) {
+	public Tenant tenant(String tenantId) {
+		return tenant(tenantId, true, false);
+	}
+
+	public Tenant tenant(String tenantId, boolean enabled, boolean deleted) {
 		return tenantRepository.save(new Tenant()
-				.setTenantId(tenantId())
+				.setTenantId(tenantId)
 				.setName(tenantName())
 				.setEnabled(enabled)
 				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
@@ -207,46 +208,28 @@ public class Data {
 				.setValue(value));
 	}
 
-	public String credentialAuthId() {
+	public String credentialName() {
 		return UUID.randomUUID().toString().substring(0, 32);
 	}
 
-	public Credential credential(Gateway gateway, CredentialTypeVO type) {
-		return credential(gateway, type, credential -> {});
+	public Credential credentialPSK(Gateway gateway) {
+		return credential(gateway, CredentialTypeVO.PSK, UUID.randomUUID().toString().getBytes());
 	}
 
-	public Credential credential(Gateway gateway, CredentialTypeVO type, Consumer<Credential> consumer) {
+	@SneakyThrows
+	public Credential credentialRSA(Gateway gateway, KeyPair keyPair) {
+		return credential(gateway, CredentialTypeVO.RSA, keyPair.getPublic().getEncoded());
+	}
+
+	public Credential credential(Gateway gateway, CredentialTypeVO type, byte[] value) {
 		var credential = new Credential()
 				.setGateway(gateway)
 				.setCredentialId(UUID.randomUUID())
-				.setAuthId(credentialAuthId())
+				.setName(credentialName())
 				.setEnabled(true)
-				.setType(type);
-		consumer.accept(credential);
+				.setType(type)
+				.setValue(value);
 		return credentialRepository.save(credential);
-	}
-
-	public Secret secret(Credential credential) {
-		return secret(credential, secret -> {});
-	}
-
-	public Secret secret(Credential credential, Consumer<Secret> consumer) {
-		var secret = new Secret()
-				.setSecretId(UUID.randomUUID())
-				.setCredential(credential);
-		switch (credential.getType()) {
-			case PASSWORD:
-				secret.setPassword("password".getBytes());
-				break;
-			case PSK:
-				secret.setSecret("secret".getBytes());
-				break;
-			case RSA:
-				secret.setPublicKey("public".getBytes()).setPrivateKey("private".getBytes());
-				break;
-		}
-		consumer.accept(secret);
-		return secretRepository.save(secret);
 	}
 
 	public ConfigurationDefinition definition(
@@ -307,10 +290,6 @@ public class Data {
 		return (long) credentialRepository.findByGateway(gateway).size();
 	}
 
-	public Long countSecrets(Credential credential) {
-		return (long) secretRepository.findByCredential(credential).size();
-	}
-
 	public Long countDefinitions(Tenant tenant) {
 		return (long) configurationDefinitionRepository.findByTenantOrderByKey(tenant).size();
 	}
@@ -329,6 +308,19 @@ public class Data {
 
 	public Gateway find(Gateway gateway) {
 		return gatewayRepository.findByGatewayId(gateway.getGatewayId()).get();
+	}
+
+	public Gateway findGateway(UUID gatewayId) {
+		return gatewayRepository.findByGatewayId(gatewayId).orElse(null);
+	}
+
+	public Credential find(Credential credential) {
+		return credentialRepository
+				.findByGatewayAndCredentialId(credential.getGateway(), credential.getCredentialId()).get();
+	}
+
+	public List<Credential> findCredentials(Gateway gateway) {
+		return credentialRepository.findByGateway(gateway);
 	}
 
 	public ConfigurationDefinition findConfigurationDefinition(Tenant tenant, String key) {
