@@ -10,9 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.mqtt.AbstractMqttTest;
+import io.inoa.fleet.mqtt.HonoMqttClient;
 import io.inoa.fleet.mqtt.MqttProperties;
 import io.inoa.fleet.mqtt.listener.TestListener;
-import io.inoa.mqtt.HonoMqttClient;
 import jakarta.inject.Inject;
 
 public class TelemtryTest extends AbstractMqttTest {

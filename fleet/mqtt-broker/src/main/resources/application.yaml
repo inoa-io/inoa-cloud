@@ -10,3 +10,8 @@ endpoints:
     sensitive: false
   health:
     details-visible: ANONYMOUS
+
+# custom log
+logger:
+  levels:
+    io.moquette: WARN
