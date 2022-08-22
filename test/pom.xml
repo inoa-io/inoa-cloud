@@ -168,6 +168,9 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
+						<configuration>
+							<failIfNoTests>true</failIfNoTests>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
