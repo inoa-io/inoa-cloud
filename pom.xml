@@ -88,7 +88,7 @@
 		<version.com.google.cloud.tools.jib>3.2.1</version.com.google.cloud.tools.jib>
 		<version.com.puppycrawl.tools.checkstyle>10.3.2</version.com.puppycrawl.tools.checkstyle>
 		<version.io.kokuwa.checkstyle>0.5.6</version.io.kokuwa.checkstyle>
-		<version.io.kokuwa.maven.k3s>0.6.0</version.io.kokuwa.maven.k3s>
+		<version.io.kokuwa.maven.k3s>0.6.1</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>3.0.1</version.io.kokuwa.micronaut.codegen>
 
 		<!-- dependencies -->
