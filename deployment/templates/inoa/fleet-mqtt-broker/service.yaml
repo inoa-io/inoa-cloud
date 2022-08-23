@@ -6,7 +6,7 @@ spec:
   type: LoadBalancer
   ports:
     - name: mqtt
-      port: 1883
+      port: 8883
       targetPort: mqtt
   selector:
     app.kubernetes.io/name: fleet-mqtt-broker

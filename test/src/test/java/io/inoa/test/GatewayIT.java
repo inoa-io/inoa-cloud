@@ -81,7 +81,7 @@ public class GatewayIT extends AbstractTest {
 	void getConfiguration() {
 		var expected = Map.of(
 				"mqtt.insecure", true,
-				"mqtt.url", "tcp://127.0.0.1:1883",
+				"mqtt.url", "ssl://127.0.0.1:8883",
 				"ntp.host", "pool.ntp.org");
 		var actual = gatewayClient.getConfiguration();
 		assertEquals(expected, actual, "got invalid configuration");
@@ -109,7 +109,7 @@ public class GatewayIT extends AbstractTest {
 				.urn(urn)
 				.timestamp(timestamp.toEpochMilli())
 				.value(String.valueOf(value).getBytes()));
-		assertDoesNotThrow(() -> gatewayClient.mqtt().connect(), "mqtt connect failed");
+		assertDoesNotThrow(() -> gatewayClient.mqtt().trustAllCertificates().connect(), "mqtt connect failed");
 		assertDoesNotThrow(() -> gatewayClient.mqtt().publishTelemetry(payload), "mqtt publish failed");
 		assertDoesNotThrow(() -> gatewayClient.mqtt().disconnect(), "mqtt disconnect failed");
 

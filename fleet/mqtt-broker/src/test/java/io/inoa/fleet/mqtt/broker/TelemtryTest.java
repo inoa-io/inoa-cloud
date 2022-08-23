@@ -24,14 +24,14 @@ public class TelemtryTest extends AbstractMqttTest {
 	@Test
 	void telemetry(TestListener listener) throws MqttException {
 
-		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
+		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 
 		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
-		client.connect();
+		client.trustAllCertificates().connect();
 		client.publishTelemetry(payload);
 		client.disconnect();
 
@@ -45,14 +45,14 @@ public class TelemtryTest extends AbstractMqttTest {
 	@Test
 	void event(TestListener listener) throws MqttException {
 
-		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
+		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
 		var gatewayId = UUID.randomUUID();
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 
 		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
-		client.connect();
+		client.trustAllCertificates().connect();
 		client.publishEvent(payload);
 		client.disconnect();
 

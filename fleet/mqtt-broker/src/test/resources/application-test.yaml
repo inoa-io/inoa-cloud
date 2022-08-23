@@ -10,3 +10,11 @@ logger:
     io.moquette: WARN
     org.apache.kafka: ERROR
     org.testcontainers: WARN
+
+## inoa
+inoa:
+  mqtt:
+    port: ${random.port}
+    tls:
+      port: ${random.port}
+      generate-key: true

@@ -10,3 +10,4 @@ configMapGenerator:
     literals:
       - ENDPOINTS_ALL_PORT=8090
       - KAFKA_BOOTSTRAP_SERVERS=kafka.infrastructure:9092
+      - INOA_MQTT_TLS_GENERATE_KEY=true

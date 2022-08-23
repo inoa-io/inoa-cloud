@@ -10,7 +10,6 @@ import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 import io.inoa.fleet.mqtt.listener.TestListener;
-import io.micronaut.core.io.socket.SocketUtils;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 
@@ -19,6 +18,8 @@ import io.micronaut.test.support.TestPropertyProvider;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public abstract class AbstractMqttTest implements TestPropertyProvider {
 
+	static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
+
 	@BeforeEach
 	void clear(TestListener listener) {
 		listener.clear();
@@ -26,11 +27,9 @@ public abstract class AbstractMqttTest implements TestPropertyProvider {
 
 	@Override
 	public Map<String, String> getProperties() {
-		var kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
-		kafka.start();
-		return Map.of(
-				"inoa.mqtt.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
-				"kafka.bootstrap.servers", kafka.getBootstrapServers(),
-				"kafka.consumers.default.metadata.max.age.ms", "200");
+		if (!kafka.isRunning()) {
+			kafka.start();
+		}
+		return Map.of("kafka.bootstrap.servers", kafka.getBootstrapServers());
 	}
 }
