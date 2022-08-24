@@ -133,7 +133,7 @@
 							<disableLocalStorage>false</disableLocalStorage>
 							<portBindings>
 								<portBinding>80:80</portBinding>
-								<portBinding>1883:1883</portBinding>
+								<portBinding>8883:8883</portBinding>
 							</portBindings>
 							<command>kubectl apply -k k3s-full</command>
 							<manifests>${project.build.directory}/k3s</manifests>

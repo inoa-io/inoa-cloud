@@ -1,7 +1,13 @@
 package io.inoa.fleet.mqtt;
 
 import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.cert.X509Certificate;
 import java.util.UUID;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -30,6 +36,28 @@ public class HonoMqttClient {
 
 	public MqttClient client() {
 		return this.client;
+	}
+
+	@SneakyThrows(GeneralSecurityException.class)
+	public HonoMqttClient trustAllCertificates() {
+		var trustManager = new X509TrustManager() {
+
+			@Override
+			public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+
+			@Override
+			public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+
+			@Override
+			public X509Certificate[] getAcceptedIssuers() {
+				return new X509Certificate[0];
+			}
+		};
+		var sslContext = SSLContext.getInstance("TLS");
+		sslContext.init(null, new TrustManager[] { trustManager }, null);
+		this.options.setSocketFactory(sslContext.getSocketFactory());
+		this.options.setHttpsHostnameVerificationEnabled(false);
+		return this;
 	}
 
 	public HonoMqttClient connect() throws MqttException {

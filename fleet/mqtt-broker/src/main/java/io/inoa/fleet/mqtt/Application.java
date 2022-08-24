@@ -13,6 +13,7 @@ public class Application {
 		Micronaut
 				.build(args)
 				.mainClass(Application.class)
+				.eagerInitConfiguration(true)
 				.banner(false)
 				.start();
 	}

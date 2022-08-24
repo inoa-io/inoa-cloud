@@ -3,7 +3,6 @@ package io.inoa.fleet.mqtt;
 import java.util.List;
 
 import io.micronaut.context.annotation.Context;
-import io.moquette.broker.ClientDescriptor;
 import io.moquette.broker.ISslContextCreator;
 import io.moquette.broker.Server;
 import io.moquette.broker.config.IConfig;
@@ -21,7 +20,7 @@ public class MqttBroker {
 	private final IConfig config;
 	private final IAuthenticator authenticator;
 	private final IAuthorizatorPolicy authorizator;
-	private final ISslContextCreator tls = null;
+	private final ISslContextCreator tls;
 	private final List<InterceptHandler> handler;
 	private final Server server = new Server();
 
@@ -33,9 +32,5 @@ public class MqttBroker {
 	@PreDestroy
 	public void close() {
 		server.stopServer();
-	}
-
-	public List<ClientDescriptor> getClients() {
-		return (List<ClientDescriptor>) this.server.listConnectedClients();
 	}
 }
