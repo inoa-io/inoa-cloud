@@ -73,6 +73,15 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	public void findGateways200WithSortMultipleProperty() {
 		var tenant = data.tenant();
 		IntStream.range(0, 5).forEach(i -> data.gateway(tenant, "gateway" + i, i % 2 == 0, List.of()));
+		var sort = List.copyOf(GatewaysController.SORT_ORDER_PROPERTIES);
+		assert200(() -> client.findGateways(auth(tenant), null, null, sort, null));
+	}
+
+	@DisplayName("findGateways(200): with sort by all properties")
+	@Test
+	public void findGateways200WithSortAllProperty() {
+		var tenant = data.tenant();
+		IntStream.range(0, 5).forEach(i -> data.gateway(tenant, "gateway" + i, i % 2 == 0, List.of()));
 		var sort = List.of(
 				GatewayVO.JSON_PROPERTY_ENABLED,
 				GatewayVO.JSON_PROPERTY_NAME + ",DESC");

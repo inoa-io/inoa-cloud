@@ -1,0 +1,72 @@
+micronaut:
+  application:
+    name: ${project.artifactId}
+    version: ${project.version}
+
+  # see https://docs.micronaut.io/latest/guide/index.html#staticResources
+  router:
+    static-resources:
+      web:
+        paths: classpath:web
+        mapping: /static/**
+
+  # see https://micronaut-projects.github.io/micronaut-security/latest/guide
+  security:
+    intercept-url-map:
+      - pattern: /static/**
+        access: isAnonymous()
+      - pattern: /endpoints/**
+        access: isAnonymous()
+      - pattern: /oauth/login/keycloak
+        access: isAnonymous()
+      - pattern: /**
+        access: isAuthenticated()
+    authentication: idtoken
+    token:
+      propagation:
+        enabled: true
+        service-id-regex: registry-management
+    redirect:
+      unauthorized:
+        url: /oauth/login/keycloak
+      prior-to-login: true
+    oauth2:
+      clients:
+        keycloak:
+          openid:
+            issuer: ${inoa.fleet.admin-ui.openid.issuer}
+          client-id: ${inoa.fleet.admin-ui.openid.client-id}
+          client-secret: ${inoa.fleet.admin-ui.openid.client-secret}
+
+  ## see https://docs.micronaut.io/latest/guide/index.html#clientBasics
+  http:
+    services:
+      registry-management:
+        url: ${inoa.fleet.admin-ui.registry-url}
+        logger-name: io.inoa.fleet.client.Registry
+        read-timeout: 5s
+        event-loop-group: client
+
+  ## see https://docs.micronaut.io/latest/guide/index.html#clientBasics
+  netty:
+    event-loops:
+      client:
+        num-threads: 5
+
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    path: /endpoints
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+
+## inoa
+inoa:
+  fleet:
+    admin-ui:
+      openid:
+        issuer: null
+        client-id: null
+        client-secret: null
+      registry-url: null

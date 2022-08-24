@@ -1,0 +1,24 @@
+micronaut:
+
+  ## see https://micronaut-projects.github.io/micronaut-views/latest/guide
+  views:
+    thymeleaf:
+      cacheable: false
+
+## adjust logging
+logger:
+  levels:
+    io.inoa: TRACE
+    io.micronaut.security: INFO
+    io.micronaut.views: INFO
+    io.micronaut.web: INFO
+
+## inoa
+inoa:
+  fleet:
+    admin-ui:
+      openid:
+        issuer: http://keycloak.127.0.0.1.nip.io/realms/inoa
+        client-id: inoa-ui
+        client-secret: changeMe
+      registry-url: http://registry.inoa.127.0.0.1.nip.io

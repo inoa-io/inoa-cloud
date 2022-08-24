@@ -150,6 +150,7 @@
 								<tarFile>${project.basedir}/../fleet/gateway-logger/target/jib-image.tar</tarFile>
 								<tarFile>${project.basedir}/../fleet/mqtt-broker/target/jib-image.tar</tarFile>
 								<tarFile>${project.basedir}/../fleet/registry-service/target/jib-image.tar</tarFile>
+								<tarFile>${project.basedir}/../fleet/admin-ui/target/jib-image.tar</tarFile>
 								<tarFile>${project.basedir}/../measurement/exporter/target/jib-image.tar</tarFile>
 								<tarFile>${project.basedir}/../measurement/translator/target/jib-image.tar</tarFile>
 							</tarFiles>

@@ -39,7 +39,9 @@ public class GatewaysController implements GatewaysApi {
 	/** Available sort properties, see API spec for documentation. */
 	public static final Set<String> SORT_ORDER_PROPERTIES = Set.of(
 			GatewayVO.JSON_PROPERTY_NAME,
-			GatewayVO.JSON_PROPERTY_ENABLED);
+			GatewayVO.JSON_PROPERTY_ENABLED,
+			GatewayVO.JSON_PROPERTY_CREATED,
+			GatewayVO.JSON_PROPERTY_UPDATED);
 
 	private final Security security;
 	private final GatewayMapper mapper;
