@@ -16,7 +16,7 @@ configMapGenerator:
       - DATASOURCES_DEFAULT_DATABASE=registry
       - DATASOURCES_DEFAULT_USERNAME=registry
       - INOA_FLEET_REGISTRY_AUTH_GENERATE_KEY=true
-      - INOA_FLEET_REGISTRY_AUTH_ISSUER=http://registry.inoa.127.0.0.1.nip.io
+      - INOA_FLEET_REGISTRY_AUTH_ISSUER=http://registry.127.0.0.1.nip.io
       - INOA_FLEET_REGISTRY_SECURITY_TENANT_AUDIENCE_WHITELIST=inoa-registry
 
 secretGenerator:

@@ -57,9 +57,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://ui.inoa.127.0.0.1.nip.io",
-			"redirectUris": [ "http://ui.inoa.127.0.0.1.nip.io/*", "http://localhost:8080/oauth/callback/keycloak" ],
-			"webOrigins": [ "http://ui.inoa.127.0.0.1.nip.io/*" ],
+			"baseUrl": "http://admin.127.0.0.1.nip.io",
+			"redirectUris": [ "http://admin.127.0.0.1.nip.io/oauth/callback/keycloak", "http://localhost:8080/oauth/callback/keycloak" ],
+			"webOrigins": [ "http://admin.127.0.0.1.nip.io/*" ],
 			"defaultClientScopes": [ "email", "profile" ],
 			"optionalClientScopes": []
 		}

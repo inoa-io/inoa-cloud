@@ -4,7 +4,7 @@ metadata:
   name: fleet-admin-ui
 spec:
   rules:
-    - host: ui.inoa.127.0.0.1.nip.io
+    - host: admin.127.0.0.1.nip.io
       http:
         paths:
           - path: /

@@ -4,7 +4,7 @@ metadata:
   name: fleet-registry-service
 spec:
   rules:
-    - host: registry.inoa.127.0.0.1.nip.io
+    - host: registry.127.0.0.1.nip.io
       http:
         paths:
           - path: /

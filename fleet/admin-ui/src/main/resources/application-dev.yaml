@@ -21,4 +21,4 @@ inoa:
         issuer: http://keycloak.127.0.0.1.nip.io/realms/inoa
         client-id: inoa-ui
         client-secret: changeMe
-      registry-url: http://registry.inoa.127.0.0.1.nip.io
+      registry-url: http://registry.127.0.0.1.nip.io

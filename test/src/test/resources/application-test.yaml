@@ -10,10 +10,10 @@ micronaut:
         url: http://keycloak.${test.host}
         logger-name: io.inoa.k3s.Keycloak
       registry-gateway:
-        url: http://registry.inoa.${test.host}
+        url: http://registry.${test.host}
         logger-name: io.inoa.fleet.Registry
       registry-management:
-        url: http://registry.inoa.${test.host}
+        url: http://registry.${test.host}
         logger-name: io.inoa.fleet.Registry
       admin-ui:
         url: http://ui.inoa.${test.host}
