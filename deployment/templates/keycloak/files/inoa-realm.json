@@ -52,15 +52,15 @@
 					"protocolMapper": "oidc-audience-mapper",
 					"config": {
 						"included.custom.audience": "inoa-registry",
-						"id.token.claim": "false",
+						"id.token.claim": "true",
 						"access.token.claim": "true"
 					}
 				}
 			],
 			"baseUrl": "http://ui.inoa.127.0.0.1.nip.io",
-			"redirectUris": [ "http://ui.inoa.127.0.0.1.nip.io/*" ],
+			"redirectUris": [ "http://ui.inoa.127.0.0.1.nip.io/*", "http://localhost:8080/oauth/callback/keycloak" ],
 			"webOrigins": [ "http://ui.inoa.127.0.0.1.nip.io/*" ],
-			"defaultClientScopes": [],
+			"defaultClientScopes": [ "email", "profile" ],
 			"optionalClientScopes": []
 		}
 	],

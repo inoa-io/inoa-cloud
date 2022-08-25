@@ -138,7 +138,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/GatewayPage'
         400:
-          description: Illegal sort, allowed only name,enabled
+          description: Illegal sort, allowed only name,enabled,created,updated
         401:
           description: Unauthorized
     post:

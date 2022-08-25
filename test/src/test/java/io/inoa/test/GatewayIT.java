@@ -27,7 +27,6 @@ import io.inoa.fleet.registry.management.GatewayUpdateVO;
 import io.inoa.fleet.telemetry.TelemetryRawVO;
 import io.inoa.junit.AbstractTest;
 
-@DisplayName("usecase")
 public class GatewayIT extends AbstractTest {
 
 	private static final UUID gatewayId = UUID.randomUUID();

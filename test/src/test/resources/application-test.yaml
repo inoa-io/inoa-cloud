@@ -15,6 +15,11 @@ micronaut:
       registry-management:
         url: http://registry.inoa.${test.host}
         logger-name: io.inoa.fleet.Registry
+      admin-ui:
+        url: http://ui.inoa.${test.host}
+        logger-name: io.inoa.fleet.Registry
+        follow-redirects: false
+        exception-on-error-status: false
 
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:

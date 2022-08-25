@@ -1,0 +1,153 @@
+body {
+	font-family: Roboto,Helvetica,Arial,sans-serif;
+	font-size: 15px;
+	line-height: 1.5;
+	color: #d8d9da;
+	background: #171819;
+	padding: 0;
+	margin: 0;
+}
+.center {
+	text-align: center;
+}
+a {
+	text-decoration: none;
+	color: #d8d9da;
+}
+a:hover {
+	color: #ffffff;
+	cursor: pointer;
+}
+a[target="_blank"]:after {
+	content: "\21D7";
+	margin-right: 10px;
+}
+button.a {
+	color: #d8d9da;
+	background: none;
+	border: none;
+	padding: 0;
+}
+button.a:hover {
+	color: #ffffff;
+	cursor: pointer;
+}
+label {
+	font-weight: bold;
+	margin-right: 5px;
+}
+
+header {
+	display: flow-root;
+	background: #212327;
+	padding: 10px;
+	font-size: 18px;
+}
+header div {
+	float: right;
+}
+header div:first-of-type {
+	float: left;
+}
+header div span.label {
+	font-weight: bold;
+	margin-left: 10px;
+}
+header div a {
+	font-weight: bold;
+	margin-right: 10px;
+}
+
+section {
+	padding: 15px;
+}
+section h1 {
+	padding: 15px;
+}
+section article {
+	display: block;
+	padding: 10px;
+	margin-bottom: 10px;
+	background-color: #333538;
+}
+section article.error {
+	background-color: red;
+	color: white;
+	font-weight: bold;
+}
+section article.success {
+	background-color: green;
+	color: white;
+	font-weight: bold;
+}
+section article input[type='date'] {
+	margin-right: 15px;
+}
+section article dl {
+	margin: 0;
+	display: grid;
+	grid-template-columns: 30px calc(100% - 30px);
+}
+section article dl dt {
+	font-weight: bold;
+}
+section article dl dd {
+	margin-left: 60px;
+}
+section table {
+	font-size: 14px;
+	margin-bottom: 10px;
+	background-color: #212124;
+	width: 100%;
+}
+section table tr {
+	background-color: #171819;
+}
+section table tr.error, section table tr.error a {
+	color: #d88282;
+}
+section table tr:nth-child(even) {
+	background-color: #333538;
+}
+section table tr td {
+	padding: 5px 10px;
+}
+section table tr td.right {
+	text-align: right;
+}
+section table thead tr th {
+	padding: 5px;
+	background-color: #727477;
+}
+section table thead tr th.sortAsc:after {
+	content: "\2193";
+}
+section table thead tr th.sortDesc:after {
+	content: "\2191";
+}
+section table tbody tr td span {
+	display: block;
+}
+section table tbody tr:hover {
+	filter: brightness(125%);
+	cursor: pointer;
+}
+section table tfoot tr td {
+	padding: 5px;
+	background-color: #727477;
+}
+section table tfoot tr td.paginator {
+	text-align: center;
+}
+section iframe {
+	width: 100%;
+	border: none;
+	height: 300px;
+}
+
+.enabled {
+	color: MediumSeaGreen !important;
+}
+.disabled {
+	color: Tomato !important;
+}
