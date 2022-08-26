@@ -43,7 +43,7 @@ spec:
       containers:
         - name: fleet-registry-service
           image: ghcr.io/inoa-io/fleet-registry-service
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: inoa-environment
@@ -61,10 +61,10 @@ spec:
             httpGet:
               path: /endpoints/health
               port: managment
-            initialDelaySeconds: 1
+            initialDelaySeconds: 10
             periodSeconds: 1
             successThreshold: 1
-            failureThreshold: 30
+            failureThreshold: 120
           readinessProbe:
             httpGet:
               path: /endpoints/health/readiness
