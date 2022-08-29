@@ -13,7 +13,7 @@ import io.inoa.fleet.mqtt.listener.TestListener;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.micronaut.test.support.TestPropertyProvider;
 
-@MicronautTest(transactional = false)
+@MicronautTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public abstract class AbstractMqttTest implements TestPropertyProvider {
