@@ -33,7 +33,7 @@ spec:
       containers:
         - name: measurement-telemetry-exporter
           image: ghcr.io/inoa-io/measurement-telemetry-exporter
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: inoa-environment
@@ -51,10 +51,10 @@ spec:
             httpGet:
               path: /endpoints/health
               port: managment
-            initialDelaySeconds: 1
+            initialDelaySeconds: 10
             periodSeconds: 1
             successThreshold: 1
-            failureThreshold: 30
+            failureThreshold: 120
           readinessProbe:
             httpGet:
               path: /endpoints/health/readiness
