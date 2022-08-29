@@ -56,4 +56,4 @@ spec:
               drop: [ALL]
       automountServiceAccountToken: true
       serviceAccountName: traefik
-      terminationGracePeriodSeconds: 0
+      terminationGracePeriodSeconds: 5

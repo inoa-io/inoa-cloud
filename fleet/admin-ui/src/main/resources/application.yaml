@@ -45,12 +45,11 @@ micronaut:
         url: ${inoa.fleet.admin-ui.registry-url}
         logger-name: io.inoa.fleet.client.Registry
         read-timeout: 5s
-        event-loop-group: client
 
   ## see https://docs.micronaut.io/latest/guide/index.html#clientBasics
   netty:
     event-loops:
-      client:
+      default:
         num-threads: 5
 
 ## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints

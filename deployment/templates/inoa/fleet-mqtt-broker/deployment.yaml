@@ -45,10 +45,23 @@ spec:
           securityContext:
             runAsUser: 10001
             runAsGroup: 10001
-            readOnlyRootFilesystem: false
+            readOnlyRootFilesystem: true
             privileged: false
             allowPrivilegeEscalation: false
             capabilities:
               drop: [ALL]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+            - name: tls
+              mountPath: /tls
+              readOnly: true
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 5
+      volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: tls
+          secret:
+            secretName: fleet-mqtt-broker-tls
+            optional: true

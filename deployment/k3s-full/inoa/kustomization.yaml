@@ -7,9 +7,3 @@ resources:
   - ../../templates/inoa/fleet-admin-ui
   - ../../templates/inoa/measurement-telemetry-translator
   - ../../templates/inoa/measurement-telemetry-exporter
-
-configMapGenerator:
-  - name: inoa-environment
-    literals:
-      - LOGGER_LEVELS_IO_INOA=TRACE
-      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
