@@ -28,7 +28,7 @@ spec:
               drop: [ALL]
       containers:
         - name: keycloak-realms
-          image: kokuwaio/keycloak:19
+          image: ghcr.io/kokuwaio/keycloak:19
           imagePullPolicy: IfNotPresent
           args:
             - import

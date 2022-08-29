@@ -49,7 +49,7 @@ spec:
               drop: [ALL]
       containers:
         - name: keycloak-server
-          image: kokuwaio/keycloak:19
+          image: ghcr.io/kokuwaio/keycloak:19
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
