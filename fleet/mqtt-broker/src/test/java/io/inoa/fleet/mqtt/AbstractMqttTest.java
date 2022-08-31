@@ -1,7 +1,12 @@
 package io.inoa.fleet.mqtt;
 
-import java.util.Map;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Map;
+import java.util.stream.StreamSupport;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestInstance;
@@ -31,5 +36,11 @@ public abstract class AbstractMqttTest implements TestPropertyProvider {
 			kafka.start();
 		}
 		return Map.of("kafka.bootstrap.servers", kafka.getBootstrapServers());
+	}
+
+	public static void assertHeader(ConsumerRecord<?, ?> record, String name, Object value) {
+		var headers = StreamSupport.stream(record.headers().headers(name).spliterator(), false).toList();
+		assertEquals(1, headers.size(), "header size for " + name);
+		assertArrayEquals(value.toString().getBytes(), headers.get(0).value(), "header value for " + name);
 	}
 }

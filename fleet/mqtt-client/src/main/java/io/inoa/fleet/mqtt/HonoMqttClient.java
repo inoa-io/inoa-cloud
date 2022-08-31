@@ -18,16 +18,19 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.fleet.telemetry.TelemetryRawVO;
+import lombok.Getter;
 import lombok.SneakyThrows;
 
 public class HonoMqttClient {
 
 	private final ObjectMapper mapper = new ObjectMapper();
+	@Getter
+	private final String clientId = "test" + UUID.randomUUID().toString();
 	private final MqttClient client;
 	private final MqttConnectOptions options;
 
 	public HonoMqttClient(String url, String tenantId, UUID gatewayId, byte[] psk) throws MqttException {
-		this.client = new MqttClient(url, "something", new MemoryPersistence());
+		this.client = new MqttClient(url, clientId, new MemoryPersistence());
 		this.options = new MqttConnectOptions();
 		this.options.setUserName(gatewayId + "@" + tenantId);
 		this.options.setPassword(new String(psk).toCharArray());
@@ -67,7 +70,10 @@ public class HonoMqttClient {
 
 	public void disconnect() throws MqttException {
 		client.disconnect();
+	}
 
+	public void disconnectWithoutNotification() throws MqttException {
+		client.disconnectForcibly(0, 0, false);
 	}
 
 	public HonoMqttClient publish(String topic, byte[] payload) throws MqttException {
