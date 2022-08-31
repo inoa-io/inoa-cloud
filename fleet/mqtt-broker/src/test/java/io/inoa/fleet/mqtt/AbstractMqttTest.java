@@ -18,7 +18,7 @@ import io.micronaut.test.support.TestPropertyProvider;
 @TestMethodOrder(MethodOrderer.DisplayName.class)
 public abstract class AbstractMqttTest implements TestPropertyProvider {
 
-	static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.1.2"));
+	static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.6"));
 
 	@BeforeEach
 	void clear(TestListener listener) {
