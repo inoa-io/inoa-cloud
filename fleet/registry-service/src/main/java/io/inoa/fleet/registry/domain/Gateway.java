@@ -49,4 +49,7 @@ public class Gateway {
 	@Transient
 	@Nullable
 	private List<GatewayProperty> properties;
+
+	@Relation(Relation.Kind.EMBEDDED)
+	private ConnectionStatus connectionStatus = new ConnectionStatus();
 }

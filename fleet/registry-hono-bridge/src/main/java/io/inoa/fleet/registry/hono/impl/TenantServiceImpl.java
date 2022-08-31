@@ -32,7 +32,7 @@ public class TenantServiceImpl implements TenantService {
 		return Future.succeededFuture(registryClient.findTenant(tenantId)
 				.map(tenant -> new Tenant()
 						.setEnabled(tenant.getEnabled())
-						.setDefaults(Map.of("tenantName", tenant.getName())))
+						.setDefaults(Map.of("tenant_id", tenant.getName())))
 				.map(tenant -> DeviceRegistryUtils.convertTenant(tenantId, tenant))
 				.map(json -> TenantResult.from(HttpURLConnection.HTTP_OK, json, properties.getTenantCache()))
 				.orElseGet(() -> TenantResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
