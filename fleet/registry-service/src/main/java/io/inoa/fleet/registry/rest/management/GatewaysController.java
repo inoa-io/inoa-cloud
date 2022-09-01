@@ -13,6 +13,8 @@ import io.inoa.fleet.registry.domain.GatewayGroup;
 import io.inoa.fleet.registry.domain.GatewayGroupRepository;
 import io.inoa.fleet.registry.domain.GatewayPropertyRepository;
 import io.inoa.fleet.registry.domain.GatewayRepository;
+import io.inoa.fleet.registry.domain.GatewayStatus;
+import io.inoa.fleet.registry.domain.GatewayStatusMqtt;
 import io.inoa.fleet.registry.domain.Group;
 import io.inoa.fleet.registry.domain.GroupRepository;
 import io.inoa.fleet.registry.domain.Tenant;
@@ -90,7 +92,8 @@ public class GatewaysController implements GatewaysApi {
 				.setGatewayId(UUID.randomUUID())
 				.setName(vo.getName())
 				.setEnabled(vo.getEnabled())
-				.setGroups(groups));
+				.setGroups(groups)
+				.setStatus(new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));
 
 		// create group assignments
 

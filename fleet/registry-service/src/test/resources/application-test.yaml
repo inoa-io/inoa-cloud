@@ -20,6 +20,12 @@ endpoints:
   all:
     enabled: false
 
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
+kafka:
+  consumers:
+    default:
+      metadata.max.age.ms: 200
+
 ## config for registry
 inoa.fleet.registry:
   # use random key and set issuer
