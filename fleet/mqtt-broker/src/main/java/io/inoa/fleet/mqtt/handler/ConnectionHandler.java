@@ -63,6 +63,9 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 	public void onDisconnect(InterceptDisconnectMessage message) {
 		Gateway.of(message.getUsername()).mdc(gateway -> {
 			log.debug("Gateway {}/{} disconnected", gateway.tenantId(), gateway.gatewayId());
+			// no event is emitted because this is triggered by a disconnect package from the client
+			// connection lost is alwyas triggered after this disconnect message
+			// disconnect event is created by `onConnectionLost`
 		});
 	}
 
