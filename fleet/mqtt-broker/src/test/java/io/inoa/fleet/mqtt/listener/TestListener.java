@@ -15,7 +15,7 @@ import org.awaitility.Awaitility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.mqtt.MqttHeader;
+import io.inoa.fleet.mqtt.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
@@ -60,7 +60,7 @@ public class TestListener {
 				connected ? "connected" : "disconnected",
 				mapper.readValue(record.value(), Map.class).get("cause"),
 				"cause");
-		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_EVENT_DC);
+		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_EVENT_DC);
 	}
 
 	@Topic(patterns = ".*")

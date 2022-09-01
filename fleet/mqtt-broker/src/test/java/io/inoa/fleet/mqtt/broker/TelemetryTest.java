@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.mqtt.AbstractMqttTest;
 import io.inoa.fleet.mqtt.HonoMqttClient;
-import io.inoa.fleet.mqtt.MqttHeader;
+import io.inoa.fleet.mqtt.KafkaHeader;
 import io.inoa.fleet.mqtt.MqttProperties;
 import io.inoa.fleet.mqtt.listener.TestListener;
 import jakarta.inject.Inject;
@@ -42,11 +42,11 @@ public class TelemetryTest extends AbstractMqttTest {
 		assertEquals("hono.telemetry." + tenantId, record.topic(), "topic");
 		assertEquals(record.key(), gatewayId, "key");
 		assertArrayEquals(record.value(), payload, "payload");
-		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
-		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
-		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_JSON);
-		assertHeader(record, MqttHeader.QOS, 1);
-		assertHeader(record, MqttHeader.ORIG_ADDRESS, "telemetry");
+		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
+		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON);
+		assertHeader(record, KafkaHeader.QOS, 1);
+		assertHeader(record, KafkaHeader.ORIG_ADDRESS, "telemetry");
 	}
 
 	@DisplayName("event message")
@@ -70,10 +70,10 @@ public class TelemetryTest extends AbstractMqttTest {
 		assertEquals("hono.event." + tenantId, record.topic(), "topic");
 		assertEquals(record.key(), gatewayId, "key");
 		assertArrayEquals(record.value(), payload, "payload");
-		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
-		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
-		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_JSON);
-		assertHeader(record, MqttHeader.QOS, 1);
-		assertHeader(record, MqttHeader.ORIG_ADDRESS, "event");
+		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
+		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON);
+		assertHeader(record, KafkaHeader.QOS, 1);
+		assertHeader(record, KafkaHeader.ORIG_ADDRESS, "event");
 	}
 }
