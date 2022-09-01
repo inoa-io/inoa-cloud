@@ -18,7 +18,7 @@ spec:
         fsGroup: 10001
       containers:
         - name: kafka
-          image: quay.io/strimzi/kafka:latest-kafka-2.8.1
+          image: quay.io/strimzi/kafka:latest-kafka-3.2.0
           imagePullPolicy: IfNotPresent
           command:
             - /bin/sh
