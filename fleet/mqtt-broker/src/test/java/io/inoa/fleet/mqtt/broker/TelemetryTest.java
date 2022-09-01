@@ -11,11 +11,12 @@ import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.mqtt.AbstractMqttTest;
 import io.inoa.fleet.mqtt.HonoMqttClient;
+import io.inoa.fleet.mqtt.MqttHeader;
 import io.inoa.fleet.mqtt.MqttProperties;
 import io.inoa.fleet.mqtt.listener.TestListener;
 import jakarta.inject.Inject;
 
-public class TelemtryTest extends AbstractMqttTest {
+public class TelemetryTest extends AbstractMqttTest {
 
 	@Inject
 	MqttProperties properties;
@@ -32,13 +33,20 @@ public class TelemtryTest extends AbstractMqttTest {
 
 		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
+		listener.awaitConnection(tenantId, gatewayId, true);
 		client.publishTelemetry(payload);
+		var record = listener.await(tenantId, gatewayId);
 		client.disconnect();
+		listener.awaitConnection(tenantId, gatewayId, false);
 
-		var record = listener.await();
 		assertEquals("hono.telemetry." + tenantId, record.topic(), "topic");
 		assertEquals(record.key(), gatewayId, "key");
 		assertArrayEquals(record.value(), payload, "payload");
+		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
+		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_JSON);
+		assertHeader(record, MqttHeader.QOS, 1);
+		assertHeader(record, MqttHeader.ORIG_ADDRESS, "telemetry");
 	}
 
 	@DisplayName("event message")
@@ -53,12 +61,19 @@ public class TelemtryTest extends AbstractMqttTest {
 
 		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
+		listener.awaitConnection(tenantId, gatewayId, true);
 		client.publishEvent(payload);
+		var record = listener.await(tenantId, gatewayId);
 		client.disconnect();
+		listener.awaitConnection(tenantId, gatewayId, false);
 
-		var record = listener.await();
 		assertEquals("hono.event." + tenantId, record.topic(), "topic");
 		assertEquals(record.key(), gatewayId, "key");
 		assertArrayEquals(record.value(), payload, "payload");
+		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
+		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_JSON);
+		assertHeader(record, MqttHeader.QOS, 1);
+		assertHeader(record, MqttHeader.ORIG_ADDRESS, "event");
 	}
 }
