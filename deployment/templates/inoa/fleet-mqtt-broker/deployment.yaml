@@ -23,6 +23,8 @@ spec:
                 name: fleet-mqtt-broker-environment
           ports:
             - name: mqtt
+              containerPort: 1883
+            - name: mqtts
               containerPort: 8883
             - name: managment
               containerPort: 8090
