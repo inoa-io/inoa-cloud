@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.fleet.mqtt.AbstractMqttTest;
 import io.inoa.fleet.mqtt.HonoMqttClient;
-import io.inoa.fleet.mqtt.MqttHeader;
+import io.inoa.fleet.mqtt.KafkaHeader;
 import io.inoa.fleet.mqtt.MqttProperties;
 import io.inoa.fleet.mqtt.listener.TestListener;
 import jakarta.inject.Inject;
@@ -43,10 +43,10 @@ public class ConnectTest extends AbstractMqttTest {
 		assertEquals(record.key(), gatewayId, "key");
 		assertEquals(mapper.readValue(record.value(), Map.class),
 				Map.of("cause", "connected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
-		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
-		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
-		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_EVENT_DC);
-		assertHeader(record, MqttHeader.QOS, 1);
+		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
+		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_EVENT_DC);
+		assertHeader(record, KafkaHeader.QOS, 1);
 
 		client.disconnect();
 		record = listener.await(tenantId, gatewayId);
@@ -54,10 +54,10 @@ public class ConnectTest extends AbstractMqttTest {
 		assertEquals(record.key(), gatewayId, "key");
 		assertEquals(mapper.readValue(record.value(), Map.class),
 				Map.of("cause", "disconnected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
-		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
-		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
-		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_EVENT_DC);
-		assertHeader(record, MqttHeader.QOS, 1);
+		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
+		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_EVENT_DC);
+		assertHeader(record, KafkaHeader.QOS, 1);
 	}
 
 	@DisplayName("connect & disconnect hard")
@@ -77,10 +77,10 @@ public class ConnectTest extends AbstractMqttTest {
 		assertEquals(record.key(), gatewayId, "key");
 		assertEquals(mapper.readValue(record.value(), Map.class),
 				Map.of("cause", "connected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
-		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
-		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
-		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_EVENT_DC);
-		assertHeader(record, MqttHeader.QOS, 1);
+		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
+		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_EVENT_DC);
+		assertHeader(record, KafkaHeader.QOS, 1);
 
 		client.disconnectWithoutNotification();
 		record = listener.await(tenantId, gatewayId);
@@ -88,9 +88,9 @@ public class ConnectTest extends AbstractMqttTest {
 		assertEquals(record.key(), gatewayId, "key");
 		assertEquals(mapper.readValue(record.value(), Map.class),
 				Map.of("cause", "disconnected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
-		assertHeader(record, MqttHeader.TENANT_ID, tenantId);
-		assertHeader(record, MqttHeader.DEVICE_ID, gatewayId);
-		assertHeader(record, MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_EVENT_DC);
-		assertHeader(record, MqttHeader.QOS, 1);
+		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
+		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
+		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_EVENT_DC);
+		assertHeader(record, KafkaHeader.QOS, 1);
 	}
 }
