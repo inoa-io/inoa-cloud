@@ -9,7 +9,7 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 
 import io.inoa.fleet.mqtt.Gateway;
-import io.inoa.fleet.mqtt.MqttHeader;
+import io.inoa.fleet.mqtt.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptPublishMessage;
@@ -54,12 +54,12 @@ public class MessageHandler extends AbstractInterceptHandler {
 			var payload = new byte[message.getPayload().readableBytes()];
 			message.getPayload().readBytes(payload);
 			var headers = List.<Header>of(
-					new RecordHeader(MqttHeader.TENANT_ID, gateway.tenantId().getBytes()),
-					new RecordHeader(MqttHeader.DEVICE_ID, gateway.gatewayId().toString().getBytes()),
-					new RecordHeader(MqttHeader.CONTENT_TYPE, MqttHeader.CONTENT_TYPE_JSON.getBytes()),
-					new RecordHeader(MqttHeader.CREATION_TIME, String.valueOf(System.currentTimeMillis()).getBytes()),
-					new RecordHeader(MqttHeader.ORIG_ADDRESS, message.getTopicName().getBytes()),
-					new RecordHeader(MqttHeader.QOS, String.valueOf(message.getQos().value()).getBytes()));
+					new RecordHeader(KafkaHeader.TENANT_ID, gateway.tenantId().getBytes()),
+					new RecordHeader(KafkaHeader.DEVICE_ID, gateway.gatewayId().toString().getBytes()),
+					new RecordHeader(KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON.getBytes()),
+					new RecordHeader(KafkaHeader.CREATION_TIME, String.valueOf(System.currentTimeMillis()).getBytes()),
+					new RecordHeader(KafkaHeader.ORIG_ADDRESS, message.getTopicName().getBytes()),
+					new RecordHeader(KafkaHeader.QOS, String.valueOf(message.getQos().value()).getBytes()));
 
 			try {
 				producer.send(new ProducerRecord<>(topic, null, key, payload, headers)).get();

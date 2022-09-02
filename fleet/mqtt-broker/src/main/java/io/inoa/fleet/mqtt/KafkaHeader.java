@@ -3,7 +3,7 @@ package io.inoa.fleet.mqtt;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class MqttHeader {
+public class KafkaHeader {
 
 	public String TENANT_ID = "tenant_id";
 	public String DEVICE_ID = "device_id";
