@@ -12,6 +12,8 @@ import io.inoa.fleet.registry.domain.Credential;
 import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
+import io.inoa.fleet.registry.domain.GatewayStatus;
+import io.inoa.fleet.registry.domain.GatewayStatusMqtt;
 import io.inoa.fleet.registry.domain.TenantRepository;
 import io.inoa.fleet.registry.rest.management.CredentialTypeVO;
 import io.inoa.fleet.registry.rest.mapper.ConfigurationMapper;
@@ -72,7 +74,8 @@ public class GatewayController implements GatewayApi {
 					.setGatewayId(vo.getGatewayId())
 					.setName(vo.getGatewayName())
 					.setEnabled(false)
-					.setGroups(List.of()));
+					.setGroups(List.of())
+					.setStatus(new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));
 			credentialRepository.save(new Credential()
 					.setCredentialId(UUID.randomUUID())
 					.setGateway(gateway)
