@@ -22,7 +22,9 @@ endpoints:
 
 ## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
 kafka:
-  enabled: false
+  consumers:
+    default:
+      metadata.max.age.ms: 200
 
 ## config for registry
 inoa.fleet.registry:
@@ -50,5 +52,6 @@ inoa.fleet.registry:
 logger:
   levels:
     io.inoa: INFO
+    io.micronaut: INFO
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"

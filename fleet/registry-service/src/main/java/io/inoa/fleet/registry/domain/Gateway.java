@@ -37,6 +37,8 @@ public class Gateway {
 	private String name;
 	@MappedProperty
 	private Boolean enabled;
+	@Relation(Relation.Kind.EMBEDDED)
+	private GatewayStatus status;
 
 	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant created;

@@ -34,6 +34,8 @@ import io.inoa.fleet.registry.domain.GatewayGroupRepository;
 import io.inoa.fleet.registry.domain.GatewayProperty;
 import io.inoa.fleet.registry.domain.GatewayPropertyRepository;
 import io.inoa.fleet.registry.domain.GatewayRepository;
+import io.inoa.fleet.registry.domain.GatewayStatus;
+import io.inoa.fleet.registry.domain.GatewayStatusMqtt;
 import io.inoa.fleet.registry.domain.Group;
 import io.inoa.fleet.registry.domain.GroupConfiguration;
 import io.inoa.fleet.registry.domain.GroupConfigurationRepository;
@@ -188,11 +190,12 @@ public class Data {
 	}
 
 	public Gateway gateway(Tenant tenant, String name, boolean enabled, List<Group> groups) {
-		Gateway gateway = gatewayRepository.save(new Gateway()
+		var gateway = gatewayRepository.save(new Gateway()
 				.setGatewayId(UUID.randomUUID())
 				.setTenant(tenant)
 				.setName(name)
-				.setEnabled(enabled));
+				.setEnabled(enabled)
+				.setStatus(new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));
 		if (!groups.isEmpty()) {
 			gatewayGroupRepository.saveAll(groups.stream()
 					.map(group -> new GatewayGroup().setGateway(gateway).setGroup(group))
