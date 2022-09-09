@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -135,6 +136,7 @@ public class Data {
 				.setTenantId(tenantId)
 				.setName(tenantName())
 				.setEnabled(enabled)
+				.setGatewayIdPattern("^GW\\-[0-9]+$")
 				.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
 				.setUpdated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
 				.setDeleted(deleted ? Instant.now().truncatedTo(ChronoUnit.MILLIS) : null));
@@ -156,7 +158,7 @@ public class Data {
 	}
 
 	public String gatewayId() {
-		return "A" + UUID.randomUUID().toString().substring(0, 19).toUpperCase();
+		return "GW-" + new Random().nextLong(1000000000);
 	}
 
 	public String gatewayName() {

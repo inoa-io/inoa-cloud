@@ -3,6 +3,7 @@ package io.inoa.fleet.registry.rest.gateway;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import javax.validation.Valid;
 
@@ -61,6 +62,10 @@ public class GatewayController implements GatewayApi {
 			MDC.put("tenantId", tenant.getTenantId());
 			MDC.put("gatewayId", vo.getGatewayId());
 
+			var gatewayIdPattern = tenant.getGatewayIdPattern();
+			if (!Pattern.matches(gatewayIdPattern, vo.getGatewayId())) {
+				throw new HttpStatusException(HttpStatus.BAD_REQUEST, "GatewayId must match " + gatewayIdPattern + ".");
+			}
 			if (gatewayRepository.findByGatewayId(vo.getGatewayId()).isPresent()) {
 				throw new HttpStatusException(HttpStatus.CONFLICT, "GatewayId already exists.");
 			}

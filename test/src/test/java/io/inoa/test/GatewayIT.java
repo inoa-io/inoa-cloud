@@ -29,7 +29,7 @@ import io.inoa.junit.AbstractTest;
 
 public class GatewayIT extends AbstractTest {
 
-	private static final String gatewayId = "GW-" + System.currentTimeMillis();
+	private static final String gatewayId = gatewayId();
 	private static final byte[] preSharedKey = UUID.randomUUID().toString().getBytes();
 	private static GatewayClient gatewayClient;
 

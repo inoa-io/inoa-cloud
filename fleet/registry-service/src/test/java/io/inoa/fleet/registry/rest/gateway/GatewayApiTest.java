@@ -170,6 +170,20 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assert400(() -> client.register(new RegisterVO()));
 	}
 
+	@DisplayName("register(400): gatewayId is invalid")
+	@Test
+	public void register400GatewayIdInvalid() {
+		var vo = new RegisterVO()
+				.gatewayId("NOPE")
+				.gatewayName(data.gatewayName())
+				.credentialType(CredentialTypeVO.PSK)
+				.credentialValue(UUID.randomUUID().toString().getBytes());
+		var tenant = data.tenant("inoa");
+		var error = assert400(() -> client.register(vo));
+		assertEquals("GatewayId must match " + tenant.getGatewayIdPattern() + ".", error.getMessage());
+		assertEquals(0, data.countGateways(), "created");
+	}
+
 	@DisplayName("register(400): rsa key invalid")
 	@Disabled
 	@Test

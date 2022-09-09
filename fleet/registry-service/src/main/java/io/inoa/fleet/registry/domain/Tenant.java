@@ -27,6 +27,8 @@ public class Tenant {
 	private String name;
 	@MappedProperty
 	private Boolean enabled;
+	@MappedProperty
+	private String gatewayIdPattern;
 
 	@MappedProperty
 	private Instant created;

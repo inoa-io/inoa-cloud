@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -76,6 +77,10 @@ public class GatewaysController implements GatewaysApi {
 
 		// check name for uniqueness
 
+		var gatewayIdPattern = tenant.getGatewayIdPattern();
+		if (!Pattern.matches(gatewayIdPattern, vo.getGatewayId())) {
+			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "GatewayId must match " + gatewayIdPattern + ".");
+		}
 		if (gatewayRepository.existsByTenantAndName(tenant, vo.getName())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
 		}

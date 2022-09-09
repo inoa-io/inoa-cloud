@@ -211,6 +211,16 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		assertEquals(0, data.countGateways(), "created");
 	}
 
+	@DisplayName("createGateway(400): gatewayId is invalid")
+	@Test
+	public void createGateway400GatewayIdInvalid() {
+		var vo = new GatewayCreateVO().gatewayId("NOPE").name(data.gatewayName());
+		var tenant = data.tenant();
+		var error = assert400(() -> client.createGateway(auth(tenant), vo));
+		assertEquals("GatewayId must match " + tenant.getGatewayIdPattern() + ".", error.getMessage());
+		assertEquals(0, data.countGateways(), "created");
+	}
+
 	@DisplayName("createGateway(400): group not exists")
 	@Test
 	public void createGateway400GroupNotExists() {
