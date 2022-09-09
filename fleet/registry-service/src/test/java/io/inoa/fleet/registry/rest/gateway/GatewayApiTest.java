@@ -103,7 +103,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		var auth = auth(tenant);
 
 		var vo = new RegisterVO()
-				.gatewayId(UUID.randomUUID())
+				.gatewayId(data.gatewayId())
 				.gatewayName(data.gatewayName())
 				.credentialType(CredentialTypeVO.PSK)
 				.credentialValue(UUID.randomUUID().toString().getBytes());
@@ -137,7 +137,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		var auth = auth(tenant);
 
 		var vo = new RegisterVO()
-				.gatewayId(UUID.randomUUID())
+				.gatewayId(data.gatewayId())
 				.gatewayName(data.gatewayName())
 				.credentialType(CredentialTypeVO.RSA)
 				.credentialValue(UUID.randomUUID().toString().getBytes());
@@ -193,7 +193,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	public void register409Name() {
 		var tenant = data.tenant("inoa");
 		var vo = new RegisterVO()
-				.gatewayId(UUID.randomUUID())
+				.gatewayId(data.gatewayId())
 				.gatewayName(data.gateway(tenant).getName())
 				.credentialType(CredentialTypeVO.PSK)
 				.credentialValue(UUID.randomUUID().toString().getBytes());

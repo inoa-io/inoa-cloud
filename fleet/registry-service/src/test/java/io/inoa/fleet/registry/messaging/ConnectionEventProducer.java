@@ -32,7 +32,7 @@ public interface ConnectionEventProducer {
 	@Topic("hono.event.test")
 	void send(
 			@MessageHeader(KafkaHeader.TENANT_ID) String tenantId,
-			@MessageHeader(KafkaHeader.DEVICE_ID) UUID gatewayId,
+			@MessageHeader(KafkaHeader.DEVICE_ID) String gatewayId,
 			@MessageHeader(KafkaHeader.CONTENT_TYPE) String contentType,
 			@MessageHeader(KafkaHeader.CREATION_TIME) String timestampMillis,
 			String body);

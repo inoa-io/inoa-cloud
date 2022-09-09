@@ -44,7 +44,7 @@ public class AuthTokenService {
 	 * @return Signed JWT.
 	 * @see "https://tools.ietf.org/html/rfc7523#section-4"
 	 */
-	public String createToken(UUID gatewayId) {
+	public String createToken(String gatewayId) {
 
 		var now = Instant.now(clock);
 		var authProperties = properties.getAuth();
@@ -52,7 +52,7 @@ public class AuthTokenService {
 		// claims for gateway
 
 		var claims = new JWTClaimsSet.Builder()
-				.subject(gatewayId.toString())
+				.subject(gatewayId)
 				.issuer(authProperties.getIssuer())
 				.issueTime(Date.from(now))
 				.notBeforeTime(Date.from(now))
@@ -73,7 +73,7 @@ public class AuthTokenService {
 		}
 	}
 
-	public Optional<UUID> validateToken(String token) {
+	public Optional<String> validateToken(String token) {
 		try {
 
 			// parse token
@@ -119,7 +119,7 @@ public class AuthTokenService {
 				return Optional.empty();
 			}
 
-			return Optional.of(UUID.fromString(subject));
+			return Optional.of(subject);
 		} catch (ParseException e) {
 			log.debug("Failed to parse token payload: {}", e.getMessage());
 			return Optional.empty();

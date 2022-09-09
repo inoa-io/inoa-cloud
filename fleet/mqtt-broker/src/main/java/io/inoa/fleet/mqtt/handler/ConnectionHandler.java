@@ -79,7 +79,7 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 
 	private void event(String clientId, Gateway gateway, boolean connected) {
 
-		var key = gateway.gatewayId().toString();
+		var key = gateway.gatewayId();
 		var topic = "hono.event." + gateway.tenantId();
 		var payload = Map.of(
 				"cause", connected ? "connected" : "disconnected",
@@ -87,7 +87,7 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 				"source", "inoa-mqtt");
 		var headers = List.<Header>of(
 				new RecordHeader(KafkaHeader.TENANT_ID, gateway.tenantId().getBytes()),
-				new RecordHeader(KafkaHeader.DEVICE_ID, gateway.gatewayId().toString().getBytes()),
+				new RecordHeader(KafkaHeader.DEVICE_ID, gateway.gatewayId().getBytes()),
 				new RecordHeader(KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_EVENT_DC.getBytes()),
 				new RecordHeader(KafkaHeader.CREATION_TIME, String.valueOf(System.currentTimeMillis()).getBytes()),
 				new RecordHeader(KafkaHeader.QOS, "1".getBytes()));

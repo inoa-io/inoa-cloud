@@ -33,7 +33,7 @@ public class InfluxDBListenerTest extends AbstractTest {
 
 		var telemetry = new TelemetryVO()
 				.tenantId("inoa")
-				.gatewayId(UUID.randomUUID())
+				.gatewayId("GW-0001")
 				.urn("urn")
 				.deviceId(UUID.randomUUID().toString())
 				.deviceType(UUID.randomUUID().toString())
@@ -53,8 +53,8 @@ public class InfluxDBListenerTest extends AbstractTest {
 		var record = table.getRecords().get(0);
 		assertAll("record",
 				() -> assertEquals("inoa", record.getMeasurement(), "measurement"),
-				() -> assertEquals(telemetry.getTenantId().toString(), record.getValueByKey("tenant_id"), "tenant_id"),
-				() -> assertEquals(telemetry.getGatewayId().toString(), record.getValueByKey("gateway_id"),
+				() -> assertEquals(telemetry.getTenantId(), record.getValueByKey("tenant_id"), "tenant_id"),
+				() -> assertEquals(telemetry.getGatewayId(), record.getValueByKey("gateway_id"),
 						"gateway_id"),
 				() -> assertEquals(telemetry.getUrn(), record.getValueByKey("urn"), "urn"),
 				() -> assertEquals(telemetry.getDeviceId(), record.getValueByKey("device_id"), "device_id"),

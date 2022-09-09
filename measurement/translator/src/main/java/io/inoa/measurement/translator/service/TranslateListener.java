@@ -1,8 +1,6 @@
 package io.inoa.measurement.translator.service;
 
 import java.util.Optional;
-import java.util.UUID;
-import java.util.regex.Pattern;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
@@ -26,41 +24,23 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TranslateListener {
 
-	private static final String PATTERN_TENANT_ID = "^[a-z0-9\\-]{4,30}$";
-	private static final String PATTERN_UUID = "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$";
-
 	private final Validator validator;
-	private final ObjectMapper objectMapper;
+	private final ObjectMapper mapper;
 	private final TranslateService service;
 	private final TranslateMetrics metrics;
-	private final Producer<UUID, TelemetryVO> producer;
+	private final Producer<String, TelemetryVO> producer;
 
 	@Topic(patterns = "hono\\.telemetry\\..*")
 	void receive(ConsumerRecord<String, String> record) {
 
 		var tenantId = record.topic().substring(15);
-		var key = record.key();
+		var gatewayId = record.key();
 		var payload = record.value();
 
 		try {
 
 			MDC.put("tenantId", tenantId);
-			MDC.put("gatewayId", key);
-
-			// get tenantId and gatewayId from message record
-
-			if (!Pattern.matches(PATTERN_TENANT_ID, tenantId)) {
-				log.warn("Got record with unparseable topic: {}", tenantId);
-				metrics.counterFailTenantId(tenantId).increment();
-				return;
-			}
-
-			if (!Pattern.matches(PATTERN_UUID, key)) {
-				log.warn("Got record with unparseable key: {}", key);
-				metrics.counterFailGatewayId(tenantId).increment();
-				return;
-			}
-			var gatewayId = UUID.fromString(key);
+			MDC.put("gatewayId", gatewayId);
 
 			// parse payload, convert and publish
 
@@ -83,7 +63,7 @@ public class TranslateListener {
 
 		TelemetryRawVO message = null;
 		try {
-			message = objectMapper.readValue(payload, TelemetryRawVO.class);
+			message = mapper.readValue(payload, TelemetryRawVO.class);
 		} catch (JsonProcessingException e) {
 			log.warn("Retrieved invalid payload: {}", payload);
 			metrics.counterFailMessageRead(tenantId).increment();

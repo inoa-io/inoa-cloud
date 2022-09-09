@@ -37,8 +37,7 @@ components:
         gateway_id:
           description: 'Id of gateway @ tenant.'
           type: string
-          format: uuid
-          example: 10001
+          example: GW-00001
         urn:
           description: 'TODO'
           type: string

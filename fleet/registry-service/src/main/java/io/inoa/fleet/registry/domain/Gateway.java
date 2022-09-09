@@ -3,7 +3,6 @@ package io.inoa.fleet.registry.domain;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.UUID;
 
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.DateCreated;
@@ -32,7 +31,7 @@ public class Gateway {
 	@Relation(Relation.Kind.MANY_TO_ONE)
 	private Tenant tenant;
 	@MappedProperty
-	private UUID gatewayId;
+	private String gatewayId;
 	@MappedProperty
 	private String name;
 	@MappedProperty

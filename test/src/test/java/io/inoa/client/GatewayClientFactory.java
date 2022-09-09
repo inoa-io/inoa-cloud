@@ -37,7 +37,7 @@ public class GatewayClientFactory {
 	private final GatewayApiClient gatewayClient;
 	private final PropertiesApiClient propertiesClient;
 
-	public GatewayClient get(UUID gatewayId, byte[] preSharedKey) {
+	public GatewayClient get(String gatewayId, byte[] preSharedKey) {
 		return new GatewayClient(gatewayId, preSharedKey);
 	}
 
@@ -47,7 +47,7 @@ public class GatewayClientFactory {
 		@Getter
 		private final String tenantId = "inoa";
 		@Getter
-		private final UUID gatewayId;
+		private final String gatewayId;
 		private final byte[] preSharedKey;
 
 		private String token;
@@ -63,7 +63,7 @@ public class GatewayClientFactory {
 			var claims = new JWTClaimsSet.Builder()
 					.audience("gateway-registry")
 					.jwtID(UUID.randomUUID().toString())
-					.issuer(gatewayId.toString())
+					.issuer(gatewayId)
 					.issueTime(Date.from(now))
 					.notBeforeTime(Date.from(now))
 					.expirationTime(Date.from(now.plusSeconds(10)));

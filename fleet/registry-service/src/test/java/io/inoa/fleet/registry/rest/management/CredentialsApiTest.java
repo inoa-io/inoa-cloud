@@ -45,7 +45,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	@Test
 	@Override
 	public void findCredentials401() {
-		assert401(() -> client.findCredentials(null, UUID.randomUUID()));
+		assert401(() -> client.findCredentials(null, data.gatewayId()));
 	}
 
 	@DisplayName("findCredentials(404): not found")
@@ -54,7 +54,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	public void findCredentials404() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		assert404("Gateway not found.", () -> client.findCredentials(auth(tenant), UUID.randomUUID()));
+		assert404("Gateway not found.", () -> client.findCredentials(auth(tenant), data.gatewayId()));
 		assert404("Gateway not found.", () -> client.findCredentials(auth(data.tenant()), gateway.getGatewayId()));
 	}
 
@@ -81,7 +81,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	@Test
 	@Override
 	public void findCredential401() {
-		assert401(() -> client.findCredential(null, UUID.randomUUID(), UUID.randomUUID()));
+		assert401(() -> client.findCredential(null, data.gatewayId(), UUID.randomUUID()));
 	}
 
 	@DisplayName("findCredential(404): not found")
@@ -98,7 +98,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
 		assert404("Credential not found.", () -> client.findCredential(auth, gatewayId, UUID.randomUUID()));
-		assert404("Gateway not found.", () -> client.findCredential(auth, UUID.randomUUID(), credentialId));
+		assert404("Gateway not found.", () -> client.findCredential(auth, data.gatewayId(), credentialId));
 		assert404("Gateway not found.", () -> client.findCredential(authOther, gatewayId, credentialId));
 	}
 
@@ -169,7 +169,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	@Test
 	@Override
 	public void createCredential401() {
-		assert401(() -> client.createCredential(null, UUID.randomUUID(), new CredentialCreateVO()));
+		assert401(() -> client.createCredential(null, data.gatewayId(), new CredentialCreateVO()));
 	}
 
 	@DisplayName("createCredential(404): not found")
@@ -182,7 +182,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 				.name(data.credentialName())
 				.type(CredentialTypeVO.PSK)
 				.value(UUID.randomUUID().toString().getBytes());
-		assert404("Gateway not found.", () -> client.createCredential(auth(tenant), UUID.randomUUID(), vo));
+		assert404("Gateway not found.", () -> client.createCredential(auth(tenant), data.gatewayId(), vo));
 		assert404("Gateway not found.", () -> client.createCredential(auth(data.tenant()), gateway.getGatewayId(), vo));
 		assertEquals(0, data.countCredentials(gateway), "created");
 	}
@@ -351,7 +351,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assert404("Credential not found.",
 				() -> client.updateCredential(auth(tenant), gatewayId, UUID.randomUUID(), vo));
 		assert404("Gateway not found.",
-				() -> client.updateCredential(auth(tenant), UUID.randomUUID(), credentialId, vo));
+				() -> client.updateCredential(auth(tenant), data.gatewayId(), credentialId, vo));
 		assert404("Gateway not found.",
 				() -> client.updateCredential(auth(data.tenant()), gatewayId, credentialId, vo));
 	}
@@ -394,7 +394,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	@Test
 	@Override
 	public void deleteCredential401() {
-		assert401(() -> client.deleteCredential(null, UUID.randomUUID(), UUID.randomUUID()));
+		assert401(() -> client.deleteCredential(null, data.gatewayId(), UUID.randomUUID()));
 	}
 
 	@DisplayName("deleteCredential(404): not found")
@@ -411,7 +411,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
 		assert404("Credential not found.", () -> client.deleteCredential(auth, gatewayId, UUID.randomUUID()));
-		assert404("Gateway not found.", () -> client.deleteCredential(auth, UUID.randomUUID(), credentialId));
+		assert404("Gateway not found.", () -> client.deleteCredential(auth, data.gatewayId(), credentialId));
 		assert404("Gateway not found.", () -> client.deleteCredential(authOther, gatewayId, credentialId));
 		assertEquals(1, data.countCredentials(gateway), "deleted");
 	}

@@ -2,11 +2,11 @@ package io.inoa.fleet.mqtt.listener;
 
 import static io.inoa.fleet.mqtt.AbstractMqttTest.assertHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -32,27 +32,25 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class TestListener {
 
-	private final List<ConsumerRecord<UUID, byte[]>> records = new ArrayList<>();
+	private final List<ConsumerRecord<String, byte[]>> records = new ArrayList<>();
 	private final ObjectMapper mapper = new ObjectMapper();
 
 	public void clear() {
 		records.clear();
 	}
 
-	public ConsumerRecord<UUID, byte[]> await(String tenantId, UUID gatewayId) {
-		Awaitility
-				.await()
-				.pollDelay(500, TimeUnit.MILLISECONDS)
-				.until(() -> !records.stream()
-						.allMatch(r -> r.topic().endsWith("." + tenantId) && r.key() == gatewayId));
+	public ConsumerRecord<String, byte[]> await(String tenantId, String gatewayId) {
+		Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS).until(() -> !records.isEmpty());
 		assertEquals(1, records.size(), "expected only one entry");
 		var record = records.get(0);
 		records.remove(record);
+		assertEquals(gatewayId, record.key(), "gatewayId");
+		assertTrue(record.topic().endsWith(tenantId), "tenantId");
 		return record;
 	}
 
 	@SneakyThrows
-	public void awaitConnection(String tenantId, UUID gatewayId, boolean connected) {
+	public void awaitConnection(String tenantId, String gatewayId, boolean connected) {
 		var record = await(tenantId, gatewayId);
 		assertEquals("hono.event." + tenantId, record.topic(), "topic");
 		assertEquals(gatewayId, record.key(), "key");
@@ -64,7 +62,7 @@ public class TestListener {
 	}
 
 	@Topic(patterns = ".*")
-	public void receive(ConsumerRecord<UUID, byte[]> record) {
+	public void receive(ConsumerRecord<String, byte[]> record) {
 		log.info("Retrieved record from {} with key: {}", record.topic(), record.key(), record.value());
 		records.add(record);
 	}

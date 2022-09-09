@@ -51,8 +51,8 @@ public class ConnectionEventListenerTest extends AbstractKafkaTest {
 	@DisplayName("fail: invalid content-type")
 	@Test
 	void failContentType() {
-		var tenantId = UUID.randomUUID().toString();
-		var gatewayId = UUID.randomUUID();
+		var tenantId = data.tenantName();
+		var gatewayId = data.gatewayId();
 		var timestamp = String.valueOf(Instant.now().toEpochMilli());
 		var contentType = "unkown";
 		var body = UUID.randomUUID().toString();
@@ -63,8 +63,8 @@ public class ConnectionEventListenerTest extends AbstractKafkaTest {
 	@DisplayName("fail: invalid body - not json")
 	@Test
 	void failInvalidBodyJson() {
-		var tenantId = UUID.randomUUID().toString();
-		var gatewayId = UUID.randomUUID();
+		var tenantId = data.tenantName();
+		var gatewayId = data.gatewayId();
 		var timestamp = String.valueOf(Instant.now().toEpochMilli());
 		var contentType = KafkaHeader.CONTENT_TYPE_EVENT_DC;
 		var body = "{this is not a valid json";
@@ -75,8 +75,8 @@ public class ConnectionEventListenerTest extends AbstractKafkaTest {
 	@DisplayName("fail: invalid body - no cause")
 	@Test
 	void failInvalidBodyCause() {
-		var tenantId = UUID.randomUUID().toString();
-		var gatewayId = UUID.randomUUID();
+		var tenantId = data.tenantName();
+		var gatewayId = data.gatewayId();
 		var timestamp = String.valueOf(Instant.now().toEpochMilli());
 		var contentType = KafkaHeader.CONTENT_TYPE_EVENT_DC;
 		var body = "{\"remote-id\": \"nope\"}";
@@ -87,8 +87,8 @@ public class ConnectionEventListenerTest extends AbstractKafkaTest {
 	@DisplayName("fail: gateway not exists")
 	@Test
 	void failInvalidGatewayNotExists() {
-		var tenantId = UUID.randomUUID().toString();
-		var gatewayId = UUID.randomUUID();
+		var tenantId = data.tenantName();
+		var gatewayId = data.gatewayId();
 		var timestamp = String.valueOf(Instant.now().toEpochMilli());
 		var contentType = KafkaHeader.CONTENT_TYPE_EVENT_DC;
 		var body = "{\"cause\": \"connected\"}";

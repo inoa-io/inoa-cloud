@@ -66,7 +66,7 @@ public class GatewaysController implements GatewaysApi {
 	}
 
 	@Override
-	public HttpResponse<GatewayDetailVO> findGateway(UUID gatewayId) {
+	public HttpResponse<GatewayDetailVO> findGateway(String gatewayId) {
 		return HttpResponse.ok(toGatewayDetail(getGateway(gatewayId)));
 	}
 
@@ -89,7 +89,7 @@ public class GatewaysController implements GatewaysApi {
 
 		var gateway = gatewayRepository.save(new Gateway()
 				.setTenant(tenant)
-				.setGatewayId(UUID.randomUUID())
+				.setGatewayId(vo.getGatewayId())
 				.setName(vo.getName())
 				.setEnabled(vo.getEnabled())
 				.setGroups(groups)
@@ -108,7 +108,7 @@ public class GatewaysController implements GatewaysApi {
 	}
 
 	@Override
-	public HttpResponse<GatewayDetailVO> updateGateway(UUID gatewayId, @Valid GatewayUpdateVO vo) {
+	public HttpResponse<GatewayDetailVO> updateGateway(String gatewayId, @Valid GatewayUpdateVO vo) {
 
 		var gateway = getGateway(gatewayId);
 		var changed = false;
@@ -169,14 +169,14 @@ public class GatewaysController implements GatewaysApi {
 	}
 
 	@Override
-	public HttpResponse<Object> deleteGateway(UUID gatewayId) {
+	public HttpResponse<Object> deleteGateway(String gatewayId) {
 		var gateway = getGateway(gatewayId);
 		gatewayRepository.delete(gateway);
 		log.info("Gateway {} deleted.", gateway.getName());
 		return HttpResponse.noContent();
 	}
 
-	private Gateway getGateway(UUID gatewayId) {
+	private Gateway getGateway(String gatewayId) {
 		var optional = gatewayRepository.findByTenantAndGatewayId(security.getTenant(), gatewayId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");

@@ -240,13 +240,20 @@ components:
       example:
         test-a: this-is-a
         test-b: this-is-b
+    GatewayId:
+      description: Id as technical reference (never changes).
+      type: string
+      minLength: 4
+      maxLength: 20
+      pattern: ^[A-Z][A-Z0-9\-_]{3,19}$
+      example: GW-00001
     GatewayName:
       description: Human friendly shortname (can change).
       type: string
       minLength: 3
       maxLength: 32
-      pattern: ^[a-zA-Z0-9\-]*$
-      example: GW-00001
+      pattern: ^[a-zA-Z0-9\-]{3,32}$
+      example: Some gateway name
     CredentialType:
       description: Types of supported credentials.
       type: string
@@ -261,9 +268,7 @@ components:
       description: Contains all informations needed to create a new gateway.
       properties:
         gateway_id:
-          description: Id as technical reference (never changes).
-          type: string
-          format: uuid
+          $ref: '#/components/schemas/GatewayId'
         gateway_name:
           $ref: '#/components/schemas/GatewayName'
         credential_type:

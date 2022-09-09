@@ -361,7 +361,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	@Test
 	@Override
 	public void findConfigurationsByGateway401() {
-		assert401(() -> client.findConfigurationsByGateway(null, UUID.randomUUID()));
+		assert401(() -> client.findConfigurationsByGateway(null, data.gatewayId()));
 	}
 
 	@DisplayName("findConfigurationsByGateway(404): not found")
@@ -370,7 +370,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void findConfigurationsByGateway404() {
 		var tenant = data.tenant();
 		var gatewayId = data.gateway(tenant).getGatewayId();
-		assert404("Gateway not found.", () -> client.findConfigurationsByGateway(auth(tenant), UUID.randomUUID()));
+		assert404("Gateway not found.", () -> client.findConfigurationsByGateway(auth(tenant), data.gatewayId()));
 		assert404("Gateway not found.", () -> client.findConfigurationsByGateway(auth(data.tenant()), gatewayId));
 	}
 
@@ -535,7 +535,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
 		assert404("Definition not found.", () -> client.setConfigurationByGateway(auth, gatewayId, "nope", vo));
-		assert404("Gateway not found.", () -> client.setConfigurationByGateway(auth, UUID.randomUUID(), key, vo));
+		assert404("Gateway not found.", () -> client.setConfigurationByGateway(auth, data.gatewayId(), key, vo));
 		assert404("Gateway not found.", () -> client.setConfigurationByGateway(authOther, gatewayId, key, vo));
 		assertTrue(assert200(() -> client.findConfigurationsByGateway(auth(tenant), gatewayId)).isEmpty());
 	}
@@ -663,7 +663,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
 		assert404("Definition not found.", () -> client.resetConfigurationByGateway(auth, gatewayId, "nope"));
-		assert404("Gateway not found.", () -> client.resetConfigurationByGateway(auth, UUID.randomUUID(), key));
+		assert404("Gateway not found.", () -> client.resetConfigurationByGateway(auth, data.gatewayId(), key));
 		assert404("Gateway not found.", () -> client.resetConfigurationByGateway(authOther, gatewayId, key));
 		assertFalse(assert200(() -> client.findConfigurationsByGateway(auth(tenant), gatewayId)).isEmpty());
 	}

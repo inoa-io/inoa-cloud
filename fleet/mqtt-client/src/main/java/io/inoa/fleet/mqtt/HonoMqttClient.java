@@ -29,7 +29,7 @@ public class HonoMqttClient {
 	private final MqttClient client;
 	private final MqttConnectOptions options;
 
-	public HonoMqttClient(String url, String tenantId, UUID gatewayId, byte[] psk) throws MqttException {
+	public HonoMqttClient(String url, String tenantId, String gatewayId, byte[] psk) throws MqttException {
 		this.client = new MqttClient(url, clientId, new MemoryPersistence());
 		this.options = new MqttConnectOptions();
 		this.options.setUserName(gatewayId + "@" + tenantId);

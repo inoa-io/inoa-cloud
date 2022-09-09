@@ -155,6 +155,10 @@ public class Data {
 				.setName(name));
 	}
 
+	public String gatewayId() {
+		return "A" + UUID.randomUUID().toString().substring(0, 19).toUpperCase();
+	}
+
 	public String gatewayName() {
 		return UUID.randomUUID().toString().substring(0, 32);
 	}
@@ -191,7 +195,7 @@ public class Data {
 
 	public Gateway gateway(Tenant tenant, String name, boolean enabled, List<Group> groups) {
 		var gateway = gatewayRepository.save(new Gateway()
-				.setGatewayId(UUID.randomUUID())
+				.setGatewayId(gatewayId())
 				.setTenant(tenant)
 				.setName(name)
 				.setEnabled(enabled)
@@ -313,7 +317,7 @@ public class Data {
 		return gatewayRepository.findByGatewayId(gateway.getGatewayId()).get();
 	}
 
-	public Gateway findGateway(UUID gatewayId) {
+	public Gateway findGateway(String gatewayId) {
 		return gatewayRepository.findByGatewayId(gatewayId).orElse(null);
 	}
 

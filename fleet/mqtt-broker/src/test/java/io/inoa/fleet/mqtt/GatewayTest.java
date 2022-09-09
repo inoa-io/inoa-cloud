@@ -4,8 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-import java.util.UUID;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +13,7 @@ public class GatewayTest {
 	@Test
 	void success() {
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var username = gatewayId + "@" + tenantId;
 		var gateway = Gateway.of(username);
 		assertNotNull(gateway, "failed to parse username: " + username);
