@@ -32,7 +32,7 @@ public class ConnectTest extends AbstractMqttTest {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
 		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();
@@ -66,7 +66,7 @@ public class ConnectTest extends AbstractMqttTest {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
 		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();

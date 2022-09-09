@@ -1,7 +1,6 @@
 package io.inoa.fleet.ui.views;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Nullable;
 
@@ -40,14 +39,14 @@ public class GatewayController {
 
 	@View("gatewayDetail")
 	@Get(uri = "/gateway/{gatewayId}")
-	public GatewayDetailModel detail(@PathVariable UUID gatewayId) {
+	public GatewayDetailModel detail(@PathVariable String gatewayId) {
 		return new GatewayDetailModel(ClientWrapper.invoke("GatewayController",
 				() -> client.findGateway(gatewayId)).getBody());
 	}
 
 	@View("gatewayDetail")
 	@Post(uri = "/gateway/{gatewayId}", consumes = MediaType.APPLICATION_FORM_URLENCODED)
-	public GatewayDetailModel setEnabled(@PathVariable UUID gatewayId, Boolean enabled) {
+	public GatewayDetailModel setEnabled(@PathVariable String gatewayId, Boolean enabled) {
 		return new GatewayDetailModel(ClientWrapper.invoke("GatewayController",
 				() -> client.updateGateway(gatewayId, new GatewayUpdateVO().enabled(enabled))).getBody());
 	}

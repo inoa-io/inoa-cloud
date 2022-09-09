@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.awaitility.Awaitility;
@@ -33,7 +32,7 @@ public class InfluxDBClient {
 		return findByGatewayId(gateway.getGatewayId());
 	}
 
-	public List<FluxTable> findByGatewayId(UUID gatewayId) {
+	public List<FluxTable> findByGatewayId(String gatewayId) {
 		var query = "from(bucket:\"default\")"
 				+ " |> range(start: -10h)"
 				+ " |> filter(fn: (r) => r.gateway_id == \"" + gatewayId + "\")";
@@ -93,8 +92,8 @@ public class InfluxDBClient {
 			Map<String, String> tags) {
 		var executables = new HashSet<Executable>();
 		executables.add(() -> assertEquals("inoa", record.getMeasurement(), "measurement"));
-		executables.add(() -> assertEquals(gateway.getTenantId().toString(), record.getValueByKey("tenant_id")));
-		executables.add(() -> assertEquals(gateway.getGatewayId().toString(), record.getValueByKey("gateway_id")));
+		executables.add(() -> assertEquals(gateway.getTenantId(), record.getValueByKey("tenant_id")));
+		executables.add(() -> assertEquals(gateway.getGatewayId(), record.getValueByKey("gateway_id")));
 		executables.add(() -> assertEquals(urn, record.getValueByKey("urn"), "urn"));
 		executables.add(() -> assertEquals(deviceType, record.getValueByKey("type"), "type"));
 		executables.add(() -> assertEquals(deviceId, record.getValueByKey("device_id"), "device_id"));

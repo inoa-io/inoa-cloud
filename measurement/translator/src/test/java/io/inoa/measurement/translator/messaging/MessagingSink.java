@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.Future;
 
 import org.apache.kafka.clients.consumer.ConsumerGroupMetadata;
@@ -24,16 +23,16 @@ import lombok.Getter;
 
 @Singleton
 @Getter
-public class MessagingSink implements Producer<UUID, TelemetryVO> {
+public class MessagingSink implements Producer<String, TelemetryVO> {
 
-	private final List<ProducerRecord<UUID, TelemetryVO>> records = new ArrayList<>();
+	private final List<ProducerRecord<String, TelemetryVO>> records = new ArrayList<>();
 
 	public void deleteAll() {
 		records.clear();
 	}
 
 	@Override
-	public Future<RecordMetadata> send(ProducerRecord<UUID, TelemetryVO> record) {
+	public Future<RecordMetadata> send(ProducerRecord<String, TelemetryVO> record) {
 		records.add(record);
 		return null;
 	}
@@ -59,7 +58,7 @@ public class MessagingSink implements Producer<UUID, TelemetryVO> {
 	public void abortTransaction() {}
 
 	@Override
-	public Future<RecordMetadata> send(ProducerRecord<UUID, TelemetryVO> record, Callback callback) {
+	public Future<RecordMetadata> send(ProducerRecord<String, TelemetryVO> record, Callback callback) {
 		return null;
 	}
 

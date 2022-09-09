@@ -34,7 +34,7 @@ public class InfluxDBListener {
 			// prepare
 
 			var tenantId = telemetry.getTenantId();
-			var gatewayId = telemetry.getGatewayId().toString();
+			var gatewayId = telemetry.getGatewayId();
 			MDC.put("tenantId", tenantId);
 			MDC.put("gatewayId", gatewayId);
 			log.trace("Retrieved: {}", telemetry);

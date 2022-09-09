@@ -33,17 +33,17 @@ public class CredentialsController implements CredentialsApi {
 	private final CredentialRepository credentialRepository;
 
 	@Override
-	public HttpResponse<List<CredentialVO>> findCredentials(UUID gatewayId) {
+	public HttpResponse<List<CredentialVO>> findCredentials(String gatewayId) {
 		return HttpResponse.ok(mapper.toCredentials(credentialRepository.findByGateway(getGateway(gatewayId))));
 	}
 
 	@Override
-	public HttpResponse<CredentialVO> findCredential(UUID gatewayId, UUID credentialId) {
+	public HttpResponse<CredentialVO> findCredential(String gatewayId, UUID credentialId) {
 		return HttpResponse.ok(mapper.toCredential(getCredential(gatewayId, credentialId)));
 	}
 
 	@Override
-	public HttpResponse<CredentialVO> createCredential(UUID gatewayId, @Valid CredentialCreateVO vo) {
+	public HttpResponse<CredentialVO> createCredential(String gatewayId, @Valid CredentialCreateVO vo) {
 		var gateway = getGateway(gatewayId);
 		if (credentialRepository.existsByGatewayAndName(gateway, vo.getName())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
@@ -54,7 +54,7 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<CredentialVO> updateCredential(UUID gatewayId, UUID credentialId,
+	public HttpResponse<CredentialVO> updateCredential(String gatewayId, UUID credentialId,
 			@Valid CredentialUpdateVO vo) {
 		var credential = getCredential(gatewayId, credentialId);
 		var changed = false;
@@ -89,14 +89,14 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<Object> deleteCredential(UUID gatewayId, UUID credentialId) {
+	public HttpResponse<Object> deleteCredential(String gatewayId, UUID credentialId) {
 		var credential = getCredential(gatewayId, credentialId);
 		credentialRepository.delete(credential);
 		log.info("Credential {} deleted.", credential.getCredentialId());
 		return HttpResponse.noContent();
 	}
 
-	private Gateway getGateway(UUID gatewayId) {
+	private Gateway getGateway(String gatewayId) {
 		var optional = gatewayRepository.findByTenantAndGatewayId(security.getTenant(), gatewayId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
@@ -104,7 +104,7 @@ public class CredentialsController implements CredentialsApi {
 		return optional.get();
 	}
 
-	private Credential getCredential(UUID gatewayId, UUID credentialId) {
+	private Credential getCredential(String gatewayId, UUID credentialId) {
 		var optional = credentialRepository.findByGatewayAndCredentialId(getGateway(gatewayId), credentialId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Credential not found.");

@@ -27,7 +27,7 @@ public class TelemetryTest extends AbstractMqttTest {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 
@@ -55,7 +55,7 @@ public class TelemetryTest extends AbstractMqttTest {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 

@@ -2,7 +2,6 @@ package io.inoa.fleet.registry.messaging;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.UUID;
 
 import org.slf4j.MDC;
 
@@ -35,7 +34,7 @@ public class ConnectionEventListener {
 	@Topic(patterns = "hono\\.event\\..*")
 	void handle(
 			@MessageHeader(KafkaHeader.TENANT_ID) String tenantId,
-			@MessageHeader(KafkaHeader.DEVICE_ID) UUID gatewayId,
+			@MessageHeader(KafkaHeader.DEVICE_ID) String gatewayId,
 			@MessageHeader(KafkaHeader.CONTENT_TYPE) String contentType,
 			@MessageHeader(KafkaHeader.CREATION_TIME) Long timestampMillis,
 			String payload) {
@@ -46,7 +45,7 @@ public class ConnectionEventListener {
 
 		try {
 			MDC.put("tenantId", tenantId);
-			MDC.put("gatewayId", gatewayId.toString());
+			MDC.put("gatewayId", gatewayId);
 
 			Map<String, Object> data;
 			try {

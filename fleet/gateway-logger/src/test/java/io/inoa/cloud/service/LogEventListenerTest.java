@@ -7,7 +7,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.AfterEach;
@@ -40,7 +39,7 @@ import jakarta.inject.Inject;
 public class LogEventListenerTest {
 
 	private static String tenantId = "inoa";
-	private static UUID gatewayId = UUID.randomUUID();
+	private static String gatewayId = "GW-0001";
 	private static List<ILoggingEvent> logsGateway = new ArrayList<>();
 	private static List<ILoggingEvent> logsListener = new ArrayList<>();
 
@@ -107,7 +106,7 @@ public class LogEventListenerTest {
 				() -> assertEquals("METERING", logEvent.getLoggerName(), "logger"),
 				() -> assertEquals(123456789, logEvent.getTimeStamp(), "timestamp"),
 				() -> assertEquals(tenantId, logEvent.getMDCPropertyMap().get("tenantId"), "mdc tenant"),
-				() -> assertEquals(gatewayId.toString(), logEvent.getMDCPropertyMap().get("gatewayId"), "mdc gateway"));
+				() -> assertEquals(gatewayId, logEvent.getMDCPropertyMap().get("gatewayId"), "mdc gateway"));
 	}
 
 	@DisplayName("ignore event")
@@ -133,7 +132,7 @@ public class LogEventListenerTest {
 				() -> assertEquals("Not in charge for event type: wurst", logEvent.getFormattedMessage(), "message"),
 				() -> assertEquals(Level.TRACE, logEvent.getLevel(), "level"),
 				() -> assertEquals(tenantId, logEvent.getMDCPropertyMap().get("tenantId"), "mdc tenant"),
-				() -> assertEquals(gatewayId.toString(), logEvent.getMDCPropertyMap().get("gatewayId"), "mdc gateway"));
+				() -> assertEquals(gatewayId, logEvent.getMDCPropertyMap().get("gatewayId"), "mdc gateway"));
 	}
 
 	@DisplayName("illegal payload event")
@@ -157,8 +156,8 @@ public class LogEventListenerTest {
 		assertEquals(2, logsListener.size(), "listener logs");
 	}
 
-	private void send(String type, String tenantId, Object gatewayId, Object payload) {
-		listener.handle(new ConsumerRecord<>("hono.event." + tenantId, 0, 0, gatewayId.toString(),
+	private void send(String type, String tenantId, String gatewayId, Object payload) {
+		listener.handle(new ConsumerRecord<>("hono.event." + tenantId, 0, 0, gatewayId,
 				CloudEventBuilder.v1()
 						.withSource(URI.create("test"))
 						.withId("test")

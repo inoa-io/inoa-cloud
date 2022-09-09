@@ -59,7 +59,7 @@ public class GatewayController implements GatewayApi {
 			var tenant = tenantRepository.findByTenantId("inoa").get();
 
 			MDC.put("tenantId", tenant.getTenantId());
-			MDC.put("gatewayId", vo.getGatewayId().toString());
+			MDC.put("gatewayId", vo.getGatewayId());
 
 			if (gatewayRepository.findByGatewayId(vo.getGatewayId()).isPresent()) {
 				throw new HttpStatusException(HttpStatus.CONFLICT, "GatewayId already exists.");

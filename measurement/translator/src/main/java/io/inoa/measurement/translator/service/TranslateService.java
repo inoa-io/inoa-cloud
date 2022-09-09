@@ -6,7 +6,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.slf4j.MDC;
@@ -35,7 +34,7 @@ public class TranslateService {
 	private final Set<Converter> converters;
 	private final TranslateMetrics metrics;
 
-	public List<TelemetryVO> translate(String tenantId, UUID gatewayId, TelemetryRawVO raw) {
+	public List<TelemetryVO> translate(String tenantId, String gatewayId, TelemetryRawVO raw) {
 
 		// parse urn
 
@@ -81,7 +80,7 @@ public class TranslateService {
 			TelemetryRawVO raw,
 			TelemetryVO telemetry,
 			String tenantId,
-			UUID gatewayId,
+			String gatewayId,
 			String deviceType,
 			String deviceId,
 			String sensor) {

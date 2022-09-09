@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TranslateMetrics {
 
-	public static final String COUNTER_NAME_FAIL_TENANT_ID = "translate_messages_fail_tenant_id_total";
-	public static final String COUNTER_NAME_FAIL_GATEWAY_ID = "translate_messages_fail_gateway_id_total";
 	public static final String COUNTER_NAME_FAIL_MESSAGE_READ = "translate_messages_fail_read_total";
 	public static final String COUNTER_NAME_FAIL_MESSAGE_VALIDATE = "translate_messages_fail_validate_total";
 	public static final String COUNTER_NAME_FAIL_CONVERTER = "translate_messages_fail_converter_total";
@@ -32,14 +30,6 @@ public class TranslateMetrics {
 
 	private final Map<String, Counter> counters = new HashMap<>();
 	private final MeterRegistry meterRegistry;
-
-	public Counter counterFailTenantId(String tenantId) {
-		return counter(COUNTER_NAME_FAIL_TENANT_ID, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
-	}
-
-	public Counter counterFailGatewayId(String tenantId) {
-		return counter(COUNTER_NAME_FAIL_GATEWAY_ID, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));
-	}
 
 	public Counter counterFailMessageRead(String tenantId) {
 		return counter(COUNTER_NAME_FAIL_MESSAGE_READ, Set.of(Tag.of(TAG_TENANT_ID, tenantId)));

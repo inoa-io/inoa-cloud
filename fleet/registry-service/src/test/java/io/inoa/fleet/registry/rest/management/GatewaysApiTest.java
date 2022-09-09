@@ -143,7 +143,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	@Test
 	@Override
 	public void findGateway401() {
-		assert401(() -> client.findGateway(null, UUID.randomUUID()));
+		assert401(() -> client.findGateway(null, data.gatewayId()));
 	}
 
 	@Override
@@ -152,7 +152,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	public void findGateway404() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		assert404("Gateway not found.", () -> client.findGateway(auth(tenant), UUID.randomUUID()));
+		assert404("Gateway not found.", () -> client.findGateway(auth(tenant), data.gatewayId()));
 		assert404("Gateway not found.", () -> client.findGateway(auth(data.tenant()), gateway.getGatewayId()));
 	}
 
@@ -162,6 +162,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	public void createGateway201() {
 		var tenant = data.tenant();
 		var vo = new GatewayCreateVO()
+				.gatewayId(data.gatewayId())
 				.name(data.gatewayName())
 				.enabled(null)
 				.groupIds(null);
@@ -184,6 +185,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var group1 = data.group(tenant);
 		var group2 = data.group(tenant);
 		var vo = new GatewayCreateVO()
+				.gatewayId(data.gatewayId())
 				.name(data.gatewayName())
 				.enabled(false)
 				.groupIds(Set.of(group1.getGroupId(), group2.getGroupId()));
@@ -216,6 +218,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var group = data.group(tenant);
 		var notExistingGroupUuid = UUID.randomUUID();
 		var vo = new GatewayCreateVO()
+				.gatewayId(data.gatewayId())
 				.name(data.gatewayName())
 				.groupIds(Set.of(group.getGroupId(), notExistingGroupUuid));
 		var error = assert400(() -> client.createGateway(auth(tenant), vo));
@@ -229,6 +232,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var groupUuidFromOtherTenant = data.group(data.tenant()).getGroupId();
 		var tenant = data.tenant();
 		var vo = new GatewayCreateVO()
+				.gatewayId(data.gatewayId())
 				.name(data.gatewayName())
 				.groupIds(Set.of(groupUuidFromOtherTenant));
 		var error = assert400(() -> client.createGateway(auth(tenant), vo));
@@ -240,7 +244,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	@Test
 	@Override
 	public void createGateway401() {
-		var vo = new GatewayCreateVO().name(data.gatewayName());
+		var vo = new GatewayCreateVO().gatewayId(data.gatewayId()).name(data.gatewayName());
 		assert401(() -> client.createGateway(null, vo));
 		assertEquals(0, data.countGateways(), "created");
 	}
@@ -251,7 +255,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	public void createGateway409() {
 		var tenant = data.tenant();
 		var existing = data.gateway(tenant);
-		var vo = new GatewayCreateVO().name(existing.getName());
+		var vo = new GatewayCreateVO().gatewayId(data.gatewayId()).name(existing.getName());
 		assert409(() -> client.createGateway(auth(tenant), vo));
 		assertEquals(1, data.countGateways(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
@@ -427,7 +431,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var vo = new GatewayUpdateVO();
-		assert404("Gateway not found.", () -> client.updateGateway(auth(tenant), UUID.randomUUID(), vo));
+		assert404("Gateway not found.", () -> client.updateGateway(auth(tenant), data.gatewayId(), vo));
 		assert404("Gateway not found.", () -> client.updateGateway(auth(data.tenant()), gateway.getGatewayId(), vo));
 	}
 
@@ -494,7 +498,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	public void deleteGateway404() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		assert404("Gateway not found.", () -> client.deleteGateway(auth(tenant), UUID.randomUUID()));
+		assert404("Gateway not found.", () -> client.deleteGateway(auth(tenant), data.gatewayId()));
 		assert404("Gateway not found.", () -> client.deleteGateway(auth(data.tenant()), gateway.getGatewayId()));
 		assertEquals(1, data.countGateways(), "deleted");
 	}

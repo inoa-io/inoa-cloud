@@ -29,7 +29,7 @@ public class TranslateListenerTest extends AbstractTest {
 	void success() {
 
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var deviceType = "example";
 		var deviceId = UUID.randomUUID().toString();
 		var sensor = "number";
@@ -59,38 +59,12 @@ public class TranslateListenerTest extends AbstractTest {
 		assertEquals(countBefore + 1, counter.count(), "increment");
 	}
 
-	@DisplayName("fail: invalid tenant id")
-	@Test
-	void failTenantId() {
-
-		var tenantId = "abc";
-		var gatewayId = UUID.randomUUID();
-		var counter = metrics.counterFailTenantId(tenantId);
-		var countBefore = counter.count();
-
-		send(tenantId, gatewayId, "{\"urn\":\"urn:example:0815:number\",\"timestamp\":0,\"value\":\"Mg==\"}");
-		assertEquals(countBefore + 1, counter.count(), "metrics");
-	}
-
-	@DisplayName("fail: invalid gateway id")
-	@Test
-	void failGatewayId() {
-
-		var tenantId = "inoa";
-		var gatewayId = "nope";
-		var counter = metrics.counterFailGatewayId(tenantId);
-		var countBefore = counter.count();
-
-		send(tenantId, gatewayId, "{\"urn\":\"urn:example:0815:number\",\"timestamp\":0,\"value\":\"Mg==\"}");
-		assertEquals(countBefore + 1, counter.count(), "metrics");
-	}
-
 	@DisplayName("fail: message read")
 	@Test
 	void failMessageRead() {
 
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var counter = metrics.counterFailMessageRead(tenantId);
 		var countBefore = counter.count();
 
@@ -103,7 +77,7 @@ public class TranslateListenerTest extends AbstractTest {
 	void failMessageValidate() {
 
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var counter = metrics.counterFailMessageValidate(tenantId);
 		var countBefore = counter.count();
 
@@ -116,7 +90,7 @@ public class TranslateListenerTest extends AbstractTest {
 	void failConverter() {
 
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var counter = metrics.counterFailConverter(tenantId, "example", "nope");
 		var countBefore = counter.count();
 
@@ -129,7 +103,7 @@ public class TranslateListenerTest extends AbstractTest {
 	void failValue() {
 
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var counter = metrics.counterFailValue(tenantId, "example", "number");
 		var countBefore = counter.count();
 
@@ -137,8 +111,7 @@ public class TranslateListenerTest extends AbstractTest {
 		assertEquals(countBefore + 1, counter.count(), "metrics");
 	}
 
-	private void send(String tenantId, Object gatewayId, String payload) {
-		listener
-				.receive(new ConsumerRecord<>("hono.telemetry." + tenantId, 0, 0, gatewayId.toString(), payload));
+	private void send(String tenantId, String gatewayId, String payload) {
+		listener.receive(new ConsumerRecord<>("hono.telemetry." + tenantId, 0, 0, gatewayId, payload));
 	}
 }

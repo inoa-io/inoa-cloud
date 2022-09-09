@@ -38,8 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LogEventListener {
 
 	private static final Pattern PATTERN_TENANT_ID = Pattern.compile("^[a-z0-9\\-]{4,30}$");
-	private static final Pattern PATTERN_UUID = Pattern
-			.compile("^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$");
+	private static final Pattern PATTERN_UUID = Pattern.compile("^[A-Z][A-Z0-9\\-_]{3,19}$");
 
 	private final Validator validator;
 	private final ObjectMapper mapper;

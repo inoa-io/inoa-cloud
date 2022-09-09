@@ -94,7 +94,7 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGateway(UUID gatewayId) {
+	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGateway(String gatewayId) {
 		var tenant = security.getTenant();
 		var gateway = getGateway(tenant, gatewayId);
 		var configurations = gatewayConfigurationRepository.findByGateway(gateway);
@@ -130,7 +130,7 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<Object> setConfigurationByGateway(UUID gatewayId, String key, @Valid ConfigurationSetVO vo) {
+	public HttpResponse<Object> setConfigurationByGateway(String gatewayId, String key, @Valid ConfigurationSetVO vo) {
 		var tenant = security.getTenant();
 		var gateway = getGateway(tenant, gatewayId);
 		var definition = getConfigurationDefinition(tenant, key);
@@ -170,7 +170,7 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<Object> resetConfigurationByGateway(UUID gatewayId, String key) {
+	public HttpResponse<Object> resetConfigurationByGateway(String gatewayId, String key) {
 		var tenant = security.getTenant();
 		var gateway = getGateway(tenant, gatewayId);
 		var definition = getConfigurationDefinition(tenant, key);
@@ -198,7 +198,7 @@ public class ConfigurationController implements ConfigurationApi {
 		return optional.get();
 	}
 
-	private Gateway getGateway(Tenant tenant, UUID gatewayId) {
+	private Gateway getGateway(Tenant tenant, String gatewayId) {
 		var optional = gatewayRepository.findByTenantAndGatewayId(tenant, gatewayId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");

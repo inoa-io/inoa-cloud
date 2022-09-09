@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +23,7 @@ public class TranslateServiceTest extends AbstractTest {
 	@Test
 	void typeExampleSingleValue() {
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var raw = new TelemetryRawVO()
 				.urn("urn:example:0815:number")
 				.timestamp(Instant.now().toEpochMilli())
@@ -46,7 +45,7 @@ public class TranslateServiceTest extends AbstractTest {
 	@Test
 	void typeExampleMultipleValues() {
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var raw = new TelemetryRawVO()
 				.urn("urn:example:0815:json")
 				.timestamp(Instant.now().toEpochMilli())
@@ -78,7 +77,7 @@ public class TranslateServiceTest extends AbstractTest {
 	@Test
 	void failNoConvertable() {
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var raw = new TelemetryRawVO()
 				.urn("urn:example:0815:number")
 				.timestamp(Instant.now().toEpochMilli())
@@ -90,7 +89,7 @@ public class TranslateServiceTest extends AbstractTest {
 	@Test
 	void failNoConverter() {
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var raw = new TelemetryRawVO()
 				.urn("urn:example:0815:nope")
 				.timestamp(Instant.now().toEpochMilli())
@@ -102,7 +101,7 @@ public class TranslateServiceTest extends AbstractTest {
 	@Test
 	void failUnsupportedUrn() {
 		var tenantId = "inoa";
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = "GW-0001";
 		var raw = new TelemetryRawVO()
 				.urn("NOPE")
 				.timestamp(Instant.now().toEpochMilli())

@@ -66,7 +66,7 @@ public class AuthControllerTest extends AbstractTest {
 	@Test
 	void errorGrantType() {
 		var errorDescription = "grant_type is not urn:ietf:params:oauth:grant-type:jwt-bearer";
-		var jwt = token(UUID.randomUUID(), "pleaseChangeThisSecretForANewOne".getBytes());
+		var jwt = token(data.gatewayId(), "pleaseChangeThisSecretForANewOne".getBytes());
 		assertError(() -> client.getToken("password", jwt), errorDescription);
 	}
 
@@ -82,13 +82,6 @@ public class AuthControllerTest extends AbstractTest {
 	@Test
 	void errorClaimIssMissing() {
 		assertError(claims -> claims.issuer(null), "token does not contain claim iss");
-	}
-
-	@DisplayName("error: claim iss invalid")
-	@Test
-	void errorClaimIssInvalid() {
-		var issuer = "merh";
-		assertError(claims -> claims.issuer(issuer), "token does not contain valid claim iss: " + issuer);
 	}
 
 	@DisplayName("error: claim exp missing")
@@ -159,7 +152,7 @@ public class AuthControllerTest extends AbstractTest {
 	@DisplayName("error: gateway not found")
 	@Test
 	void errorGatewayNotFound() {
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = data.gatewayId();
 		var gatewayPreSharedKey = UUID.randomUUID().toString().getBytes();
 		var errorDescription = "gateway " + gatewayId + " not found";
 		var jwt = token(gatewayId, gatewayPreSharedKey);
@@ -239,7 +232,7 @@ public class AuthControllerTest extends AbstractTest {
 
 		var claims = new JWTClaimsSet.Builder()
 				.audience(properties.getGateway().getToken().getAudience())
-				.issuer(gateway.getGatewayId().toString())
+				.issuer(gateway.getGatewayId())
 				.expirationTime(Date.from(now.plusSeconds(1)));
 		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.RS512), claims.build());
 		jwt.sign(new RSASSASigner(keyPair.getPrivate()));
@@ -269,7 +262,7 @@ public class AuthControllerTest extends AbstractTest {
 	}
 
 	private void assertError(Consumer<JWTClaimsSet.Builder> claimsManipulator, String errorDescription) {
-		var jwt = token(UUID.randomUUID(), UUID.randomUUID().toString().getBytes(), claimsManipulator);
+		var jwt = token(data.gatewayId(), UUID.randomUUID().toString().getBytes(), claimsManipulator);
 		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
 	}
 
@@ -283,17 +276,17 @@ public class AuthControllerTest extends AbstractTest {
 				+ expectedDescription + "] but got [" + errorDescription + "]");
 	}
 
-	private String token(UUID gateway, byte[] secret) {
-		return token(gateway, secret, claims -> {});
+	private String token(String gatewayId, byte[] secret) {
+		return token(gatewayId, secret, claims -> {});
 	}
 
 	@SneakyThrows
-	private String token(UUID gateway, byte[] secret, Consumer<JWTClaimsSet.Builder> claimsManipulator) {
+	private String token(String gatewayId, byte[] secret, Consumer<JWTClaimsSet.Builder> claimsManipulator) {
 
 		var claims = new JWTClaimsSet.Builder()
 				.audience(properties.getGateway().getToken().getAudience())
 				.jwtID(UUID.randomUUID().toString())
-				.issuer(gateway.toString())
+				.issuer(gatewayId)
 				.issueTime(Date.from(now))
 				.notBeforeTime(Date.from(now))
 				.expirationTime(Date.from(now.plusSeconds(1)));

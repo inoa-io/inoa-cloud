@@ -44,7 +44,7 @@ public class MessageHandler extends AbstractInterceptHandler {
 			log.trace("Gateway {}/{} sent message on topic {} with qos {}",
 					gateway.tenantId(), gateway.gatewayId(), message.getTopicName(), message.getQos());
 
-			var key = gateway.gatewayId().toString();
+			var key = gateway.gatewayId();
 			var topic = switch (message.getTopicName()) {
 				case "t", "telemetry" -> "hono.telemetry." + gateway.tenantId();
 				case "e", "event" -> "hono.event." + gateway.tenantId();
@@ -55,7 +55,7 @@ public class MessageHandler extends AbstractInterceptHandler {
 			message.getPayload().readBytes(payload);
 			var headers = List.<Header>of(
 					new RecordHeader(KafkaHeader.TENANT_ID, gateway.tenantId().getBytes()),
-					new RecordHeader(KafkaHeader.DEVICE_ID, gateway.gatewayId().toString().getBytes()),
+					new RecordHeader(KafkaHeader.DEVICE_ID, gateway.gatewayId().getBytes()),
 					new RecordHeader(KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON.getBytes()),
 					new RecordHeader(KafkaHeader.CREATION_TIME, String.valueOf(System.currentTimeMillis()).getBytes()),
 					new RecordHeader(KafkaHeader.ORIG_ADDRESS, message.getTopicName().getBytes()),

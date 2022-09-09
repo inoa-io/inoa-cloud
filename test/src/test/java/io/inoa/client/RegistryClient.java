@@ -4,7 +4,6 @@ import static io.inoa.junit.HttpAssertions.assert200;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.util.Map;
-import java.util.UUID;
 
 import com.nimbusds.jose.jwk.JWKSet;
 
@@ -29,11 +28,11 @@ public class RegistryClient {
 		return assertDoesNotThrow(() -> JWKSet.parse(body), "failed to parse registry jwks: " + body);
 	}
 
-	public GatewayDetailVO findGateway(UUID gatewayId) {
+	public GatewayDetailVO findGateway(String gatewayId) {
 		return assert200(() -> gatewaysClient.findGateway(keycloak.admin(), gatewayId), "faild to get gateway");
 	}
 
-	public GatewayDetailVO update(UUID gatewayId, GatewayUpdateVO vo) {
+	public GatewayDetailVO update(String gatewayId, GatewayUpdateVO vo) {
 		return assert200(() -> gatewaysClient.updateGateway(keycloak.admin(), gatewayId, vo),
 				"faild to update gateway");
 	}

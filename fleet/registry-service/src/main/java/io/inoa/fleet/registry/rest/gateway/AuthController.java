@@ -3,7 +3,6 @@ package io.inoa.fleet.registry.rest.gateway;
 import java.text.ParseException;
 import java.time.Clock;
 import java.time.Instant;
-import java.util.UUID;
 
 import org.slf4j.MDC;
 
@@ -129,24 +128,18 @@ public class AuthController implements AuthApi {
 	 * @return Maybe with gateway from token.
 	 * @see "https://tools.ietf.org/html/rfc7523#section-3"
 	 */
-	private UUID validateClaims(JWTClaimsSet claims) {
+	private String validateClaims(JWTClaimsSet claims) {
 
 		var now = Instant.now(clock);
 		var tokenProperties = this.applicationProperties.getGateway().getToken();
 
 		// check issuer
 
-		var issuer = claims.getIssuer();
-		if (issuer == null) {
+		var gatewayId = claims.getIssuer();
+		if (gatewayId == null) {
 			throw error("token does not contain claim " + JwtClaims.ISSUER);
 		}
-		UUID gatewayId;
-		try {
-			gatewayId = UUID.fromString(issuer);
-		} catch (IllegalArgumentException e) {
-			throw error("token does not contain valid claim " + JwtClaims.ISSUER + ": " + issuer);
-		}
-		MDC.put("gateway", issuer);
+		MDC.put("gateway", gatewayId);
 
 		// check expiration
 
