@@ -84,9 +84,6 @@ public class GatewaysController implements GatewaysApi {
 		if (gatewayRepository.findByGatewayId(vo.getGatewayId()).isPresent()) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "GatewayId already exists.");
 		}
-		if (gatewayRepository.existsByTenantAndName(tenant, vo.getName())) {
-			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
-		}
 
 		// check groups for existence
 
@@ -125,9 +122,6 @@ public class GatewaysController implements GatewaysApi {
 			if (gateway.getName().equals(vo.getName())) {
 				log.trace("Gateway {}: skip update of name because not changed.", gateway.getName());
 			} else {
-				if (gatewayRepository.existsByTenantAndName(gateway.getTenant(), vo.getName())) {
-					throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
-				}
 				log.info("Gateway {}: updated name to {}.", gateway.getName(), vo.getName());
 				changed = true;
 				gateway.setName(vo.getName());

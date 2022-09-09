@@ -25,8 +25,6 @@ public interface GatewayRepository extends CrudRepository<Gateway, Long> {
 
 	Boolean existsByTenant(Tenant tenant);
 
-	Boolean existsByTenantAndName(Tenant tenant, String name);
-
 	@Query("UPDATE gateway SET mqtt_timestamp=:timestmap,mqtt_connected=:connected WHERE gateway_id=:gatewayId ")
 	void updateStatusMqtt(String gatewayId, Instant timestmap, boolean connected);
 }

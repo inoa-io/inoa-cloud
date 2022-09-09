@@ -247,13 +247,6 @@ components:
       maxLength: 20
       pattern: ^[A-Z][A-Z0-9\-_]{3,19}$
       example: GW-00001
-    GatewayName:
-      description: Human friendly shortname (can change).
-      type: string
-      minLength: 3
-      maxLength: 32
-      pattern: ^[a-zA-Z0-9\-]{3,32}$
-      example: Some gateway name
     CredentialType:
       description: Types of supported credentials.
       type: string
@@ -269,15 +262,12 @@ components:
       properties:
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        gateway_name:
-          $ref: '#/components/schemas/GatewayName'
         credential_type:
           $ref: '#/components/schemas/CredentialType'
         credential_value:
           $ref: '#/components/schemas/CredentialValue'
       required:
         - gateway_id
-        - gateway_name
         - credential_type
         - credential_value
   securitySchemes:

@@ -69,15 +69,10 @@ public class GatewayController implements GatewayApi {
 			if (gatewayRepository.findByGatewayId(vo.getGatewayId()).isPresent()) {
 				throw new HttpStatusException(HttpStatus.CONFLICT, "GatewayId already exists.");
 			}
-			if (gatewayRepository.existsByTenantAndName(tenant, vo.getGatewayName())) {
-				// TODO wenn Name existiert vllt Suffix hinzufügen, loggen und trotzdem anlegen
-				throw new HttpStatusException(HttpStatus.CONFLICT, "GatewayName already exists.");
-			}
 
 			var gateway = gatewayRepository.save(new Gateway()
 					.setTenant(tenant)
 					.setGatewayId(vo.getGatewayId())
-					.setName(vo.getGatewayName())
 					.setEnabled(false)
 					.setGroups(List.of())
 					.setStatus(new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));

@@ -164,7 +164,7 @@ paths:
         401:
           description: Unauthorized
         409:
-          description: Gateway with name already exists.
+          description: Gateway with id already exists.
   /gateways/{gateway_id}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
@@ -208,8 +208,6 @@ paths:
           description: Unauthorized
         404:
           description: Gateway not found
-        409:
-          description: Gateway with name already exists
     delete:
       tags: [gateways]
       summary: Delete gateway
@@ -627,11 +625,9 @@ components:
       pattern: ^[A-Z][A-Z0-9\-_]{3,19}$
       example: GW-00001
     GatewayName:
-      description: Human friendly shortname (can change).
+      description: Human friendly description (can change).
       type: string
-      minLength: 3
-      maxLength: 32
-      pattern: ^[a-zA-Z0-9\-]{3,32}$
+      maxLength: 100
       example: Some gateway name
     GatewayGroups:
       description: Ids of groups where gateway is member.
@@ -657,7 +653,6 @@ components:
       required:
         - gateway_id
         - enabled
-        - name
         - created
         - updated
     GatewayPage:
@@ -704,7 +699,6 @@ components:
       required:
         - gateway_id
         - enabled
-        - name
         - group_ids
         - properties
         - created
@@ -723,7 +717,6 @@ components:
           $ref: '#/components/schemas/GatewayGroups'
       required:
         - gateway_id
-        - name
     GatewayUpdate:
       description: Gateway to update.
       properties:
