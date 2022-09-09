@@ -259,10 +259,21 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		assertEquals(0, data.countGateways(), "created");
 	}
 
-	@DisplayName("createGateway(409): name exists")
+	@DisplayName("createGateway(409): id exists")
 	@Test
 	@Override
 	public void createGateway409() {
+		var tenant = data.tenant();
+		var existing = data.gateway(tenant);
+		var vo = new GatewayCreateVO().gatewayId(existing.getName()).name(data.gatewayName());
+		assert409(() -> client.createGateway(auth(tenant), vo));
+		assertEquals(1, data.countGateways(), "created");
+		assertEquals(existing, data.find(existing), "entity changed");
+	}
+
+	@DisplayName("createGateway(409): name exists")
+	@Test
+	public void createGateway409NameExists() {
 		var tenant = data.tenant();
 		var existing = data.gateway(tenant);
 		var vo = new GatewayCreateVO().gatewayId(data.gatewayId()).name(existing.getName());

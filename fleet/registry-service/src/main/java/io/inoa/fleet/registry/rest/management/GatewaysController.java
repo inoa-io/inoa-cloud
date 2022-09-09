@@ -81,6 +81,9 @@ public class GatewaysController implements GatewaysApi {
 		if (!Pattern.matches(gatewayIdPattern, vo.getGatewayId())) {
 			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "GatewayId must match " + gatewayIdPattern + ".");
 		}
+		if (gatewayRepository.findByGatewayId(vo.getGatewayId()).isPresent()) {
+			throw new HttpStatusException(HttpStatus.CONFLICT, "GatewayId already exists.");
+		}
 		if (gatewayRepository.existsByTenantAndName(tenant, vo.getName())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
 		}
