@@ -3,6 +3,7 @@ CREATE TABLE tenant (
 	tenant_id VARCHAR(30) NOT NULL,
 	name VARCHAR(100) NOT NULL,
 	enabled BOOLEAN NOT NULL,
+	gateway_id_pattern VARCHAR(100) NOT NULL,
 	created TIMESTAMP NOT NULL,
 	updated TIMESTAMP NOT NULL,
 	deleted TIMESTAMP NULL,

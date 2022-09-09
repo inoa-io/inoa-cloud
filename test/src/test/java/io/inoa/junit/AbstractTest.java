@@ -1,5 +1,7 @@
 package io.inoa.junit;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.MethodOrderer.DisplayName;
 import org.junit.jupiter.api.TestMethodOrder;
 
@@ -24,4 +26,8 @@ public abstract class AbstractTest {
 	public RegistryClient registry;
 	@Inject
 	public GatewayClientFactory gatewayClientFactory;
+
+	public static String gatewayId() {
+		return "ISIT01-" + UUID.randomUUID().toString().replaceAll("-", "").toUpperCase().substring(0, 10);
+	}
 }
