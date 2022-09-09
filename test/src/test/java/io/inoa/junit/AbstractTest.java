@@ -28,6 +28,6 @@ public abstract class AbstractTest {
 	public GatewayClientFactory gatewayClientFactory;
 
 	public static String gatewayId() {
-		return "ISRL01-" + UUID.randomUUID().toString().replaceAll("-", "").toUpperCase().substring(0, 10);
+		return "ISIT01-" + UUID.randomUUID().toString().replaceAll("-", "").toUpperCase().substring(0, 10);
 	}
 }
