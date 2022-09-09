@@ -78,8 +78,12 @@
 	<build>
 		<testResources>
 			<testResource>
-				<directory>src/test/resources</directory>
+				<directory>${project.basedir}/src/test/resources</directory>
 				<targetPath>${project.build.testOutputDirectory}</targetPath>
+			</testResource>
+			<testResource>
+				<directory>${project.basedir}/src/test/k3s</directory>
+				<targetPath>${project.build.directory}/k3s</targetPath>
 			</testResource>
 			<testResource>
 				<directory>${project.basedir}/../deployment</directory>
@@ -135,7 +139,7 @@
 								<portBinding>80:80</portBinding>
 								<portBinding>8883:8883</portBinding>
 							</portBindings>
-							<command>kubectl apply -k k3s-full</command>
+							<command>kubectl apply -k .</command>
 							<manifests>${project.build.directory}/k3s</manifests>
 							<ctrImages>
 								<ctrImage>postgres:14.4-bullseye</ctrImage>
