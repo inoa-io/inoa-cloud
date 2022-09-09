@@ -29,7 +29,7 @@ CREATE TABLE gateway (
 	id SERIAL NOT NULL,
 	gateway_id VARCHAR(20) NOT NULL,
 	tenant_id INTEGER NOT NULL,
-	name VARCHAR(32) NOT NULL,
+	name VARCHAR(100) NULL,
 	enabled BOOLEAN NOT NULL,
 	mqtt_timestamp TIMESTAMP NULL,
 	mqtt_connected BOOLEAN NOT NULL,
@@ -37,9 +37,7 @@ CREATE TABLE gateway (
 	updated TIMESTAMP NOT NULL,
 	CONSTRAINT pk_gateway PRIMARY KEY (id),
 	CONSTRAINT uq_gateway_gateway_id UNIQUE (gateway_id),
-	CONSTRAINT uq_gateway_name UNIQUE (tenant_id,name),
 	CONSTRAINT chk_gateway_id CHECK (gateway_id ~ '^[A-Z][A-Z0-9\-_]{3,19}$'),
-	CONSTRAINT chk_gateway_name CHECK (name ~ '^[a-zA-Z0-9\-]{3,32}$'),
 	CONSTRAINT fk_gateway_tenant FOREIGN KEY (tenant_id) REFERENCES tenant(id)
 );
 

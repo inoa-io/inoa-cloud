@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
@@ -37,17 +38,15 @@ public class GatewayIT extends AbstractTest {
 	@Test
 	void register(GatewayApiClient gatewayApiClient) {
 
-		var gatewayName = "junit-" + UUID.randomUUID().toString().substring(0, 10);
 		assert204(() -> gatewayApiClient.register(new RegisterVO()
 				.gatewayId(gatewayId)
-				.gatewayName(gatewayName)
 				.credentialType(io.inoa.fleet.registry.gateway.CredentialTypeVO.PSK)
 				.credentialValue(preSharedKey)), "failed to register gateway");
 		gatewayClient = gatewayClientFactory.get(gatewayId, preSharedKey);
 
 		var gateway = registry.findGateway(gatewayId);
 		assertEquals(gatewayId, gateway.getGatewayId(), "gatewayId");
-		assertEquals(gatewayName, gateway.getName(), "name");
+		assertNull(gateway.getName(), "name");
 		assertFalse(gateway.getEnabled(), "enabled");
 		assertTrue(gateway.getGroupIds().isEmpty(), "groupId");
 		assertTrue(gateway.getProperties().isEmpty(), "properties");

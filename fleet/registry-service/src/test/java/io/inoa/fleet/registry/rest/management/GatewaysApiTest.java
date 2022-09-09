@@ -16,6 +16,7 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 import io.inoa.fleet.registry.AbstractTest;
 import jakarta.inject.Inject;
@@ -163,7 +164,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var tenant = data.tenant();
 		var vo = new GatewayCreateVO()
 				.gatewayId(data.gatewayId())
-				.name(data.gatewayName())
+				.name(null)
 				.enabled(null)
 				.groupIds(null);
 		var auth = auth(tenant);
@@ -265,18 +266,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	public void createGateway409() {
 		var tenant = data.tenant();
 		var existing = data.gateway(tenant);
-		var vo = new GatewayCreateVO().gatewayId(existing.getGatewayId()).name(data.gatewayName());
-		assert409(() -> client.createGateway(auth(tenant), vo));
-		assertEquals(1, data.countGateways(), "created");
-		assertEquals(existing, data.find(existing), "entity changed");
-	}
-
-	@DisplayName("createGateway(409): name exists")
-	@Test
-	public void createGateway409NameExists() {
-		var tenant = data.tenant();
-		var existing = data.gateway(tenant);
-		var vo = new GatewayCreateVO().gatewayId(data.gatewayId()).name(existing.getName());
+		var vo = new GatewayCreateVO().gatewayId(existing.getGatewayId());
 		assert409(() -> client.createGateway(auth(tenant), vo));
 		assertEquals(1, data.countGateways(), "created");
 		assertEquals(existing, data.find(existing), "entity changed");
@@ -405,7 +395,7 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 	public void updateGateway400() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		var vo = new GatewayUpdateVO().name("");
+		var vo = new GatewayUpdateVO().name(RandomStringUtils.randomAlphabetic(101));
 		assert400(() -> client.updateGateway(auth(tenant), gateway.getGatewayId(), vo));
 		assertEquals(gateway, data.find(gateway), "entity changed");
 	}
@@ -454,19 +444,6 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var vo = new GatewayUpdateVO();
 		assert404("Gateway not found.", () -> client.updateGateway(auth(tenant), data.gatewayId(), vo));
 		assert404("Gateway not found.", () -> client.updateGateway(auth(data.tenant()), gateway.getGatewayId(), vo));
-	}
-
-	@DisplayName("updateGateway(409): name exists")
-	@Test
-	@Override
-	public void updateGateway409() {
-		var tenant = data.tenant();
-		var gateway = data.gateway(tenant);
-		var otherGateway = data.gateway(tenant);
-		var vo = new GatewayUpdateVO().name(otherGateway.getName());
-		assert409(() -> client.updateGateway(auth(tenant), gateway.getGatewayId(), vo));
-		assertEquals(gateway, data.find(gateway), "gateway changed");
-		assertEquals(otherGateway, data.find(otherGateway), "other changed");
 	}
 
 	@DisplayName("deleteGateway(204): without related objects")
