@@ -2,7 +2,6 @@ package io.inoa.fleet.registry.auth;
 
 import org.reactivestreams.Publisher;
 
-import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.security.authentication.Authentication;
 import io.micronaut.security.token.validator.TokenValidator;
@@ -17,19 +16,17 @@ import reactor.core.publisher.Mono;
  */
 @Singleton
 @RequiredArgsConstructor
-public class AuthTokenValidator implements TokenValidator {
+public class GatewayTokenValidator implements TokenValidator {
 
-	private final AuthTokenService service;
-	private final GatewayRepository gatewayRepository;
+	private final GatewayTokenService service;
 
 	@Override
 	public Publisher<Authentication> validateToken(String token, HttpRequest<?> request) {
-		return service
-				.validateToken(token)
-				.flatMap(gatewayRepository::findByGatewayId)
-				.map(GatewayAuthentication::new)
-				.map(Authentication.class::cast)
-				.map(Mono::just)
-				.orElseGet(Mono::empty);
+		return request.getPath().startsWith("/gateway/")
+				? Mono
+						.just(service.getGatewayFromToken(token))
+						.map(GatewayAuthentication::new)
+						.map(Authentication.class::cast)
+				: Mono.empty();
 	}
 }

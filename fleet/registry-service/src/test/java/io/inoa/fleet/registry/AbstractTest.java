@@ -7,7 +7,6 @@ import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -16,12 +15,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import io.inoa.fleet.registry.auth.AuthTokenService;
-import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.fleet.registry.rest.HttpResponseAssertions;
 import io.inoa.fleet.registry.rest.JwtProvider;
-import io.micronaut.http.HttpHeaderValues;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.hateoas.JsonError;
 import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
@@ -45,8 +41,6 @@ public abstract class AbstractTest {
 	@Inject
 	Validator validator;
 	@Inject
-	AuthTokenService authTokenService;
-	@Inject
 	SignatureGeneratorConfiguration signature;
 
 	@BeforeEach
@@ -62,15 +56,6 @@ public abstract class AbstractTest {
 		properties.getGateway().getToken().setForceJwtId(true);
 		properties.getGateway().getToken().setForceIssuedAt(true);
 		properties.getGateway().getToken().setIssuedAtThreshold(Optional.of(Duration.ofSeconds(5)));
-		properties.getAuth().setExpirationDuration(Duration.ofSeconds(5));
-		properties.getAuth().setAudience(UUID.randomUUID().toString());
-		properties.getAuth().setIssuer(UUID.randomUUID().toString());
-	}
-
-	public String bearer(Gateway gateway) {
-		return HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER
-				+ " "
-				+ authTokenService.createToken(gateway.getGatewayId());
 	}
 
 	public String auth(Tenant tenant) {

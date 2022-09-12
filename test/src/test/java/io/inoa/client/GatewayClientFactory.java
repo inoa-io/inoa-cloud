@@ -1,7 +1,6 @@
 package io.inoa.client;
 
 import static io.inoa.junit.HttpAssertions.assert200;
-import static io.inoa.junit.HttpAssertions.assertStatus;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -14,17 +13,12 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTParser;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.fleet.mqtt.HonoMqttClient;
-import io.inoa.fleet.registry.gateway.AuthApiClient;
 import io.inoa.fleet.registry.gateway.GatewayApiClient;
 import io.inoa.fleet.registry.gateway.PropertiesApiClient;
-import io.inoa.fleet.registry.gateway.TokenResponseVO;
 import io.micronaut.http.HttpHeaderValues;
-import io.micronaut.http.HttpResponse;
-import io.micronaut.http.HttpStatus;
 import jakarta.inject.Singleton;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class GatewayClientFactory {
 
-	private final AuthApiClient authClient;
 	private final GatewayApiClient gatewayClient;
 	private final PropertiesApiClient propertiesClient;
 
@@ -53,44 +46,19 @@ public class GatewayClientFactory {
 		private String token;
 		private HonoMqttClient mqtt;
 
-		// token
-
-		public HttpResponse<TokenResponseVO> getTokenResponse() {
-
-			// create jwt from gateway secret as hmac
-
-			var now = Instant.now();
-			var claims = new JWTClaimsSet.Builder()
-					.audience("gateway-registry")
-					.jwtID(UUID.randomUUID().toString())
-					.issuer(gatewayId)
-					.issueTime(Date.from(now))
-					.notBeforeTime(Date.from(now))
-					.expirationTime(Date.from(now.plusSeconds(10)));
-			var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
-			assertDoesNotThrow(() -> jwt.sign(new MACSigner(preSharedKey)), "failed to sign gateway jwt");
-
-			// call registry
-
-			return authClient.getToken("urn:ietf:params:oauth:grant-type:jwt-bearer", jwt.serialize());
-		}
-
-		public GatewayClient fetchToken() {
-			var response = assertStatus(HttpStatus.OK, () -> getTokenResponse(), "failed to get token");
-			token = response.body().getAccessToken();
-			return this;
-		}
-
-		public SignedJWT getSignedJWT() {
-			if (token == null) {
-				fetchToken();
-			}
-			return (SignedJWT) assertDoesNotThrow(() -> JWTParser.parse(token), "failed to parse token");
-		}
-
 		private String bearer() {
 			if (token == null) {
-				fetchToken();
+				var now = Instant.now();
+				var claims = new JWTClaimsSet.Builder()
+						.audience("gateway-registry")
+						.jwtID(UUID.randomUUID().toString())
+						.issuer(gatewayId)
+						.issueTime(Date.from(now))
+						.notBeforeTime(Date.from(now))
+						.expirationTime(Date.from(now.plusSeconds(10)));
+				var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
+				assertDoesNotThrow(() -> jwt.sign(new MACSigner(preSharedKey)), "failed to sign gateway jwt");
+				token = jwt.serialize();
 			}
 			return HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER + " " + token;
 		}

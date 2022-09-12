@@ -22,7 +22,6 @@ import lombok.Setter;
 public class ApplicationProperties {
 
 	private SecurityProperties security = new SecurityProperties();
-	private RegistryAuthProperties auth = new RegistryAuthProperties();
 	private TenantProperties tenant = new TenantProperties();
 	private GatewayProperties gateway = new GatewayProperties();
 
@@ -40,44 +39,6 @@ public class ApplicationProperties {
 
 		/** Header name for tenantId if audience is in whitelist. */
 		private String tenantHeaderName = "x-tenant-id";
-	}
-
-	/** Configuration for issuing registry jwt's. */
-	@ConfigurationProperties("auth")
-	@Getter
-	@Setter
-	public static class RegistryAuthProperties {
-
-		/** Value for <code>aud</code> claim. */
-		@NotNull
-		private String audience = "inoa-registry";
-
-		/** Value for <code>iss</code> claim. */
-		@NotNull
-		private String issuer;
-
-		/** Duration for <code>exp</code> claim. */
-		@NotNull
-		private Duration expirationDuration = Duration.ofMinutes(5);
-
-		/** List of RSA keys to use for registry token. */
-		@NotNull
-		private List<RegistryAuthRSA> keys = new ArrayList<>();
-
-		/** Generate key if no key was defined. */
-		private boolean generateKey = false;
-
-		@Getter
-		@Setter
-		public class RegistryAuthRSA {
-
-			@NotNull
-			private String id;
-			@NotNull
-			private byte[] publicKey;
-			@NotNull
-			private byte[] privateKey;
-		}
 	}
 
 	@ConfigurationProperties("gateway")

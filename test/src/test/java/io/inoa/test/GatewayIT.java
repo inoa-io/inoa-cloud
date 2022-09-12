@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,7 +18,6 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
 
 import io.inoa.client.GatewayClientFactory.GatewayClient;
 import io.inoa.fleet.registry.gateway.GatewayApiClient;
@@ -60,21 +58,7 @@ public class GatewayIT extends AbstractTest {
 		assertTrue(registry.findGateway(gatewayId).getEnabled(), "enabling gateway failed");
 	}
 
-	@DisplayName("3. get token from registry")
-	@Test
-	void getToken() {
-		var jwt = gatewayClient.getSignedJWT();
-		var keyId = jwt.getHeader().getKeyID();
-		var key = registry.getJwkSet().getKeyByKeyId(keyId);
-		assertNotNull(key, "key unknown");
-		var valid = assertDoesNotThrow(() -> new RSASSAVerifier(key.toRSAKey()).verify(
-				jwt.getHeader(),
-				jwt.getSigningInput(),
-				jwt.getSignature()), "signature validation failed");
-		assertTrue(valid, "signature is not valid");
-	}
-
-	@DisplayName("4. read configuration")
+	@DisplayName("3. read configuration")
 	@Test
 	void getConfiguration() {
 		var expected = Map.of(
@@ -85,7 +69,7 @@ public class GatewayIT extends AbstractTest {
 		assertEquals(expected, actual, "got invalid configuration");
 	}
 
-	@DisplayName("5. handle properties")
+	@DisplayName("4. handle properties")
 	@Test
 	void setProperties() {
 
@@ -96,7 +80,7 @@ public class GatewayIT extends AbstractTest {
 				"invalid properties read from registry management endpoint");
 	}
 
-	@DisplayName("6. send telemetry")
+	@DisplayName("5. send telemetry")
 	@Test
 	void sendTelemetry() throws JsonProcessingException {
 

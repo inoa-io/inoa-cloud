@@ -1,7 +1,8 @@
-package io.inoa.fleet.registry.rest.gateway;
+package io.inoa.fleet.registry.auth;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Clock;
@@ -21,61 +22,37 @@ import org.junit.jupiter.api.Test;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.fleet.registry.AbstractTest;
-import io.inoa.fleet.registry.auth.AuthTokenKeys;
-import io.inoa.fleet.registry.auth.AuthTokenService;
 import io.inoa.fleet.registry.domain.Gateway;
-import io.inoa.fleet.registry.rest.HttpResponseAssertions;
 import io.micronaut.context.annotation.Primary;
-import io.micronaut.http.HttpHeaderValues;
-import io.micronaut.http.HttpResponse;
+import io.micronaut.http.HttpStatus;
+import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
-import lombok.SneakyThrows;
 
 /**
- * Test for {@link AuthController}.
+ * Test for {@link GatewayTokenService}.
  *
  * @author Stephan Schnabel
  */
-@DisplayName("gateway: auth")
-public class AuthControllerTest extends AbstractTest {
+public class GatewayTokenServiceTest extends AbstractTest {
 
 	private final Instant now = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
-
 	@Inject
-	AuthApiTestClient client;
+	GatewayTokenService service;
 	@Inject
-	AuthTokenService authTokenService;
-	@Inject
-	AuthTokenKeys authTokenKeys;
-
-	@DisplayName("keys: get jwkset")
-	@Test
-	void getJwkSet() {
-		var json = assert200(() -> client.getKeys());
-		assertEquals(authTokenKeys.getJwkSet().toJSONObject(), json, "jwk");
-	}
-
-	@DisplayName("error: grant_type invalid")
-	@Test
-	void errorGrantType() {
-		var errorDescription = "grant_type is not urn:ietf:params:oauth:grant-type:jwt-bearer";
-		var jwt = token(data.gatewayId(), "pleaseChangeThisSecretForANewOne".getBytes());
-		assertError(() -> client.getToken("password", jwt), errorDescription);
-	}
+	GatewayTokenHelper gatewayToken;
 
 	@DisplayName("error: token not parseable")
 	@Test
 	void errorTokenNotParseable() {
-		var errorDescription = "failed to parse token";
+		var error = "failed to parse token";
 		var jwt = "jwt";
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
 	@DisplayName("error: claim iss missing")
@@ -154,9 +131,9 @@ public class AuthControllerTest extends AbstractTest {
 	void errorGatewayNotFound() {
 		var gatewayId = data.gatewayId();
 		var gatewayPreSharedKey = UUID.randomUUID().toString().getBytes();
-		var errorDescription = "gateway " + gatewayId + " not found";
-		var jwt = token(gatewayId, gatewayPreSharedKey);
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+		var error = "gateway " + gatewayId + " not found";
+		var jwt = gatewayToken.token(gatewayId, gatewayPreSharedKey);
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
 	@DisplayName("error: signature invalid")
@@ -164,9 +141,9 @@ public class AuthControllerTest extends AbstractTest {
 	void errorSignatureInvalid() {
 		var gateway = data.gateway(data.tenant());
 		var gatewayPreSharedKey = UUID.randomUUID().toString().getBytes();
-		var errorDescription = "signature verification failed";
-		var jwt = token(gateway.getGatewayId(), gatewayPreSharedKey);
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+		var error = "signature verification failed";
+		var jwt = gatewayToken.token(gateway.getGatewayId(), gatewayPreSharedKey);
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
 	@DisplayName("error: tenant disabled")
@@ -175,9 +152,9 @@ public class AuthControllerTest extends AbstractTest {
 		var tenant = data.tenant("inoa", false, false);
 		var gateway = data.gateway(tenant);
 		var credential = data.credentialPSK(gateway);
-		var errorDescription = "tenant " + tenant.getTenantId() + " disabled";
-		var jwt = token(gateway.getGatewayId(), credential.getValue());
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+		var error = "tenant " + tenant.getTenantId() + " disabled";
+		var jwt = gatewayToken.token(gateway.getGatewayId(), credential.getValue());
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
 	@DisplayName("error: tenant deleted")
@@ -186,9 +163,9 @@ public class AuthControllerTest extends AbstractTest {
 		var tenant = data.tenant("inoa", true, true);
 		var gateway = data.gateway(tenant);
 		var credential = data.credentialPSK(gateway);
-		var errorDescription = "tenant " + tenant.getTenantId() + " deleted";
-		var jwt = token(gateway.getGatewayId(), credential.getValue());
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+		var error = "tenant " + tenant.getTenantId() + " deleted";
+		var jwt = gatewayToken.token(gateway.getGatewayId(), credential.getValue());
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
 	@DisplayName("error: gateway disabled")
@@ -197,9 +174,9 @@ public class AuthControllerTest extends AbstractTest {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant, false);
 		var credential = data.credentialPSK(gateway);
-		var errorDescription = "gateway " + gateway.getGatewayId() + " disabled";
-		var jwt = token(gateway.getGatewayId(), credential.getValue());
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+		var error = "gateway " + gateway.getGatewayId() + " disabled";
+		var jwt = gatewayToken.token(gateway.getGatewayId(), credential.getValue());
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
 	@DisplayName("success: full token with PSK")
@@ -213,7 +190,7 @@ public class AuthControllerTest extends AbstractTest {
 
 		var gateway = data.gateway(data.tenant());
 		var credential = data.credentialPSK(gateway);
-		var jwt = token(gateway.getGatewayId(), credential.getValue());
+		var jwt = gatewayToken.token(gateway.getGatewayId(), credential.getValue());
 		assertSuccess(gateway, jwt);
 	}
 
@@ -245,56 +222,29 @@ public class AuthControllerTest extends AbstractTest {
 		var gateway = data.gateway(data.tenant());
 		var gatewayPreSharedKey = UUID.randomUUID().toString().getBytes();
 		data.credentialPSK(gateway);
-		var errorDescription = "signature verification failed";
-		var jwt = token(gateway.getGatewayId(), gatewayPreSharedKey);
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+		var error = "signature verification failed";
+		var jwt = gatewayToken.token(gateway.getGatewayId(), gatewayPreSharedKey);
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
 	// internal
 
 	private void assertSuccess(Gateway gateway, String jwt) {
-		var response = assert200(() -> client.getToken(AuthController.GRANT_TYPE, jwt));
-		var uuidFromResponse = authTokenService.validateToken(response.getAccessToken()).orElse(null);
-		assertEquals(gateway.getGatewayId(), uuidFromResponse, "access_token");
-		assertEquals(response.getTokenType(), HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER, "token_type");
-		assertEquals(properties.getAuth().getExpirationDuration().getSeconds(), response.getExpiresIn(), "expires_in");
-		assertEquals(response.getTenantId(), gateway.getTenant().getTenantId(), "tenant_id");
+		assertEquals(gateway, service.getGatewayFromToken(jwt), "gateway");
 	}
 
-	private void assertError(Consumer<JWTClaimsSet.Builder> claimsManipulator, String errorDescription) {
-		var jwt = token(data.gatewayId(), UUID.randomUUID().toString().getBytes(), claimsManipulator);
-		assertError(() -> client.getToken(AuthController.GRANT_TYPE, jwt), errorDescription);
+	private void assertError(Consumer<JWTClaimsSet.Builder> claimsManipulator, String error) {
+		var jwt = gatewayToken.token(data.gatewayId(), UUID.randomUUID().toString().getBytes(), claimsManipulator);
+		assertError(() -> service.getGatewayFromToken(jwt), error);
 	}
 
-	private <T> void assertError(Supplier<HttpResponse<T>> executeable, String expectedDescription) {
-		var error = HttpResponseAssertions.assert400(executeable).getBody(TokenErrorVO.class).orElse(null);
-		assertNotNull(error, "error body missing");
-		assertEquals("invalid_grant", error.getError(), "error invalid");
-		var errorDescription = error.getErrorDescription();
-		assertNotNull(errorDescription, "error description invalid");
-		assertTrue(errorDescription.startsWith(expectedDescription), () -> "error description invalid, expected ["
-				+ expectedDescription + "] but got [" + errorDescription + "]");
-	}
-
-	private String token(String gatewayId, byte[] secret) {
-		return token(gatewayId, secret, claims -> {});
-	}
-
-	@SneakyThrows
-	private String token(String gatewayId, byte[] secret, Consumer<JWTClaimsSet.Builder> claimsManipulator) {
-
-		var claims = new JWTClaimsSet.Builder()
-				.audience(properties.getGateway().getToken().getAudience())
-				.jwtID(UUID.randomUUID().toString())
-				.issuer(gatewayId)
-				.issueTime(Date.from(now))
-				.notBeforeTime(Date.from(now))
-				.expirationTime(Date.from(now.plusSeconds(1)));
-		claimsManipulator.accept(claims);
-
-		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
-		jwt.sign(new MACSigner(secret));
-		return jwt.serialize();
+	private void assertError(Supplier<Gateway> executeable, String expectedError) {
+		var exception = assertThrows(HttpStatusException.class, () -> executeable.get(), "expected: " + expectedError);
+		var actualError = exception.getMessage();
+		assertEquals(HttpStatus.UNAUTHORIZED, exception.getStatus(), "status");
+		assertNotNull(actualError, "error message");
+		assertTrue(actualError.startsWith(expectedError),
+				() -> "error invalid, expected [" + expectedError + "] but got [" + actualError + "]");
 	}
 
 	@Primary

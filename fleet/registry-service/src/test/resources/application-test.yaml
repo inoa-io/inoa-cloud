@@ -28,10 +28,6 @@ kafka:
 
 ## config for registry
 inoa.fleet.registry:
-  # use random key and set issuer
-  auth:
-    generate-key: true
-    issuer: test
   # allow audience test access to all tenants
   security:
     tenant-audience-whitelist: test
