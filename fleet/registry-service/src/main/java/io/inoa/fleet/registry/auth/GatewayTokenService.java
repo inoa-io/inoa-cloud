@@ -1,8 +1,15 @@
-package io.inoa.fleet.registry.rest.gateway;
+package io.inoa.fleet.registry.auth;
 
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.time.Clock;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.slf4j.MDC;
 
@@ -11,63 +18,36 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.fleet.registry.ApplicationProperties;
-import io.inoa.fleet.registry.auth.AuthTokenKeys;
-import io.inoa.fleet.registry.auth.AuthTokenService;
-import io.inoa.fleet.registry.auth.SignatureProvider;
+import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
-import io.micronaut.http.HttpHeaderValues;
-import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
-import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
-import io.micronaut.security.annotation.Secured;
-import io.micronaut.security.rules.SecurityRule;
 import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
+import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
+import io.micronaut.security.token.jwt.signature.rsa.RSASignature;
+import io.micronaut.security.token.jwt.signature.secret.SecretSignature;
+import io.micronaut.security.token.jwt.signature.secret.SecretSignatureConfiguration;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Implementation of {@link AuthApi}.
+ * Validate gateway token.
  *
  * @author Stephan Schnabel
  */
-@Secured(SecurityRule.IS_ANONYMOUS)
-@Controller
+@Singleton
 @Slf4j
 @RequiredArgsConstructor
-public class AuthController implements AuthApi {
-
-	public static final String GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+public class GatewayTokenService {
 
 	private final Clock clock;
-	private final SignatureProvider signatureProvider;
+	private final ApplicationProperties properties;
 	private final GatewayRepository gatewayRepository;
-	private final AuthTokenService authService;
-	private final AuthTokenKeys keys;
-	private final ApplicationProperties applicationProperties;
+	private final CredentialRepository credentialRepository;
 
-	@Override
-	public HttpResponse<Object> getKeys() {
-		return HttpResponse.ok(keys.getJwkSet().toJSONObject());
-	}
-
-	@Override
-	public HttpResponse<TokenResponseVO> getToken(String grantType, String token) {
-		if (!GRANT_TYPE.equals(grantType)) {
-			throw error("grant_type is not " + GRANT_TYPE);
-		}
-		log.trace("Token: {}", token);
-		return this.getTokenResponse(getGatewayFromToken(token));
-	}
-
-	/**
-	 * Parse token, validate claims, verify signature and return gateway.
-	 *
-	 * @param token JWT token.
-	 * @return Maybe with gateway from token.
-	 */
-	private Gateway getGatewayFromToken(String token) {
+	public Gateway getGatewayFromToken(String token) {
 
 		// parse token and get claim set
 
@@ -82,7 +62,7 @@ public class AuthController implements AuthApi {
 
 		// validate claims and get gateway
 
-		var gatewayId = validateClaims(claims);
+		var gatewayId = validateClaimsAndReturnGatewayId(claims);
 		var optionalGateway = gatewayRepository.findByGatewayId(gatewayId);
 		if (optionalGateway.isEmpty()) {
 			throw error("gateway " + gatewayId + " not found");
@@ -105,7 +85,7 @@ public class AuthController implements AuthApi {
 		// filter if signature is invalid
 
 		var verified = false;
-		for (var signature : signatureProvider.find(gateway)) {
+		for (var signature : findSignatures(gateway)) {
 			try {
 				verified |= signature.verify(jwt);
 				log.debug("Token signature valid with {}: {}", signature, verified);
@@ -122,16 +102,16 @@ public class AuthController implements AuthApi {
 	}
 
 	/**
-	 * Validate claims
+	 * Validate claims and return gatewayId.
 	 *
 	 * @param token JWT token.
-	 * @return Maybe with gateway from token.
+	 * @return GatewayId from token.
 	 * @see "https://tools.ietf.org/html/rfc7523#section-3"
 	 */
-	private String validateClaims(JWTClaimsSet claims) {
+	private String validateClaimsAndReturnGatewayId(JWTClaimsSet claims) {
 
 		var now = Instant.now(clock);
-		var tokenProperties = this.applicationProperties.getGateway().getToken();
+		var tokenProperties = properties.getGateway().getToken();
 
 		// check issuer
 
@@ -194,29 +174,60 @@ public class AuthController implements AuthApi {
 	}
 
 	/**
-	 * Create response with access token for gateway.
-	 *
-	 * @param gateway Gateway.
-	 * @return Response with payload.
-	 */
-	private HttpResponse<TokenResponseVO> getTokenResponse(Gateway gateway) {
-		return HttpResponse.ok(new TokenResponseVO()
-				.accessToken(authService.createToken(gateway.getGatewayId()))
-				.tokenType(HttpHeaderValues.AUTHORIZATION_PREFIX_BEARER)
-				.expiresIn(applicationProperties.getAuth().getExpirationDuration().getSeconds())
-				.tenantId(gateway.getTenant().getTenantId()));
-	}
-
-	/**
 	 * Construct error with description.
 	 *
 	 * @param errorDescription Human readable error description.
-	 * @return RFC conform response.
+	 * @return Unauthorized response.
 	 */
 	private HttpStatusException error(String errorDescription) {
 		log.debug("Failure: {}", errorDescription);
-		return new HttpStatusException(HttpStatus.BAD_REQUEST, new TokenErrorVO()
-				.error("invalid_grant")
-				.errorDescription(errorDescription));
+		return new HttpStatusException(HttpStatus.UNAUTHORIZED, errorDescription);
+	}
+
+	private List<SignatureConfiguration> findSignatures(Gateway gateway) {
+		var signatures = new ArrayList<SignatureConfiguration>();
+
+		var credentials = credentialRepository.findByGateway(gateway);
+		if (credentials.isEmpty()) {
+			log.debug("No credentials found");
+			return List.of();
+		}
+
+		for (var credential : credentials) {
+
+			if (!credential.getEnabled()) {
+				log.debug("Credential {} with name {} and type {} is disabled",
+						credential.getCredentialId(),
+						credential.getName(),
+						credential.getType());
+				continue;
+			}
+
+			switch (credential.getType()) {
+				case PSK: {
+					var config = new SecretSignatureConfiguration(credential.getName());
+					config.setSecret(new String(credential.getValue()));
+					signatures.add(new SecretSignature(config));
+					break;
+				}
+				case RSA: {
+					try {
+						var key = (RSAPublicKey) KeyFactory
+								.getInstance("RSA")
+								.generatePublic(new X509EncodedKeySpec(credential.getValue()));
+						signatures.add(new RSASignature(() -> key));
+					} catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+						log.error("Unable to parse public key.", e);
+					}
+					break;
+				}
+			}
+		}
+
+		if (signatures.isEmpty()) {
+			log.debug("No valid signatures found");
+		}
+
+		return signatures;
 	}
 }

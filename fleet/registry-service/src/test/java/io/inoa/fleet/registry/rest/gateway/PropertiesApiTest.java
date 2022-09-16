@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.registry.AbstractTest;
+import io.inoa.fleet.registry.auth.GatewayTokenHelper;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayProperty;
 import jakarta.inject.Inject;
@@ -25,6 +26,8 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 
 	@Inject
 	PropertiesApiTestClient client;
+	@Inject
+	GatewayTokenHelper gatewayToken;
 
 	@DisplayName("getProperties(200): with properties")
 	@Test
@@ -32,7 +35,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void getProperties200() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		var actualProperties = assert200(() -> client.getProperties(bearer(gateway)));
+		var actualProperties = assert200(() -> client.getProperties(gatewayToken.bearer(gateway)));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
 
@@ -41,7 +44,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void getProperties200Without() {
 		var expectedProperties = Map.<String, String>of();
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		var actualProperties = assert200(() -> client.getProperties(bearer(gateway)));
+		var actualProperties = assert200(() -> client.getProperties(gatewayToken.bearer(gateway)));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
 
@@ -59,7 +62,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 		var gateway = data.gateway(data.tenant(), Map.of("aaa", "a", "ccc", "c"));
 		var expectedProperties = Map.of("aaa", "x", "bbb", "b", "ccc", "c");
 		var actualProperties = assert200(
-				() -> client.setProperties(bearer(gateway), Map.of("aaa", "x", "bbb", "b")));
+				() -> client.setProperties(gatewayToken.bearer(gateway), Map.of("aaa", "x", "bbb", "b")));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
 
@@ -68,7 +71,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void setProperties200EmptyPayload() {
 		var expectedProperties = Map.of("aaa", "a");
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		var actualProperties = assert200(() -> client.setProperties(bearer(gateway), Map.of()));
+		var actualProperties = assert200(() -> client.setProperties(gatewayToken.bearer(gateway), Map.of()));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
 
@@ -77,7 +80,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void setProperties200NoChange() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		var actualProperties = assert200(() -> client.setProperties(bearer(gateway), expectedProperties));
+		var actualProperties = assert200(() -> client.setProperties(gatewayToken.bearer(gateway), expectedProperties));
 		assertProperties(gateway, expectedProperties, actualProperties);
 	}
 
@@ -96,7 +99,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void setProperty204() {
 		var gateway = data.gateway(data.tenant(), Map.of("aaa", "a", "ccc", "c"));
 		var expectedProperties = Map.of("aaa", "a", "bbb", "b", "ccc", "c");
-		assert204(() -> client.setProperty(bearer(gateway), "bbb", "b"));
+		assert204(() -> client.setProperty(gatewayToken.bearer(gateway), "bbb", "b"));
 		assertProperties(gateway, expectedProperties);
 	}
 
@@ -105,7 +108,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void setProperty204Update() {
 		var gateway = data.gateway(data.tenant(), Map.of("aaa", "a", "ccc", "c"));
 		var expectedProperties = Map.of("aaa", "x", "ccc", "c");
-		assert204(() -> client.setProperty(bearer(gateway), "aaa", "x"));
+		assert204(() -> client.setProperty(gatewayToken.bearer(gateway), "aaa", "x"));
 		assertProperties(gateway, expectedProperties);
 	}
 
@@ -114,7 +117,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void setProperty204NoChange() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		assert204(() -> client.setProperty(bearer(gateway), "aaa", "a"));
+		assert204(() -> client.setProperty(gatewayToken.bearer(gateway), "aaa", "a"));
 		assertProperties(gateway, expectedProperties);
 	}
 
@@ -134,7 +137,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void deleteProperty204() {
 		var expectedProperties = Map.of("aaa", "a", "bbb", "b", "ccc", "c");
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		assert204(() -> client.deleteProperty(bearer(gateway), "bbb"));
+		assert204(() -> client.deleteProperty(gatewayToken.bearer(gateway), "bbb"));
 		assertProperties(gateway, Map.of("aaa", "a", "ccc", "c"));
 	}
 
@@ -154,7 +157,7 @@ public class PropertiesApiTest extends AbstractTest implements PropertiesApiTest
 	public void deleteProperty404() {
 		var expectedProperties = Map.of("aaa", "a", "ccc", "c");
 		var gateway = data.gateway(data.tenant(), expectedProperties);
-		assert404("Property not found.", () -> client.deleteProperty(bearer(gateway), "bbb"));
+		assert404("Property not found.", () -> client.deleteProperty(gatewayToken.bearer(gateway), "bbb"));
 		assertProperties(gateway, expectedProperties);
 	}
 

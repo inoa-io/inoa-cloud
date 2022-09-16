@@ -17,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.registry.AbstractTest;
+import io.inoa.fleet.registry.auth.GatewayTokenHelper;
 import io.inoa.fleet.registry.rest.management.ConfigurationTypeVO;
 import io.inoa.fleet.registry.rest.management.CredentialsApiTestClient;
 import io.inoa.fleet.registry.rest.management.GatewaysApiTestClient;
@@ -36,6 +37,8 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	GatewaysApiTestClient gatewaysClient;
 	@Inject
 	CredentialsApiTestClient credentialsClient;
+	@Inject
+	GatewayTokenHelper gatewayToken;
 
 	@DisplayName("getConfiguration(200): without configuration")
 	@Test
@@ -50,7 +53,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 
 		// create gateway and get config
 
-		var auth = bearer(data.gateway());
+		var auth = gatewayToken.bearer(data.gateway());
 		var actual = assert200(() -> client.getConfiguration(auth));
 		var expected = Map.of();
 		assertEquals(expected, actual, "configuration");
@@ -82,7 +85,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 
 		// get config
 
-		var auth = bearer(gateway);
+		var auth = gatewayToken.bearer(gateway);
 		var actual = assert200(() -> client.getConfiguration(auth));
 		var expected = Map.of("boolean", false, "integer", 12345, "string", "mäh");
 		assertEquals(actual, expected, "configuration");
