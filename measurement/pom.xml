@@ -17,6 +17,7 @@
 	<modules>
 		<module>model</module>
 		<module>translator</module>
+		<module>exporter-api</module>
 		<module>exporter</module>
 	</modules>
 </project>
