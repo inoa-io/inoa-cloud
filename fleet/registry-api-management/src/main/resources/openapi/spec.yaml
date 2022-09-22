@@ -491,7 +491,7 @@ paths:
           description: Unauthorized
         404:
           description: Group of configuration key not found
-  /gateway/{gateway_id}/configuration:
+  /gateways/{gateway_id}/configuration:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
@@ -512,7 +512,7 @@ paths:
           description: Unauthorized
         404:
           description: Group not found
-  /gateway/{gateway_id}/configuration/{configuration_key}:
+  /gateways/{gateway_id}/configuration/{configuration_key}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
       - $ref: '#/components/parameters/ConfigurationKey'

@@ -51,3 +51,4 @@ logger:
     io.micronaut: INFO
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
+    org.apache.kafka: ERROR
