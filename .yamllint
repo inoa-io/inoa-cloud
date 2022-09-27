@@ -23,6 +23,7 @@ rules:
       fleet/registry-api-gateway/src/main/resources/openapi/spec.yaml
       fleet/registry-api-management/src/main/resources/openapi/spec.yaml
       measurement/model/src/main/resources/openapi/spec.yaml
+      measurement/exporter-api/src/main/resources/openapi/spec.yaml
 
   # allow everything on keys
   truthy:
