@@ -1,4 +1,4 @@
-INSERT INTO tenant (tenant_id,name,enabled,gateway_id_pattern,created,updated) VALUES ('inoa','INOA',true,'IS[A-Z]{2}[0-9]{2}-[A-F0-9]{10}',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
+INSERT INTO tenant (tenant_id,name,enabled,gateway_id_pattern,created,updated) VALUES ('inoa','INOA',true,'IS[A-Z]{2}[0-9]{2}-[A-F0-9]{12}',CURRENT_TIMESTAMP,CURRENT_TIMESTAMP);
 INSERT INTO configuration_definition (tenant_id,key,type,description,pattern) VALUES ((SELECT id FROM tenant WHERE tenant_id='inoa'),'ntp.host','STRING','Host of ntp server to use.','[a-z0-9\.]{8,20}');
 INSERT INTO configuration_definition (tenant_id,key,type,description,pattern) VALUES ((SELECT id FROM tenant WHERE tenant_id='inoa'),'mqtt.url','URL','URL of mqtt server.',null);
 INSERT INTO configuration_definition (tenant_id,key,type,description,pattern) VALUES ((SELECT id FROM tenant WHERE tenant_id='inoa'),'mqtt.insecure','BOOLEAN','Ignore invalid tls certificate.',null);
