@@ -33,11 +33,10 @@ public class CredentialsServiceImpl implements CredentialsService {
 			JsonObject clientContext, Span span) {
 		log.info("get {}@{} {} - {}", gatewayId, tenantId, type, clientContext);
 		return Future.succeededFuture(registryClient.findPassword(tenantId, gatewayId)
-				.map(password -> new JsonObject()
-						.put(RequestResponseApiConstants.FIELD_ENABLED, true)
+				.map(password -> new JsonObject().put(RequestResponseApiConstants.FIELD_ENABLED, true)
 						.put(RequestResponseApiConstants.FIELD_PAYLOAD_DEVICE_ID, gatewayId)
-						.put(CredentialsConstants.FIELD_SECRETS, new JsonArray()
-								.add(passwordEncoder.encode(new String(password.getPassword()))))
+						.put(CredentialsConstants.FIELD_SECRETS,
+								new JsonArray().add(passwordEncoder.encode(new String(password.getValue()))))
 						.put(CredentialsConstants.FIELD_TYPE, CredentialsConstants.SECRETS_TYPE_HASHED_PASSWORD)
 						.put(CredentialsConstants.FIELD_AUTH_ID, gatewayId))
 				.map(json -> CredentialsResult.from(HttpURLConnection.HTTP_OK, json, properties.getCredentialCache()))
