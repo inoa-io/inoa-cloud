@@ -20,8 +20,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.inoa.fleet.registry.rest.CredentialTypeVO;
 import io.inoa.fleet.registry.rest.CredentialVO;
 import io.inoa.fleet.registry.rest.GatewayDetailVO;
-import io.inoa.fleet.registry.rest.SecretDetailPasswordVO;
-import io.inoa.fleet.registry.rest.TenantVO;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,29 +32,18 @@ public class RegistryClient {
 	private final RestTemplate restTemplate = new RestTemplate();
 	private final RegistryProperties properties;
 
-	public Optional<TenantVO> findTenant(String tenantId) {
-		return find(tenantId, "/tenants/" + tenantId, TenantVO.class, null);
-	}
-
 	public Optional<GatewayDetailVO> findGateway(String tenantId, String gatewayId) {
 		return find(tenantId, "/gateways/" + gatewayId, GatewayDetailVO.class, null);
 	}
 
-	public Optional<SecretDetailPasswordVO> findPassword(String tenantId, String gatewayId) {
+	public Optional<CredentialVO> findPassword(String tenantId, String gatewayId) {
 
 		var uri = "/gateways/" + gatewayId + "/credentials";
-		var credential = find(tenantId, uri, null, new ParameterizedTypeReference<List<CredentialVO>>() {})
-				.stream().flatMap(List::stream)
-				.filter(c -> c.getType() == CredentialTypeVO.PASSWORD)
-				.findFirst();
-		var secret = credential.stream().flatMap(c -> c.getSecrets().stream()).findFirst();
-		if (secret.isEmpty()) {
-			log.info("No password secret not found.");
-			return Optional.empty();
-		}
-
-		uri += "/" + credential.get().getCredentialId() + "/secrets/" + secret.get().getSecretId();
-		return find(tenantId, uri, SecretDetailPasswordVO.class, null);
+		var credential = find(tenantId, uri, null, new ParameterizedTypeReference<List<CredentialVO>>() {
+		}).stream().flatMap(List::stream).filter(c -> c.getType() == CredentialTypeVO.PSK).findFirst();
+		log.info("return {}", credential.get().getValue());
+		log.info("return {}", new String(credential.get().getValue()));
+		return credential;
 	}
 
 	private <T> Optional<T> find(String tenantId, String uri, Class<T> type, ParameterizedTypeReference<T> ref) {
@@ -91,11 +78,8 @@ public class RegistryClient {
 		payload.add("grant_type", "client_credentials");
 
 		try {
-			var result = restTemplate.exchange(
-					properties.getKeycloakUrl(),
-					HttpMethod.POST,
-					new HttpEntity<>(payload, headers),
-					AccessToken.class);
+			var result = restTemplate.exchange(properties.getKeycloakUrl(), HttpMethod.POST,
+					new HttpEntity<>(payload, headers), AccessToken.class);
 			if (result.getStatusCode() == HttpStatus.OK) {
 				return result.getBody().getAccessToken();
 			}
