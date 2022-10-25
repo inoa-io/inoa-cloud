@@ -650,6 +650,8 @@ components:
           $ref: '#/components/schemas/Timestamp'
         updated:
           $ref: '#/components/schemas/Timestamp'
+        status:
+          $ref: '#/components/schemas/GatewayStatus'
       required:
         - gateway_id
         - enabled
@@ -726,6 +728,19 @@ components:
           $ref: '#/components/schemas/Enabled'
         group_ids:
           $ref: '#/components/schemas/GatewayGroups'
+    GatewayStatus:
+      description: 'Gateway status'
+      properties:
+        mqtt:
+          $ref: '#/components/schemas/GatewayMqttStatus'
+    GatewayMqttStatus:
+      description: 'Gateway status'
+      properties:
+        connected:
+          description: 'connection status'
+          type: boolean
+        timestamp:
+          $ref: '#/components/schemas/Timestamp'
 
     ###
     ### Credential
