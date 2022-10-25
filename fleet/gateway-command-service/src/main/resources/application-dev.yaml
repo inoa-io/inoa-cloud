@@ -1,0 +1,4 @@
+inoa:
+  tenant-ids:
+    - inoa
+  kafka-url: localhost:9094

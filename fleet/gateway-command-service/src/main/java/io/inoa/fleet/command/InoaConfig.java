@@ -3,8 +3,7 @@ package io.inoa.fleet.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
+import io.micronaut.context.annotation.ConfigurationProperties;
 import lombok.Data;
 
 @Data

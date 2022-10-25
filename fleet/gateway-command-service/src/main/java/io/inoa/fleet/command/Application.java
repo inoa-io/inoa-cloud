@@ -1,14 +1,14 @@
 package io.inoa.fleet.command;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import io.micronaut.runtime.Micronaut;
 
-@SpringBootApplication
-@EnableConfigurationProperties(InoaConfig.class)
+/**
+ * Micronaut base application class.
+ *
+ */
 public class Application {
 
-	public static void main(final String[] args) {
-		SpringApplication.run(Application.class, args);
+	public static void main(String[] args) {
+		Micronaut.build(args).banner(false).mainClass(Application.class).start();
 	}
 }
