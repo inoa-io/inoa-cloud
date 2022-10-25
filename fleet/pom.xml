@@ -18,9 +18,7 @@
 		<module>registry-api-management</module>
 		<module>registry-api-gateway</module>
 		<module>registry-service</module>
-<!--
 		<module>registry-hono-bridge</module>
--->
 		<module>mqtt-client</module>
 		<module>mqtt-broker</module>
 		<module>gateway-telemetry</module>
