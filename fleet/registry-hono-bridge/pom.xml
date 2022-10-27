@@ -13,7 +13,7 @@
 	<name>INOA :: Fleet :: Registry Hono Bridge</name>
 
 	<properties>
-		<version.org.springframework.boot>2.4.13</version.org.springframework.boot>
+		<version.org.springframework.boot>2.7.5</version.org.springframework.boot>
 		<version.org.eclipse.hono>1.12.1</version.org.eclipse.hono>
 	</properties>
 
@@ -88,7 +88,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>2.6.7</version>
+				<version>2.7.5</version>
 				<executions>
 					<execution>
 						<goals>
