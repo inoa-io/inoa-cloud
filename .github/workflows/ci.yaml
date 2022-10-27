@@ -56,5 +56,5 @@ jobs:
       - run: mvn -B -ntp dependency:go-offline
       - run: mvn -B -ntp install -Dmaven.test.redirectTestOutputToFile=false -Dsurefire.rerunFailingTestsCount=3 -pl \!test
       - run: mvn -B -ntp install -Dmaven.test.redirectTestOutputToFile=false -Dsurefire.rerunFailingTestsCount=3 -pl test
-      - run: mvn -B -ntp jib:build -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter -T1C
+      - run: mvn -B -ntp jib:build -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter,:gateway-command-service,:fleet-registry-hono-bridge -T1C
         if: ${{ github.ref_name == 'main' }}

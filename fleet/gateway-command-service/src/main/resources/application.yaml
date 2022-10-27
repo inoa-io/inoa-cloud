@@ -1,5 +1,22 @@
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,prometheus
+micronaut:
+  application:
+    name: ${project.artifactId}
+    version: ${project.version}
+
+## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
+endpoints:
+  all:
+    path: /endpoints
+    sensitive: false
+  health:
+    details-visible: ANONYMOUS
+
+## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
+kafka:
+
+  consumers:
+    default:
+      key:
+        deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value:
+        deserializer: io.cloudevents.kafka.CloudEventDeserializer

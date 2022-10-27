@@ -13,30 +13,27 @@ import org.eclipse.hono.client.kafka.consumer.MessagingKafkaConsumerConfigProper
 import org.eclipse.hono.client.kafka.producer.CachingKafkaProducerFactory;
 import org.eclipse.hono.client.kafka.producer.KafkaProducerFactory;
 import org.eclipse.hono.client.kafka.producer.MessagingKafkaProducerConfigProperties;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
+import io.micronaut.context.annotation.Factory;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Configuration
+@Factory
+
 @RequiredArgsConstructor
 public class IotConfig {
-
-	private final InoaConfig inoaConfig;
-
-	@Bean
+	@Singleton
 	public Vertx vertx() {
 		return Vertx.vertx();
 	}
 
-	@Bean
-	ApplicationClient<? extends MessageContext> honoClient() throws InterruptedException {
-		var client = createKafkaApplicationClient(vertx());
+	@Singleton
+	ApplicationClient<? extends MessageContext> honoClient(InoaConfig inoaConfig) throws InterruptedException {
+		var client = createKafkaApplicationClient(vertx(), inoaConfig);
 
 		final CountDownLatch latch = new CountDownLatch(1);
 
@@ -46,28 +43,13 @@ public class IotConfig {
 		return client;
 	}
 
-	@Bean
-	ApplicationRunner applicationRunner(ApplicationClient<? extends MessageContext> honoClient) {
-		return args -> {
-			for (String tenant : inoaConfig.getTenantIds()) {
-				honoClient.createEventConsumer(tenant, msg -> {
-					// handle command readiness notification
-					// msg.getTimeUntilDisconnectNotification().ifPresent(this::handleCommandReadinessNotification);
-					if (msg.getTimeUntilDisconnectNotification().isPresent()) {
-						log.info("ttl: {}", msg.getTimeUntilDisconnectNotification().get());
-					}
-					handleEventMessage(msg);
-				}, cause -> log.error("event consumer closed by remote", cause));
-			}
-		};
-	}
-
 	private void handleEventMessage(final DownstreamMessage<? extends MessageContext> msg) {
 		log.debug("received event [tenant: {}, device: {}, content-type: {}]: [{}].", msg.getTenantId(),
 				msg.getDeviceId(), msg.getContentType(), msg.getPayload());
 	}
 
-	private ApplicationClient<? extends MessageContext> createKafkaApplicationClient(Vertx vertx) {
+	private ApplicationClient<? extends MessageContext> createKafkaApplicationClient(Vertx vertx,
+			InoaConfig inoaConfig) {
 
 		final Map<String, String> properties = new HashMap<>();
 		properties.put("bootstrap.servers", inoaConfig.getKafkaUrl());
