@@ -35,6 +35,16 @@ inoa.measurement.translator:
           converter: modbus
           modifier: 10
 
+    - name: s0
+      sensors:
+        - name: gas
+          converter: s0
+          modifier: 0.001
+          ext:
+            label: gas_in
+            obis: 7-1:13.9.0
+            unit: cubicmeter
+
     - name: shplg-s
       sensors:
         - name: status
