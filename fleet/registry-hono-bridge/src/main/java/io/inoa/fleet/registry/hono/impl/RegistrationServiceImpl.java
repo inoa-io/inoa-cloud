@@ -26,15 +26,23 @@ public class RegistrationServiceImpl implements RegistrationService {
 	@Override
 	public Future<RegistrationResult> assertRegistration(String tenantId, String deviceId) {
 		log.info("assertRegistration {}@{}", deviceId, tenantId);
-		return Future.succeededFuture(registryClient.findGateway(tenantId, deviceId).map(d -> {
-			log.info("data: {}", d);
-			return d;
-		}).map(device -> new JsonObject().put(RegistrationConstants.FIELD_PAYLOAD_DEVICE_ID, deviceId)
-				.put(RegistrationConstants.FIELD_ENABLED, device.getEnabled())
-				.put(RegistrationConstants.FIELD_PAYLOAD_DEFAULTS,
-						Map.of("gatewayName", device.getGatewayId(), "gatewayType", "satellite")))
-				.map(json -> RegistrationResult.from(HttpURLConnection.HTTP_OK, json, properties.getGatewayCache()))
-				.orElseGet(() -> RegistrationResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
+		return Future
+				.succeededFuture(
+						registryClient
+								.findGateway(tenantId, deviceId).map(
+										device -> new JsonObject()
+												.put(RegistrationConstants.FIELD_PAYLOAD_DEVICE_ID, deviceId)
+												.put(RegistrationConstants.FIELD_ENABLED, device.getEnabled())
+												.put(RegistrationConstants.FIELD_PAYLOAD_DEFAULTS, Map.of("gatewayName",
+														device.getGatewayId(), "gatewayType", "satellite")))
+								.map(json -> {
+									if (json.getBoolean(RegistrationConstants.FIELD_ENABLED, Boolean.TRUE)) {
+										return RegistrationResult.from(HttpURLConnection.HTTP_OK, json,
+												properties.getGatewayCache());
+									} else {
+										return RegistrationResult.from(HttpURLConnection.HTTP_NOT_FOUND);
+									}
+								}).orElseGet(() -> RegistrationResult.from(HttpURLConnection.HTTP_NOT_FOUND)));
 	}
 
 	@Override
