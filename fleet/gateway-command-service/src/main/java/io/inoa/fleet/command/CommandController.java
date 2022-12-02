@@ -34,12 +34,13 @@ public class CommandController {
 
 	@Post("/{tenantId}/{deviceId}/rpc")
 	public HttpResponse<?> sendRpcCommand(@PathVariable String tenantId, @PathVariable String deviceId,
-			@Body RpcCommand data) throws JsonProcessingException, InterruptedException {
+			@Body String body) throws JsonProcessingException, InterruptedException {
+		RpcCommand data = objectMapper.readValue(body, RpcCommand.class);
 		Objects.requireNonNull(data);
 		Objects.requireNonNull(data.getId());
 		Objects.requireNonNull(data.getMethod());
 
-		final Buffer commandBuffer = buildCommandPayload(objectMapper.writeValueAsBytes(data));
+		final Buffer commandBuffer = buildCommandPayload(body.getBytes());
 		final String command = "cloudEventRpc";
 		final String[] res = {null};
 		CountDownLatch cdl = new CountDownLatch(1);
