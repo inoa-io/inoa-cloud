@@ -29,7 +29,7 @@ CREATE TABLE thing
     id            SERIAL       NOT NULL,
     thing_id      UUID         NOT NULL,
     tenant_id     VARCHAR(100) NOT NULL,
-    gateway_id    UUID         NULL,
+    gateway_id    VARCHAR(100) NULL,
     name          VARCHAR(100) NOT NULL,
     properties    JSON         NOT NULL,
     thing_type_id INTEGER      NOT NULL,
