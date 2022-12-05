@@ -1,7 +1,5 @@
 package io.inoa.fleet.thing.rest;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.inoa.fleet.thing.rest.management.ThingVO;
@@ -15,5 +13,5 @@ public interface GatewayCommandClient {
 
 	@Post("/command/{tenant_id}/{gateway_id}")
 	io.micronaut.http.HttpResponse<ThingVO> sendGatewayCommand(@PathVariable(name = "tenant_id") String tenantId,
-			@PathVariable(name = "gateway_id") UUID gatewayId, @Body JsonNode body);
+			@PathVariable(name = "gateway_id") String gatewayId, @Body JsonNode body);
 }

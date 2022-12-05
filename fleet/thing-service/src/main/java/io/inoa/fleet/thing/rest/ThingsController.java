@@ -126,7 +126,7 @@ public class ThingsController implements ThingsApi {
 	// TODO filter
 	@Get("/things/by-gateway-id/{gateway_id}")
 	@Override
-	public HttpResponse<ThingPageVO> findThingsByGatewayId(@PathVariable(name = "gateway_id") UUID gatewayId,
+	public HttpResponse<ThingPageVO> findThingsByGatewayId(@PathVariable(name = "gateway_id") String gatewayId,
 			Optional<Integer> page, Optional<Integer> size, Optional<List<String>> sort, Optional<String> filter) {
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
 		Page<Thing> things = thingRepository.findByTenantIdAndGatewayId(security.getTenantId(), gatewayId, pageable);
@@ -134,7 +134,7 @@ public class ThingsController implements ThingsApi {
 	}
 
 	@Override
-	public HttpResponse<Object> syncConfigToGateway(UUID gatewayId) {
+	public HttpResponse<Object> syncConfigToGateway(String gatewayId) {
 		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
 		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper);
@@ -164,7 +164,7 @@ public class ThingsController implements ThingsApi {
 	}
 
 	@Override
-	public HttpResponse<Object> downloadConfigToGateway(UUID gatewayId) {
+	public HttpResponse<Object> downloadConfigToGateway(String gatewayId) {
 		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
 		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper);

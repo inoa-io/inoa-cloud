@@ -1,0 +1,1 @@
+ALTER TABLE thing ALTER COLUMN gateway_id VARCHAR(100);
