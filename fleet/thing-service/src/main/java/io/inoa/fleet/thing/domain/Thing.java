@@ -27,7 +27,7 @@ public class Thing {
 	@MappedProperty
 	private String tenantId;
 	@MappedProperty
-	private UUID gatewayId;
+	private String gatewayId;
 	@MappedProperty
 	private String name;
 	@MappedProperty

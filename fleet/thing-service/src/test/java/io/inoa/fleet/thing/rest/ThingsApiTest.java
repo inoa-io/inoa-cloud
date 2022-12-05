@@ -67,6 +67,10 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		wireMockServer.stop();
 	}
 
+	protected String newGatewayId() {
+		return UUID.randomUUID().toString();
+	}
+
 	@Test
 	@Override
 	public void createThing201() throws Exception {
@@ -74,10 +78,8 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 
-		var thingTypeCreateVO = new ThingCreateVO()
-				.thingTypeId(thingType.getThingTypeId())
-				.name("test")
-				.gatewayId(UUID.randomUUID());
+		var thingTypeCreateVO = new ThingCreateVO().thingTypeId(thingType.getThingTypeId()).name("test")
+				.gatewayId(newGatewayId());
 		thingTypeCreateVO.addPropertiesItem(new PropertyVO().key("test").value(1));
 		thingTypeCreateVO.addChannelsItem(
 				new ThingChannelVO().key("power").addPropertiesItem(new PropertyVO().key("serial").value("test")));
@@ -101,16 +103,15 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 
-		var thingTypeCreateVO = new ThingCreateVO()
-				.thingTypeId(thingType.getThingTypeId())
-				.gatewayId(UUID.randomUUID());
+		var thingTypeCreateVO = new ThingCreateVO().thingTypeId(thingType.getThingTypeId())
+				.gatewayId(newGatewayId());
 		assert400(() -> client.createThing(auth("test"), thingTypeCreateVO));
 	}
 
 	@Test
 	@Override
 	public void createThing401() throws Exception {
-		var thingTypeCreateVO = new ThingCreateVO().gatewayId(UUID.randomUUID());
+		var thingTypeCreateVO = new ThingCreateVO().gatewayId(newGatewayId());
 		assert401(() -> client.createThing(null, thingTypeCreateVO));
 	}
 
@@ -122,7 +123,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		List<Property> properties = new ArrayList<>();
 		properties.add(new Property().setValue(1).setKey("inoa_test"));
 		var thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID())
-				.setGatewayId(UUID.randomUUID()).setProperties(properties).setTenantId("test");
+				.setGatewayId(newGatewayId()).setProperties(properties).setTenantId("test");
 		Thing finalThing = thingRepository.save(thing);
 		assert204(() -> client.deleteThing(auth("test"), finalThing.getThingId()));
 	}
@@ -157,7 +158,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		List<Property> properties = new ArrayList<>();
 		properties.add(new Property().setValue(1).setKey("inoa_test"));
 		var thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID())
-				.setGatewayId(UUID.randomUUID()).setProperties(properties).setTenantId("test");
+				.setGatewayId(newGatewayId()).setProperties(properties).setTenantId("test");
 		thingRepository.save(thing);
 
 		var thingVo = assert200(() -> client.findThing(auth("test"), thing.getThingId()));
@@ -184,7 +185,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		List<Property> properties = new ArrayList<>();
 		properties.add(new Property().setValue(1).setKey("inoa_test"));
 		var thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID())
-				.setGatewayId(UUID.randomUUID()).setProperties(properties).setTenantId("test");
+				.setGatewayId(newGatewayId()).setProperties(properties).setTenantId("test");
 		thingRepository.save(thing);
 		thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID()).setTenantId("test2");
 		thingRepository.save(thing);
@@ -209,7 +210,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	public void findThingsByGatewayId200() throws Exception {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
-		var gatewayId = UUID.randomUUID();
+		var gatewayId = newGatewayId();
 		var thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID())
 				.setGatewayId(gatewayId).setTenantId("test");
 		thingRepository.save(thing);
@@ -223,7 +224,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	@Test
 	@Override
 	public void findThingsByGatewayId401() throws Exception {
-		assert401(() -> client.findThingsByGatewayId(null, UUID.randomUUID(), null, null, null, null));
+		assert401(() -> client.findThingsByGatewayId(null, UUID.randomUUID().toString(), null, null, null, null));
 	}
 
 	@Test
@@ -233,7 +234,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 		List<Property> properties = new ArrayList<>();
-		UUID gatewayId = UUID.randomUUID();
+		String gatewayId = newGatewayId();
 		properties.add(new Property().setValue("test").setKey("serial"));
 		properties.add(new Property().setValue(1).setKey("slaveId"));
 		var thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID())
@@ -265,7 +266,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	@Test
 	@Override
 	public void syncConfigToGateway401() throws Exception {
-		assert401(() -> client.syncConfigToGateway(null, UUID.randomUUID()));
+		assert401(() -> client.syncConfigToGateway(null, UUID.randomUUID().toString()));
 	}
 
 	@Test
@@ -274,7 +275,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 		List<Property> properties = new ArrayList<>();
-		UUID gatewayId = UUID.randomUUID();
+		String gatewayId = newGatewayId();
 		properties.add(new Property().setValue("test").setKey("serial"));
 		properties.add(new Property().setValue(1).setKey("slaveId"));
 		var thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID())
@@ -293,7 +294,7 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 		ThingType thingType = new ThingType().setName("test").setThingTypeId(UUID.randomUUID());
 		thingType = thingTypeRepository.save(thingType);
 		List<Property> properties = new ArrayList<>();
-		UUID gatewayId = UUID.randomUUID();
+		String gatewayId = newGatewayId();
 		properties.add(new Property().setValue("test").setKey("serial"));
 		properties.add(new Property().setValue(1).setKey("slaveId"));
 		var thing = new Thing().setThingType(thingType).setName("test").setThingId(UUID.randomUUID())

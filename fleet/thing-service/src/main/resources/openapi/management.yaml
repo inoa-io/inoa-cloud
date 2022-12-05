@@ -330,6 +330,9 @@ components:
       description: 'Id as technical reference (never changes).'
       type: string
       format: uuid
+    GatewayId:
+      description: 'Id as technical reference (never changes).'
+      type: string
     Enabled:
       description: 'Flag if enabled or not.'
       type: boolean
@@ -519,7 +522,7 @@ components:
         name:
           $ref: '#/components/schemas/Name'
         gateway_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/GatewayId'
         thing_type_id:
           $ref: '#/components/schemas/Id'
         properties:
@@ -544,7 +547,7 @@ components:
         name:
           $ref: '#/components/schemas/Name'
         gateway_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/GatewayId'
         thing_type_id:
           $ref: '#/components/schemas/Id'
         properties:
@@ -571,7 +574,7 @@ components:
         name:
           $ref: '#/components/schemas/Name'
         gateway_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/GatewayId'
         thing_type_id:
           $ref: '#/components/schemas/Id'
         properties:
@@ -592,7 +595,7 @@ components:
         name:
           $ref: '#/components/schemas/Name'
         gateway_id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/GatewayId'
         properties:
           type: array
           items:
@@ -698,7 +701,7 @@ components:
       in: path
       required: true
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: '#/components/schemas/GatewayId'
 
   securitySchemes:
     BearerAuth:

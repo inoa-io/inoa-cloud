@@ -23,10 +23,10 @@ public interface ThingRepository extends CrudRepository<Thing, Long> {
 
 	Page<Thing> findByTenantId(String tenantId, Pageable pageable);
 
-	Page<Thing> findByTenantIdAndGatewayId(String tenantId, UUID gatewayId, Pageable pageable);
+	Page<Thing> findByTenantIdAndGatewayId(String tenantId, String gatewayId, Pageable pageable);
 
 	@Join(value = "thingType", type = Join.Type.FETCH)
-	List<Thing> findAllByTenantIdAndGatewayId(String tenantId, UUID gatewayId);
+	List<Thing> findAllByTenantIdAndGatewayId(String tenantId, String gatewayId);
 
 	Page<Thing> findAll(Pageable pageable);
 }
