@@ -41,6 +41,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Generate build ID
+        id: prep
+        run: |
+          branch=${GITHUB_REF##*/}
+          sha=${GITHUB_SHA::8}
+          ts=$(date +%s)
+          echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
       - uses: docker/login-action@v2.1.0
         if: ${{ github.ref_name == 'main' }}
         with:
@@ -56,5 +63,5 @@ jobs:
       - run: mvn -B -ntp dependency:go-offline
       - run: mvn -B -ntp install -Dmaven.test.redirectTestOutputToFile=false -Dsurefire.rerunFailingTestsCount=3 -pl \!test
       - run: mvn -B -ntp install -Dmaven.test.redirectTestOutputToFile=false -Dsurefire.rerunFailingTestsCount=3 -pl test
-      - run: mvn -B -ntp jib:build -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter,:gateway-command-service,:fleet-registry-hono-bridge,:fleet-thing-service -T1C
+      - run: mvn -B -ntp jib:build -Djib.to.tags=latest,${{ steps.prep.outputs.BUILD_ID }} -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter,:gateway-command-service,:fleet-registry-hono-bridge,:fleet-thing-service -T1C
         if: ${{ github.ref_name == 'main' }}
