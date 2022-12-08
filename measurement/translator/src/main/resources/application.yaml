@@ -63,6 +63,29 @@ inoa.measurement.translator:
             humidity: $.hum.value
             battery: $.bat.value
 
+    - name: dvmodbusir
+      sensors:
+        - name: "0x000D"
+          modifier: 1
+          converter: modbus
+          ext:
+            label: work_in
+            obis: 1-0:1.8.0*255
+            unit: watthour
+        - name: "0x001C"
+          modifier: 1
+          converter: modbus
+          ext:
+            label: work_out
+            obis: 1-0:2.8.0*255
+            unit: watthour
+        - name: "0x002B"
+          modifier: 1
+          converter: modbus
+          ext:
+            label: power_in
+            unit: watt
+
     # source: https://www.dzg.de/fileadmin/dzg/content/downloads/produkte-zaehler/dvh4013/DZG_Modbus_Protocol.pdf
     - name: dvh4013
       sensors:
