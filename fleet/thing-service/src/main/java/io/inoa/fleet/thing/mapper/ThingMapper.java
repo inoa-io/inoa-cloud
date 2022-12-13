@@ -8,9 +8,7 @@ import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.thing.domain.Property;
 import io.inoa.fleet.thing.domain.Thing;
-import io.inoa.fleet.thing.domain.ThingChannel;
 import io.inoa.fleet.thing.rest.management.PropertyVO;
-import io.inoa.fleet.thing.rest.management.ThingChannelVO;
 import io.inoa.fleet.thing.rest.management.ThingCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingDetailVO;
 import io.inoa.fleet.thing.rest.management.ThingPageVO;
@@ -21,11 +19,11 @@ import io.micronaut.data.model.Page;
 public interface ThingMapper {
 
 	@Mapping(source = "thingId", target = "id")
-	@Mapping(source = "thingType.thingTypeId", target = "thingTypeId")
+	@Mapping(source = "thingType.thingTypeReference", target = "thingTypeReference")
 	ThingVO toThingVO(Thing thing);
 
 	@Mapping(source = "thingId", target = "id")
-	@Mapping(source = "thingType.thingTypeId", target = "thingTypeId")
+	@Mapping(source = "thingType.thingTypeReference", target = "thingTypeReference")
 	ThingDetailVO toThingDetailVO(Thing thing);
 
 	ThingPageVO toThingPage(Page<Thing> page);
@@ -39,8 +37,4 @@ public interface ThingMapper {
 	Property toProperty(PropertyVO property);
 
 	List<Property> toPropertyList(List<PropertyVO> properties);
-
-	ThingChannelVO toThingChannelVO(ThingChannel thingChannel);
-
-	List<ThingChannelVO> toThingChannelVOList(List<ThingChannel> channels);
 }

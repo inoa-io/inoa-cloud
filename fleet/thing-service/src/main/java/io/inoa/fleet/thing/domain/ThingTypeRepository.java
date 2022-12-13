@@ -1,7 +1,6 @@
 package io.inoa.fleet.thing.domain;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
@@ -12,7 +11,9 @@ import io.micronaut.data.repository.CrudRepository;
 
 public interface ThingTypeRepository extends CrudRepository<ThingType, Long> {
 
-	Optional<ThingType> findByThingTypeId(UUID thingId);
+	Optional<ThingType> findByThingTypeId(String thingId);
+
+	Optional<ThingType> findByThingTypeReference(String thingTypeReference);
 
 	Page<ThingType> findByNameIlike(String filter, Pageable pageable);
 

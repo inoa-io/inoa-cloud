@@ -2,7 +2,6 @@ package io.inoa.fleet.thing.domain;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.data.annotation.Join;
@@ -14,15 +13,17 @@ import io.micronaut.data.repository.CrudRepository;
 
 public interface ThingRepository extends CrudRepository<Thing, Long> {
 
-	Optional<Thing> findByThingId(UUID thingId);
+	Optional<Thing> findByThingId(String thingId);
 
 	@Join(value = "thingType", type = Join.Type.FETCH)
-	Optional<Thing> findByThingIdAndTenantId(UUID thingId, String tenantId);
+	Optional<Thing> findByThingIdAndTenantId(String thingId, String tenantId);
 
 	Page<Thing> findByNameIlike(String filter, Pageable pageable);
 
+	@Join(value = "thingType", type = Join.Type.FETCH)
 	Page<Thing> findByTenantId(String tenantId, Pageable pageable);
 
+	@Join(value = "thingType", type = Join.Type.FETCH)
 	Page<Thing> findByTenantIdAndGatewayId(String tenantId, String gatewayId, Pageable pageable);
 
 	@Join(value = "thingType", type = Join.Type.FETCH)

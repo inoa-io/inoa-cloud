@@ -1,14 +1,10 @@
 package io.inoa.fleet.thing.mapper;
 
-import java.util.List;
-
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.fleet.thing.domain.ThingType;
-import io.inoa.fleet.thing.domain.ThingTypeChannel;
-import io.inoa.fleet.thing.rest.management.ThingTypeChannelVO;
 import io.inoa.fleet.thing.rest.management.ThingTypeCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingTypeDetailVO;
 import io.inoa.fleet.thing.rest.management.ThingTypePageVO;
@@ -35,9 +31,4 @@ public interface ThingTypeMapper {
 	ThingType toThingType(ThingTypeVO thingTypeVO);
 
 	ThingTypePageVO toThingTypePage(Page<ThingType> page);
-
-	@Mapping(source = "thingTypeChannelId", target = "id")
-	ThingTypeChannelVO toThingTypeChannelVO(ThingTypeChannel thingTypeChannel);
-
-	List<ThingTypeChannelVO> toThingTypeChannelVOList(List<ThingTypeChannel> thingTypeChannels);
 }

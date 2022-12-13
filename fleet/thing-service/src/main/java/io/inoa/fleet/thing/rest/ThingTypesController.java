@@ -1,6 +1,5 @@
 package io.inoa.fleet.thing.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,10 +8,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 
 import io.inoa.fleet.thing.domain.ThingType;
-import io.inoa.fleet.thing.domain.ThingTypeChannel;
-import io.inoa.fleet.thing.domain.ThingTypeChannelRepository;
 import io.inoa.fleet.thing.domain.ThingTypeRepository;
-import io.inoa.fleet.thing.mapper.ThingTypeChannelMapper;
 import io.inoa.fleet.thing.mapper.ThingTypeMapper;
 import io.inoa.fleet.thing.rest.management.ThingTypeCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingTypeDetailVO;
@@ -39,37 +35,29 @@ public class ThingTypesController implements ThingTypesApi {
 			ThingTypeVO.JSON_PROPERTY_NAME, ThingTypeVO.JSON_PROPERTY_CREATED, ThingTypeVO.JSON_PROPERTY_CREATED);
 
 	private final ThingTypeRepository thingTypeRepository;
-	private final ThingTypeChannelRepository thingTypeChannelRepository;
 	private final ThingTypeMapper thingTypeMapper;
-	private final ThingTypeChannelMapper thingTypeChannelMapper;
 	private final PageableProvider pageableProvider;
 
 	@Override
 	public HttpResponse<ThingTypeVO> createThingType(@Valid ThingTypeCreateVO thingTypeCreateVO) {
 		ThingType thingType = thingTypeMapper.toThingType(thingTypeCreateVO);
-		thingType.setThingTypeId(UUID.randomUUID());
-		if (thingType.getProperties() == null) {
-			thingType.setProperties(new ArrayList<>());
-		}
+		thingType.setThingTypeId(UUID.randomUUID().toString());
+
 		thingType = thingTypeRepository.save(thingType);
 
-		if (thingTypeCreateVO.getChannels() != null) {
-			for (var channel : thingTypeCreateVO.getChannels()) {
-				ThingTypeChannel thingTypeChannel = thingTypeChannelMapper.toThingTypeChannel(channel);
-				thingTypeChannel.setThingTypeChannelId(UUID.randomUUID());
-				thingTypeChannel.setThingType(thingType);
-				thingTypeChannel.setProperties(new ArrayList<>());
-				if (thingTypeChannel.getProperties() == null) {
-					thingTypeChannel.setProperties(new ArrayList<>());
-				}
-				thingTypeChannelRepository.save(thingTypeChannel);
-			}
-		}
 		return HttpResponse.created(thingTypeMapper.toThingTypeVO(thingType));
 	}
 
 	@Override
-	public HttpResponse<Object> deleteThingType(UUID thingTypeId) {
+	public HttpResponse<ThingTypeVO> createThingTypeWithId(String thingTypeId, ThingTypeCreateVO thingTypeCreateVO) {
+		ThingType thingType = thingTypeMapper.toThingType(thingTypeCreateVO);
+		thingType.setThingTypeId(thingTypeId);
+		thingType = thingTypeRepository.save(thingType);
+		return HttpResponse.created(thingTypeMapper.toThingTypeVO(thingType));
+	}
+
+	@Override
+	public HttpResponse<Object> deleteThingType(String thingTypeId) {
 		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeId(thingTypeId);
 		if (optionalThingType.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
@@ -79,7 +67,7 @@ public class ThingTypesController implements ThingTypesApi {
 	}
 
 	@Override
-	public HttpResponse<ThingTypeVO> findThingType(UUID thingTypeId) {
+	public HttpResponse<ThingTypeVO> findThingType(String thingTypeId) {
 		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeId(thingTypeId);
 		if (optionalThingType.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
@@ -88,14 +76,21 @@ public class ThingTypesController implements ThingTypesApi {
 	}
 
 	@Override
-	public HttpResponse<ThingTypeDetailVO> findThingTypeWithDetails(UUID thingTypeId) {
+	public HttpResponse<ThingTypeVO> findThingTypeByReference(String thingTypeReference) {
+		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeReference(thingTypeReference);
+		if (optionalThingType.isEmpty()) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
+		}
+		return HttpResponse.ok(thingTypeMapper.toThingTypeVO(optionalThingType.get()));
+	}
+
+	@Override
+	public HttpResponse<ThingTypeDetailVO> findThingTypeWithDetails(String thingTypeId) {
 		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeId(thingTypeId);
 		if (optionalThingType.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
 		}
-		List<ThingTypeChannel> thingTypeChannels = thingTypeChannelRepository.findByThingType(optionalThingType.get());
 		var thingTypeVO = thingTypeMapper.toThingTypeDetailVO(optionalThingType.get());
-		thingTypeVO.setChannels(thingTypeMapper.toThingTypeChannelVOList(thingTypeChannels));
 		return HttpResponse.ok(thingTypeVO);
 	}
 
@@ -111,7 +106,7 @@ public class ThingTypesController implements ThingTypesApi {
 	}
 
 	@Override
-	public HttpResponse<ThingTypeVO> updateThingType(UUID thingTypeId, @Valid ThingTypeUpdateVO thingTypeUpdateVO) {
+	public HttpResponse<ThingTypeVO> updateThingType(String thingTypeId, @Valid ThingTypeUpdateVO thingTypeUpdateVO) {
 
 		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeId(thingTypeId);
 		if (optionalThingType.isEmpty()) {
