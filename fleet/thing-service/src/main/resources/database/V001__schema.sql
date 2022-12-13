@@ -15,7 +15,7 @@ CREATE TABLE thing_type
 CREATE TABLE thing
 (
     id            SERIAL       NOT NULL,
-    thing_id      UUID         NOT NULL,
+    thing_id      VARCHAR(100) NOT NULL,
     tenant_id     VARCHAR(100) NOT NULL,
     gateway_id    VARCHAR(100) NULL,
     urn           VARCHAR(255) NULL,

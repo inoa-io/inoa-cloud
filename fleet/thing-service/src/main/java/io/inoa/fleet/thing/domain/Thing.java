@@ -22,6 +22,7 @@ public class Thing {
 	private Long id;
 	@MappedProperty
 	private String thingId;
+	@MappedProperty
 	private String urn;
 	@MappedProperty
 	private String tenantId;

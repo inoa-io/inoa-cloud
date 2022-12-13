@@ -17,8 +17,7 @@ import io.inoa.fleet.thing.domain.ThingRepository;
 import io.inoa.fleet.thing.domain.ThingType;
 import io.inoa.fleet.thing.domain.ThingTypeRepository;
 import io.inoa.fleet.thing.mapper.ThingMapper;
-import io.inoa.fleet.thing.modbus.DvModbusIRBuilder;
-import io.inoa.fleet.thing.modbus.InoaSatelliteModbusDVHBuilder;
+import io.inoa.fleet.thing.modbus.ConfigCreator;
 import io.inoa.fleet.thing.rest.management.ThingCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingDetailVO;
 import io.inoa.fleet.thing.rest.management.ThingPageVO;
@@ -55,6 +54,7 @@ public class ThingsController implements ThingsApi {
 	// private final Security security;
 	private final ObjectMapper objectMapper;
 	private final GatewayCommandClient gatewayCommandClient;
+	private final ConfigCreatorHolder configCreatorHolder;
 
 	@Override
 	public HttpResponse<ThingVO> createThing(@Valid ThingCreateVO thingCreateVO) {
@@ -120,18 +120,26 @@ public class ThingsController implements ThingsApi {
 
 	@Override
 	public HttpResponse<Object> syncConfigToGateway(String gatewayId) {
-		var things = thingRepository.findAllByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId);
-		ArrayNode result = objectMapper.createArrayNode();
-		InoaSatelliteModbusDVHBuilder builder = new InoaSatelliteModbusDVHBuilder(objectMapper);
-		/*
-		 * for (var thing : things) { JsonNode nodes = builder.build(thing,
-		 * thingTypeChannels, channels); for (var node : nodes) { result.add(node); } }
-		 */
+		ArrayNode result = generateConfigForGateway(gatewayId);
 		ObjectNode objectNode = objectMapper.createObjectNode();
 		objectNode.put("type", "metering.config.write");
 		objectNode.set("data", result);
 		gatewayCommandClient.sendGatewayCommand(DEFAULT_TENANT, gatewayId, objectNode);
 		return HttpResponse.noContent();
+	}
+
+	private ArrayNode generateConfigForGateway(String gatewayId) {
+		var things = thingRepository.findAllByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId);
+		ArrayNode result = objectMapper.createArrayNode();
+		for (var thing : things) {
+			ThingType thingType = thing.getThingType();
+			ConfigCreator configCreator = configCreatorHolder.getConfigCreator(thingType);
+			JsonNode nodes = configCreator.build(thing, thingType);
+			for (var node : nodes) {
+				result.add(node);
+			}
+		}
+		return result;
 	}
 
 	@Override
@@ -146,16 +154,7 @@ public class ThingsController implements ThingsApi {
 
 	@Override
 	public HttpResponse<Object> downloadConfigToGateway(String gatewayId) {
-		var things = thingRepository.findAllByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId);
-		ArrayNode result = objectMapper.createArrayNode();
-		DvModbusIRBuilder builder = new DvModbusIRBuilder(objectMapper);
-		for (var thing : things) {
-			ThingType thingType = thing.getThingType();
-			JsonNode nodes = builder.build(thing, thingType);
-			for (var node : nodes) {
-				result.add(node);
-			}
-		}
+		ArrayNode result = generateConfigForGateway(gatewayId);
 		return HttpResponse.ok(result);
 	}
 }

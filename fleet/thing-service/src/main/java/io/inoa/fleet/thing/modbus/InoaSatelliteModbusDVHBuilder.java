@@ -3,14 +3,17 @@ package io.inoa.fleet.thing.modbus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import io.inoa.fleet.thing.domain.Thing;
+import io.inoa.fleet.thing.domain.ThingType;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class InoaSatelliteModbusDVHBuilder {
+public class InoaSatelliteModbusDVHBuilder implements ConfigCreator {
 
 	private final ObjectMapper objectMapper;
 
-	public ArrayNode build() {
+	@Override
+	public ArrayNode build(Thing thing, ThingType thingType) {
 
 		ArrayNode datapoints = objectMapper.createArrayNode();
 		/*
@@ -34,7 +37,7 @@ public class InoaSatelliteModbusDVHBuilder {
 		 * Integer.parseInt(slaveIdProperty.get().getValue().toString()); int
 		 * registerOffset =
 		 * Integer.parseInt(registerOffsetProperty.get().getValue().toString());
-		 * 
+		 *
 		 * ObjectNode node = objectMapper.createObjectNode(); ObjectNode header =
 		 * objectMapper.createObjectNode(); header.put("id",
 		 * buildUrn(serial.get().getValue().toString(),
@@ -51,5 +54,4 @@ public class InoaSatelliteModbusDVHBuilder {
 		 */
 		return datapoints;
 	}
-
 }
