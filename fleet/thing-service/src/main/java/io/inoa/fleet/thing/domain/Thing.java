@@ -1,9 +1,7 @@
 package io.inoa.fleet.thing.domain;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
@@ -23,7 +21,8 @@ public class Thing {
 	@GeneratedValue
 	private Long id;
 	@MappedProperty
-	private UUID thingId;
+	private String thingId;
+	private String urn;
 	@MappedProperty
 	private String tenantId;
 	@MappedProperty
@@ -32,7 +31,7 @@ public class Thing {
 	private String name;
 	@MappedProperty
 	@TypeDef(type = DataType.JSON)
-	private List<Property> properties = new ArrayList<>();
+	private Map<String, Object> config;
 	@Relation(Relation.Kind.MANY_TO_ONE)
 	private ThingType thingType;
 	@DateCreated

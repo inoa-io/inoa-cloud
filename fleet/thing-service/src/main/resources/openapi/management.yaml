@@ -87,6 +87,29 @@ paths:
           description: 'Unauthorized.'
         404:
           description: 'Thing Type not found.'
+    post:
+      tags:
+        - thingTypes
+      summary: 'Create thing type.'
+      description: TODO
+      operationId: createThingTypeWithId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ThingTypeCreate'
+      responses:
+        201:
+          description: 'Tenant created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        400:
+          description: 'Malformed.'
+        401:
+          description: 'Unauthorized.'
     put:
       tags:
         - thingTypes
@@ -126,6 +149,31 @@ paths:
           description: 'Unauthorized.'
         404:
           description: 'Thing type not found.'
+
+  /thing-types/by-reference/{thing_type_reference}:
+    parameters:
+      - name: thing_type_reference
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - thingTypes
+      summary: 'Find Thing type.'
+      description: 'return a single thing type'
+      operationId: findThingTypeByReference
+      responses:
+        200:
+          description: 'Thing type found.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ThingType'
+        401:
+          description: 'Unauthorized.'
+        404:
+          description: 'Thing Type not found.'
 
   /thing-types/{thing_type_id}/details:
     parameters:
@@ -330,6 +378,9 @@ components:
       description: 'Id as technical reference (never changes).'
       type: string
       format: uuid
+    ThingTypeId:
+      description: 'Id as technical reference (never changes).'
+      type: string
     GatewayId:
       description: 'Id as technical reference (never changes).'
       type: string
@@ -355,9 +406,21 @@ components:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: '#/components/schemas/ThingTypeId'
         name:
           $ref: '#/components/schemas/Name'
+        thing_type_reference:
+          description: 'thing_type_reference'
+          type: string
+        json_schema:
+          description: 'json_schema'
+          type: object
+          additionalProperties: {}
+        ui_layout:
+          description: 'ui_layout'
+          type: array
+          items:
+            additionalProperties: {}
         properties:
           type: array
           items:
@@ -419,6 +482,18 @@ components:
       properties:
         name:
           $ref: '#/components/schemas/Name'
+        thing_type_reference:
+          description: 'thing_type_reference'
+          type: string
+        json_schema:
+          description: 'json_schema'
+          type: object
+          additionalProperties: {}
+        ui_layout:
+          description: 'ui_layout'
+          type: array
+          items:
+            additionalProperties: {}
         properties:
           type: array
           items:
@@ -493,7 +568,7 @@ components:
         - name
 
     ###
-    ### Thing Type
+    ### Thing
     ###
 
     ThingPage:
@@ -523,12 +598,12 @@ components:
           $ref: '#/components/schemas/Name'
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        thing_type_id:
-          $ref: '#/components/schemas/Id'
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/Property'
+        thing_type_reference:
+          description: 'thing_type_reference'
+          type: string
+        config:
+          description: 'config'
+          additionalProperties: {}
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
@@ -548,16 +623,12 @@ components:
           $ref: '#/components/schemas/Name'
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        thing_type_id:
-          $ref: '#/components/schemas/Id'
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/Property'
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/ThingChannel'
+        thing_type_reference:
+          description: 'thing_type_reference'
+          type: string
+        config:
+          description: 'config'
+          additionalProperties: {}
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
@@ -575,19 +646,15 @@ components:
           $ref: '#/components/schemas/Name'
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        thing_type_id:
-          $ref: '#/components/schemas/Id'
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/Property'
-        channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/ThingChannel'
+        thing_type_reference:
+          description: 'thing_type_reference'
+          type: string
+        config:
+          description: 'config'
+          additionalProperties: {}
       required:
         - name
-        - thing_type_id
+        - thing_type_reference
     ThingUpdate:
       description: 'Thing to update.'
       type: object
@@ -596,12 +663,15 @@ components:
           $ref: '#/components/schemas/Name'
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/Property'
+        thing_type_reference:
+          description: 'thing_type_reference'
+          type: string
+        config:
+          description: 'config'
+          additionalProperties: {}
       required:
         - name
+        - thing_type_reference
     ThingChannel:
       description: 'Thing channel to create.'
       type: object
@@ -689,7 +759,7 @@ components:
       in: path
       required: true
       schema:
-        $ref: '#/components/schemas/Id'
+        type: string
     ThingId:
       name: thing_id
       in: path

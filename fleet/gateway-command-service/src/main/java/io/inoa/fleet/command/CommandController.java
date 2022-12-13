@@ -54,9 +54,9 @@ public class CommandController {
 		}).otherwise(t -> {
 			if (t instanceof ServiceInvocationException sie) {
 				final int errorCode = sie.getErrorCode();
-				log.debug("Command was replied with error code [{}].", errorCode);
+				log.error("Command was replied with error code [{}].", errorCode);
 			} else {
-				log.debug("Could not send command : {}.", t.getMessage());
+				log.error("Could not send command : {}.", t.getMessage());
 			}
 			cdl.countDown();
 			return null;

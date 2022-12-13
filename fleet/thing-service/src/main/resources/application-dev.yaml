@@ -2,3 +2,12 @@
 logger:
   levels:
     io.inoa: TRACE
+micronaut:
+  security:
+    token:
+      jwt:
+        signatures:
+          jwks:
+            default:
+              url: https://oidc.inoa.io/realms/inoa/protocol/openid-connect/certs
+    enabled: false

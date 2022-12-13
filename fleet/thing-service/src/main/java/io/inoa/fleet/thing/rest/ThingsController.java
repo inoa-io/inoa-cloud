@@ -1,6 +1,5 @@
 package io.inoa.fleet.thing.rest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,15 +13,12 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.inoa.fleet.thing.domain.Thing;
-import io.inoa.fleet.thing.domain.ThingChannel;
-import io.inoa.fleet.thing.domain.ThingChannelRepository;
 import io.inoa.fleet.thing.domain.ThingRepository;
 import io.inoa.fleet.thing.domain.ThingType;
-import io.inoa.fleet.thing.domain.ThingTypeChannel;
-import io.inoa.fleet.thing.domain.ThingTypeChannelRepository;
 import io.inoa.fleet.thing.domain.ThingTypeRepository;
 import io.inoa.fleet.thing.mapper.ThingMapper;
-import io.inoa.fleet.thing.modbus.InoaSatelliteModbusRTUBuilder;
+import io.inoa.fleet.thing.modbus.DvModbusIRBuilder;
+import io.inoa.fleet.thing.modbus.InoaSatelliteModbusDVHBuilder;
 import io.inoa.fleet.thing.rest.management.ThingCreateVO;
 import io.inoa.fleet.thing.rest.management.ThingDetailVO;
 import io.inoa.fleet.thing.rest.management.ThingPageVO;
@@ -51,65 +47,54 @@ public class ThingsController implements ThingsApi {
 	 */
 	public static final Map<String, String> SORT_ORDER_PROPERTIES = Map.of(ThingVO.JSON_PROPERTY_NAME,
 			ThingVO.JSON_PROPERTY_NAME, ThingVO.JSON_PROPERTY_CREATED, ThingVO.JSON_PROPERTY_CREATED);
-
+	private static final String DEFAULT_TENANT = "inoa";
 	private final ThingRepository thingRepository;
-	private final ThingChannelRepository thingChannelRepository;
 	private final ThingTypeRepository thingTypeRepository;
-	private final ThingTypeChannelRepository thingTypeChannelRepository;
 	private final ThingMapper thingMapper;
 	private final PageableProvider pageableProvider;
-	private final Security security;
+	// private final Security security;
 	private final ObjectMapper objectMapper;
 	private final GatewayCommandClient gatewayCommandClient;
 
 	@Override
 	public HttpResponse<ThingVO> createThing(@Valid ThingCreateVO thingCreateVO) {
-		Optional<ThingType> thingType = thingTypeRepository.findByThingTypeId(thingCreateVO.getThingTypeId());
+		Optional<ThingType> thingType = thingTypeRepository
+				.findByThingTypeReference(thingCreateVO.getThingTypeReference());
 		if (thingType.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
 		}
 		Thing thing = thingMapper.toThing(thingCreateVO);
-		thing.setThingId(UUID.randomUUID());
-		thing.setTenantId(security.getTenantId());
+		thing.setThingId(UUID.randomUUID().toString());
+		thing.setTenantId(DEFAULT_TENANT);
 		thing.setThingType(thingType.get());
-		if (thing.getProperties() == null) {
-			thing.setProperties(new ArrayList<>());
-		}
+
 		thing = thingRepository.save(thing);
-		if (thingCreateVO.getChannels() != null) {
-			for (var channel : thingCreateVO.getChannels()) {
-				thingChannelRepository.save(
-						new ThingChannel().setKey(channel.getKey()).setThing(thing).setThingChannelId(UUID.randomUUID())
-								.setProperties(thingMapper.toPropertyList(channel.getProperties())));
-			}
-		}
+
 		return HttpResponse.created(thingMapper.toThingVO(thing));
 	}
 
 	@Override
 	public HttpResponse<ThingVO> updateThing(UUID thingId, @Valid ThingUpdateVO thingUpdateVO) {
 
-		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId, security.getTenantId());
+		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId.toString(), DEFAULT_TENANT);
 		if (optionalThing.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing not found.");
 		}
 		var thing = optionalThing.get();
 		thing.setName(thingUpdateVO.getName());
-		var properties = thingMapper.toPropertyList(thingUpdateVO.getProperties());
-		thing.setProperties(properties == null ? new ArrayList<>() : properties);
+		thing.setConfig(thingUpdateVO.getConfig());
+		// thing.setProperties(properties == null ? new ArrayList<>() : properties);
 		thing = thingRepository.update(thing);
 		return HttpResponse.ok(thingMapper.toThingVO(thing));
 	}
 
 	@Override
 	public HttpResponse<ThingDetailVO> findThing(UUID thingId) {
-		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId, security.getTenantId());
+		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId.toString(), DEFAULT_TENANT);
 		if (optionalThing.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing not found.");
 		}
-		List<ThingChannel> channels = thingChannelRepository.findByThing(optionalThing.get());
 		var thingVO = thingMapper.toThingDetailVO(optionalThing.get());
-		thingVO.setChannels(thingMapper.toThingChannelVOList(channels));
 		return HttpResponse.ok(thingVO);
 	}
 
@@ -119,7 +104,7 @@ public class ThingsController implements ThingsApi {
 	public HttpResponse<ThingPageVO> findThings(Optional<Integer> page, Optional<Integer> size,
 			Optional<List<String>> sort, Optional<String> filter) {
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
-		Page<Thing> things = thingRepository.findByTenantId(security.getTenantId(), pageable);
+		Page<Thing> things = thingRepository.findByTenantId(DEFAULT_TENANT, pageable);
 		return HttpResponse.ok(thingMapper.toThingPage(things));
 	}
 
@@ -129,33 +114,29 @@ public class ThingsController implements ThingsApi {
 	public HttpResponse<ThingPageVO> findThingsByGatewayId(@PathVariable(name = "gateway_id") String gatewayId,
 			Optional<Integer> page, Optional<Integer> size, Optional<List<String>> sort, Optional<String> filter) {
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
-		Page<Thing> things = thingRepository.findByTenantIdAndGatewayId(security.getTenantId(), gatewayId, pageable);
+		Page<Thing> things = thingRepository.findByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId, pageable);
 		return HttpResponse.ok(thingMapper.toThingPage(things));
 	}
 
 	@Override
 	public HttpResponse<Object> syncConfigToGateway(String gatewayId) {
-		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
+		var things = thingRepository.findAllByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
-		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper);
-		for (var thing : things) {
-			List<ThingTypeChannel> thingTypeChannels = thingTypeChannelRepository.findByThingType(thing.getThingType());
-			List<ThingChannel> channels = thingChannelRepository.findByThing(thing);
-			JsonNode nodes = builder.build(thing, thingTypeChannels, channels);
-			for (var node : nodes) {
-				result.add(node);
-			}
-		}
+		InoaSatelliteModbusDVHBuilder builder = new InoaSatelliteModbusDVHBuilder(objectMapper);
+		/*
+		 * for (var thing : things) { JsonNode nodes = builder.build(thing,
+		 * thingTypeChannels, channels); for (var node : nodes) { result.add(node); } }
+		 */
 		ObjectNode objectNode = objectMapper.createObjectNode();
 		objectNode.put("type", "metering.config.write");
 		objectNode.set("data", result);
-		gatewayCommandClient.sendGatewayCommand(security.getTenantId(), gatewayId, objectNode);
+		gatewayCommandClient.sendGatewayCommand(DEFAULT_TENANT, gatewayId, objectNode);
 		return HttpResponse.noContent();
 	}
 
 	@Override
 	public HttpResponse<Object> deleteThing(UUID thingId) {
-		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId, security.getTenantId());
+		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId.toString(), DEFAULT_TENANT);
 		if (optionalThing.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing not found.");
 		}
@@ -165,13 +146,12 @@ public class ThingsController implements ThingsApi {
 
 	@Override
 	public HttpResponse<Object> downloadConfigToGateway(String gatewayId) {
-		var things = thingRepository.findAllByTenantIdAndGatewayId(security.getTenantId(), gatewayId);
+		var things = thingRepository.findAllByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
-		InoaSatelliteModbusRTUBuilder builder = new InoaSatelliteModbusRTUBuilder(objectMapper);
+		DvModbusIRBuilder builder = new DvModbusIRBuilder(objectMapper);
 		for (var thing : things) {
-			List<ThingTypeChannel> thingTypeChannels = thingTypeChannelRepository.findByThingType(thing.getThingType());
-			List<ThingChannel> channels = thingChannelRepository.findByThing(thing);
-			JsonNode nodes = builder.build(thing, thingTypeChannels, channels);
+			ThingType thingType = thing.getThingType();
+			JsonNode nodes = builder.build(thing, thingType);
 			for (var node : nodes) {
 				result.add(node);
 			}

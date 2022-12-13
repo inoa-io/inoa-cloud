@@ -1,9 +1,8 @@
 package io.inoa.fleet.thing.domain;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Map;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
@@ -18,16 +17,19 @@ import lombok.Data;
 @MappedEntity
 @Data
 public class ThingType {
-
 	@Id
 	@GeneratedValue
 	private Long id;
 	@MappedProperty
-	private UUID thingTypeId;
+	private String thingTypeId;
+	@MappedProperty
+	private String thingTypeReference;
 	@MappedProperty
 	private String name;
 	@TypeDef(type = DataType.JSON)
-	private List<PropertyDefinition> properties = new ArrayList<>();
+	private Map<String, Object> jsonSchema;
+	@TypeDef(type = DataType.JSON)
+	private List<Map<String, Object>> uiLayout;
 	@DateCreated
 	private Instant created;
 	@DateUpdated
