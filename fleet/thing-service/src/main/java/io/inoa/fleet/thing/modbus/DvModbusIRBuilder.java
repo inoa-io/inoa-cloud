@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DvModbusIRBuilder {
+public class DvModbusIRBuilder implements ConfigCreator {
 
 	private static short FUNCTION_CODE_SERIAL_NUMBER = 0x000B;
 	private static short FUNCTION_CODE_OBIS_1_8_0 = 0x000D;
@@ -25,6 +25,7 @@ public class DvModbusIRBuilder {
 	private static short FUNCTION_CODE_OBIS_1_7_0 = 0x002B;
 	private final ObjectMapper objectMapper;
 
+	@Override
 	public ArrayNode build(Thing thing, ThingType thingType) {
 		ArrayNode datapoints = objectMapper.createArrayNode();
 		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
