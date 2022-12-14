@@ -122,8 +122,9 @@ public class ThingsController implements ThingsApi {
 	public HttpResponse<Object> syncConfigToGateway(String gatewayId) {
 		ArrayNode result = generateConfigForGateway(gatewayId);
 		ObjectNode objectNode = objectMapper.createObjectNode();
-		objectNode.put("type", "metering.config.write");
-		objectNode.set("data", result);
+		objectNode.put("id", "1");
+		objectNode.put("method", "dp.write");
+		objectNode.set("params", result);
 		gatewayCommandClient.sendGatewayCommand(DEFAULT_TENANT, gatewayId, objectNode);
 		return HttpResponse.noContent();
 	}
