@@ -114,6 +114,8 @@ public class ThingTypesController implements ThingTypesApi {
 		}
 		var thingType = optionalThingType.get();
 		thingType.setName(thingTypeUpdateVO.getName());
+		thingType.setJsonSchema(thingTypeUpdateVO.getJsonSchema());
+		thingType.setUiLayout(thingTypeUpdateVO.getUiLayout());
 		thingType = thingTypeRepository.update(thingType);
 		return HttpResponse.ok(thingTypeMapper.toThingTypeVO(thingType));
 	}
