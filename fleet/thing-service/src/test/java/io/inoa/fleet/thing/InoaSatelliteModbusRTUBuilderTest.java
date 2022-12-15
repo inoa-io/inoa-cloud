@@ -2,12 +2,12 @@ package io.inoa.fleet.thing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.inoa.fleet.thing.modbus.Utils;
+import io.inoa.fleet.thing.driver.modbus.Utils;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.thing.modbus.ModbusDVH4013Builder;
+import io.inoa.fleet.thing.driver.modbus.ModbusDVH4013Builder;
 
 public class InoaSatelliteModbusRTUBuilderTest {
 

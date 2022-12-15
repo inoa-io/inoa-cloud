@@ -17,8 +17,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingType;
-import io.inoa.fleet.thing.modbus.DvModbusIRBuilder;
-import io.inoa.fleet.thing.modbus.Utils;
+import io.inoa.fleet.thing.driver.modbus.DvModbusIRBuilder;
+import io.inoa.fleet.thing.driver.modbus.Utils;
 
 public class DvModbusIRBuilderTest {
 

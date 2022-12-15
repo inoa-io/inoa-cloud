@@ -1,4 +1,4 @@
-package io.inoa.fleet.thing.modbus;
+package io.inoa.fleet.thing.driver.modbus;
 
 import java.util.Map;
 import java.util.Optional;

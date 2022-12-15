@@ -1,4 +1,4 @@
-package io.inoa.fleet.thing.modbus;
+package io.inoa.fleet.thing.driver;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 

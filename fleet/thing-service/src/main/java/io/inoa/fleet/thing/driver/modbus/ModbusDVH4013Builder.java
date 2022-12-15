@@ -1,4 +1,4 @@
-package io.inoa.fleet.thing.modbus;
+package io.inoa.fleet.thing.driver.modbus;
 
 import static java.lang.Math.abs;
 
@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingType;
+import io.inoa.fleet.thing.driver.ConfigCreator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
