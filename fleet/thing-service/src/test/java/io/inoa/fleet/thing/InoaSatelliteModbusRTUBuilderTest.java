@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.thing.modbus.InoaSatelliteModbusDVHBuilder;
+import io.inoa.fleet.thing.modbus.ModbusDVH4013Builder;
 
 public class InoaSatelliteModbusRTUBuilderTest {
 
 	@Test
 	public void testFrameCreation() {
-		InoaSatelliteModbusDVHBuilder builder = new InoaSatelliteModbusDVHBuilder(new ObjectMapper());
+		ModbusDVH4013Builder builder = new ModbusDVH4013Builder(new ObjectMapper());
 		var frame = Utils.buildFrame((byte) 9, (byte) 3, (short) 16385, (short) 2);
 		String base64 = Utils.toBase64(frame);
 		assertEquals("CQNAAQACgUM=", base64);
