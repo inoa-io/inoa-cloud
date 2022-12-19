@@ -35,6 +35,12 @@ public abstract class AbstractTest {
 	@Inject
 	SignatureGeneratorConfiguration signature;
 
+	public static <T> void assertSorted(List<T> content, Function<T, String> toKeyFunction, Comparator<T> comparator) {
+		var actual = content.stream().map(toKeyFunction).toList();
+		var expected = content.stream().sorted(comparator).map(toKeyFunction).toList();
+		assertEquals(expected, actual, "unsorted");
+	}
+
 	@BeforeEach
 	void init() {
 
@@ -59,6 +65,10 @@ public abstract class AbstractTest {
 		return assertValid(HttpResponseAssertions.assert201(executeable).body());
 	}
 
+	public <T> void assert204(Supplier<HttpResponse<T>> executeable) {
+		assertValid(HttpResponseAssertions.assert204(executeable));
+	}
+
 	public <T> JsonError assert400(Supplier<HttpResponse<T>> executeable) {
 		return assertValid(HttpResponseAssertions.assert400(executeable)).getBody(JsonError.class).get();
 	}
@@ -81,11 +91,5 @@ public abstract class AbstractTest {
 					.map(v -> "\n\t" + v.getPropertyPath() + ": " + v.getMessage()).collect(Collectors.joining()));
 		}
 		return object;
-	}
-
-	public static <T> void assertSorted(List<T> content, Function<T, String> toKeyFunction, Comparator<T> comparator) {
-		var actual = content.stream().map(toKeyFunction).toList();
-		var expected = content.stream().sorted(comparator).map(toKeyFunction).toList();
-		assertEquals(expected, actual, "unsorted");
 	}
 }

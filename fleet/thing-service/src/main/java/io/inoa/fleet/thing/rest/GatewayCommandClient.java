@@ -12,6 +12,6 @@ import io.micronaut.http.client.annotation.Client;
 public interface GatewayCommandClient {
 
 	@Post("/{tenantId}/{deviceId}/rpc")
-	HttpResponse<Void> sendGatewayCommand(@PathVariable(name = "tenantId") String tenantId,
+	HttpResponse<Object> sendGatewayCommand(@PathVariable(name = "tenantId") String tenantId,
 			@PathVariable(name = "deviceId") String gatewayId, @Body JsonNode body);
 }
