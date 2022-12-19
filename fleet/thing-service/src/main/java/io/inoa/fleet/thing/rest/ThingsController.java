@@ -33,7 +33,9 @@ import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.exceptions.HttpStatusException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class ThingsController implements ThingsApi {
@@ -136,9 +138,13 @@ public class ThingsController implements ThingsApi {
 		for (var thing : things) {
 			ThingType thingType = thing.getThingType();
 			ConfigCreator configCreator = configCreatorHolder.getConfigCreator(thingType);
-			JsonNode nodes = configCreator.build(thing, thingType);
-			for (var node : nodes) {
-				result.add(node);
+			if (configCreator != null) {
+				JsonNode nodes = configCreator.build(thing, thingType);
+				for (var node : nodes) {
+					result.add(node);
+				}
+			} else {
+				log.warn("no config creator found for thing type: {}", thingType.getThingTypeReference());
 			}
 		}
 		return result;
