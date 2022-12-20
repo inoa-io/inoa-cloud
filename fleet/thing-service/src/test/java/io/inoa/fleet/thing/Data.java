@@ -1,6 +1,11 @@
 package io.inoa.fleet.thing;
 
+import java.util.Map;
+import java.util.UUID;
+
 import javax.transaction.Transactional;
+
+import org.jetbrains.annotations.NotNull;
 
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingRepository;
@@ -20,6 +25,17 @@ public class Data {
 	@Inject
 	ThingRepository thingRepository;
 
+	@NotNull
+	private static Thing getThing(String gatewayId, String tenantId, ThingType thingType) {
+		Thing thing = new Thing();
+		thing.setThingId(UUID.randomUUID().toString());
+		thing.setTenantId(tenantId);
+		thing.setName("my_thing");
+		thing.setThingType(thingType);
+		thing.setGatewayId(gatewayId);
+		return thing;
+	}
+
 	public void deleteAll() {
 		// first delete all things as we have an FK on thing type but no cascade delete
 		thingRepository.deleteAll();
@@ -33,13 +49,15 @@ public class Data {
 		thingType.setThingTypeId("");
 		return thingTypeRepository.save(thingType);
 	}
+
+	public Thing createThing(String gatewayId, String tenantId, ThingType thingType, Map<String, Object> config) {
+		Thing thing = getThing(gatewayId, tenantId, thingType);
+		thing.setConfig(config);
+		return thingRepository.save(thing);
+	}
+
 	public Thing createThing(String gatewayId, String tenantId, ThingType thingType) {
-		Thing thing = new Thing();
-		thing.setThingId("");
-		thing.setTenantId(tenantId);
-		thing.setName("");
-		thing.setThingType(thingType);
-		thing.setGatewayId(gatewayId);
+		Thing thing = getThing(gatewayId, tenantId, thingType);
 		return thingRepository.save(thing);
 	}
 }

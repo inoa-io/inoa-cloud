@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -128,6 +129,14 @@ public class ThingsController implements ThingsApi {
 		objectNode.put("id", "1");
 		objectNode.put("method", "dp.write");
 		objectNode.set("params", result);
+		try {
+			int length = objectMapper.writeValueAsBytes(objectNode).length;
+			if (length > 8192) {
+				return HttpResponse.badRequest(String.format("rcp call to big %d", length));
+			}
+		} catch (JsonProcessingException e) {
+			return HttpResponse.badRequest();
+		}
 		gatewayCommandClient.sendGatewayCommand(DEFAULT_TENANT, gatewayId, objectNode);
 		return HttpResponse.noContent();
 	}
