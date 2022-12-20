@@ -7,8 +7,7 @@ micronaut:
       read-timeout: 5m
     services:
       gateway-command:
-        url: http://localhost:35000
-        path: /api/iot-commands/
+        url: http://localhost:34001
         read-timeout: 10s
 
   ## used for tokens issued/checked at management api
