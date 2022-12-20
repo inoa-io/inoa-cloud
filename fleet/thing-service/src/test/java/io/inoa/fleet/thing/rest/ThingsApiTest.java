@@ -1,17 +1,22 @@
 package io.inoa.fleet.thing.rest;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 
 import io.inoa.fleet.thing.AbstractTest;
@@ -25,6 +30,8 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 
 	@Inject
 	ThingsApiTestClient client;
+	@Inject
+	ObjectMapper opObjectMapper;
 	WireMockServer wireMockServer;
 
 	@BeforeEach
@@ -121,14 +128,70 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	public void syncConfigToGateway204() throws Exception {
 		String gatewayId = "test";
 		String tenantId = "inoa";
-		wireMockServer.stubFor(
-				post(String.format("/%s/%s/rpc", tenantId, gatewayId)).withHeader("Content-Type", containing("json"))
-						.willReturn(ok()));
+		wireMockServer.stubFor(post(String.format("/%s/%s/rpc", tenantId, gatewayId))
+				.withHeader("Content-Type", containing("json")).willReturn(ok()));
 
-		ThingType thingType = data.createThingType("", "");
+		ThingType thingType = data.createThingType("", "dvh4013");
 		data.createThing(gatewayId, tenantId, thingType);
 		assert204(() -> client.syncConfigToGateway(auth(), gatewayId));
 		wireMockServer.verify(postRequestedFor(urlPathEqualTo(String.format("/%s/%s/rpc", tenantId, gatewayId))));
+	}
+
+	@DisplayName("management: things - sync to gateway with real big data 204 dvh4013")
+	@Test
+	public void syncConfigToGatewayRealBigData204() throws Exception {
+		String gatewayId = "test";
+		String tenantId = "inoa";
+		wireMockServer.stubFor(post(String.format("/%s/%s/rpc", tenantId, gatewayId))
+				.withHeader("Content-Type", containing("json")).willReturn(ok()));
+
+		ThingType thingType = data.createThingType("", "dvh4013");
+
+		for (int i = 0; i < 13; i++) {
+			Map<String, Object> config = new HashMap<>();
+			HashMap<String, Object> properties = new HashMap<>();
+			properties.put("serial", 123456);
+			properties.put("modbus_interface", 1);
+			config.put("properties", properties);
+			HashMap<String, Object> channels = new HashMap<>();
+			channels.put("power_in", true);
+			channels.put("power_out", true);
+			channels.put("obis_1_8_0", true);
+			channels.put("obis_2_8_0", true);
+			config.put("channels", channels);
+			data.createThing(gatewayId, tenantId, thingType, config);
+		}
+		assert204(() -> client.syncConfigToGateway(auth(), gatewayId));
+		wireMockServer.verify(postRequestedFor(urlPathEqualTo(String.format("/%s/%s/rpc", tenantId, gatewayId))));
+	}
+
+	@DisplayName("management: things - sync to gateway with real big data 400 dvh4013")
+	@Test
+	public void syncConfigToGatewayRealBigData400() throws Exception {
+		String gatewayId = "test";
+		String tenantId = "inoa";
+		wireMockServer.stubFor(post(String.format("/%s/%s/rpc", tenantId, gatewayId))
+				.withHeader("Content-Type", containing("json")).willReturn(ok()));
+
+		ThingType thingType = data.createThingType("", "dvh4013");
+
+		for (int i = 0; i < 14; i++) {
+			Map<String, Object> config = new HashMap<>();
+			HashMap<String, Object> properties = new HashMap<>();
+			properties.put("serial", 123456);
+			properties.put("modbus_interface", 1);
+			config.put("properties", properties);
+			HashMap<String, Object> channels = new HashMap<>();
+			channels.put("power_in", true);
+			channels.put("power_out", true);
+			channels.put("obis_1_8_0", true);
+			channels.put("obis_2_8_0", true);
+			config.put("channels", channels);
+			data.createThing(gatewayId, tenantId, thingType, config);
+		}
+		HttpResponseAssertions.assert400(() -> client.syncConfigToGateway(auth(), gatewayId));
+		wireMockServer.verify(exactly(0),
+				postRequestedFor(urlPathEqualTo(String.format("/%s/%s/rpc", tenantId, gatewayId))));
 	}
 
 	@DisplayName("management: things - sync to gateway 401")

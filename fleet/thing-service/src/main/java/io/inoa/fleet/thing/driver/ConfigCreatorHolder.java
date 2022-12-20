@@ -25,6 +25,6 @@ public class ConfigCreatorHolder {
 	}
 
 	public ConfigCreator getConfigCreator(ThingType thingType) {
-		return creators.get(thingType.getThingTypeId());
+		return creators.get(thingType.getThingTypeReference());
 	}
 }
