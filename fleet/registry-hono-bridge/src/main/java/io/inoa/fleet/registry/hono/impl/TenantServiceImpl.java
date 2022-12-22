@@ -22,15 +22,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TenantServiceImpl implements TenantService {
 
+	private static final String DEFAULT_TENANT = "inoa";
 	private final RegistryProperties properties;
 
 	@Override
 	public Future<TenantResult<JsonObject>> get(String tenantId) {
 		log.info("get {}", tenantId);
-		if (tenantId.equals("inoa")) {
+		if (tenantId.equals(DEFAULT_TENANT)) {
 			return Future
-					.succeededFuture(DeviceRegistryUtils.convertTenant("inoa",
-							new Tenant().setEnabled(true).setDefaults(Map.of("tenant_id", "ina"))))
+					.succeededFuture(DeviceRegistryUtils.convertTenant(DEFAULT_TENANT,
+							new Tenant().setEnabled(true).setDefaults(Map.of("tenant_id", DEFAULT_TENANT))))
 					.map(json -> TenantResult.from(HttpURLConnection.HTTP_OK, json, properties.getTenantCache()));
 		}
 		return Future.succeededFuture(TenantResult.from(HttpURLConnection.HTTP_NOT_FOUND));

@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.Header;
 import org.slf4j.MDC;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -33,8 +34,23 @@ public class TranslateListener {
 	@Topic(patterns = "hono\\.telemetry\\..*")
 	void receive(ConsumerRecord<String, String> record) {
 
-		var tenantId = record.topic().substring(15);
-		var gatewayId = record.key();
+		String tenantId = null;
+		if (record.headers().lastHeader("tenant_id") != null) {
+			Header deviceId = record.headers().lastHeader("tenant_id");
+			tenantId = new String(deviceId.value());
+		} else {
+			// fallback but the header should always exist
+			tenantId = record.topic().substring(15);
+		}
+
+		String gatewayId = null;
+		if (record.headers().lastHeader("device_id") != null) {
+			Header deviceId = record.headers().lastHeader("device_id");
+			gatewayId = new String(deviceId.value());
+		} else {
+			// fallback but the header should always exist
+			gatewayId = record.key();
+		}
 		var payload = record.value();
 
 		try {
@@ -44,7 +60,10 @@ public class TranslateListener {
 
 			// parse payload, convert and publish
 
-			var telemetryOptional = toRaw(tenantId, payload).map(raw -> service.translate(tenantId, gatewayId, raw));
+			String finalTenantId = tenantId;
+			String finalGatewayId = gatewayId;
+			var telemetryOptional = toRaw(tenantId, payload)
+					.map(raw -> service.translate(finalTenantId, finalGatewayId, raw));
 			if (telemetryOptional.isEmpty() || telemetryOptional.get().isEmpty()) {
 				metrics.counterIgnore(tenantId).increment();
 				return;
