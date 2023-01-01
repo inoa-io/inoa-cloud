@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: karancode/kustomize-github-action@v1.2.4
+      - uses: karancode/kustomize-github-action@v1.3.0
         with:
           kustomize_version: 4.4.0
           kustomize_build_dir: deployment/${{ matrix.type }}
