@@ -1,5 +1,6 @@
 package io.inoa.fleet.command;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class CommandController {
 
+	protected static final long DEFAULT_COMMAND_TIMEOUT = 60;
 	private final ApplicationClient<? extends MessageContext> honoClient;
 	private final ObjectMapper objectMapper;
 
@@ -44,24 +46,25 @@ public class CommandController {
 		final String command = "cloudEventRpc";
 		final String[] res = {null};
 		CountDownLatch cdl = new CountDownLatch(1);
-		honoClient.sendCommand(tenantId, deviceId, command, commandBuffer, "application/json").map(result -> {
-			log.info("Successfully sent command payload: [{}].", commandBuffer.toString());
-			log.info("And received response: [{}].",
-					Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString());
-			res[0] = Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString();
-			cdl.countDown();
-			return result;
-		}).otherwise(t -> {
-			if (t instanceof ServiceInvocationException sie) {
-				final int errorCode = sie.getErrorCode();
-				log.error("Command was replied with error code [{}].", errorCode);
-			} else {
-				log.error("Could not send command : {}.", t.getMessage());
-			}
-			cdl.countDown();
-			return null;
-		});
-		cdl.await(10, TimeUnit.SECONDS);
+		honoClient.sendCommand(tenantId, deviceId, command, commandBuffer, "application/json", null,
+				Duration.ofMillis(DEFAULT_COMMAND_TIMEOUT * 1000), null).map(result -> {
+					log.info("Successfully sent command payload: [{}].", commandBuffer.toString());
+					log.info("And received response: [{}].",
+							Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString());
+					res[0] = Optional.ofNullable(result.getPayload()).orElseGet(Buffer::buffer).toString();
+					cdl.countDown();
+					return result;
+				}).otherwise(t -> {
+					if (t instanceof ServiceInvocationException sie) {
+						final int errorCode = sie.getErrorCode();
+						log.error("Command was replied with error code [{}].", errorCode);
+					} else {
+						log.error("Could not send command : {}.", t.getMessage());
+					}
+					cdl.countDown();
+					return null;
+				});
+		cdl.await(DEFAULT_COMMAND_TIMEOUT, TimeUnit.SECONDS);
 		if (res[0] == null) {
 			return HttpResponse.status(HttpStatus.SERVICE_UNAVAILABLE);
 		}
