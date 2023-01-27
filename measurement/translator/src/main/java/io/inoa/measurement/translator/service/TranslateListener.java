@@ -44,7 +44,11 @@ public class TranslateListener {
 		}
 
 		String gatewayId = null;
-		if (record.headers().lastHeader("device_id") != null) {
+
+		if (record.headers().lastHeader("gatewayName") != null) {
+			Header deviceId = record.headers().lastHeader("gatewayName");
+			gatewayId = new String(deviceId.value());
+		} else if (record.headers().lastHeader("device_id") != null) {
 			Header deviceId = record.headers().lastHeader("device_id");
 			gatewayId = new String(deviceId.value());
 		} else {
