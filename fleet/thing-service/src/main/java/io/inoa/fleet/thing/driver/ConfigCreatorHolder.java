@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.inoa.fleet.thing.domain.ThingType;
 import io.inoa.fleet.thing.driver.modbus.DvModbusIRBuilder;
 import io.inoa.fleet.thing.driver.modbus.ModbusDVH4013Builder;
+import io.inoa.fleet.thing.driver.modbus.ModbusMDVH4006Builder;
 import io.inoa.fleet.thing.driver.rest.ShellyBuilder;
 import jakarta.inject.Singleton;
 
@@ -19,6 +20,7 @@ public class ConfigCreatorHolder {
 	public ConfigCreatorHolder(ObjectMapper objectMapper) {
 		creators.put("dvmodbusir", new DvModbusIRBuilder(objectMapper));
 		creators.put("dvh4013", new ModbusDVH4013Builder(objectMapper));
+		creators.put("mdvh4006", new ModbusMDVH4006Builder(objectMapper));
 		creators.put("shplg-s", new ShellyBuilder(objectMapper));
 		creators.put("shellyht", new ShellyBuilder(objectMapper));
 		creators.put("s0", new S0Builder(objectMapper));
