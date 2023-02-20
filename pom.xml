@@ -83,7 +83,7 @@
 		<version.org.apache.maven.plugins.surefire>3.0.0-M9</version.org.apache.maven.plugins.surefire>
 		<version.org.codehaus.mojo.build-helper>3.3.0</version.org.codehaus.mojo.build-helper>
 		<version.org.codehaus.mojo.tidy>1.2.0</version.org.codehaus.mojo.tidy>
-		<version.org.openapitools.generator>6.3.0</version.org.openapitools.generator>
+		<version.org.openapitools.generator>6.4.0</version.org.openapitools.generator>
 		<version.org.openapitools.stylevalidator>1.7</version.org.openapitools.stylevalidator>
 		<version.com.google.cloud.tools.jib>3.3.1</version.com.google.cloud.tools.jib>
 		<version.com.puppycrawl.tools.checkstyle>10.7.0</version.com.puppycrawl.tools.checkstyle>
