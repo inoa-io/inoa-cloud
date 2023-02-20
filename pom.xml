@@ -96,7 +96,7 @@
 		<version.com.influxdb.client>6.7.0</version.com.influxdb.client>
 		<version.com.jayway.jsonpath>2.7.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.4.1</version.io.cloudevents>
-		<version.io.kokuwa.micronaut.influxdb>3.0.0-M1</version.io.kokuwa.micronaut.influxdb>
+		<version.io.kokuwa.micronaut.influxdb>3.0.0</version.io.kokuwa.micronaut.influxdb>
 		<version.io.kokuwa.micronaut.logging>3.0.5</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>3.8.5</version.io.micronaut>
 		<version.io.micronaut.data>3.9.6</version.io.micronaut.data>
