@@ -1,6 +1,8 @@
 package io.inoa.measurement.translator.service;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
@@ -9,6 +11,8 @@ import org.apache.kafka.common.header.Header;
 import org.slf4j.MDC;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.fleet.telemetry.TelemetryRawVO;
@@ -66,13 +70,14 @@ public class TranslateListener {
 
 			String finalTenantId = tenantId;
 			String finalGatewayId = gatewayId;
-			var telemetryOptional = toRaw(tenantId, payload)
-					.map(raw -> service.translate(finalTenantId, finalGatewayId, raw));
-			if (telemetryOptional.isEmpty() || telemetryOptional.get().isEmpty()) {
+			var telemetryOptional = toRaw(tenantId, payload).stream()
+					.map(raw -> service.translate(finalTenantId, finalGatewayId, raw)).flatMap(i -> i.stream())
+					.collect(Collectors.toList());
+			if (telemetryOptional.isEmpty()) {
 				metrics.counterIgnore(tenantId).increment();
 				return;
 			}
-			for (var telemetry : telemetryOptional.get()) {
+			for (var telemetry : telemetryOptional) {
 				producer.send(new ProducerRecord<>("inoa.telemetry." + tenantId, telemetry.getGatewayId(), telemetry));
 				metrics.counterSuccess(tenantId, telemetry.getDeviceType(), telemetry.getSensor()).increment();
 			}
@@ -82,27 +87,41 @@ public class TranslateListener {
 		}
 	}
 
-	private Optional<TelemetryRawVO> toRaw(String tenantId, String payload) {
+	private List<TelemetryRawVO> toRaw(String tenantId, String payload) {
 
-		TelemetryRawVO message = null;
+		List<TelemetryRawVO> messages = new ArrayList<>();
 		try {
-			message = mapper.readValue(payload, TelemetryRawVO.class);
+			JsonNode node = mapper.readValue(payload, JsonNode.class);
+			if (node.isArray()) {
+				messages = mapper.readValue(payload, new TypeReference<>() {
+					{
+					}
+				});
+			} else {
+				messages = new ArrayList<>();
+				messages.add(mapper.readValue(payload, TelemetryRawVO.class));
+			}
 		} catch (JsonProcessingException e) {
 			log.warn("Retrieved invalid payload: {}", payload);
 			metrics.counterFailMessageRead(tenantId).increment();
-			return Optional.empty();
+			return messages;
 		}
 
-		var violations = validator.validate(message);
-		if (!violations.isEmpty()) {
-			log.warn("Retrieved invalid payload: {}", payload);
-			if (log.isDebugEnabled()) {
-				violations.forEach(v -> log.debug("Violation: {} {}", v.getPropertyPath(), v.getMessage()));
+		List<TelemetryRawVO> toRemove = new ArrayList<>();
+		for (var message : messages) {
+			var violations = validator.validate(message);
+			if (!violations.isEmpty()) {
+				log.warn("Retrieved invalid payload: {}", payload);
+				if (log.isDebugEnabled()) {
+					violations.forEach(v -> log.debug("Violation: {} {}", v.getPropertyPath(), v.getMessage()));
+				}
+				metrics.counterFailMessageValidate(tenantId).increment();
+				toRemove.add(message);
 			}
-			metrics.counterFailMessageValidate(tenantId).increment();
-			return Optional.empty();
 		}
-
-		return Optional.of(message);
+		for (var remove : toRemove) {
+			messages.remove(remove);
+		}
+		return messages;
 	}
 }
