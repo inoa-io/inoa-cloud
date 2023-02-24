@@ -18,14 +18,14 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class DvModbusIRBuilder extends ModbusBuilderBase implements ConfigCreator {
 
-	private static short FUNCTION_CODE_SERIAL_NUMBER = 0x000B;
-	private static short FUNCTION_CODE_OBIS_1_8_0 = 0x000D;
-	private static short FUNCTION_CODE_OBIS_1_8_1 = 0x0012;
-	private static short FUNCTION_CODE_OBIS_1_8_2 = 0x0017;
-	private static short FUNCTION_CODE_OBIS_2_8_0 = 0x001C;
-	private static short FUNCTION_CODE_OBIS_2_8_1 = 0x0021;
-	private static short FUNCTION_CODE_OBIS_2_8_2 = 0x0026;
-	private static short FUNCTION_CODE_OBIS_1_7_0 = 0x002B;
+	private static final short FUNCTION_CODE_SERIAL_NUMBER = 0x000B;
+	private static final short FUNCTION_CODE_OBIS_1_8_0 = 0x000D;
+	private static final short FUNCTION_CODE_OBIS_1_8_1 = 0x0012;
+	private static final short FUNCTION_CODE_OBIS_1_8_2 = 0x0017;
+	private static final short FUNCTION_CODE_OBIS_2_8_0 = 0x001C;
+	private static final short FUNCTION_CODE_OBIS_2_8_1 = 0x0021;
+	private static final short FUNCTION_CODE_OBIS_2_8_2 = 0x0026;
+	private static final short FUNCTION_CODE_OBIS_1_7_0 = 0x002B;
 	private final ObjectMapper objectMapper;
 
 	@Override

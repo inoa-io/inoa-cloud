@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
-public class ModbusDVH4013Builder extends ModbusBuilderBase implements ConfigCreator {
+public class ModbusMDVH4006Builder extends ModbusBuilderBase implements ConfigCreator {
 
 	private static final short FUNCTION_CODE_POWER_IN = 0x0000;
 	private static final short FUNCTION_CODE_POWER_OUT = 0x0002;
