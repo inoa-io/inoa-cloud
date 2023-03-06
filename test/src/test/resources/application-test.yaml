@@ -29,7 +29,7 @@ jackson:
 ## see https://github.com/kokuwaio/micronaut-influxdb
 influxdb:
   url: http://influxdb.${test.host}
-  org: inoa
+  organisation: inoa
   token: changeMe
 grafana:
   url: http://grafana.${test.host}

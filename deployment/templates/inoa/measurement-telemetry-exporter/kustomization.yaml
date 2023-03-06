@@ -11,7 +11,7 @@ configMapGenerator:
       - KAFKA_BOOTSTRAP_SERVERS=kafka.infrastructure:9092
       - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
       - INFLUXDB_URL=http://influxdb.infrastructure
-      - INFLUXDB_ORG=inoa
+      - INFLUXDB_ORGANISATION=inoa
       - INFLUXDB_BUCKET=default
 
 secretGenerator:
