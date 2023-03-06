@@ -186,7 +186,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	}
 
 	@DisplayName("register(400): rsa key invalid")
-	@Disabled
+	@Disabled("NYI")
 	@Test
 	public void register400KeyInvalid() {}
 

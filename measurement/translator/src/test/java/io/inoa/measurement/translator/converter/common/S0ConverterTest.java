@@ -1,18 +1,19 @@
 package io.inoa.measurement.translator.converter.common;
 
+import static io.inoa.measurement.translator.converter.LogSink.assertMessage;
+
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.telemetry.TelemetryRawVO;
 import io.inoa.measurement.translator.converter.AbstractConverterTest;
 import io.inoa.measurement.translator.converter.LogSink;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import static io.inoa.measurement.translator.converter.LogSink.assertMessage;
 
 public class S0ConverterTest extends AbstractConverterTest {
 
@@ -56,8 +57,8 @@ public class S0ConverterTest extends AbstractConverterTest {
 	@SneakyThrows
 	private TelemetryRawVO telemetry(String value) {
 		return new TelemetryRawVO()
-			.urn("urn:s0:0:gas")
-			.timestamp(Instant.now().toEpochMilli())
-			.value(value.getBytes(StandardCharsets.UTF_8));
+				.urn("urn:s0:0:gas")
+				.timestamp(Instant.now().toEpochMilli())
+				.value(value.getBytes(StandardCharsets.UTF_8));
 	}
 }

@@ -48,89 +48,58 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	}
 
 	@Override
-	public void createThing201() throws Exception {
-
-	}
+	public void createThing201() {}
 
 	@Override
-	public void createThing400() throws Exception {
-
-	}
+	public void createThing400() {}
 
 	@Override
-	public void createThing401() throws Exception {
-
-	}
+	public void createThing401() {}
 
 	@Override
-	public void deleteThing204() throws Exception {
-
-	}
+	public void deleteThing204() {}
 
 	@Override
-	public void deleteThing401() throws Exception {
-
-	}
+	public void deleteThing401() {}
 
 	@Override
-	public void deleteThing404() throws Exception {
-
-	}
+	public void deleteThing404() {}
 
 	@Override
-	public void downloadConfigToGateway200() throws Exception {
-
-	}
+	public void downloadConfigToGateway200() {}
 
 	@Override
-	public void downloadConfigToGateway401() throws Exception {
-
-	}
+	public void downloadConfigToGateway401() {}
 
 	@Override
-	public void findThing200() throws Exception {
-
-	}
+	public void findThing200() {}
 
 	@Override
-	public void findThing401() throws Exception {
-
-	}
+	public void findThing401() {}
 
 	@Override
-	public void findThing404() throws Exception {
-
-	}
+	public void findThing404() {}
 
 	@Override
-	public void findThings200() throws Exception {
-
-	}
+	public void findThings200() {}
 
 	@Override
-	public void findThings401() throws Exception {
-
-	}
+	public void findThings401() {}
 
 	@Override
-	public void findThingsByGatewayId200() throws Exception {
-
-	}
+	public void findThingsByGatewayId200() {}
 
 	@Override
-	public void findThingsByGatewayId401() throws Exception {
-
-	}
+	public void findThingsByGatewayId401() {}
 
 	@DisplayName("management: things - sync to gateway 204")
 	@Test
 	@Override
-	public void syncConfigToGateway204() throws Exception {
+	public void syncConfigToGateway204() {
 		String gatewayId = "test";
 		String tenantId = "inoa";
 		wireMockServer.stubFor(post(String.format("/%s/%s/rpc", tenantId, gatewayId))
 				.withHeader("Content-Type", containing("json")).willReturn(ok()));
-
 		ThingType thingType = data.createThingType("", "dvh4013");
 		data.createThing(gatewayId, tenantId, thingType);
 		assert204(() -> client.syncConfigToGateway(auth(), gatewayId));
@@ -139,14 +108,12 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 
 	@DisplayName("management: things - sync to gateway with real big data 204 dvh4013")
 	@Test
-	public void syncConfigToGatewayRealBigData204() throws Exception {
+	public void syncConfigToGatewayRealBigData204() {
 		String gatewayId = "test";
 		String tenantId = "inoa";
 		wireMockServer.stubFor(post(String.format("/%s/%s/rpc", tenantId, gatewayId))
 				.withHeader("Content-Type", containing("json")).willReturn(ok()));
-
 		ThingType thingType = data.createThingType("", "dvh4013");
-
 		for (int i = 0; i < 13; i++) {
 			Map<String, Object> config = new HashMap<>();
 			HashMap<String, Object> properties = new HashMap<>();
@@ -167,14 +134,12 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 
 	@DisplayName("management: things - sync to gateway with real big data 400 dvh4013")
 	@Test
-	public void syncConfigToGatewayRealBigData400() throws Exception {
+	public void syncConfigToGatewayRealBigData400() {
 		String gatewayId = "test";
 		String tenantId = "inoa";
 		wireMockServer.stubFor(post(String.format("/%s/%s/rpc", tenantId, gatewayId))
 				.withHeader("Content-Type", containing("json")).willReturn(ok()));
-
 		ThingType thingType = data.createThingType("", "dvh4013");
-
 		for (int i = 0; i < 14; i++) {
 			Map<String, Object> config = new HashMap<>();
 			HashMap<String, Object> properties = new HashMap<>();
@@ -197,27 +162,19 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 	@DisplayName("management: things - sync to gateway 401")
 	@Test
 	@Override
-	public void syncConfigToGateway401() throws Exception {
+	public void syncConfigToGateway401() {
 		assert401(() -> client.syncConfigToGateway(""));
 	}
 
 	@Override
-	public void updateThing200() throws Exception {
-
-	}
+	public void updateThing200() {}
 
 	@Override
-	public void updateThing400() throws Exception {
-
-	}
+	public void updateThing400() {}
 
 	@Override
-	public void updateThing401() throws Exception {
-
-	}
+	public void updateThing401() {}
 
 	@Override
-	public void updateThing404() throws Exception {
-
-	}
+	public void updateThing404() {}
 }

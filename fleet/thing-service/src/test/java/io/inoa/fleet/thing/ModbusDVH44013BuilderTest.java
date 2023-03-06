@@ -9,7 +9,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import io.inoa.fleet.thing.driver.modbus.ModbusDVH4013Builder;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,7 +17,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingType;
-import io.inoa.fleet.thing.driver.modbus.ModbusMDVH4006Builder;
+import io.inoa.fleet.thing.driver.modbus.ModbusDVH4013Builder;
 
 public class ModbusDVH44013BuilderTest {
 
