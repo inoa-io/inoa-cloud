@@ -161,7 +161,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	}
 
 	@DisplayName("createCredential(400): rsa key invalid")
-	@Disabled
+	@Disabled("NYI")
 	@Test
 	public void createCredential400KeyInvalid() {}
 
@@ -322,7 +322,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	}
 
 	@DisplayName("updateCredential(400): rsa key invalid")
-	@Disabled
+	@Disabled("NYI")
 	@Test
 	public void updateCredential400KeyInvalid() {}
 

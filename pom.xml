@@ -60,10 +60,6 @@
 		<jib.from.image>eclipse-temurin:${maven.compiler.target}-jre</jib.from.image>
 		<jib.to.image>ghcr.io/inoa-io/${project.artifactId}</jib.to.image>
 
-		<checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
-		<checkstyle.suppressions.location>checkstyle-suppression.xml</checkstyle.suppressions.location>
-		<checkstyle.includeTestSourceDirectory>true</checkstyle.includeTestSourceDirectory>
-
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
@@ -265,6 +261,11 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>${version.org.apache.maven.plugins.checkstyle}</version>
+					<configuration>
+						<configLocation>checkstyle.xml</configLocation>
+						<suppressionsLocation>checkstyle-suppression.xml</suppressionsLocation>
+						<includeTestSourceDirectory>true</includeTestSourceDirectory>
+					</configuration>
 					<dependencies>
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
