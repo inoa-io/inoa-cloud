@@ -65,14 +65,14 @@
 
 		<!-- plugins -->
 
-		<version.org.apache.maven.plugins.checkstyle>3.2.1</version.org.apache.maven.plugins.checkstyle>
+		<version.org.apache.maven.plugins.checkstyle>3.2.2</version.org.apache.maven.plugins.checkstyle>
 		<version.org.apache.maven.plugins.clean>3.2.0</version.org.apache.maven.plugins.clean>
 		<version.org.apache.maven.plugins.compiler>3.11.0</version.org.apache.maven.plugins.compiler>
 		<version.org.apache.maven.plugins.dependency_>3.5.0</version.org.apache.maven.plugins.dependency_>
 		<version.org.apache.maven.plugins.deploy>3.1.0</version.org.apache.maven.plugins.deploy>
 		<version.org.apache.maven.plugins.install>3.1.1</version.org.apache.maven.plugins.install>
 		<version.org.apache.maven.plugins.jar>3.3.0</version.org.apache.maven.plugins.jar>
-		<version.org.apache.maven.plugins.release>3.0.0-M7</version.org.apache.maven.plugins.release>
+		<version.org.apache.maven.plugins.release>3.0.0</version.org.apache.maven.plugins.release>
 		<version.org.apache.maven.plugins.resources>3.3.0</version.org.apache.maven.plugins.resources>
 		<version.org.apache.maven.plugins.source>3.2.1</version.org.apache.maven.plugins.source>
 		<version.org.apache.maven.plugins.surefire>3.0.0-M9</version.org.apache.maven.plugins.surefire>
@@ -101,7 +101,7 @@
 		<version.org.eclipse.hono>2.1.1</version.org.eclipse.hono>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>21.0.1</version.org.keycloak>
-		<version.org.mapstruct>1.5.3.Final</version.org.mapstruct>
+		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
 		<version.org.projectlombok>1.18.26</version.org.projectlombok>
 
 	</properties>
