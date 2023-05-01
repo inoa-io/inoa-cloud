@@ -101,7 +101,7 @@
 		<version.org.eclipse.hono>2.1.1</version.org.eclipse.hono>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>21.0.1</version.org.keycloak>
-		<version.org.mapstruct>1.5.3.Final</version.org.mapstruct>
+		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
 		<version.org.projectlombok>1.18.26</version.org.projectlombok>
 
 	</properties>
