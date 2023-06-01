@@ -13,7 +13,7 @@
 	<name>INOA :: Fleet :: Registry Hono Bridge</name>
 
 	<properties>
-		<version.org.springframework.boot>2.7.9</version.org.springframework.boot>
+		<version.org.springframework.boot>2.7.12</version.org.springframework.boot>
 		<version.org.eclipse.hono>1.12.1</version.org.eclipse.hono>
 	</properties>
 
