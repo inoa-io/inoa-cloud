@@ -9,7 +9,6 @@ spec:
       targetPort: http
   selector:
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/component: server
 ---
 apiVersion: v1
 kind: Service
@@ -20,4 +19,3 @@ spec:
   clusterIP: None
   selector:
     app.kubernetes.io/name: keycloak
-    app.kubernetes.io/component: server

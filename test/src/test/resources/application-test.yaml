@@ -44,4 +44,4 @@ logger:
 
 ## test
 test:
-  host: 127.0.0.1.nip.io
+  host: 127.0.0.1.nip.io:8080

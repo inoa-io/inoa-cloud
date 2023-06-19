@@ -125,27 +125,27 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>create</goal>
-							<goal>start</goal>
+							<goal>run</goal>
 							<goal>image</goal>
-							<goal>kubectl</goal>
+							<goal>apply</goal>
 							<goal>rm</goal>
 						</goals>
 						<configuration>
-							<imageTag>v1.24.3-k3s1</imageTag>
+					<imageTag>v1.24.12-k3s1</imageTag>
+					<manifests>${project.build.directory}/k3s</manifests>
 							<disableServicelb>false</disableServicelb>
 							<disableLocalStorage>false</disableLocalStorage>
 							<portBindings>
-								<portBinding>80:80</portBinding>
+								<portBinding>8080:8080</portBinding>
 								<portBinding>8883:8883</portBinding>
 							</portBindings>
-							<command>kubectl apply -k .</command>
 							<manifests>${project.build.directory}/k3s</manifests>
 							<ctrImages>
 								<ctrImage>postgres:14.4-bullseye</ctrImage>
 								<ctrImage>traefik:v2.8.3</ctrImage>
 								<ctrImage>influxdb:2.3</ctrImage>
-								<ctrImage>kokuwaio/keycloak:19</ctrImage>
+								<ctrImage>kokuwaio/keycloak:21.1.1</ctrImage>
+								<ctrImage>kokuwaio/keycloak:21.1.1-import</ctrImage>
 								<ctrImage>kiwigrid/k8s-sidecar:1.19.4</ctrImage>
 								<ctrImage>grafana/grafana:9.1.0</ctrImage>
 								<ctrImage>quay.io/strimzi/kafka:latest-kafka-2.8.1</ctrImage>
@@ -173,9 +173,6 @@
 							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
-						<configuration>
-							<failIfNoTests>true</failIfNoTests>
-						</configuration>
 					</execution>
 				</executions>
 			</plugin>
@@ -234,4 +231,39 @@
 
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<property>
+					<name>!env.CI</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.kokuwa.maven</groupId>
+						<artifactId>k3s-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>restart</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<resources>
+								<resource>deployment/inoa/fleet-admin-ui</resource>
+								<resource>deployment/inoa/fleet-mqtt-broker</resource>
+								<resource>deployment/inoa/fleet-registry-service</resource>
+								<resource>deployment/inoa/measurement-telemetry-exporter</resource>
+								<resource>deployment/inoa/measurement-telemetry-translator</resource>
+							</resources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>
