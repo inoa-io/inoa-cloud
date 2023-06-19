@@ -45,6 +45,15 @@
 			<artifactId>micronaut-kafka</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.micronaut.cache</groupId>
+			<artifactId>micronaut-cache-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.cache</groupId>
+			<artifactId>micronaut-cache-caffeine</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-server-netty</artifactId>
 			<scope>runtime</scope>

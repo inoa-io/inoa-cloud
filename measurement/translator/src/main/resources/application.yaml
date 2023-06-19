@@ -2,6 +2,9 @@ micronaut:
   application:
     name: ${project.artifactId}
     version: ${project.version}
+  caches:
+    watthour:
+      expire-after-write: PT24h
 
 ## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
 endpoints:
@@ -22,6 +25,10 @@ inoa.measurement.translator:
       sensors:
         - name: number                # matches urn:example:<id>:number
           converter: number
+        - name: watthour              # matches urn:example:<id>:watthour
+          converter: number
+          ext:
+            unit: watthour
         - name: number-with-modifier  # matches urn:example:<id>:number-10
           converter: number
           modifier: 10
