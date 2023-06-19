@@ -14,9 +14,11 @@ spec:
       initContainers:
         - name: fleet-registry-service-postgres
           image: postgres:14.4-bullseye
-          imagePullPolicy: IfNotPresent
-          command: [sh, -c, until psql; do sleep 2; done]
+          imagePullPolicy: Never
+          command: [sh, -c, until psql ; do sleep 1 ; done]
           env:
+            - name: PGCONNECT_TIMEOUT
+              value: "1"
             - name: PGHOST
               valueFrom:
                 configMapKeyRef:

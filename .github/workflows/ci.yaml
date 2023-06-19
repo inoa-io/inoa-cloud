@@ -24,18 +24,6 @@ jobs:
         with:
           args: /github/workspace
 
-  checkstyle:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: maven
-      - run: mvn -B -ntp dependency:go-offline
-      - run: mvn -B -ntp checkstyle:check
-
   kustomize:
     strategy:
       matrix:
@@ -46,11 +34,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: steebchen/kubectl@v2.1.1
         with:
-          version: v1.24.4
+          version: v1.24.10
           command: kustomize deployment/${{ matrix.type }}
 
   build:
     runs-on: ubuntu-latest
+    env:
+      MAVEN_ARGS: --batch-mode --color=always --no-transfer-progress -Dmaven.test.redirectTestOutputToFile=false -Dsurefire.rerunFailingTestsCount=3
     steps:
       - name: Generate build ID
         id: prep
@@ -71,8 +61,7 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - run: mvn -B -ntp dependency:go-offline
-      - run: mvn -B -ntp install -Dcheckstyle.skip -Dmaven.test.redirectTestOutputToFile=false -Dsurefire.rerunFailingTestsCount=3 -pl \!test -T1C
-      - run: mvn -B -ntp install -Dcheckstyle.skip -Dmaven.test.redirectTestOutputToFile=false -Dsurefire.rerunFailingTestsCount=3 -pl test
-      - run: mvn -B -ntp jib:build -Djib.to.tags=latest,${{ steps.prep.outputs.BUILD_ID }} -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter,:gateway-command-service,:fleet-registry-hono-bridge,:fleet-thing-service -T1C
+      - run: mvn $MAVEN_ARGS install -pl \!test -T1C
+      - run: mvn $MAVEN_ARGS install -pl test
+      - run: mvn $MAVEN_ARGS jib:build -Djib.to.tags=latest,${{ steps.prep.outputs.BUILD_ID }} -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter,:gateway-command-service,:fleet-registry-hono-bridge,:fleet-thing-service -T1C
         if: ${{ github.ref_name == 'main' }}
