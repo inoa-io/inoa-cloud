@@ -1,5 +1,6 @@
 package io.inoa.measurement.translator.service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Comparator;
@@ -7,15 +8,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
 
 import io.inoa.fleet.telemetry.TelemetryRawVO;
 import io.inoa.measurement.telemetry.TelemetryVO;
 import io.inoa.measurement.translator.converter.Converter;
+import io.micronaut.cache.CacheManager;
+import io.micronaut.cache.SyncCache;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.core.order.Ordered;
 import jakarta.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -23,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Singleton
 @Slf4j
-@RequiredArgsConstructor
 public class TranslateService {
 
 	private static Pattern URN_PATTERN = Pattern.compile("urn"
@@ -33,6 +36,19 @@ public class TranslateService {
 
 	private final Set<Converter> converters;
 	private final TranslateMetrics metrics;
+	private final SyncCache<?> cache;
+	private final int increaseThreshold;
+
+	public TranslateService(
+			Set<Converter> converters,
+			TranslateMetrics metrics,
+			CacheManager<?> cacheManager,
+			@Value("${inoa.measurement.translator.increaseThreshold:100000}") int increaseThreshold) {
+		this.converters = converters;
+		this.metrics = metrics;
+		this.cache = cacheManager.getCache("watthour");
+		this.increaseThreshold = increaseThreshold;
+	}
 
 	public List<TelemetryVO> translate(String tenantId, String gatewayId, TelemetryRawVO raw) {
 
@@ -66,12 +82,14 @@ public class TranslateService {
 
 		var messages = converter.get().convert(raw, deviceType, sensor)
 				.peek(target -> fillMessage(raw, target, tenantId, gatewayId, deviceType, deviceId, sensor))
-				.toList();
+				.collect(Collectors.toList());
 		if (messages.isEmpty()) {
 			log.warn("Failed on value: {}", Base64.getEncoder().encode(raw.getValue()));
 			metrics.counterFailValue(tenantId, deviceType, sensor).increment();
 			return List.of();
 		}
+
+		messages.removeIf(this::isInvalid);
 
 		return messages;
 	}
@@ -110,5 +128,55 @@ public class TranslateService {
 			}
 			raw.getExt().forEach(telemetry.getExt()::putIfAbsent);
 		}
+	}
+
+	private boolean isInvalid(TelemetryVO vo) {
+
+		if (vo.getExt() == null || !"watthour".equals(vo.getExt().get("unit"))) {
+			return false;
+		}
+
+		var valid = true;
+		var urn = vo.getUrn();
+		var old = cache.get(urn, TelemetryVO.class).orElse(null);
+
+		if (old == null) {
+			log.trace("URN {} had no cached value", urn);
+		} else {
+
+			var oldTime = old.getTimestamp();
+			var newTime = vo.getTimestamp();
+			var diffTime = Duration.between(oldTime, newTime);
+			var newValue = vo.getValue();
+			var oldValue = old.getValue();
+			var diffValue = newValue - oldValue;
+
+			if (diffTime.isNegative()) {
+				log.warn("URN {} got out of order value (old {}, new {}), skip validation.", urn, oldTime, newTime);
+				return true;
+			}
+
+			if (diffValue < 0) {
+				log.warn("URN {} had wh decreased from {} to {} Wh (diff {} Wh).",
+						urn, oldValue, newValue, diffValue);
+				valid = false;
+			} else {
+				// normalized to 1h
+				var increase = diffValue / (diffTime.getSeconds() / 3_600D);
+				if (increase > increaseThreshold) {
+					log.warn("URN {} increased by {} Wh ({} Wh in {}), skip value bigger than thresold {} Wh.",
+							urn, increase, diffValue, diffTime, increaseThreshold);
+					valid = false;
+				} else {
+					log.trace("URN {} increased by {} Wh ({} Wh in {}).", urn, increase, diffValue, diffTime);
+				}
+			}
+		}
+
+		if (valid) {
+			cache.put(urn, vo);
+		}
+
+		return !valid;
 	}
 }
