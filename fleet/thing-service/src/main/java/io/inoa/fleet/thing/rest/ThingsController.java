@@ -131,7 +131,7 @@ public class ThingsController implements ThingsApi {
 		objectNode.set("params", result);
 		try {
 			int length = objectMapper.writeValueAsBytes(objectNode).length;
-			if (length > 8192) {
+			if (length > 70656) {
 				return HttpResponse.badRequest(String.format("rcp call to big %d", length));
 			}
 		} catch (JsonProcessingException e) {
