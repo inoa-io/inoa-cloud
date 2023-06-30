@@ -22,8 +22,8 @@ public class ModbusMDVH4006Builder extends ModbusBuilderBase implements ConfigCr
 
 	private static final short FUNCTION_CODE_POWER_IN = 0x0000;
 	private static final short FUNCTION_CODE_POWER_OUT = 0x0002;
-	private static final short FUNCTION_CODE_OBIS_1_8_0 = 0x4001;
-	private static final short FUNCTION_CODE_OBIS_2_8_0 = 0x4101;
+	private static final short FUNCTION_CODE_OBIS_1_8_0 = 0x4000;
+	private static final short FUNCTION_CODE_OBIS_2_8_0 = 0x4100;
 	private final ObjectMapper objectMapper;
 
 	@Override
