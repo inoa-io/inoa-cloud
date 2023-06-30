@@ -201,7 +201,7 @@ inoa.measurement.translator:
             unit: percent
 
     # source: https://www.dzg.de/fileadmin/dzg/content/downloads/produkte-zaehler/mdvh4006/DZG_MDVH4006_Handbuch_200825.pdf
-    - name: dvh4013
+    - name: mdvh4006
       sensors:
         - name: "0x4000"   # Current Total Import
           modifier: 1      # 3 decimal places, the unit kWh
