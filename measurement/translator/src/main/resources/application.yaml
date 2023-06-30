@@ -200,6 +200,36 @@ inoa.measurement.translator:
             label: l3_voltage_threshold
             unit: percent
 
+    # source: https://www.dzg.de/fileadmin/dzg/content/downloads/produkte-zaehler/mdvh4006/DZG_MDVH4006_Handbuch_200825.pdf
+    - name: mdvh4006
+      sensors:
+        - name: "0x4000"   # Current Total Import
+          modifier: 1      # 3 decimal places, the unit kWh
+          converter: modbus
+          ext:
+            label: work_in
+            obis: 1-0:1.8.0*255
+            unit: watthour
+        - name: "0x4100"   # Current Total Export
+          modifier: 1      # 3 decimal places, the unit kWh
+          converter: modbus
+          ext:
+            label: work_out
+            obis: 1-0:2.8.0*255
+            unit: watthour
+        - name: "0x0000"   # Total active import power
+          modifier: 0.1    # 1 decimal places, the unit W
+          converter: modbus
+          ext:
+            label: power_in
+            unit: watt
+        - name: "0x0002"   # Total active export power
+          modifier: 0.1    # 1 decimal places, the unit W
+          converter: modbus
+          ext:
+            label: power_out
+            unit: watt
+
     # source: Fabian Schlegel
     - name: satellite
       sensors:
