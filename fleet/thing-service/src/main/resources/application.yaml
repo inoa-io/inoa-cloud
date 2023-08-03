@@ -20,6 +20,9 @@ micronaut:
           - POST
           - PUT
           - DELETE
+  http:
+    client:
+      read-timeout: 30s
 
   security:
     token:
