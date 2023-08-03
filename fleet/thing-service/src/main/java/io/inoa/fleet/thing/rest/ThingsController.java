@@ -26,6 +26,7 @@ import io.inoa.fleet.thing.rest.management.ThingPageVO;
 import io.inoa.fleet.thing.rest.management.ThingUpdateVO;
 import io.inoa.fleet.thing.rest.management.ThingVO;
 import io.inoa.fleet.thing.rest.management.ThingsApi;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
@@ -49,7 +50,7 @@ public class ThingsController implements ThingsApi {
 	 * Available sort properties, see API spec for documentation.
 	 */
 	public static final Map<String, String> SORT_ORDER_PROPERTIES = Map.of(ThingVO.JSON_PROPERTY_NAME,
-			ThingVO.JSON_PROPERTY_NAME, ThingVO.JSON_PROPERTY_CREATED, ThingVO.JSON_PROPERTY_CREATED);
+		ThingVO.JSON_PROPERTY_NAME, ThingVO.JSON_PROPERTY_CREATED, ThingVO.JSON_PROPERTY_CREATED);
 	private static final String DEFAULT_TENANT = "inoa";
 	private final ThingRepository thingRepository;
 	private final ThingTypeRepository thingTypeRepository;
@@ -63,7 +64,7 @@ public class ThingsController implements ThingsApi {
 	@Override
 	public HttpResponse<ThingVO> createThing(@Valid ThingCreateVO thingCreateVO) {
 		Optional<ThingType> thingType = thingTypeRepository
-				.findByThingTypeReference(thingCreateVO.getThingTypeReference());
+			.findByThingTypeReference(thingCreateVO.getThingTypeReference());
 		if (thingType.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
 		}
@@ -106,7 +107,7 @@ public class ThingsController implements ThingsApi {
 	@Get("/things")
 	@Override
 	public HttpResponse<ThingPageVO> findThings(Optional<Integer> page, Optional<Integer> size,
-			Optional<List<String>> sort, Optional<String> filter) {
+		Optional<List<String>> sort, Optional<String> filter) {
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
 		Page<Thing> things = thingRepository.findByTenantId(DEFAULT_TENANT, pageable);
 		return HttpResponse.ok(thingMapper.toThingPage(things));
@@ -116,15 +117,15 @@ public class ThingsController implements ThingsApi {
 	@Get("/things/by-gateway-id/{gateway_id}")
 	@Override
 	public HttpResponse<ThingPageVO> findThingsByGatewayId(@PathVariable(name = "gateway_id") String gatewayId,
-			Optional<Integer> page, Optional<Integer> size, Optional<List<String>> sort, Optional<String> filter) {
+		Optional<Integer> page, Optional<Integer> size, Optional<List<String>> sort, Optional<String> filter) {
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
 		Page<Thing> things = thingRepository.findByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId, pageable);
 		return HttpResponse.ok(thingMapper.toThingPage(things));
 	}
 
 	@Override
-	public HttpResponse<Object> syncConfigToGateway(String gatewayId) {
-		ArrayNode result = generateConfigForGateway(gatewayId);
+	public HttpResponse<Object> syncConfigToGateway(@NonNull String gatewayId) {
+		ArrayNode result = generateConfigForGatewayLegacy(gatewayId);
 		ObjectNode objectNode = objectMapper.createObjectNode();
 		objectNode.put("id", "1");
 		objectNode.put("method", "dp.write");
@@ -141,19 +142,63 @@ public class ThingsController implements ThingsApi {
 		return HttpResponse.noContent();
 	}
 
-	private ArrayNode generateConfigForGateway(String gatewayId) {
+	@Override
+	public HttpResponse<Object> syncConfigToGatewaySequential(@NonNull String gatewayId) {
+		// Clear all datapoints via RPC
+		ObjectNode datapointClearCommand = objectMapper.createObjectNode();
+		datapointClearCommand.put("id", "1");
+		datapointClearCommand.put("method", "dp.clear");
+		gatewayCommandClient.sendGatewayCommand(DEFAULT_TENANT, gatewayId, datapointClearCommand);
+		// Sequentially send datapoints via RPC
+		ArrayNode datapointsForThisThing = generateConfigForGateway(gatewayId);
+		for (var node : datapointsForThisThing) {
+			ObjectNode datapointAddCommand = objectMapper.createObjectNode();
+			datapointAddCommand.put("id", "1");
+			datapointAddCommand.put("method", "dp.add");
+			datapointAddCommand.set("params", node);
+			gatewayCommandClient.sendGatewayCommand(DEFAULT_TENANT, gatewayId, datapointAddCommand);
+		}
+		return HttpResponse.noContent();
+	}
+
+	private ArrayNode generateConfigForGatewayLegacy(String gatewayId) {
 		var things = thingRepository.findAllByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId);
 		ArrayNode result = objectMapper.createArrayNode();
 		for (var thing : things) {
 			ThingType thingType = thing.getThingType();
-			ConfigCreator configCreator = configCreatorHolder.getConfigCreator(thingType);
-			if (configCreator != null) {
-				JsonNode nodes = configCreator.build(thing, thingType);
+			Optional<ConfigCreator> configCreator = configCreatorHolder.getConfigCreator(thingType);
+			if (configCreator.isPresent()) {
+				JsonNode nodes = configCreator.get().buildLegacy(thing, thingType);
 				for (var node : nodes) {
 					result.add(node);
 				}
 			} else {
 				log.warn("no config creator found for thing type: {}", thingType.getThingTypeReference());
+			}
+		}
+		return result;
+	}
+
+	private ArrayNode generateConfigForGateway(String gatewayId) {
+		var things = thingRepository.findAllByTenantIdAndGatewayId(DEFAULT_TENANT, gatewayId);
+		ArrayNode result = objectMapper.createArrayNode();
+		for (var thing : things) {
+			ThingType thingType = thing.getThingType();
+			Optional<ConfigCreator> configCreator = configCreatorHolder.getConfigCreator(thingType);
+			if (configCreator.isPresent()) {
+				JsonNode nodes = null;
+				try {
+					nodes = configCreator.get().build(thing, thingType);
+				} catch (JsonProcessingException e) {
+					log.error("No appropriate JSON could be generated for thing type: {}",
+						thingType.getThingTypeReference());
+					continue;
+				}
+				for (var node : nodes) {
+					result.add(node);
+				}
+			} else {
+				log.warn("No config creator found for thing type: {}", thingType.getThingTypeReference());
 			}
 		}
 		return result;
@@ -167,6 +212,12 @@ public class ThingsController implements ThingsApi {
 		}
 		thingRepository.delete(optionalThing.get());
 		return HttpResponse.noContent();
+	}
+
+	@Override
+	public HttpResponse<Object> downloadConfigToGatewayLegacy(String gatewayId) {
+		ArrayNode result = generateConfigForGatewayLegacy(gatewayId);
+		return HttpResponse.ok(result);
 	}
 
 	@Override

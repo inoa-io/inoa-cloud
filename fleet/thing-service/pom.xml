@@ -221,7 +221,6 @@
 				</configuration>
 			</plugin>
 
-			<!-- run tests with multiple database configurations -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -236,24 +235,10 @@
 							<skipExec>${maven.test.skip.exec}</skipExec>
 						</configuration>
 					</execution>
-					<execution>
-						<id>postgres-test</id>
-						<goals>
-							<goal>test</goal>
-						</goals>
-						<configuration>
-							<environmentVariables>
-								<MICRONAUT_ENVIRONMENTS>postgres</MICRONAUT_ENVIRONMENTS>
-							</environmentVariables>
-							<reportNameSuffix>postgres</reportNameSuffix>
-							<skipExec>${maven.test.skip.exec}</skipExec>
-						</configuration>
-					</execution>
 				</executions>
 				<configuration>
 					<runOrder>alphabetical</runOrder>
 					<failIfNoTests>true</failIfNoTests>
-					<skip>true</skip>
 				</configuration>
 			</plugin>
 

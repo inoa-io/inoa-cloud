@@ -2,6 +2,7 @@ package io.inoa.fleet.thing.driver;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,7 +27,7 @@ public class ConfigCreatorHolder {
 		creators.put("s0", new S0Builder(objectMapper));
 	}
 
-	public ConfigCreator getConfigCreator(ThingType thingType) {
-		return creators.get(thingType.getThingTypeReference());
+	public Optional<ConfigCreator> getConfigCreator(ThingType thingType) {
+		return Optional.of(creators.get(thingType.getThingTypeReference()));
 	}
 }

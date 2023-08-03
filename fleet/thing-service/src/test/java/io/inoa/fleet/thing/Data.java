@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
-import org.jetbrains.annotations.NotNull;
-
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingRepository;
 import io.inoa.fleet.thing.domain.ThingType;
@@ -25,7 +23,6 @@ public class Data {
 	@Inject
 	ThingRepository thingRepository;
 
-	@NotNull
 	private static Thing getThing(String gatewayId, String tenantId, ThingType thingType) {
 		Thing thing = new Thing();
 		thing.setThingId(UUID.randomUUID().toString());
@@ -53,11 +50,6 @@ public class Data {
 	public Thing createThing(String gatewayId, String tenantId, ThingType thingType, Map<String, Object> config) {
 		Thing thing = getThing(gatewayId, tenantId, thingType);
 		thing.setConfig(config);
-		return thingRepository.save(thing);
-	}
-
-	public Thing createThing(String gatewayId, String tenantId, ThingType thingType) {
-		Thing thing = getThing(gatewayId, tenantId, thingType);
 		return thingRepository.save(thing);
 	}
 }

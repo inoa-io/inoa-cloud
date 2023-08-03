@@ -13,8 +13,8 @@ info:
 servers:
   - url: http://thing-service:8080
 security:
-  - Keycloak: []
-  - BearerAuth: []
+  - Keycloak: [ ]
+  - BearerAuth: [ ]
 paths:
   /thing-types:
     get:
@@ -349,6 +349,21 @@ paths:
         401:
           description: 'Unauthorized.'
 
+  /things/sync-to-gateway-sequential/{gateway_id}:
+    parameters:
+      - $ref: '#/components/parameters/GatewayId'
+    get:
+      tags:
+        - things
+      summary: 'Sync configuration sequentially to gateway.'
+      description: 'TODO'
+      operationId: syncConfigToGatewaySequential
+      responses:
+        204:
+          description: 'accepted sync request.'
+        401:
+          description: 'Unauthorized.'
+
   /things/download-for-gateway/{gateway_id}:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
@@ -367,6 +382,26 @@ paths:
                 type: object
         401:
           description: 'Unauthorized.'
+
+  /things/download-for-gateway-legacy/{gateway_id}:
+    parameters:
+      - $ref: '#/components/parameters/GatewayId'
+    get:
+      tags:
+        - things
+      summary: 'Sync configuration to gateway with OS version <0.4.0'
+      description: 'TODO'
+      operationId: downloadConfigToGatewayLegacy
+      responses:
+        200:
+          description: 'json with thing config.'
+          content:
+            application/json:
+              schema:
+                type: object
+        401:
+          description: 'Unauthorized.'
+
 components:
   schemas:
     Timestamp:
@@ -415,12 +450,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: {}
+          additionalProperties: { }
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: {}
+            additionalProperties: { }
         properties:
           type: array
           items:
@@ -488,12 +523,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: {}
+          additionalProperties: { }
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: {}
+            additionalProperties: { }
       required:
         - name
     ThingTypeUpdate:
@@ -508,12 +543,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: {}
+          additionalProperties: { }
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: {}
+            additionalProperties: { }
       required:
         - name
     ThingTypeChannel:
@@ -599,7 +634,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: {}
+          additionalProperties: { }
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
@@ -624,7 +659,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: {}
+          additionalProperties: { }
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
@@ -647,7 +682,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: {}
+          additionalProperties: { }
       required:
         - name
         - thing_type_reference
@@ -664,7 +699,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: {}
+          additionalProperties: { }
       required:
         - name
         - thing_type_reference
@@ -699,7 +734,7 @@ components:
         input_type:
           type: string
           example: text
-          enum: [text, number]
+          enum: [ text, number ]
           description: input type for the frontend
     Property:
       type: object
@@ -717,6 +752,61 @@ components:
       example:
         test-a: this-is-a
         test-b: this-is-b
+    Datapoint:
+      type: object
+      properties:
+        id:
+          description: 'Unique identifier'
+          type: string
+          example: 'urn:dvh4013:33011408:0x4000'
+        name:
+          description: 'Readable name'
+          type: string
+          example: 'work_in'
+        enabled:
+          description: 'Is datapoint enabled'
+          type: boolean
+        interval:
+          description: 'Poll interval in Seconds'
+          type: integer
+          format: int32
+          minimum: 0
+        type:
+          description: 'Poll type'
+          type: string
+          enum:
+            - RS485
+            - S0
+            - HTTP_GET
+          example: 'RS485'
+        interface:
+          description: 'Interface to poll'
+          type: integer
+          format: int32
+          minimum: 0
+          example: 1
+        timeout:
+          description: 'Polling timeout'
+          type: integer
+          format: int32
+          minimum: 0
+          example: 1000
+        frame:
+          description: 'RS485 frame as hex string'
+          type: string
+          pattern: '^[a-fA-F0-9]+$'
+          example: '1603000D0004D6ED'
+        uri:
+          description: 'URI to poll'
+          type: string
+          format: uri
+          example: 'http://192.168.178.25/status'
+      required:
+        - id
+        - name
+        - enabled
+        - interval
+        - type
 
   parameters:
     PageablePage:

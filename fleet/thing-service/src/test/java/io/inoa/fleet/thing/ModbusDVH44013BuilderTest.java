@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import io.inoa.fleet.thing.driver.modbus.ModbusDVH4013Builder;
 public class ModbusDVH44013BuilderTest {
 
 	@Test
-	public void testBuildDefinition() {
+	public void testBuildDefinitionLegacy() {
 		ModbusDVH4013Builder builder = new ModbusDVH4013Builder(new ObjectMapper());
 		Thing thing = new Thing();
 		thing.setName("schrank");
@@ -41,8 +40,8 @@ public class ModbusDVH44013BuilderTest {
 		thing.setConfig(config);
 		ThingType thingType = new ThingType();
 		thingType.setThingTypeReference("dvh4013");
-		ArrayNode build = builder.build(thing, thingType);
-		List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).collect(Collectors.toList());
+		ArrayNode build = builder.buildLegacy(thing, thingType);
+		List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
 
 		Optional<JsonNode> obis180 = items.stream()
 				.filter(i -> i.get("header").get("id").asText().equals("urn:dvh4013:100022:0x0000")).findFirst();

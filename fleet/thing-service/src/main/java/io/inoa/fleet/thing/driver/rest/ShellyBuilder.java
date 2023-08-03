@@ -28,6 +28,21 @@ public class ShellyBuilder extends HttpBuilderBase implements ConfigCreator {
 	}
 
 	@Override
+	public ArrayNode buildLegacy(Thing thing, ThingType thingType) {
+		ArrayNode datapoints = objectMapper.createArrayNode();
+		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
+		String serial = (String) properties.get("serial");
+		String uri = (String) properties.get("uri");
+		datapoints.add(createHttpGetJsonNodeLegacy(serial, thingType.getThingTypeReference(), thing, uri));
+		return datapoints;
+	}
+
+	@Override
+	public ArrayNode buildRPC(Thing thing, ThingType thingType) {
+		return null;
+	}
+
+	@Override
 	protected ObjectMapper getObjectMapper() {
 		return objectMapper;
 	}

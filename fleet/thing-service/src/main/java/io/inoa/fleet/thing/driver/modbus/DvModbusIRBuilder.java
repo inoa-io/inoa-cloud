@@ -2,11 +2,10 @@ package io.inoa.fleet.thing.driver.modbus;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.inoa.fleet.thing.domain.Thing;
 import io.inoa.fleet.thing.domain.ThingType;
@@ -28,35 +27,44 @@ public class DvModbusIRBuilder extends ModbusBuilderBase implements ConfigCreato
 	private static final short FUNCTION_CODE_OBIS_1_7_0 = 0x002B;
 	private final ObjectMapper objectMapper;
 
+	private static final Map<String, RegisterSetting> MAPPINGS;
+
+	static {
+		MAPPINGS = new HashMap<>();
+		MAPPINGS.put("obis_1_8_0", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_8_0, (short) 4));
+		MAPPINGS.put("obis_1_8_1", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_8_1, (short) 4));
+		MAPPINGS.put("obis_1_8_2", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_8_2, (short) 4));
+		MAPPINGS.put("obis_2_8_0", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_2_8_0, (short) 4));
+		MAPPINGS.put("obis_2_8_1", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_2_8_1, (short) 4));
+		MAPPINGS.put("obis_2_8_2", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_2_8_2, (short) 4));
+		MAPPINGS.put("obis_1_7_0", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_7_0, (short) 2));
+	}
+
 	@Override
-	public ArrayNode build(Thing thing, ThingType thingType) {
-		ArrayNode datapoints = objectMapper.createArrayNode();
+	public ArrayNode build(Thing thing, ThingType thingType) throws JsonProcessingException {
 		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
 		Integer serial = (Integer) properties.get("serial");
-		Integer modbusInterface = (Integer) properties.get("modbus_interface");
-		Map<String, Object> channels = (Map<String, Object>) thing.getConfig().get("channels");
-
 		int slaveId = serial % 1000;
 		if (slaveId > 255) {
 			log.warn("slaveId greater then 255 id: {} -- serial: {}", slaveId, serial);
 		}
-		Map<String, RegisterSetting> mappings = new HashMap<>() {
-			{
-				put("obis_1_8_0", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_8_0, (short) 4));
-				put("obis_1_8_1", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_8_1, (short) 4));
-				put("obis_1_8_2", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_8_2, (short) 4));
-				put("obis_2_8_0", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_2_8_0, (short) 4));
-				put("obis_2_8_1", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_2_8_1, (short) 4));
-				put("obis_2_8_2", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_2_8_2, (short) 4));
-				put("obis_1_7_0", new RegisterSetting((byte) 3, FUNCTION_CODE_OBIS_1_7_0, (short) 2));
-			}
-		};
-		for (var mapping : mappings.entrySet()) {
-			Optional<ObjectNode> optionalValue = checkObis(channels, thing, thingType, mapping.getKey(),
-					mapping.getValue(), serial, slaveId, modbusInterface);
-			optionalValue.ifPresent(datapoints::add);
+		return toDatapoints(thing, thingType, slaveId, MAPPINGS);
+	}
+
+	@Override
+	public ArrayNode buildLegacy(Thing thing, ThingType thingType) {
+		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
+		Integer serial = (Integer) properties.get("serial");
+		int slaveId = serial % 1000;
+		if (slaveId > 255) {
+			log.warn("slaveId greater then 255 id: {} -- serial: {}", slaveId, serial);
 		}
-		return datapoints;
+		return toDatapointsLegacy(thing, thingType, slaveId, MAPPINGS);
+	}
+
+	@Override
+	public ArrayNode buildRPC(Thing thing, ThingType thingType) {
+		return null;
 	}
 
 	@Override
