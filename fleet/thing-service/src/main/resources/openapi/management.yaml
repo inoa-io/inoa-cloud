@@ -13,8 +13,8 @@ info:
 servers:
   - url: http://thing-service:8080
 security:
-  - Keycloak: [ ]
-  - BearerAuth: [ ]
+  - Keycloak: []
+  - BearerAuth: []
 paths:
   /thing-types:
     get:
@@ -450,12 +450,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: { }
+            additionalProperties: {}
         properties:
           type: array
           items:
@@ -523,12 +523,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: { }
+            additionalProperties: {}
       required:
         - name
     ThingTypeUpdate:
@@ -543,12 +543,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: { }
+            additionalProperties: {}
       required:
         - name
     ThingTypeChannel:
@@ -634,7 +634,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: { }
+          additionalProperties: {}
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
@@ -659,7 +659,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: { }
+          additionalProperties: {}
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
@@ -682,7 +682,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: { }
+          additionalProperties: {}
       required:
         - name
         - thing_type_reference
@@ -699,7 +699,7 @@ components:
           type: string
         config:
           description: 'config'
-          additionalProperties: { }
+          additionalProperties: {}
       required:
         - name
         - thing_type_reference
@@ -734,7 +734,7 @@ components:
         input_type:
           type: string
           example: text
-          enum: [ text, number ]
+          enum: [text, number]
           description: input type for the frontend
     Property:
       type: object
