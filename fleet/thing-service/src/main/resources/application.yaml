@@ -20,9 +20,16 @@ micronaut:
           - POST
           - PUT
           - DELETE
+  netty:
+    event-loops:
+      other:
+        num-threads: 10
+        prefer-native-transport: true
+
   http:
     client:
       read-timeout: 30s
+      event-loop-group: other
 
   security:
     token:
