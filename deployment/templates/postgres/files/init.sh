@@ -11,8 +11,12 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     CREATE USER "grafana" WITH ENCRYPTED PASSWORD 'changeMe';
     GRANT ALL PRIVILEGES ON DATABASE "grafana" TO "grafana";
 
-    CREATE DATABASE "registry";
-    CREATE USER "registry" WITH ENCRYPTED PASSWORD 'changeMe';
-    GRANT ALL PRIVILEGES ON DATABASE "registry" TO "registry";
+    CREATE DATABASE "fleet";
+    CREATE USER "fleet" WITH ENCRYPTED PASSWORD 'changeMe';
+    GRANT ALL PRIVILEGES ON DATABASE "fleet" TO "fleet";
+
+    CREATE DATABASE "measurement";
+    CREATE USER "measurement" WITH ENCRYPTED PASSWORD 'changeMe';
+    GRANT ALL PRIVILEGES ON DATABASE "measurement" TO "measurement";
 
 EOSQL

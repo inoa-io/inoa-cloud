@@ -30,10 +30,10 @@
 	</licenses>
 
 	<modules>
-		<module>lib</module>
-		<module>fleet</module>
-		<module>measurement</module>
-		<module>test</module>
+		<module>inoa-fleet</module>
+		<module>inoa-measurement</module>
+                <module>inoa-groundcontrol</module>
+		<module>inoa-test</module>
 	</modules>
 
 	<scm>

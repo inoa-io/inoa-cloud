@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.inoa</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>test</artifactId>
+
+	<name>INOA :: Integration Test</name>
+
+	<dependencies>
+
+		<!-- project -->
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-registry-api-gateway</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-registry-api-management</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa.fleet</groupId>
+			<artifactId>fleet-mqtt-client</artifactId>
+			<version>${project.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- micronaut -->
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-validation</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-influxdb</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-logging</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- test -->
+		<dependency>
+			<groupId>io.micronaut.test</groupId>
+			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<testResources>
+			<testResource>
+				<directory>${project.basedir}/src/test/resources</directory>
+				<targetPath>${project.build.testOutputDirectory}</targetPath>
+			</testResource>
+			<testResource>
+				<directory>${project.basedir}/src/test/k3s</directory>
+				<targetPath>${project.build.directory}/k3s</targetPath>
+			</testResource>
+			<testResource>
+				<directory>${project.basedir}/../deployment</directory>
+				<targetPath>${project.build.directory}/k3s</targetPath>
+			</testResource>
+			<testResource>
+				<directory>${project.basedir}/../inoa-fleet/src/main/resources/openapi</directory>
+				<targetPath>../k3s/templates/swaggerui/files</targetPath>
+			</testResource>
+			<testResource>
+				<directory>${project.basedir}/../inoa-measurement/src/main/resources/openapi</directory>
+				<targetPath>../k3s/templates/swaggerui/files</targetPath>
+			</testResource>
+		</testResources>
+		<plugins>
+
+			<!-- configure annotation processors -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${version.org.projectlombok}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- handle k3s lifecycle -->
+			<plugin>
+				<groupId>io.kokuwa.maven</groupId>
+				<artifactId>k3s-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>run</goal>
+							<goal>image</goal>
+							<goal>apply</goal>
+							<goal>rm</goal>
+						</goals>
+						<configuration>
+					<imageTag>v1.24.12-k3s1</imageTag>
+					<manifests>${project.build.directory}/k3s</manifests>
+							<disableServicelb>false</disableServicelb>
+							<disableLocalStorage>false</disableLocalStorage>
+							<portBindings>
+								<portBinding>8080:8080</portBinding>
+								<portBinding>8883:8883</portBinding>
+							</portBindings>
+							<manifests>${project.build.directory}/k3s</manifests>
+							<ctrImages>
+								<ctrImage>postgres:14.4-bullseye</ctrImage>
+								<ctrImage>traefik:v2.8.3</ctrImage>
+								<ctrImage>influxdb:2.3</ctrImage>
+								<ctrImage>kokuwaio/keycloak:21.1.1</ctrImage>
+								<ctrImage>kokuwaio/keycloak:21.1.1-import</ctrImage>
+								<ctrImage>kiwigrid/k8s-sidecar:1.19.4</ctrImage>
+								<ctrImage>grafana/grafana:9.1.0</ctrImage>
+								<ctrImage>quay.io/strimzi/kafka:latest-kafka-2.8.1</ctrImage>
+							</ctrImages>
+							<tarFiles>
+								<tarFile>${project.basedir}/../inoa-fleet/target/jib-image.tar</tarFile>
+								<tarFile>${project.basedir}/../inoa-measurement/target/jib-image.tar</tarFile>
+							</tarFiles>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- run tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>integration-test</goal>
+							<goal>verify</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- skip useless executions -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-resources</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-install</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-deploy</id>
+						<phase />
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<property>
+					<name>!env.CI</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.kokuwa.maven</groupId>
+						<artifactId>k3s-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>restart</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<resources>
+								<!-- <resource>deployment/inoa/fleet-mqtt-broker</resource> -->
+								<resource>deployment/inoa/fleet</resource>
+								<resource>deployment/inoa/measurement</resource>
+							</resources>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

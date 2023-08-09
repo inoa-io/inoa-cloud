@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.inoa</groupId>
+		<artifactId>parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>measurement</artifactId>
+
+	<name>INOA :: Measurement</name>
+
+	<dependencies>
+
+		<!-- project -->
+		<dependency>
+			<groupId>io.inoa</groupId>
+			<artifactId>fleet</artifactId>
+			<version>${project.version}</version>
+			<type>yaml</type>
+			<classifier>spec</classifier>
+		</dependency>
+
+		<!-- micronaut -->
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-validation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.kafka</groupId>
+			<artifactId>micronaut-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.cache</groupId>
+			<artifactId>micronaut-cache-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.cache</groupId>
+			<artifactId>micronaut-cache-caffeine</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-server-netty</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-websocket</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-influxdb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.kokuwa.micronaut</groupId>
+			<artifactId>micronaut-logging</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- monitoring -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-management</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.micrometer</groupId>
+			<artifactId>micronaut-micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Misc -->
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
+			<version>${version.com.jayway.jsonpath}</version>
+		</dependency>
+
+		<!-- test -->
+		<dependency>
+			<groupId>io.micronaut.test</groupId>
+			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>kafka</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.awaitility</groupId>
+			<artifactId>awaitility</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+		<plugins>
+
+			<!-- copy project dependencies -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-inoa-fleet-api-spec</id>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<phase>generate-sources</phase>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>io.inoa</groupId>
+									<artifactId>fleet</artifactId>
+									<classifier>spec</classifier>
+									<type>yaml</type>
+									<version>${project.version}</version>
+									<destFileName>inoa-fleet-api.yaml</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.outputDirectory}/openapi</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- generate sources from openapi spec -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>generate-measurement</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/inoa-measurement-api.yaml
+							</inputSpec>
+							<apiPackage>io.inoa.measurement.api</apiPackage>
+							<modelPackage>io.inoa.measurement.model</modelPackage>
+							<packageName>io.inoa.measurement.api</packageName>
+							<configOptions>
+								<pageable>true</pageable>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>generate-fleet</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.build.outputDirectory}/openapi/inoa-fleet-api.yaml
+							</inputSpec>
+							<modelPackage>io.inoa.fleet.model</modelPackage>
+							<packageName>io.inoa.fleet.api</packageName>
+							<configOptions>
+								<clientId>fleet</clientId>
+								<pageable>true</pageable>
+							</configOptions>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- add generated sources -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-sources</id>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-test-sources</id>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-test-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>attach-artifacts</id>
+						<goals>
+							<goal>attach-artifact</goal>
+						</goals>
+						<configuration>
+							<artifacts>
+								<artifact>
+									<file>${project.basedir}/src/main/resources/openapi/inoa-measurement-api.yaml</file>
+									<classifier>spec</classifier>
+									<type>yaml</type>
+								</artifact>
+							</artifacts>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- configure annotation processors -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${version.org.projectlombok}</version>
+						</path>
+						<path>
+							<groupId>org.mapstruct</groupId>
+							<artifactId>mapstruct-processor</artifactId>
+							<version>${version.org.mapstruct}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-validation</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-http-validation</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut.data</groupId>
+							<artifactId>micronaut-data-processor</artifactId>
+							<version>${version.io.micronaut.data}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- create container -->
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>buildTar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

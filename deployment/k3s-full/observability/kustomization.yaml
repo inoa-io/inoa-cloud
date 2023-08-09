@@ -4,3 +4,4 @@ resources:
   - namespace.yaml
   - ../../templates/kafdrop
   - ../../templates/kubernetesui
+  - ../../templates/swaggerui
