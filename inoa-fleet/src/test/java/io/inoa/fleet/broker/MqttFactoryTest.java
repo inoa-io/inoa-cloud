@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt;
+package io.inoa.fleet.broker;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;

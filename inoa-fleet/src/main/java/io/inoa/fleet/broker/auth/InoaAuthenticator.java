@@ -1,6 +1,6 @@
-package io.inoa.fleet.mqtt.auth;
+package io.inoa.fleet.broker.auth;
 
-import io.inoa.fleet.mqtt.Gateway;
+import io.inoa.fleet.broker.MqttGatewayIdentifier;
 import io.moquette.broker.security.IAuthenticator;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +12,7 @@ public class InoaAuthenticator implements IAuthenticator {
 	@Override
 	public boolean checkValid(String clientId, String username, byte[] password) {
 
-		var gateway = Gateway.of(username);
+		var gateway = MqttGatewayIdentifier.of(username);
 		if (gateway == null) {
 			return false;
 		}

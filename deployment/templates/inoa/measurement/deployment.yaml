@@ -103,3 +103,4 @@ spec:
               drop: [ALL]
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 5
+      enableServiceLinks: false

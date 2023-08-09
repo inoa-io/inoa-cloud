@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt;
+package io.inoa.fleet.broker;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -9,7 +9,6 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
@@ -17,32 +16,32 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.telemetry.TelemetryRawVO;
+import io.inoa.fleet.model.TelemetryRawVO;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
-public class HonoMqttClient {
+public class MqttClient {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	@Getter
 	private final String clientId = "test" + UUID.randomUUID().toString();
-	private final MqttClient client;
+	private final org.eclipse.paho.client.mqttv3.MqttClient client;
 	private final MqttConnectOptions options;
 
-	public HonoMqttClient(String url, String tenantId, String gatewayId, byte[] psk) throws MqttException {
-		this.client = new MqttClient(url, clientId, new MemoryPersistence());
+	public MqttClient(String url, String tenantId, String gatewayId, byte[] psk) throws MqttException {
+		this.client = new org.eclipse.paho.client.mqttv3.MqttClient(url, clientId, new MemoryPersistence());
 		this.options = new MqttConnectOptions();
 		this.options.setUserName(gatewayId + "@" + tenantId);
 		this.options.setPassword(new String(psk).toCharArray());
 		this.options.setCleanSession(true);
 	}
 
-	public MqttClient client() {
+	public org.eclipse.paho.client.mqttv3.MqttClient client() {
 		return this.client;
 	}
 
 	@SneakyThrows(GeneralSecurityException.class)
-	public HonoMqttClient trustAllCertificates() {
+	public MqttClient trustAllCertificates() {
 		var trustManager = new X509TrustManager() {
 
 			@Override
@@ -63,7 +62,7 @@ public class HonoMqttClient {
 		return this;
 	}
 
-	public HonoMqttClient connect() throws MqttException {
+	public MqttClient connect() throws MqttException {
 		this.client.connect(options);
 		return this;
 	}
@@ -76,21 +75,21 @@ public class HonoMqttClient {
 		client.disconnectForcibly(0, 0, false);
 	}
 
-	public HonoMqttClient publish(String topic, byte[] payload) throws MqttException {
+	public MqttClient publish(String topic, byte[] payload) throws MqttException {
 		client.publish(topic, new MqttMessage(payload));
 		return this;
 	}
 
 	@SneakyThrows(IOException.class)
-	public HonoMqttClient publishTelemetry(TelemetryRawVO vo) throws MqttException {
+	public MqttClient publishTelemetry(TelemetryRawVO vo) throws MqttException {
 		return publish("telemetry", mapper.writeValueAsBytes(vo));
 	}
 
-	public HonoMqttClient publishTelemetry(byte[] payload) throws MqttException {
+	public MqttClient publishTelemetry(byte[] payload) throws MqttException {
 		return publish("telemetry", payload);
 	}
 
-	public HonoMqttClient publishEvent(byte[] payload) throws MqttException {
+	public MqttClient publishEvent(byte[] payload) throws MqttException {
 		return publish("event", payload);
 	}
 }

@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt.broker;
+package io.inoa.fleet.broker;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,11 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.mqtt.AbstractMqttTest;
-import io.inoa.fleet.mqtt.HonoMqttClient;
-import io.inoa.fleet.mqtt.KafkaHeader;
-import io.inoa.fleet.mqtt.MqttProperties;
-import io.inoa.fleet.mqtt.listener.TestListener;
+import io.inoa.fleet.registry.KafkaHeader;
 import jakarta.inject.Inject;
 
 public class ConnectTest extends AbstractMqttTest {
@@ -34,7 +30,7 @@ public class ConnectTest extends AbstractMqttTest {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
-		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();
 
 		client.connect();
@@ -68,7 +64,7 @@ public class ConnectTest extends AbstractMqttTest {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
-		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();
 
 		client.connect();

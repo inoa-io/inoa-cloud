@@ -15,7 +15,16 @@ configMapGenerator:
       - DATASOURCES_DEFAULT_HOST=postgres.infrastructure
       - DATASOURCES_DEFAULT_DATABASE=fleet
       - DATASOURCES_DEFAULT_USERNAME=fleet
+      - KAFKA_BOOTSTRAP_SERVERS=kafka.infrastructure:9092
+      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
       - INOA_FLEET_REGISTRY_SECURITY_TENANT_AUDIENCE_WHITELIST=inoa-fleet
+      - INOA_FLEET_MQTT_TLS_GENERATE_KEY=false
+      - INOA_FLEET_MQTT_TLS_KEY=/tls/key.pem
+      - INOA_FLEET_MQTT_TLS_CERT=/tls/cert.pem
+  - name: fleet-tls
+    files:
+      - files/cert.pem
+      - files/key.pem
 
 secretGenerator:
   - name: fleet-environment

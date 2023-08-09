@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt;
+package io.inoa.fleet.broker;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -13,13 +13,13 @@ import org.slf4j.MDC;
  * @param gatewayId Gateway ID, e.g. GW-0001.
  * @see "https:www.eclipse.org/hono/docs/user-guide/mqtt-adapter/#usernamepassword"
  */
-public record Gateway(String tenantId, String gatewayId) {
+public record MqttGatewayIdentifier(String tenantId, String gatewayId) {
 
 	private static final Pattern PATTERN = Pattern.compile("^"
 			+ "(?<gatewayId>[A-Z][A-Z0-9\\-_]{3,19})@"
 			+ "(?<tenantId>[a-zA-Z0-9-]{3,20})$");
 
-	public static Gateway of(String username) {
+	public static MqttGatewayIdentifier of(String username) {
 
 		var matcher = PATTERN.matcher(username);
 		if (!matcher.matches()) {
@@ -29,10 +29,10 @@ public record Gateway(String tenantId, String gatewayId) {
 		var tenantId = matcher.group("tenantId");
 		var gatewayId = matcher.group("gatewayId");
 
-		return new Gateway(tenantId, gatewayId);
+		return new MqttGatewayIdentifier(tenantId, gatewayId);
 	}
 
-	public void mdc(Consumer<Gateway> consumer) {
+	public void mdc(Consumer<MqttGatewayIdentifier> consumer) {
 		try {
 			MDC.put("tenantId", tenantId);
 			MDC.put("gatewayId", gatewayId);

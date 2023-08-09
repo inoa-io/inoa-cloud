@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt;
+package io.inoa.fleet.broker;
 
 import java.util.List;
 

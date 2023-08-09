@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt.auth;
+package io.inoa.fleet.broker.auth;
 
 import java.util.Set;
 

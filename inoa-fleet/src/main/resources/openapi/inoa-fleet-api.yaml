@@ -1,9 +1,7 @@
 openapi: 3.0.3
 info:
-  title: INOA Registry Management API
-  description: |
-    * manage tenants/gateways/groups/credentials
-    * credentials are stored in database/consul/...
+  title: INOA Fleet API
+  description: Definitions for Inoa Fleet.
   version: ${project.version}
   license:
     name: Apache License 2.0

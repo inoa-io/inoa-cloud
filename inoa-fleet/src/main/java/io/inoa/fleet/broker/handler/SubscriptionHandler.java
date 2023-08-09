@@ -1,6 +1,6 @@
-package io.inoa.fleet.mqtt.handler;
+package io.inoa.fleet.broker.handler;
 
-import io.inoa.fleet.mqtt.Gateway;
+import io.inoa.fleet.broker.MqttGatewayIdentifier;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptSubscribeMessage;
 import io.moquette.interception.messages.InterceptUnsubscribeMessage;
@@ -23,14 +23,14 @@ public class SubscriptionHandler extends AbstractInterceptHandler {
 
 	@Override
 	public void onSubscribe(InterceptSubscribeMessage message) {
-		Gateway.of(message.getUsername()).mdc(gateway -> log.debug("Gateway subscribed to {} with qos {}",
+		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> log.debug("Gateway subscribed to {} with qos {}",
 				message.getTopicFilter(),
 				message.getRequestedQos()));
 	}
 
 	@Override
 	public void onUnsubscribe(InterceptUnsubscribeMessage message) {
-		Gateway.of(message.getUsername()).mdc(gateway -> log.debug("Gateway unsubscribed from {}",
+		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> log.debug("Gateway unsubscribed from {}",
 				message.getTopicFilter()));
 	}
 }

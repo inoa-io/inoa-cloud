@@ -59,6 +59,10 @@ spec:
               containerPort: 8080
             - name: managment
               containerPort: 8090
+            - name: mqtt
+              containerPort: 1883
+            - name: mqtts
+              containerPort: 8883
           startupProbe:
             httpGet:
               path: /endpoints/health
@@ -83,5 +87,14 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: [ALL]
+          volumeMounts:
+            - name: tls
+              mountPath: /tls
+              readOnly: true
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 5
+      enableServiceLinks: false
+      volumes:
+        - name: tls
+          configMap:
+            name: fleet-tls

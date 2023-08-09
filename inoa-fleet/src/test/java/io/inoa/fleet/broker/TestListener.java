@@ -1,6 +1,6 @@
-package io.inoa.fleet.mqtt.listener;
+package io.inoa.fleet.broker;
 
-import static io.inoa.fleet.mqtt.AbstractMqttTest.assertHeader;
+import static io.inoa.fleet.broker.AbstractMqttTest.assertHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -15,7 +15,7 @@ import org.awaitility.Awaitility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.mqtt.KafkaHeader;
+import io.inoa.fleet.registry.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;

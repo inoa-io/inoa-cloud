@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt.handler;
+package io.inoa.fleet.broker.handler;
 
 import java.util.List;
 import java.util.Map;
@@ -11,8 +11,8 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.mqtt.Gateway;
-import io.inoa.fleet.mqtt.KafkaHeader;
+import io.inoa.fleet.broker.MqttGatewayIdentifier;
+import io.inoa.fleet.registry.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptConnectMessage;
@@ -53,7 +53,7 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 
 	@Override
 	public void onConnect(InterceptConnectMessage message) {
-		Gateway.of(message.getUsername()).mdc(gateway -> {
+		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> {
 			log.debug("Gateway {}/{} connected", gateway.tenantId(), gateway.gatewayId());
 			event(message.getClientID(), gateway, true);
 		});
@@ -61,7 +61,7 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 
 	@Override
 	public void onDisconnect(InterceptDisconnectMessage message) {
-		Gateway.of(message.getUsername()).mdc(gateway -> {
+		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> {
 			log.debug("Gateway {}/{} disconnected", gateway.tenantId(), gateway.gatewayId());
 			// no event is emitted because this is triggered by a disconnect package from the client
 			// connection lost is alwyas triggered after this disconnect message
@@ -71,13 +71,13 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 
 	@Override
 	public void onConnectionLost(InterceptConnectionLostMessage message) {
-		Gateway.of(message.getUsername()).mdc(gateway -> {
+		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> {
 			log.debug("Gateway {}/{} lost connection", gateway.tenantId(), gateway.gatewayId());
 			event(message.getClientID(), gateway, false);
 		});
 	}
 
-	private void event(String clientId, Gateway gateway, boolean connected) {
+	private void event(String clientId, MqttGatewayIdentifier gateway, boolean connected) {
 
 		var key = gateway.gatewayId();
 		var topic = "hono.event." + gateway.tenantId();

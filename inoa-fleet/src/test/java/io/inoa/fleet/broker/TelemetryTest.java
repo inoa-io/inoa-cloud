@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt.broker;
+package io.inoa.fleet.broker;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,11 +9,7 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.fleet.mqtt.AbstractMqttTest;
-import io.inoa.fleet.mqtt.HonoMqttClient;
-import io.inoa.fleet.mqtt.KafkaHeader;
-import io.inoa.fleet.mqtt.MqttProperties;
-import io.inoa.fleet.mqtt.listener.TestListener;
+import io.inoa.fleet.registry.KafkaHeader;
 import jakarta.inject.Inject;
 
 public class TelemetryTest extends AbstractMqttTest {
@@ -31,7 +27,7 @@ public class TelemetryTest extends AbstractMqttTest {
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 
-		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
 		listener.awaitConnection(tenantId, gatewayId, true);
 		client.publishTelemetry(payload);
@@ -59,7 +55,7 @@ public class TelemetryTest extends AbstractMqttTest {
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 
-		var client = new HonoMqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
 		listener.awaitConnection(tenantId, gatewayId, true);
 		client.publishEvent(payload);

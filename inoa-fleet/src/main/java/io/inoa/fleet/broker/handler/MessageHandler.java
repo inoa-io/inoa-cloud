@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt.handler;
+package io.inoa.fleet.broker.handler;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -8,8 +8,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 
-import io.inoa.fleet.mqtt.Gateway;
-import io.inoa.fleet.mqtt.KafkaHeader;
+import io.inoa.fleet.broker.MqttGatewayIdentifier;
+import io.inoa.fleet.registry.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptPublishMessage;
@@ -39,7 +39,7 @@ public class MessageHandler extends AbstractInterceptHandler {
 
 	@Override
 	public void onPublish(InterceptPublishMessage message) {
-		Gateway.of(message.getUsername()).mdc(gateway -> {
+		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> {
 
 			log.trace("Gateway {}/{} sent message on topic {} with qos {}",
 					gateway.tenantId(), gateway.gatewayId(), message.getTopicName(), message.getQos());

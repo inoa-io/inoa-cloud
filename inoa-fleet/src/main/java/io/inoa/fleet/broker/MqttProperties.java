@@ -1,4 +1,4 @@
-package io.inoa.fleet.mqtt;
+package io.inoa.fleet.broker;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-@ConfigurationProperties("inoa.mqtt")
+@ConfigurationProperties("inoa.fleet.mqtt")
 @Slf4j
 @Getter
 @Setter

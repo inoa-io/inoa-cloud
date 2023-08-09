@@ -21,6 +21,13 @@
 			<version>${project.version}</version>
 			<type>yaml</type>
 			<classifier>spec</classifier>
+			<!-- We want just the YAML file, nothing else, please! -->
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- micronaut -->

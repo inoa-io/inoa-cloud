@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Inoa Measurement API definition
+  title: Inoa Measurement API
   version: ${project.version}
   description: Definitions for Inoa Measurement.
   license:
