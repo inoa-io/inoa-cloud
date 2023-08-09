@@ -3,7 +3,7 @@
 	"enabled": true,
 	"realm": "inoa",
 	"attributes": {
-		"frontendUrl": "http://keycloak.127.0.0.1.nip.io"
+		"frontendUrl": "http://keycloak.127.0.0.1.nip.io:8080"
 	},
 	"users": [
 		{
@@ -29,9 +29,9 @@
 			"serviceAccountsEnabled": false,
 			"protocol": "openid-connect",
 			"protocolMappers": [],
-			"baseUrl": "http://grafana.127.0.0.1.nip.io",
-			"redirectUris": [ "http://grafana.127.0.0.1.nip.io/*" ],
-			"webOrigins": [ "http://grafana.127.0.0.1.nip.io/*" ],
+			"baseUrl": "http://grafana.127.0.0.1.nip.io:8080",
+			"redirectUris": [ "http://grafana.127.0.0.1.nip.io:8080/*" ],
+			"webOrigins": [ "http://grafana.127.0.0.1.nip.io:8080/*" ],
 			"defaultClientScopes": [ "email" ],
 			"optionalClientScopes": []
 		},{
@@ -57,9 +57,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://admin.127.0.0.1.nip.io",
-			"redirectUris": [ "http://admin.127.0.0.1.nip.io/oauth/callback/keycloak", "http://localhost:8080/oauth/callback/keycloak" ],
-			"webOrigins": [ "http://admin.127.0.0.1.nip.io/*" ],
+			"baseUrl": "http://admin.127.0.0.1.nip.io:8080",
+			"redirectUris": [ "http://admin.127.0.0.1.nip.io:8080/oauth/callback/keycloak", "http://localhost:8080/oauth/callback/keycloak" ],
+			"webOrigins": [ "http://admin.127.0.0.1.nip.io:8080/*" ],
 			"defaultClientScopes": [ "email", "profile" ],
 			"optionalClientScopes": []
 		}

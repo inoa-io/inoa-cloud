@@ -13,7 +13,6 @@ configMapGenerator:
       - SHOW_EXTENSIONS=true
       - SHOW_COMMON_EXTENSIONS=true
       - DEEP_LINKING=true
-      - DEFAULT_MODELS_EXPAND_DEPTH=-1
       - TRY_IT_OUT_ENABLED=true
       - WITH_CREDENTIALS=true
       - VALIDATOR_URL=

@@ -44,7 +44,7 @@ inoa:
           - key: mqtt.uri
             description: URI of mqtt server.
             type: STRING
-            pattern: "(tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}"
+            pattern: '(tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}'
     mqtt:
       port: ${random.port}
       tls:
