@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: INOA Fleet API
+  title: Inoa Fleet API
   description: Definitions for Inoa Fleet.
   version: ${project.version}
   license:
@@ -9,10 +9,26 @@ info:
   contact:
     name: inoa.io
     url: https://github.com/inoa-io
-servers: [ ]
+servers:
+  - url: http://fleet.127.0.0.1.nip.io:8080
 security:
   - Keycloak: [ ]
   - BearerAuth: [ ]
+tags:
+  - name: groups
+    description: Resources related to group management.
+  - name: gateways
+    description: Resources related to gateway management.
+  - name: credentials
+    description: Resources related to credential management.
+  - name: configuration
+    description: Resources related to configuration management.
+  - name: gateway
+    description: Resources accessible by the physical gateway.
+  - name: properties
+    description: Resources related to property management.
+  - name: remote
+    description: Resources related to remote control.
 paths:
   /groups:
     get:
@@ -1270,4 +1286,4 @@ components:
       scheme: bearer
     Keycloak:
       type: openIdConnect
-      openIdConnectUrl: http://keycloak:8080/realms/inoa/.well-known/openid-configuration
+      openIdConnectUrl: http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/.well-known/openid-configuration
