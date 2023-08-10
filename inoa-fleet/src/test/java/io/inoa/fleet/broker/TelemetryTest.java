@@ -27,7 +27,7 @@ public class TelemetryTest extends AbstractMqttTest {
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 
-		var client = new MqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
 		listener.awaitConnection(tenantId, gatewayId, true);
 		client.publishTelemetry(payload);
@@ -55,7 +55,7 @@ public class TelemetryTest extends AbstractMqttTest {
 		var psk = UUID.randomUUID().toString().getBytes();
 		var payload = UUID.randomUUID().toString().getBytes();
 
-		var client = new MqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
 		listener.awaitConnection(tenantId, gatewayId, true);
 		client.publishEvent(payload);

@@ -30,7 +30,7 @@ public class ConnectTest extends AbstractMqttTest {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
-		var client = new MqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();
 
 		client.connect();
@@ -64,7 +64,7 @@ public class ConnectTest extends AbstractMqttTest {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
-		var client = new MqttClient(url, tenantId, gatewayId, psk);
+		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();
 
 		client.connect();
