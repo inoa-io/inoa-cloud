@@ -144,7 +144,9 @@
 							<disableServicelb>false</disableServicelb>
 							<disableLocalStorage>false</disableLocalStorage>
 							<portBindings>
+								<portBinding>1883:1883</portBinding>
 								<portBinding>8080:8080</portBinding>
+								<portBinding>8090:8090</portBinding>
 								<portBinding>8883:8883</portBinding>
 							</portBindings>
 							<manifests>${project.build.directory}/k3s</manifests>

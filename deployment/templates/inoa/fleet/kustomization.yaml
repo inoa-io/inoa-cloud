@@ -9,6 +9,12 @@ resources:
 configMapGenerator:
   - name: fleet-environment
     literals:
+      - LOGBACK_APPENDER=CONSOLE
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_IO_MOQUETTE=INFO
+      - LOGGER_LEVELS_IO_MICRONAUT_DATA=INFO
+      - LOGGER_LEVELS_IO_MICRONAUT_RETRY_INTERCEPT_REOVERYINTERCEPTOR=OFF
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
       - ENDPOINTS_ALL_PORT=8090
       - MICRONAUT_ENVIRONMENTS=postgres
       - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak.infrastructure/realms/inoa/protocol/openid-connect/certs
@@ -21,6 +27,7 @@ configMapGenerator:
       - INOA_FLEET_MQTT_TLS_GENERATE_KEY=false
       - INOA_FLEET_MQTT_TLS_KEY=/tls/key.pem
       - INOA_FLEET_MQTT_TLS_CERT=/tls/cert.pem
+      - INOA_FLEET_MQTT_DATA_PATH=/moquette
   - name: fleet-tls
     files:
       - files/cert.pem

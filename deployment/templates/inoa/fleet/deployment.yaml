@@ -91,6 +91,9 @@ spec:
             - name: tls
               mountPath: /tls
               readOnly: true
+            - name: moquette
+              mountPath: /moquette
+              readOnly: false
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 5
       enableServiceLinks: false
@@ -98,3 +101,6 @@ spec:
         - name: tls
           configMap:
             name: fleet-tls
+        - name: moquette
+          emptyDir: {}
+

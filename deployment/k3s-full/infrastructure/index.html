@@ -24,7 +24,15 @@
 			<a target=”_blank" href="http://influxdb.127.0.0.1.nip.io:8080">Influxdb</a> (admin/password)
 		</li>
 		<li>
-			<a target=”_blank" href="http://swaggerui.127.0.0.1.nip.io:8080">SwaggerUI</a>
+			<a target=”_blank" href="http://swaggerui.127.0.0.1.nip.io:8080">SwaggerUI</a>:
+			Use <b>Authorize</b> with <b>Keycloak (OAuth2, implicit) </b> and user credentials or use <b>BearerAuth  (http, Bearer)</b> with token:
+			<pre>curl http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/token \
+  --silent \
+  --data client_id=inoa-swagger \
+  --data username=admin \
+  --data password=password \
+  --data grant_type=password \
+  | jq -r .access_token</pre>
 		</li>
 	</ul>
 </body>

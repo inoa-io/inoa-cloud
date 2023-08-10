@@ -7,7 +7,7 @@ configMapGenerator:
   - name: swaggerui-config
     literals:
       - URLS=[{url:'/inoa-fleet-api.yaml',name:'Fleet'},{url:'/inoa-measurement-api.yaml',name:'Measurement'}]
-      - OAUTH_CLIENT_ID=elco-burner-selector-app
+      - OAUTH_CLIENT_ID=inoa-swagger
       - DISPLAY_OPERATION_ID=true
       - DISPLAY_REQUEST_DURATION=true
       - SHOW_EXTENSIONS=true
