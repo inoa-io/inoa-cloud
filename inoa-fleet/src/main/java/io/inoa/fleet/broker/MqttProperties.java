@@ -29,6 +29,8 @@ public class MqttProperties {
 	@Max(65535)
 	private int port = BrokerConstants.PORT;
 
+	private String dataPath = BrokerConstants.DEFAULT_PERSISTENT_PATH;
+
 	@ConfigurationProperties("tls")
 	@Getter
 	@Setter
@@ -40,7 +42,6 @@ public class MqttProperties {
 
 		/** Generate key if no key was defined. */
 		private boolean generateKey = false;
-
 		private Path key;
 		private Path cert;
 	}
