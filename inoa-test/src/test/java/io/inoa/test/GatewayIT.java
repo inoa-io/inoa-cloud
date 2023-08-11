@@ -20,10 +20,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.client.GatewayClientFactory.GatewayClient;
-import io.inoa.fleet.registry.gateway.GatewayApiClient;
-import io.inoa.fleet.registry.gateway.RegisterVO;
-import io.inoa.fleet.registry.management.GatewayUpdateVO;
-import io.inoa.fleet.telemetry.TelemetryRawVO;
+import io.inoa.fleet.api.GatewayApiClient;
+import io.inoa.fleet.model.GatewayUpdateVO;
+import io.inoa.fleet.model.RegisterVO;
+import io.inoa.fleet.model.TelemetryRawVO;
 import io.inoa.junit.AbstractTest;
 
 public class GatewayIT extends AbstractTest {
@@ -38,7 +38,7 @@ public class GatewayIT extends AbstractTest {
 
 		assert204(() -> gatewayApiClient.register(new RegisterVO()
 				.gatewayId(gatewayId)
-				.credentialType(io.inoa.fleet.registry.gateway.CredentialTypeVO.PSK)
+				.credentialType(io.inoa.fleet.model.CredentialTypeVO.PSK)
 				.credentialValue(preSharedKey)), "failed to register gateway");
 		gatewayClient = gatewayClientFactory.get(gatewayId, preSharedKey);
 

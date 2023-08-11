@@ -8,7 +8,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>io.inoa</groupId>
 	<artifactId>groundcontrol</artifactId>
 	<packaging>pom</packaging>
 

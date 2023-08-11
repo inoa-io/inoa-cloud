@@ -9,6 +9,7 @@ import io.moquette.broker.config.IConfig;
 import io.moquette.broker.security.IAuthenticator;
 import io.moquette.broker.security.IAuthorizatorPolicy;
 import io.moquette.interception.InterceptHandler;
+import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -32,5 +33,9 @@ public class MqttBroker {
 	@PreDestroy
 	public void close() {
 		server.stopServer();
+	}
+
+	public void internalPublish(MqttPublishMessage message, String clientId) {
+		server.internalPublish(message, clientId);
 	}
 }

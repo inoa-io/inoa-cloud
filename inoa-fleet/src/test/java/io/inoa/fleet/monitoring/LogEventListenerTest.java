@@ -26,7 +26,7 @@ import ch.qos.logback.core.read.ListAppender;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.data.PojoCloudEventData;
 import io.inoa.fleet.AbstractTest;
-import io.inoa.fleet.event.CloudEventTypeVO;
+import io.inoa.fleet.model.CloudEventTypeVO;
 import io.micronaut.http.MediaType;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;

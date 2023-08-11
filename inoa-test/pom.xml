@@ -14,22 +14,16 @@
 
 	<dependencies>
 
-		<!-- project -->
+		<!-- Project -->
 		<dependency>
-			<groupId>io.inoa.fleet</groupId>
-			<artifactId>fleet-registry-api-gateway</artifactId>
+			<groupId>io.inoa</groupId>
+			<artifactId>fleet</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>io.inoa.fleet</groupId>
-			<artifactId>fleet-registry-api-management</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa.fleet</groupId>
-			<artifactId>fleet-mqtt-client</artifactId>
+			<groupId>io.inoa</groupId>
+			<artifactId>measurement</artifactId>
 			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>

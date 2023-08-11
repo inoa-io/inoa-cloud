@@ -8,7 +8,6 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>io.inoa</groupId>
 	<artifactId>fleet</artifactId>
 
 	<name>INOA :: Fleet</name>
@@ -35,6 +34,15 @@
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-logging</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.cache</groupId>
+			<artifactId>micronaut-cache-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.cache</groupId>
+			<artifactId>micronaut-cache-caffeine</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- persistence -->
@@ -85,11 +93,6 @@
 
 		<!-- messaging -->
 		<dependency>
-			<groupId>io.inoa.fleet</groupId>
-			<artifactId>fleet-gateway-event-model</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
 			<groupId>io.cloudevents</groupId>
 			<artifactId>cloudevents-kafka</artifactId>
 		</dependency>
@@ -97,7 +100,11 @@
 			<groupId>io.cloudevents</groupId>
 			<artifactId>cloudevents-json-jackson</artifactId>
 		</dependency>
-		
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+		</dependency>
+
 		<!-- monitoring -->
 		<dependency>
 			<groupId>io.micronaut</groupId>
@@ -140,12 +147,6 @@
 			<artifactId>awaitility</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.paho</groupId>
-			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 	<build>
@@ -214,23 +215,36 @@
 				<artifactId>openapi-generator-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>openapi-gateway-generate</id>
+						<id>openapi-generate-fleet-apis</id>
 						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.basedir}/src/main/resources/openapi/inoa-fleet-api.yaml</inputSpec>
-							<apiPackage>io.inoa.fleet.api</apiPackage>
-							<modelPackage>io.inoa.fleet.model</modelPackage>
 							<configOptions>
+								<pageable>true</pageable>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-generate-fleet-clients</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<configOptions>
+								<clientId>fleet</clientId>
 								<pageable>true</pageable>
 							</configOptions>
 						</configuration>
 					</execution>
 				</executions>
 				<configuration>
+					<inputSpec>${project.basedir}/src/main/resources/openapi/inoa-fleet-api.yaml</inputSpec>
 					<packageName>io.inoa.fleet.api</packageName>
+					<apiPackage>io.inoa.fleet.api</apiPackage>
+					<modelPackage>io.inoa.fleet.model</modelPackage>
 				</configuration>
 			</plugin>
 

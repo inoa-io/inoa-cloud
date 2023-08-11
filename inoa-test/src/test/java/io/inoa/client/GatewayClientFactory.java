@@ -15,9 +15,9 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import io.inoa.fleet.mqtt.HonoMqttClient;
-import io.inoa.fleet.registry.gateway.GatewayApiClient;
-import io.inoa.fleet.registry.gateway.PropertiesApiClient;
+import io.inoa.fleet.api.GatewayApiClient;
+import io.inoa.fleet.api.PropertiesApiClient;
+import io.inoa.fleet.broker.MqttServiceClient;
 import io.micronaut.http.HttpHeaderValues;
 import jakarta.inject.Singleton;
 import lombok.Getter;
@@ -44,7 +44,7 @@ public class GatewayClientFactory {
 		private final byte[] preSharedKey;
 
 		private String token;
-		private HonoMqttClient mqtt;
+		private MqttServiceClient mqtt;
 
 		private String bearer() {
 			if (token == null) {
@@ -79,12 +79,12 @@ public class GatewayClientFactory {
 
 		// mqtt
 
-		public HonoMqttClient mqtt() {
+		public MqttServiceClient mqtt() {
 			if (mqtt == null) {
 				var mqttUrl = getConfiguration().get("mqtt.url");
 				assertNotNull(mqttUrl, "mqtt.url is null");
 				mqtt = assertDoesNotThrow(
-						() -> new HonoMqttClient(mqttUrl.toString(), "inoa", gatewayId, preSharedKey),
+						() -> new MqttServiceClient(mqttUrl.toString(), "inoa", gatewayId, preSharedKey),
 						"failed to create hono mqtt client");
 			}
 			return mqtt;

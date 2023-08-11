@@ -2,9 +2,9 @@ package io.inoa.client;
 
 import static io.inoa.junit.HttpAssertions.assert200;
 
-import io.inoa.fleet.registry.management.GatewayDetailVO;
-import io.inoa.fleet.registry.management.GatewayUpdateVO;
-import io.inoa.fleet.registry.management.GatewaysApiClient;
+import io.inoa.fleet.api.GatewaysApiClient;
+import io.inoa.fleet.model.GatewayDetailVO;
+import io.inoa.fleet.model.GatewayUpdateVO;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
