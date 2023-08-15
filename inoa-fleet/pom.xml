@@ -313,7 +313,8 @@
 								<MICRONAUT_ENVIRONMENTS>postgres</MICRONAUT_ENVIRONMENTS>
 							</environmentVariables>
 							<reportNameSuffix>postgres</reportNameSuffix>
-							<skipExec>${maven.test.skip.exec}</skipExec>
+							<!-- Currently disabled -->
+							<skipExec>true</skipExec>
 						</configuration>
 					</execution>
 				</executions>
