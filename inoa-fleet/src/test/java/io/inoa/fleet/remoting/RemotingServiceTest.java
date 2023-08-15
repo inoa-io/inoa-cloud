@@ -61,8 +61,9 @@ class RemotingServiceTest extends AbstractMqttTest {
 		var command = new ObjectMapper().readValue(new String(record.getPayload()), RpcCommandVO.class);
 
 		// Send the command response from our fake gateway
-		fakeGatewayClient.publish("command///res/" + command.getId() + "/200", new ObjectMapper().writeValueAsBytes(
-				new RpcResponseVO().id(command.getId()).result(Collections.singletonList("dp.get"))));
+		fakeGatewayClient.publish("command/inoa/GW-0001/res/" + command.getId() + "/200",
+				new ObjectMapper().writeValueAsBytes(
+						new RpcResponseVO().id(command.getId()).result(Collections.singletonList("dp.get"))));
 
 		// Wait for the response to arrive
 		Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS)

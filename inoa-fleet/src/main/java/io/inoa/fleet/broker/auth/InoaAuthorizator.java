@@ -1,5 +1,7 @@
 package io.inoa.fleet.broker.auth;
 
+import static io.inoa.fleet.broker.MqttBroker.COMMAND_RESPONSE_TOPIC_LONG_MATCHER;
+import static io.inoa.fleet.broker.MqttBroker.COMMAND_RESPONSE_TOPIC_SHORT_MATCHER;
 import static io.inoa.fleet.broker.MqttBroker.COMMAND_TOPIC_LONG_NAME;
 import static io.inoa.fleet.broker.MqttBroker.COMMAND_TOPIC_SHORT_NAME;
 import static io.inoa.fleet.broker.MqttBroker.EVENT_TOPIC_LONG_NAME;
@@ -30,6 +32,7 @@ public class InoaAuthorizator implements IAuthorizatorPolicy {
 		return Set
 				.of(TELEMETRY_TOPIC_SHORT_NAME, TELEMETRY_TOPIC_LONG_NAME, EVENT_TOPIC_SHORT_NAME,
 						EVENT_TOPIC_LONG_NAME)
-				.contains(topic.toString()) || topic.match(new Topic("command///res/+/+"));
+				.contains(topic.toString()) || topic.match(new Topic(COMMAND_RESPONSE_TOPIC_LONG_MATCHER))
+				|| topic.match(new Topic(COMMAND_RESPONSE_TOPIC_SHORT_MATCHER));
 	}
 }

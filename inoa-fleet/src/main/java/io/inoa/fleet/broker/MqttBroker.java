@@ -26,8 +26,8 @@ public class MqttBroker {
 	public static final String TELEMETRY_TOPIC_LONG_NAME = "telemetry";
 	public static final String EVENT_TOPIC_SHORT_NAME = "e";
 	public static final String EVENT_TOPIC_LONG_NAME = "event";
-	public static final String COMMAND_RESPONSE_TOPIC_LONG_MATCHER = "command///res/+/+";
-	public static final String COMMAND_RESPONSE_TOPIC_SHORT_MATCHER = "c///s/+/+";
+	public static final String COMMAND_RESPONSE_TOPIC_LONG_MATCHER = "command/+/+/res/+/+";
+	public static final String COMMAND_RESPONSE_TOPIC_SHORT_MATCHER = "c/+/+/s/+/+";
 	public static final String COMMAND_REQUEST_TOPIC_LONG_MATCHER = "command/+/+/req/+/cloudEventRpc";
 	public static final String COMMAND_REQUEST_TOPIC_SHORT_MATCHER = "c/+/+/q/+/cloudEventRpc";
 
