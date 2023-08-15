@@ -668,9 +668,8 @@ paths:
           description: Unauthorized
         404:
           description: Key not found
-  /{tenant_id}/{gateway_id}/rpc:
+  /gateways/{gateway_id}/rpc:
     parameters:
-      - $ref: '#/components/parameters/TenantId'
       - $ref: '#/components/parameters/GatewayId'
     post:
       tags: [ remote ]
@@ -680,7 +679,7 @@ paths:
       requestBody:
         required: true
         content:
-          text/plain:
+          application/json:
             schema:
               $ref: '#/components/schemas/RpcCommand'
       responses:
@@ -1185,7 +1184,6 @@ components:
           type: object
           example: '{uart: 1, frame: "1603000D0004D6ED"}'
       required:
-        - id
         - method
     RpcResponse:
       description: 'Remote procedure call response'
