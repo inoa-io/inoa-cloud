@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 		properties = @Property(name = ConsumerConfig.METADATA_MAX_AGE_CONFIG, value = "200"))
 @Slf4j
 @Getter
-public class TestListener {
+public class TestKafkaListener {
 
 	private final List<ConsumerRecord<String, byte[]>> records = new ArrayList<>();
 	private final ObjectMapper mapper = new ObjectMapper();

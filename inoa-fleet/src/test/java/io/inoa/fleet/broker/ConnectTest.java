@@ -24,7 +24,7 @@ public class ConnectTest extends AbstractMqttTest {
 
 	@DisplayName("connect & disconnect graceful")
 	@Test
-	void graceful(TestListener listener) throws MqttException, IOException {
+	void graceful(TestKafkaListener listener) throws MqttException, IOException {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";
@@ -58,7 +58,7 @@ public class ConnectTest extends AbstractMqttTest {
 
 	@DisplayName("connect & disconnect hard")
 	@Test
-	void hard(TestListener listener) throws MqttException, IOException {
+	void hard(TestKafkaListener listener) throws MqttException, IOException {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";

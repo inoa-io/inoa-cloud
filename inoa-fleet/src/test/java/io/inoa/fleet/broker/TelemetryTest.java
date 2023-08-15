@@ -19,7 +19,7 @@ public class TelemetryTest extends AbstractMqttTest {
 
 	@DisplayName("telemetry message")
 	@Test
-	void telemetry(TestListener listener) throws MqttException {
+	void telemetry(TestKafkaListener listener) throws MqttException {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
@@ -47,7 +47,7 @@ public class TelemetryTest extends AbstractMqttTest {
 
 	@DisplayName("event message")
 	@Test
-	void event(TestListener listener) throws MqttException {
+	void event(TestKafkaListener listener) throws MqttException {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";

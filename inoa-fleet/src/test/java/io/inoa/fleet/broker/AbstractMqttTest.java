@@ -25,7 +25,7 @@ public abstract class AbstractMqttTest implements TestPropertyProvider {
 	static final KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.6"));
 
 	@BeforeEach
-	void clear(TestListener listener) {
+	void clear(TestKafkaListener listener) {
 		listener.clear();
 	}
 
