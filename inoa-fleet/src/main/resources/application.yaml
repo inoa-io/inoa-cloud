@@ -35,6 +35,10 @@ micronaut:
         http-method: POST
       - pattern: /**
         access: isAuthenticated()
+    token:
+      jwt:
+        claims-validators:
+          not-before: false
 
   # see https://micronaut-projects.github.io/micronaut-data/latest/guide/configurationreference.html
   data:

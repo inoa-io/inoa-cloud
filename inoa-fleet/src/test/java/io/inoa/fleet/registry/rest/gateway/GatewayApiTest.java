@@ -47,7 +47,6 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	@DisplayName("getConfiguration(200): without configuration")
 	@Test
 	@Override
-	@Disabled("Getting 401")
 	public void getConfiguration200() {
 
 		// create config for another tenant
@@ -66,7 +65,6 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 
 	@DisplayName("getConfiguration(200): with configuration")
 	@Test
-	@Disabled("Getting 401")
 	public void getConfiguration200WithConfiguratiuon() {
 
 		// create gateway

@@ -14,6 +14,8 @@ micronaut:
           secret:
             generator:
               secret: pleaseChangeThisSecretForANewOne
+        claims-validators:
+          not-before: false
 
 ## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
 endpoints:
@@ -56,6 +58,7 @@ inoa:
 logger:
   levels:
     io.inoa: TRACE
+    io.moquette: TRACE
     io.micronaut: INFO
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
