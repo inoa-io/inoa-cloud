@@ -7,6 +7,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import org.slf4j.MDC;
+
 import io.inoa.fleet.api.RemoteApi;
 import io.inoa.fleet.model.RpcCommandVO;
 import io.inoa.fleet.model.RpcResponseVO;
@@ -20,7 +22,6 @@ import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.MDC;
 
 /**
  * Handles RPC commands to be distributed to gateways. This procedure is single
