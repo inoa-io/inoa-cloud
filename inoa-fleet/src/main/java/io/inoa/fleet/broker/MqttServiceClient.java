@@ -3,12 +3,12 @@ package io.inoa.fleet.broker;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.cert.X509Certificate;
-import java.util.UUID;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -24,15 +24,16 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 
 /**
- * Client to be used by external services. Use {@link MqttBroker#internalPublish(MqttPublishMessage, String)} to drop internal
- * messages.
+ * Client to be used by external services. Use
+ * {@link MqttBroker#internalPublish(MqttPublishMessage, String)} to publish
+ * internal messages.
  */
 @AllArgsConstructor
 public class MqttServiceClient {
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	@Getter
-	private final String clientId = "test" + UUID.randomUUID().toString();
+	private final String clientId = MqttServiceClient.class.getName();
 	private final MqttClient client;
 	private final MqttConnectOptions options;
 
@@ -53,10 +54,12 @@ public class MqttServiceClient {
 		var trustManager = new X509TrustManager() {
 
 			@Override
-			public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+			public void checkClientTrusted(X509Certificate[] chain, String authType) {
+			}
 
 			@Override
-			public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+			public void checkServerTrusted(X509Certificate[] chain, String authType) {
+			}
 
 			@Override
 			public X509Certificate[] getAcceptedIssuers() {
@@ -81,6 +84,10 @@ public class MqttServiceClient {
 
 	public void disconnectWithoutNotification() throws MqttException {
 		client.disconnectForcibly(0, 0, false);
+	}
+
+	public void subscribe(String topicFilter, IMqttMessageListener messageListener) throws MqttException {
+		client.subscribe(topicFilter, messageListener);
 	}
 
 	public MqttServiceClient publish(String topic, byte[] payload) throws MqttException {

@@ -34,6 +34,8 @@ public class MqttFactory {
 		config.setProperty(BrokerConstants.PORT_PROPERTY_NAME, String.valueOf(properties.getPort()));
 		config.setProperty(BrokerConstants.SSL_PORT_PROPERTY_NAME, String.valueOf(properties.getTls().getPort()));
 		config.setProperty(BrokerConstants.DEFAULT_PERSISTENT_PATH, String.valueOf(properties.getDataPath()));
+		// Immediate flush to avoid timing issues in tests or dependant clients
+		config.setProperty(BrokerConstants.IMMEDIATE_BUFFER_FLUSH_PROPERTY_NAME, String.valueOf(true));
 		return config;
 	}
 
