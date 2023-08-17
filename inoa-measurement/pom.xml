@@ -324,6 +324,38 @@
 				</configuration>
 			</plugin>
 
+			<!-- run tests with multiple database configurations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<reportNameSuffix>h2</reportNameSuffix>
+							<skipExec>${maven.test.skip.exec}</skipExec>
+						</configuration>
+					</execution>
+					<execution>
+						<id>postgres-test</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+						<configuration>
+							<environmentVariables>
+								<MICRONAUT_ENVIRONMENTS>postgres</MICRONAUT_ENVIRONMENTS>
+							</environmentVariables>
+							<reportNameSuffix>postgres</reportNameSuffix>
+							<!-- Currently disabled -->
+							<skipExec>true</skipExec>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- create container -->
 			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
