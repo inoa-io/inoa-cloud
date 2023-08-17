@@ -1,0 +1,9 @@
+site_name: 'Inoa Cloud'
+theme:
+  name: 'material'
+nav:
+  - Home: 'index.md'
+  - 'User Guide':
+      - 'User Interface': user-guide/user-interface.md
+  - 'Developer Guide':
+      - 'Getting Started': developer-guide/getting-started.md
