@@ -158,6 +158,10 @@
 								<tarFile>${project.basedir}/../inoa-fleet/target/jib-image.tar</tarFile>
 								<tarFile>${project.basedir}/../inoa-measurement/target/jib-image.tar</tarFile>
 							</tarFiles>
+							<dockerImages>
+								<dockerImage>ghcr.io/inoa-io/groundcontrol:latest</dockerImage>
+								<dockerImage>ghcr.io/inoa-io/hawkbit-server:latest</dockerImage>
+							</dockerImages>
 						</configuration>
 					</execution>
 				</executions>
@@ -254,9 +258,9 @@
 						</executions>
 						<configuration>
 							<resources>
-								<!-- <resource>deployment/inoa/fleet-mqtt-broker</resource> -->
 								<resource>deployment/inoa/fleet</resource>
 								<resource>deployment/inoa/measurement</resource>
+								<resource>deployment/inoa/groundcontrol</resource>
 							</resources>
 						</configuration>
 					</plugin>

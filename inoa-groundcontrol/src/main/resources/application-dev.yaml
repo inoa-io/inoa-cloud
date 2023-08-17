@@ -1,0 +1,5 @@
+micronaut:
+  router:
+    static-resources:
+      ui:
+        paths: file:${project.basedir}/ui/dist
