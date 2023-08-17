@@ -14,7 +14,7 @@ import io.inoa.measurement.ApplicationProperties;
 import io.inoa.measurement.model.TelemetryVO;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Singleton;
-import net.minidev.json.JSONArray;
+
 
 /**
  * This is a converter for JSON input strings based on JSON paths. One need to specify the datapoint to json path
@@ -63,7 +63,7 @@ public class JsonPathConverter extends CommonConverter {
 				// Get JSON path expression from config entry and apply it to the input JSON
 				var value = jsonContext.read(properties.get().getConfig().get(datapoint).toString());
 				// Result can either be an array or a single data object
-				if (value instanceof JSONArray array) {
+				if (value instanceof Iterable array) {
 					// Simply take the first result (by convention)
 					result.add(convert(type, datapoint, Double.parseDouble(array.iterator().next().toString())));
 				} else {
