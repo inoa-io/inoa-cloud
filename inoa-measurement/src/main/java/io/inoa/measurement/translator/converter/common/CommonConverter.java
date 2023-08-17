@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.inoa.measurement.ApplicationProperties;
-import io.inoa.measurement.ApplicationProperties.SensorProperties;
 import io.inoa.measurement.model.TelemetryVO;
 import io.inoa.measurement.translator.converter.AbstractConverter;
 import io.micrometer.core.instrument.Counter;
@@ -44,8 +43,8 @@ public abstract class CommonConverter extends AbstractConverter {
 		return telemetry;
 	}
 
-	Optional<SensorProperties> get(String type, String sensor) {
-		return properties.getTypes().stream()
+	Optional<ApplicationProperties.TranslatorProperties.SensorProperties> get(String type, String sensor) {
+		return properties.getTranslator().getTypes().stream()
 				.filter(typeProperties -> typeProperties.getName().equals(type))
 				.flatMap(typeProperties -> typeProperties.getSensors().stream())
 				.filter(sensorProperties -> sensorProperties.getConverter().equals(converter))

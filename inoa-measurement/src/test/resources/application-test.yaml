@@ -32,3 +32,9 @@ logger:
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
     org.apache.kafka: ERROR
+
+inoa:
+  measurement:
+    # allow audience test access to all tenants
+    security:
+      tenant-audience-whitelist: test
