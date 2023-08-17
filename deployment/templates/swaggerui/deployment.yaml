@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: swaggerui
-          image: swaggerapi/swagger-ui:v4.18.2
+          image: swaggerapi/swagger-ui:v5.3.2
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
