@@ -23,8 +23,6 @@ public class ThingType {
 	@MappedProperty
 	private String thingTypeId;
 	@MappedProperty
-	private String thingTypeReference;
-	@MappedProperty
 	private String name;
 	@TypeDef(type = DataType.JSON)
 	private Map<String, Object> jsonSchema;

@@ -59,7 +59,7 @@ public abstract class ModbusBuilderBase {
 		ThingType thingType, String obisCodeKey, RegisterSetting registerSetting, Integer serial, int slaveId,
 		Integer modbusInterface) {
 		if (channels.containsKey(obisCodeKey) && (boolean) channels.get(obisCodeKey)) {
-			ObjectNode node = createModbusJsonNodeLegacy(serial, thingType.getThingTypeReference(), registerSetting,
+			ObjectNode node = createModbusJsonNodeLegacy(serial, thingType.getThingTypeId(), registerSetting,
 				thing, modbusInterface, (byte) slaveId);
 			return Optional.of(node);
 		}
@@ -70,7 +70,7 @@ public abstract class ModbusBuilderBase {
 		ThingType thingType, String obisCodeKey, RegisterSetting registerSetting, Integer serial, int slaveId,
 		Integer modbusInterface) {
 		if (channels.containsKey(obisCodeKey) && (boolean) channels.get(obisCodeKey)) {
-			ObjectNode node = createModbusJsonNode(serial, thingType.getThingTypeReference(), registerSetting,
+			ObjectNode node = createModbusJsonNode(serial, thingType.getThingTypeId(), registerSetting,
 				thing, modbusInterface, (byte) slaveId);
 			return Optional.of(node);
 		}

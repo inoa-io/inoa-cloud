@@ -42,7 +42,7 @@ public class DvModbusIRBuilderTest {
 		config.put("channels", channels);
 		thing.setConfig(config);
 		ThingType thingType = new ThingType();
-		thingType.setThingTypeReference("bla");
+		thingType.setThingTypeId("bla");
 		ArrayNode build = builder.buildLegacy(thing, thingType);
 		List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
 

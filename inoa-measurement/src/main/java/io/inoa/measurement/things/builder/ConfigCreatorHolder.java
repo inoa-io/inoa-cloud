@@ -29,6 +29,6 @@ public class ConfigCreatorHolder {
 	}
 
 	public Optional<ConfigCreator> getConfigCreator(ThingType thingType) {
-		return Optional.of(creators.get(thingType.getThingTypeReference()));
+		return Optional.of(creators.get(thingType.getThingTypeId()));
 	}
 }

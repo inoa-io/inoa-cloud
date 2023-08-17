@@ -38,7 +38,7 @@ public class ModbusDVH44013BuilderTest {
 		config.put("channels", channels);
 		thing.setConfig(config);
 		ThingType thingType = new ThingType();
-		thingType.setThingTypeReference("dvh4013");
+		thingType.setThingTypeId("dvh4013");
 		ArrayNode build = builder.buildLegacy(thing, thingType);
 		List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
 

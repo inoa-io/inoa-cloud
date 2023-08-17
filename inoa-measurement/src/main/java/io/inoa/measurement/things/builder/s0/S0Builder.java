@@ -29,7 +29,7 @@ public class S0Builder implements ConfigCreator {
 		String serial = (String) properties.get("serial");
 		String sensor = (String) properties.get("sensor");
 		Integer iface = (Integer) properties.get("interface");
-		datapoints.add(createS0JsonNode(serial, thingType.getThingTypeReference(), thing, sensor, iface));
+		datapoints.add(createS0JsonNode(serial, thingType.getThingTypeId(), thing, sensor, iface));
 		return datapoints;
 	}
 
@@ -40,7 +40,7 @@ public class S0Builder implements ConfigCreator {
 		String serial = (String) properties.get("serial");
 		String sensor = (String) properties.get("sensor");
 		Integer iface = (Integer) properties.get("interface");
-		datapoints.add(createS0JsonNodeLegacy(serial, thingType.getThingTypeReference(), thing, sensor, iface));
+		datapoints.add(createS0JsonNodeLegacy(serial, thingType.getThingTypeId(), thing, sensor, iface));
 		return datapoints;
 	}
 

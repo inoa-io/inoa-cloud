@@ -42,7 +42,7 @@ public class Data {
 	public ThingType createThingType(String name, String thingTypeReference) {
 		ThingType thingType = new ThingType();
 		thingType.setName(name);
-		thingType.setThingTypeReference(thingTypeReference);
+		thingType.setThingTypeId(thingTypeReference);
 		thingType.setThingTypeId("");
 		return thingTypeRepository.save(thingType);
 	}

@@ -20,6 +20,7 @@ tags:
   - name: things
     description: Resources related to things management.
 paths:
+
   /thing-types:
     get:
       tags:
@@ -28,30 +29,39 @@ paths:
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
         - $ref: '#/components/parameters/Sort'
-        - name: filter
+        - name: nameFilter
           description: 'Search in name. Supports wildcard *, is case insensitive.'
           in: query
           schema:
             type: string
-            maxLength: 10
-            example: dvh
+            maxLength: 100
+            example: DZG*
+        - name: referenceFilter
+          description: 'Search matching reference name. Is case sensitive.'
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            example: dvh4013
       summary: 'Find thing types.'
-      description: 'Returns all thing types.'
+      description: 'Searches for thing types.'
       operationId: findThingTypes
       responses:
         200:
-          description: 'Returns thing types.'
+          description: 'Thing types found.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ThingTypePage'
         401:
           description: 'Unauthorized.'
+        404:
+          description: 'No matching thing types found.'
     post:
       tags:
         - thingTypes
       summary: 'Create thing type.'
-      description: TODO
+      description: 'Creates a new thing type.'
       operationId: createThingType
       requestBody:
         required: true
@@ -61,7 +71,7 @@ paths:
               $ref: '#/components/schemas/ThingTypeCreate'
       responses:
         201:
-          description: 'Tenant created.'
+          description: 'Thing type created.'
           content:
             application/json:
               schema:
@@ -70,6 +80,8 @@ paths:
           description: 'Malformed.'
         401:
           description: 'Unauthorized.'
+        409:
+          description: 'Thing type already present.'
 
   /thing-types/{thing_type_id}:
     parameters:
@@ -94,31 +106,8 @@ paths:
     post:
       tags:
         - thingTypes
-      summary: 'Create thing type.'
-      description: TODO
-      operationId: createThingTypeWithId
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ThingTypeCreate'
-      responses:
-        201:
-          description: 'Tenant created.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingType'
-        400:
-          description: 'Malformed.'
-        401:
-          description: 'Unauthorized.'
-    put:
-      tags:
-        - thingTypes
       summary: 'Update Thing type.'
-      description: TODO
+      description: 'Updates existing thing type.'
       operationId: updateThingType
       requestBody:
         required: true
@@ -139,12 +128,11 @@ paths:
           description: 'Unauthorized.'
         404:
           description: 'Thing type not found.'
-
     delete:
       tags:
         - thingTypes
       summary: 'Delete thing type.'
-      description: TODO
+      description: 'Deletes a thing type and corresponding things.'
       operationId: deleteThingType
       responses:
         204:
@@ -154,51 +142,6 @@ paths:
         404:
           description: 'Thing type not found.'
 
-  /thing-types/by-reference/{thing_type_reference}:
-    parameters:
-      - name: thing_type_reference
-        in: path
-        required: true
-        schema:
-          type: string
-    get:
-      tags:
-        - thingTypes
-      summary: 'Find Thing type.'
-      description: 'return a single thing type'
-      operationId: findThingTypeByReference
-      responses:
-        200:
-          description: 'Thing type found.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingType'
-        401:
-          description: 'Unauthorized.'
-        404:
-          description: 'Thing Type not found.'
-
-  /thing-types/{thing_type_id}/details:
-    parameters:
-      - $ref: '#/components/parameters/ThingTypeId'
-    get:
-      tags:
-        - thingTypes
-      summary: 'Find Thing type with its details.'
-      description: 'Find Thing type with its details.'
-      operationId: findThingTypeWithDetails
-      responses:
-        200:
-          description: 'Thing type with details found.'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ThingTypeDetail'
-        401:
-          description: 'Unauthorized.'
-        404:
-          description: 'Thing Type not found.'
   /things:
     get:
       tags:
@@ -226,11 +169,13 @@ paths:
                 $ref: '#/components/schemas/ThingPage'
         401:
           description: 'Unauthorized.'
+        404:
+          description: 'No matching things found.'
     post:
       tags:
         - things
       summary: 'Create thing type.'
-      description: TODO
+      description: 'Creates a new thing.'
       operationId: createThing
       requestBody:
         required: true
@@ -249,6 +194,8 @@ paths:
           description: 'Malformed.'
         401:
           description: 'Unauthorized.'
+        409:
+          description: 'Thing already exists.'
 
   /things/{thing_id}:
     parameters:
@@ -257,7 +204,7 @@ paths:
       tags:
         - things
       summary: 'Find Thing.'
-      description: TODO
+      description: 'Find thing by its Id.'
       operationId: findThing
       responses:
         200:
@@ -265,7 +212,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ThingDetail'
+                $ref: '#/components/schemas/Thing'
         401:
           description: 'Unauthorized.'
         404:
@@ -274,7 +221,7 @@ paths:
       tags:
         - things
       summary: 'Update Thing.'
-      description: TODO
+      description: 'Updates an existing thing.'
       operationId: updateThing
       requestBody:
         required: true
@@ -299,7 +246,7 @@ paths:
       tags:
         - things
       summary: 'Delete thing.'
-      description: TODO
+      description: 'Deletes an existing thing.'
       operationId: deleteThing
       responses:
         204:
@@ -308,7 +255,8 @@ paths:
           description: 'Unauthorized.'
         404:
           description: 'Thing type not found.'
-  /things/by-gateway-id/{gateway_id}:
+
+  /gateways/{gateway_id}/things:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
@@ -318,13 +266,20 @@ paths:
         - $ref: '#/components/parameters/PageablePage'
         - $ref: '#/components/parameters/PageableSize'
         - $ref: '#/components/parameters/Sort'
-        - name: filter
+        - name: nameFilter
           description: 'Search in name. Supports wildcard *, is case insensitive.'
           in: query
           schema:
             type: string
-            maxLength: 10
-            example: dvh
+            maxLength: 100
+            example: DZG*
+        - name: referenceFilter
+          description: 'Search matching reference name. Is case sensitive.'
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+            example: dvh4013
       summary: 'Find all things for a gateway.'
       description: 'Returns all things.'
       operationId: findThingsByGatewayId
@@ -337,45 +292,51 @@ paths:
                 $ref: '#/components/schemas/ThingPage'
         401:
           description: 'Unauthorized.'
+        404:
+          description: 'No matching things found.'
 
-  /things/sync-to-gateway/{gateway_id}:
+  /gateways/{gateway_id}/things/upload:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
         - things
       summary: 'Sync configuration to gateway.'
-      description: 'TODO'
+      description: 'Uploads the things configuration to the given gateway'
       operationId: syncConfigToGateway
       responses:
         204:
           description: 'accepted sync request.'
         401:
           description: 'Unauthorized.'
+        404:
+          description: 'Gateway does not exist.'
 
-  /things/sync-to-gateway-sequential/{gateway_id}:
+  /gateways/{gateway_id}/things/upload-sequential:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
         - things
       summary: 'Sync configuration sequentially to gateway.'
-      description: 'TODO'
+      description: 'Uploads the things configuration to the given gateway sequentially.'
       operationId: syncConfigToGatewaySequential
       responses:
         204:
           description: 'accepted sync request.'
         401:
           description: 'Unauthorized.'
+        404:
+          description: 'The given gateway does not exist.'
 
-  /things/download-for-gateway/{gateway_id}:
+  /gateways/{gateway_id}/things/json:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
         - things
-      summary: 'Sync configuration to gateway.'
-      description: 'TODO'
+      summary: 'Downloads things as JSON configuration.'
+      description: 'Downloads the thing configuration of the given gateway as JSON string.'
       operationId: downloadConfigToGateway
       responses:
         200:
@@ -386,15 +347,17 @@ paths:
                 type: object
         401:
           description: 'Unauthorized.'
+        404:
+          description: 'Gateway does not exist.'
 
-  /things/download-for-gateway-legacy/{gateway_id}:
+  /gateways/{gateway_id}/things/json-legacy:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
       tags:
         - things
-      summary: 'Sync configuration to gateway with OS version <0.4.0'
-      description: 'TODO'
+      summary: 'Downloads things as JSON configuration in legacy format (OS version <0.4.0)'
+      description: 'Downloads the thing configuration of the given gateway as JSON string in legacy format (OS version <0.4.0).'
       operationId: downloadConfigToGatewayLegacy
       responses:
         200:
@@ -405,6 +368,8 @@ paths:
                 type: object
         401:
           description: 'Unauthorized.'
+        404:
+          description: 'Gateway does not exist.'
 
 components:
   schemas:
@@ -420,21 +385,14 @@ components:
     ThingTypeId:
       description: 'Id as technical reference (never changes).'
       type: string
+      pattern: '^[a-zA-Z0-9\-\_]{1,64}$'
+      example: dzg_dvh4013
     GatewayId:
       description: 'Id as technical reference (never changes).'
       type: string
-    Enabled:
-      description: 'Flag if enabled or not.'
-      type: boolean
-      default: true
-      example: false
     Name:
       description: 'Name.'
       type: string
-    Key:
-      description: 'key.'
-      type: string
-      pattern: '[a-z_\-]'
 
     ###
     ### Thing Type
@@ -448,9 +406,6 @@ components:
           $ref: '#/components/schemas/ThingTypeId'
         name:
           $ref: '#/components/schemas/Name'
-        thing_type_reference:
-          description: 'thing_type_reference'
-          type: string
         json_schema:
           description: 'json_schema'
           type: object
@@ -460,27 +415,6 @@ components:
           type: array
           items:
             additionalProperties: { }
-        properties:
-          type: array
-          items:
-            $ref: '#/components/schemas/PropertyDefinition'
-        created:
-          $ref: '#/components/schemas/Timestamp'
-        updated:
-          $ref: '#/components/schemas/Timestamp'
-      required:
-        - id
-        - name
-        - created
-        - updated
-    ThingTypeDetail:
-      description: 'User with fields.'
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        name:
-          $ref: '#/components/schemas/Name'
         properties:
           type: array
           items:
@@ -521,9 +455,11 @@ components:
       properties:
         name:
           $ref: '#/components/schemas/Name'
-        thing_type_reference:
-          description: 'thing_type_reference'
+        thing_type_id:
+          description: 'External thing type Id'
           type: string
+          pattern: '^[a-zA-Z0-9\-\_]{1,64}$'
+          example: dzg_dvh4013
         json_schema:
           description: 'json_schema'
           type: object
@@ -541,9 +477,11 @@ components:
       properties:
         name:
           $ref: '#/components/schemas/Name'
-        thing_type_reference:
-          description: 'thing_type_reference'
+        thing_type_id:
+          description: 'External thing type Id'
           type: string
+          pattern: '^[a-zA-Z0-9\-\_]{1,64}$'
+          example: dzg_dvh4013
         json_schema:
           description: 'json_schema'
           type: object
@@ -633,34 +571,11 @@ components:
           $ref: '#/components/schemas/Name'
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        thing_type_reference:
-          description: 'thing_type_reference'
+        thing_type_id:
+          description: 'thing_type_id'
           type: string
-        config:
-          description: 'config'
-          additionalProperties: { }
-        created:
-          $ref: '#/components/schemas/Timestamp'
-        updated:
-          $ref: '#/components/schemas/Timestamp'
-      required:
-        - id
-        - name
-        - created
-        - updated
-    ThingDetail:
-      description: 'Thing with fields and details.'
-      type: object
-      properties:
-        id:
-          $ref: '#/components/schemas/Id'
-        name:
-          $ref: '#/components/schemas/Name'
-        gateway_id:
-          $ref: '#/components/schemas/GatewayId'
-        thing_type_reference:
-          description: 'thing_type_reference'
-          type: string
+          pattern: '^[a-zA-Z0-9\-\_]{1,64}$'
+          example: dzg_dvh4013
         config:
           description: 'config'
           additionalProperties: { }
@@ -681,15 +596,17 @@ components:
           $ref: '#/components/schemas/Name'
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        thing_type_reference:
-          description: 'thing_type_reference'
+        thing_type_id:
+          description: 'External thing type id'
           type: string
+          pattern: '^[a-zA-Z0-9\-\_]{1,64}$'
+          example: dzg_dvh4013
         config:
           description: 'config'
           additionalProperties: { }
       required:
         - name
-        - thing_type_reference
+        - thing_type_id
     ThingUpdate:
       description: 'Thing to update.'
       type: object
@@ -698,15 +615,17 @@ components:
           $ref: '#/components/schemas/Name'
         gateway_id:
           $ref: '#/components/schemas/GatewayId'
-        thing_type_reference:
-          description: 'thing_type_reference'
+        thing_type_id:
+          description: 'External thing type id'
           type: string
+          pattern: '^[a-zA-Z0-9\-\_]{1,64}$'
+          example: dzg_dvh4013
         config:
           description: 'config'
           additionalProperties: { }
       required:
         - name
-        - thing_type_reference
+        - thing_type_id
     ThingChannel:
       description: 'Thing channel to create.'
       type: object
@@ -944,6 +863,9 @@ components:
       required: true
       schema:
         type: string
+        pattern: '^[a-zA-Z0-9\-\_]{1,64}$'
+        example: dzg_dvh4013
+
     ThingId:
       name: thing_id
       in: path

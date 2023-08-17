@@ -8,7 +8,6 @@ import org.mapstruct.MappingConstants.ComponentModel;
 
 import io.inoa.measurement.model.PropertyVO;
 import io.inoa.measurement.model.ThingCreateVO;
-import io.inoa.measurement.model.ThingDetailVO;
 import io.inoa.measurement.model.ThingPageVO;
 import io.inoa.measurement.model.ThingVO;
 import io.inoa.measurement.things.domain.Property;
@@ -19,12 +18,8 @@ import io.micronaut.data.model.Page;
 public interface ThingMapper {
 
 	@Mapping(source = "thingId", target = "id")
-	@Mapping(source = "thingType.thingTypeReference", target = "thingTypeReference")
+	@Mapping(source = "thingType.thingTypeId", target = "thingTypeId")
 	ThingVO toThingVO(Thing thing);
-
-	@Mapping(source = "thingId", target = "id")
-	@Mapping(source = "thingType.thingTypeReference", target = "thingTypeReference")
-	ThingDetailVO toThingDetailVO(Thing thing);
 
 	ThingPageVO toThingPage(Page<Thing> page);
 
