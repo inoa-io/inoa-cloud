@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Context
-@ConfigurationProperties("inoa.fleet.registry")
+@ConfigurationProperties("inoa.fleet")
 @Getter
 @Setter
 public class ApplicationProperties {
@@ -32,7 +32,7 @@ public class ApplicationProperties {
 	public static class SecurityProperties {
 
 		/** Claim for tenant. */
-		private String claimTenant = "tenant";
+		private String claimTenants = "tenants";
 
 		/** Audience whitelists. */
 		private List<String> tenantAudienceWhitelist = new ArrayList<>();

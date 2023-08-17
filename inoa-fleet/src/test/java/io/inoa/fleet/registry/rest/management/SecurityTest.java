@@ -135,7 +135,7 @@ public class SecurityTest extends AbstractTest {
 
 		var headers = new HashMap<String, Object>();
 		if (tenantClaim != null) {
-			headers.put(properties.getSecurity().getClaimTenant(), tenantClaim);
+			headers.put(properties.getSecurity().getClaimTenants(), tenantClaim);
 		}
 		if (audience != null) {
 			headers.put(JwtClaims.AUDIENCE, audience);

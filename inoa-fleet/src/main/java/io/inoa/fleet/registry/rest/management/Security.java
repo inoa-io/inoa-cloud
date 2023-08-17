@@ -69,7 +69,7 @@ public class Security {
 
 		// read tenant from jwt claim
 
-		var claim = properties.getSecurity().getClaimTenant();
+		var claim = properties.getSecurity().getClaimTenants();
 		var tenantId = get(attributes, claim).findFirst();
 		if (tenantId.isEmpty()) {
 			log.warn("Got request without claim '{}' for tenant.", claim);

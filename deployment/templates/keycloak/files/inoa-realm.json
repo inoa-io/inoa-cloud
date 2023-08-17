@@ -5,6 +5,17 @@
 	"attributes": {
 		"frontendUrl": "http://keycloak.127.0.0.1.nip.io:8080"
 	},
+	"groups": [
+		{
+			"id": "inoa",
+			"name": "inoa",
+			"path": "/inoa",
+			"attributes": {},
+			"realmRoles": [],
+			"clientRoles": {},
+			"subGroups": []
+		}
+	],
 	"users": [
 		{
 			"id": "inoa-admin",
@@ -13,7 +24,8 @@
 			"email": "admin@example.org",
 			"emailVerified": true,
 			"credentials": [ { "type": "password", "value": "password" } ],
-			"clientRoles": { "realm-management": [ "realm-admin" ] }
+			"clientRoles": { "realm-management": [ "realm-admin" ] },
+			"groups": [ "inoa" ]
 		}
 	],
 	"clients": [
@@ -55,6 +67,19 @@
 						"id.token.claim": "true",
 						"access.token.claim": "true"
 					}
+				},
+				{
+					"name": "Group-to-Tenant Mapper",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-group-membership-mapper",
+					"consentRequired": false,
+					"config": {
+						"full.path": "false",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"claim.name": "tenants",
+						"userinfo.token.claim": "false"
+					}
 				}
 			],
 			"baseUrl": "http://admin.127.0.0.1.nip.io:8080",
@@ -82,7 +107,21 @@
 						"id.token.claim": "false",
 						"access.token.claim": "true"
 					}
-				},{
+				},
+				{
+					"name": "Group-to-Tenant Mapper",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-group-membership-mapper",
+					"consentRequired": false,
+					"config": {
+						"full.path": "false",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"claim.name": "tenants",
+						"userinfo.token.claim": "false"
+					}
+				},
+				{
 					"name": "realm-roles",
 					"protocol": "openid-connect",
 					"protocolMapper": "oidc-usermodel-realm-role-mapper",

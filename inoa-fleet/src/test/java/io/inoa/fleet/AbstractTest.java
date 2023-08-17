@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public abstract class AbstractTest {
 	public String auth(String tenantId) {
 		return new JwtProvider(signature).builder()
 				.subject("admin")
-				.claim(properties.getSecurity().getClaimTenant(), tenantId)
+				.claim(properties.getSecurity().getClaimTenants(), Collections.singleton(tenantId))
 				.toBearer();
 	}
 
