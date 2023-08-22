@@ -142,6 +142,51 @@
 			"webOrigins": [ "*" ],
 			"defaultClientScopes": [ "profile", "email" ],
 			"optionalClientScopes": []
+		},{
+			"id": "hawkbit",
+			"enabled": true,
+			"clientId": "hawkbit",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": true,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"publicClient": true,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "Group-to-Tenant Mapper",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-group-membership-mapper",
+					"consentRequired": false,
+					"config": {
+						"full.path": "false",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"claim.name": "tenants",
+						"userinfo.token.claim": "false"
+					}
+				},
+				{
+					"name": "realm-roles",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-usermodel-realm-role-mapper",
+					"config": {
+						"claim.name": "roles",
+						"multivalued": "true",
+						"id.token.claim": "true",
+						"jsonType.label": "String",
+						"access.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
+				}
+			],
+			"baseUrl": "http://hawkbit.127.0.0.1.nip.io:8080/",
+			"redirectUris": [
+				"http://hawkbit.127.0.0.1.nip.io:8080/oauth2-redirect.html"
+			],
+			"webOrigins": [ "*" ],
+			"defaultClientScopes": [ "profile", "email" ],
+			"optionalClientScopes": []
 		}
 	],
 	"eventsEnabled": true,

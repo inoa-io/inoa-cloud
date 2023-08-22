@@ -153,6 +153,7 @@
 								<ctrImage>kiwigrid/k8s-sidecar:1.19.4</ctrImage>
 								<ctrImage>grafana/grafana:9.1.0</ctrImage>
 								<ctrImage>quay.io/strimzi/kafka:latest-kafka-2.8.1</ctrImage>
+								<ctrImage>hawkbit/hawkbit-update-server:0.3.0M8</ctrImage>
 							</ctrImages>
 							<tarFiles>
 								<tarFile>${project.basedir}/../inoa-fleet/target/jib-image.tar</tarFile>
@@ -160,7 +161,6 @@
 							</tarFiles>
 							<dockerImages>
 								<dockerImage>ghcr.io/inoa-io/groundcontrol:latest</dockerImage>
-								<dockerImage>ghcr.io/inoa-io/hawkbit-server:latest</dockerImage>
 							</dockerImages>
 						</configuration>
 					</execution>

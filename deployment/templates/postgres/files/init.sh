@@ -19,4 +19,8 @@ psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" <<-EOSQL
     CREATE USER "measurement" WITH ENCRYPTED PASSWORD 'changeMe';
     GRANT ALL PRIVILEGES ON DATABASE "measurement" TO "measurement";
 
+    CREATE DATABASE "hawkbit";
+    CREATE USER "hawkbit" WITH ENCRYPTED PASSWORD 'changeMe';
+    GRANT ALL PRIVILEGES ON DATABASE "hawkbit" TO "hawkbit";
+
 EOSQL

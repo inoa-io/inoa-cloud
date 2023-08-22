@@ -9,6 +9,7 @@ resources:
   - ../../templates/keycloak
   - ../../templates/postgres
   - ../../templates/traefik
+  - ../../templates/hawkbit
 
 configMapGenerator:
   - name: help

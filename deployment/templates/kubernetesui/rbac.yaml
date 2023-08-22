@@ -60,10 +60,7 @@ rules:
   # Read all
   - apiGroups: ["*"]
     resources: ["*"]
-    verbs:
-      - get
-      - list
-      - watch
+    verbs: ["*"]
 ---
 apiVersion: v1
 kind: ServiceAccount
