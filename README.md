@@ -9,10 +9,12 @@ controlled devices.
 
 ### Pre-Requisites
 
-1. [Docker](https://www.docker.com/)
-2. [k3s](https://k3s.io/)
-3. [Java Development Kit](https://openjdk.org/install/)
-4. [Maven](https://maven.apache.org/)
+* [Git](https://git-scm.com/) >= 2.25
+* [Java Development Kit](https://openjdk.org/install/) >= 17.0.8
+* [Maven](https://maven.apache.org/) >= 3.6.3
+* [Docker](https://www.docker.com/) >= 24.0.5
+* [k3s](https://k3s.io/)
+* [Python](https://www.python.org/) >= 3.8.5 (for documentation only)
 
 ### Start Local Instance
 
@@ -26,7 +28,7 @@ Afterwards, you may browse to [http://help.127.0.0.1.nip.io:8080/](http://help.1
 
 ### Connect INOA Satellite
 
-TODO
+To bind a local Satellite Gateway, go to the [Debug Console](https://inoa-io.github.io/inoa-os-esp32/user-guide/debug-console/) and type `setup-mqtt mqtt://YOUR_COMPUTERS_IP_IN_YOUR_NETWORK:1883`.
 
 ## INOA Modules
 

@@ -70,24 +70,18 @@ spec:
                 secretKeyRef:
                   name: hawkbit-environment
                   key: DATASOURCES_DEFAULT_PASSWORD
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_AUTHORIZATION-URI
-              value: 'https://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/auth'
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_ISSUER-URI
-              value: 'http://keycloak.127.0.0.1.nip.io:8080/realms/inoa'
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_JWK-SET-URI
-              value: 'http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/certs'
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_TOKEN-URI
-              value: 'http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/token'
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OIDC_USER-INFO-URI
-              value: 'http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/userinfo'
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_CLIENT-ID
-              value: 'hawkbit'
-            - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_AUTHORIZATION-GRANT-TYPE
-              value: 'implicit'
-            #- name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OIDC_REDIRECT_URI
-            #  value: 'http://hawkbit.127.0.0.1.nip.io:8080/*'
             - name: SPRING_SECURITY_USER
               value: admin
+            - name: SPRING_SECURITY_USER_NAME
+              value: admin
+            - name: SPRING_SECURITY_USER_PASSWORD
+              value: password
+            - name: HAWKBIT_SERVER_UI_DEMO_USER
+              value: admin
+            - name: HAWKBIT_SERVER_UI_DEMO_PASSWORD
+              value: password
+            - name: HAWKBIT_SERVER_UI_DEMO_TENANT
+              value: DEFAULT
             - name: LOGGING_LEVEL_ROOT
               value: 'INFO'
             - name: SERVER_SERVLET
