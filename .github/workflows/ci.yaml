@@ -61,7 +61,7 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - run: mvn $MAVEN_ARGS install -pl \!test -T1C
-      - run: mvn $MAVEN_ARGS install -pl test
+      - run: mvn $MAVEN_ARGS install -pl \!inoa-test -T1C
+      - run: mvn $MAVEN_ARGS install -pl inoa-test
       - run: mvn $MAVEN_ARGS jib:build -Djib.to.tags=latest,${{ steps.prep.outputs.BUILD_ID }} -Djib.from.platforms=linux/amd64,linux/arm64 -pl :inoa-fleet,:inoa-measurement,:inoa-groundcontrol -T1C
         if: ${{ github.ref_name == 'main' }}
