@@ -18,5 +18,6 @@ configMapGenerator:
       - VALIDATOR_URL=
   - name: swaggerui-spec
     files:
+        # These files will be copied by Maven to target/k3s/dev/observability/swaggerui/files
       - files/inoa-fleet-api.yaml
       - files/inoa-measurement-api.yaml

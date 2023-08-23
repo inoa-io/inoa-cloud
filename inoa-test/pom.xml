@@ -91,11 +91,11 @@
 			</testResource>
 			<testResource>
 				<directory>${project.basedir}/../inoa-fleet/src/main/resources/openapi</directory>
-				<targetPath>../k3s/dev/swaggerui/files</targetPath>
+				<targetPath>../k3s/dev/observability/swaggerui/files</targetPath>
 			</testResource>
 			<testResource>
 				<directory>${project.basedir}/../inoa-measurement/src/main/resources/openapi</directory>
-				<targetPath>../k3s/dev/swaggerui/files</targetPath>
+				<targetPath>../k3s/dev/observability/swaggerui/files</targetPath>
 			</testResource>
 		</testResources>
 		<plugins>

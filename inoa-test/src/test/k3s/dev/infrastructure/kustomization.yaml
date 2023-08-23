@@ -1,6 +1,5 @@
 namespace: infrastructure
 
 resources:
-  - namespace.yaml
   - grafana
   - help
