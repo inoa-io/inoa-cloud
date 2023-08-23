@@ -1,8 +1,8 @@
-site_name: 'Inoa Cloud'
+site_name: Inoa Cloud
 theme:
-  name: 'material'
+  name: material
 nav:
-  - Home: 'index.md'
+  - Home: index.md
   - 'User Guide':
       - 'User Interface': user-guide/user-interface.md
   - 'Developer Guide':

@@ -409,12 +409,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: { }
+            additionalProperties: {}
         properties:
           type: array
           items:
@@ -463,12 +463,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: { }
+            additionalProperties: {}
       required:
         - name
     ThingTypeUpdate:
@@ -485,12 +485,12 @@ components:
         json_schema:
           description: 'json_schema'
           type: object
-          additionalProperties: { }
+          additionalProperties: {}
         ui_layout:
           description: 'ui_layout'
           type: array
           items:
-            additionalProperties: { }
+            additionalProperties: {}
       required:
         - name
     ThingTypeChannel:
@@ -578,7 +578,7 @@ components:
           example: dzg_dvh4013
         config:
           description: 'config'
-          additionalProperties: { }
+          additionalProperties: {}
         created:
           $ref: '#/components/schemas/Timestamp'
         updated:
@@ -603,7 +603,7 @@ components:
           example: dzg_dvh4013
         config:
           description: 'config'
-          additionalProperties: { }
+          additionalProperties: {}
       required:
         - name
         - thing_type_id
@@ -622,7 +622,7 @@ components:
           example: dzg_dvh4013
         config:
           description: 'config'
-          additionalProperties: { }
+          additionalProperties: {}
       required:
         - name
         - thing_type_id
@@ -657,7 +657,7 @@ components:
         input_type:
           type: string
           example: text
-          enum: [ text, number ]
+          enum: [text, number]
           description: input type for the frontend
     Property:
       type: object

@@ -18,7 +18,7 @@ spec:
         - name: fleet-postgres
           image: postgres:14.4-bullseye
           imagePullPolicy: Never
-          command: [ sh, -c, until psql ; do sleep 1 ; done ]
+          command: [sh, -c, until psql ; do sleep 1 ; done]
           env:
             - name: PGCONNECT_TIMEOUT
               value: "1"
@@ -44,7 +44,7 @@ spec:
             privileged: false
             allowPrivilegeEscalation: false
             capabilities:
-              drop: [ ALL ]
+              drop: [ALL]
       containers:
         - name: hawkbit
           image: hawkbit/hawkbit-update-server:0.3.0M8
@@ -83,29 +83,29 @@ spec:
             - name: HAWKBIT_SERVER_UI_DEMO_TENANT
               value: DEFAULT
             - name: LOGGING_LEVEL_ROOT
-              value: 'INFO'
+              value: INFO
             - name: SERVER_SERVLET
-              value: '/update/inoa'
+              value: /update/inoa
             - name: HAWKBIT_CONTROLLER_POLLINGTIME
-              value: '00:10:00'
+              value: 00:10:00
             - name: HAWKBIT_CONTROLLER_POLLING_OVERDUE_TIME
-              value: '00:05:00'
+              value: 00:05:00
             - name: HAWKBIT_SERVER_DDI_SECURITY_AUTHENTICATION_TARGETTOKEN_ENABLED
-              value: 'true'
+              value: "true"
             - name: HAWKBIT_DMF_RABBITMQ_ENABLED
-              value: 'false'
+              value: "false"
             - name: HAWKBIT_DMF_HONO_ENABLED
-              value: 'false'
+              value: "false"
             - name: HAWKBIT_SERVER_TENANT_CONFIGURATION_AUTHENTICATION-TARGETTOKEN-ENABLED_DEFAULTVALUE
-              value: 'true'
+              value: "true"
             - name: HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_REF
-              value: 'http://{hostnameRequest}/update/inoa/controller/v1/{controllerId}/softwaremodules/{softwareModuleId}/artifacts/{artifactFileName}'
+              value: http://{hostnameRequest}/update/inoa/controller/v1/{controllerId}/softwaremodules/{softwareModuleId}/artifacts/{artifactFileName}
             - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED
-              value: 'true'
+              value: "true"
             - name: MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED
-              value: 'true'
+              value: "true"
             - name: MANAGEMENT_HEALTH_READINESSSTATE_ENABLED
-              value: 'true'
+              value: "true"
           ports:
             - name: http
               containerPort: 8080

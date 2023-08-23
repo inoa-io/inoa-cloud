@@ -103,4 +103,3 @@ spec:
             name: fleet-tls
         - name: moquette
           emptyDir: {}
-

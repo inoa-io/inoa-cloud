@@ -12,8 +12,8 @@ info:
 servers:
   - url: http://fleet.127.0.0.1.nip.io:8080
 security:
-  - Keycloak: [ ]
-  - BearerAuth: [ ]
+  - Keycloak: []
+  - BearerAuth: []
 tags:
   - name: groups
     description: Resources related to group management.
@@ -32,7 +32,7 @@ tags:
 paths:
   /groups:
     get:
-      tags: [ groups ]
+      tags: [groups]
       summary: Find groups
       description: Returns all groups ordered by name.
       operationId: findGroups
@@ -48,7 +48,7 @@ paths:
         401:
           description: Unauthorized
     post:
-      tags: [ groups ]
+      tags: [groups]
       summary: Create group
       description: Create group.
       operationId: createGroup
@@ -75,7 +75,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/GroupId'
     get:
-      tags: [ groups ]
+      tags: [groups]
       summary: Find group
       description: Find group by id.
       operationId: findGroup
@@ -91,7 +91,7 @@ paths:
         404:
           description: Group not found
     patch:
-      tags: [ groups ]
+      tags: [groups]
       summary: Update group
       description: Update group name.
       operationId: updateGroup
@@ -117,7 +117,7 @@ paths:
         409:
           description: Group with name already exists
     delete:
-      tags: [ groups ]
+      tags: [groups]
       summary: Delete group
       description: Delete group by id.
       operationId: deleteGroup
@@ -130,7 +130,7 @@ paths:
           description: Group not found
   /gateways:
     get:
-      tags: [ gateways ]
+      tags: [gateways]
       summary: Find gateways
       description: Returns all gateways ordered by name.
       operationId: findGateways
@@ -157,7 +157,7 @@ paths:
         401:
           description: Unauthorized
     post:
-      tags: [ gateways ]
+      tags: [gateways]
       summary: Create gateway
       description: Create gateway.
       operationId: createGateway
@@ -184,7 +184,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
-      tags: [ gateways ]
+      tags: [gateways]
       summary: Find gateway
       description: Find gateway by id.
       operationId: findGateway
@@ -200,7 +200,7 @@ paths:
         404:
           description: Gateway not found
     patch:
-      tags: [ gateways ]
+      tags: [gateways]
       summary: Update gateway
       description: Update gateway by id.
       operationId: updateGateway
@@ -224,7 +224,7 @@ paths:
         404:
           description: Gateway not found
     delete:
-      tags: [ gateways ]
+      tags: [gateways]
       summary: Delete gateway
       description: Delete gateway by id.
       operationId: deleteGateway
@@ -239,7 +239,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
-      tags: [ credentials ]
+      tags: [credentials]
       summary: Get credentials
       description: Get credentials for gateway.
       operationId: findCredentials
@@ -257,7 +257,7 @@ paths:
         404:
           description: Gateway not found
     post:
-      tags: [ credentials ]
+      tags: [credentials]
       summary: Create credential
       description: Create credential.
       operationId: createCredential
@@ -287,7 +287,7 @@ paths:
       - $ref: '#/components/parameters/GatewayId'
       - $ref: '#/components/parameters/CredentialId'
     get:
-      tags: [ credentials ]
+      tags: [credentials]
       summary: Find credential
       description: Find credential.
       operationId: findCredential
@@ -303,7 +303,7 @@ paths:
         404:
           description: Gateway or credential not found
     patch:
-      tags: [ credentials ]
+      tags: [credentials]
       summary: Update credential
       description: Update credential.
       operationId: updateCredential
@@ -329,7 +329,7 @@ paths:
         409:
           description: Name for credential already exists
     delete:
-      tags: [ credentials ]
+      tags: [credentials]
       summary: Delete credential
       description: Delete credential.
       operationId: deleteCredential
@@ -342,7 +342,7 @@ paths:
           description: Gateway or credential not found
   /configuration/definition:
     get:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Find configuration definitions
       description: Find configurations definitions.
       operationId: findConfigurationDefinitions
@@ -361,7 +361,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/ConfigurationKey'
     post:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Save configuration definition
       description: Save configuration definition.
       operationId: createConfigurationDefinition
@@ -399,7 +399,7 @@ paths:
           description: Configuration definition not found
   /configuration:
     get:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Find configurations
       description: Find configurations on tenant level ordered by key.
       operationId: findConfigurations
@@ -418,7 +418,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/ConfigurationKey'
     put:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Save configuration
       description: Save configuration.
       operationId: setConfiguration
@@ -438,7 +438,7 @@ paths:
         404:
           description: Configuration not found
     delete:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Delete configuration
       description: Delete configuration.
       operationId: resetConfiguration
@@ -453,7 +453,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/GroupId'
     get:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Find configuration.
       description: Find configurations on group level ordered by key.
       operationId: findConfigurationsByGroup
@@ -475,7 +475,7 @@ paths:
       - $ref: '#/components/parameters/GroupId'
       - $ref: '#/components/parameters/ConfigurationKey'
     put:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Save configuration value
       description: Save configuration value.
       operationId: setConfigurationByGroup
@@ -495,7 +495,7 @@ paths:
         404:
           description: Group of configuration key not found
     delete:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Delete configuration
       description: Delete configuration.
       operationId: resetConfigurationByGroup
@@ -510,7 +510,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     get:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Find configuration
       description: Find configurations on gateway level ordered by key.
       operationId: findConfigurationsByGateway
@@ -532,7 +532,7 @@ paths:
       - $ref: '#/components/parameters/GatewayId'
       - $ref: '#/components/parameters/ConfigurationKey'
     put:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Save configuration value
       description: Save configuration value.
       operationId: setConfigurationByGateway
@@ -552,7 +552,7 @@ paths:
         404:
           description: Gateway of configuration key not found
     delete:
-      tags: [ configuration ]
+      tags: [configuration]
       summary: Delete configuration
       description: Delete configuration.
       operationId: resetConfigurationByGateway
@@ -565,7 +565,7 @@ paths:
           description: Gateway of configuration key not found
   /gateway:
     post:
-      tags: [ gateway ]
+      tags: [gateway]
       summary: Register gateway
       description: Self register as gateway.
       operationId: register
@@ -584,7 +584,7 @@ paths:
           description: Gateway already registered
   /gateway/configuration:
     get:
-      tags: [ gateway ]
+      tags: [gateway]
       summary: Get gateway configuration
       description: Get gateway configuration.
       operationId: getConfiguration
@@ -595,12 +595,12 @@ paths:
             application/json:
               schema:
                 type: string
-                additionalProperties: { }
+                additionalProperties: {}
         401:
           description: Unauthorized
   /gateway/properties:
     get:
-      tags: [ properties ]
+      tags: [properties]
       summary: Get gateway properties
       description: TODO
       operationId: getProperties
@@ -614,7 +614,7 @@ paths:
         401:
           description: Unauthorized
     put:
-      tags: [ properties ]
+      tags: [properties]
       summary: Set multiple gateway properties.
       description: TODO
       operationId: setProperties
@@ -641,7 +641,7 @@ paths:
         schema:
           $ref: '#/components/schemas/PropertyKey'
     put:
-      tags: [ properties ]
+      tags: [properties]
       summary: Set gateway property
       description: Set gateway property.
       operationId: setProperty
@@ -657,7 +657,7 @@ paths:
         401:
           description: Unauthorized
     delete:
-      tags: [ properties ]
+      tags: [properties]
       summary: Delete gateway property
       description: Delete gateway property.
       operationId: deleteProperty
@@ -672,7 +672,7 @@ paths:
     parameters:
       - $ref: '#/components/parameters/GatewayId'
     post:
-      tags: [ remote ]
+      tags: [remote]
       summary: Send RPC commands.
       description: Send RPC commands.
       operationId: sendRpcCommand
