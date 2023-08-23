@@ -1,0 +1,7 @@
+namespace: observability
+
+resources:
+  - namespace.yaml
+  - kafdrop
+  - kubernetesui
+  - swaggerui

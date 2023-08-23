@@ -63,7 +63,7 @@ spec:
       containers:
         - name: measurement
           image: ghcr.io/inoa-io/measurement
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           envFrom:
             - configMapRef:
                 name: inoa-environment

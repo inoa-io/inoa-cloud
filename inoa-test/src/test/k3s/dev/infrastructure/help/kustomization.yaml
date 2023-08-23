@@ -8,4 +8,5 @@ resources:
 
 configMapGenerator:
   - name: help
-    files: []
+    files:
+      - files/index.html

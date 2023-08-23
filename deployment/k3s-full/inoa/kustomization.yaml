@@ -1,7 +1,0 @@
-namespace: inoa
-
-resources:
-  - namespace.yaml
-  - ../../templates/inoa/fleet
-  - ../../templates/inoa/measurement
-  - ../../templates/inoa/groundcontrol

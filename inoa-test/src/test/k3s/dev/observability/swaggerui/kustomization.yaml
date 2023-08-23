@@ -18,5 +18,5 @@ configMapGenerator:
       - VALIDATOR_URL=
   - name: swaggerui-spec
     files:
-      - ../../../inoa-fleet/src/main/resources/openapi/inoa-fleet-api.yaml
-      - ../../../inoa-measurement/src/main/resources/openapi/inoa-measurement-api.yaml
+      - files/inoa-fleet-api.yaml
+      - files/inoa-measurement-api.yaml

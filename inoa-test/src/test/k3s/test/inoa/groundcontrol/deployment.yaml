@@ -15,7 +15,7 @@ spec:
       containers:
         - name: groundcontrol
           image: ghcr.io/inoa-io/groundcontrol:latest
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           envFrom:
             - secretRef:
                 name: groundcontrol

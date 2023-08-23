@@ -45,7 +45,7 @@ spec:
       containers:
         - name: fleet
           image: ghcr.io/inoa-io/fleet
-          imagePullPolicy: Always
+          imagePullPolicy: Never
           envFrom:
             - configMapRef:
                 name: inoa-environment
