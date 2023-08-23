@@ -24,19 +24,6 @@ jobs:
         with:
           args: /github/workspace
 
-  kustomize:
-    strategy:
-      matrix:
-        type: [k3s-full]
-      fail-fast: false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: steebchen/kubectl@v2.1.1
-        with:
-          version: v1.24.10
-          command: kustomize deployment/${{ matrix.type }}
-
   build:
     runs-on: ubuntu-latest
     env:
