@@ -1,5 +1,11 @@
 extends: default
 
+ignore:
+  - inoa-test/target
+  - inoa-fleet/target
+  - inoa-measurement/target
+  - inoa-groundcontrol/target
+
 ## see https://yamllint.readthedocs.io/en/stable/rules.html
 rules:
 
@@ -14,16 +20,15 @@ rules:
     quote-type: double
     required: only-when-needed
     ignore: |
-      fleet/thing-service/src/main/resources/openapi/management.yaml
-      fleet/gateway-event/src/main/resources/openapi/spec.yaml
-      fleet/gateway-telemetry/src/main/resources/openapi/spec.yaml
-      fleet/registry-service/src/main/resources/openapi/gateway.yaml
-      fleet/registry-service/src/main/resources/openapi/management.yaml
-      fleet/registry-service/src/test/resources/application-test.yaml
-      fleet/registry-api-gateway/src/main/resources/openapi/spec.yaml
-      fleet/registry-api-management/src/main/resources/openapi/spec.yaml
-      measurement/model/src/main/resources/openapi/spec.yaml
-      measurement/exporter-api/src/main/resources/openapi/spec.yaml
+      inoa-test/target/k3s.yaml
+      inoa-test/target/k3s/templates/inoa/measurement/kustomization.yaml
+      inoa-test/target/k3s/templates/inoa/measurement/deployment.yaml
+      inoa-test/target/k3s/templates/inoa/fleet/deployment.yaml
+      inoa-test/target/k3s/templates/swaggerui/files/inoa-measurement-api.yaml
+      inoa-test/target/k3s/templates/swaggerui/files/inoa-fleet-api.yaml
+      inoa-fleet/src/main/resources/openapi/inoa-fleet-api.yaml
+      inoa-measurement/src/main/resources/openapi/inoa-measurement-api.yaml
+      inoa-fleet/src/test/resources/application-test.yaml
 
   # allow everything on keys
   truthy:

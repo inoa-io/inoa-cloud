@@ -1,8 +1,12 @@
 HELP.md
 target/
+site/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+
+### Moquette ###
+.moquette_uuid
 
 ### STS ###
 .apt_generated

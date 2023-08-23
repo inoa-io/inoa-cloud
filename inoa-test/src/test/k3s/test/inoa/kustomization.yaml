@@ -1,0 +1,7 @@
+namespace: inoa
+
+resources:
+  - namespace.yaml
+  - fleet
+  - measurement
+  - groundcontrol

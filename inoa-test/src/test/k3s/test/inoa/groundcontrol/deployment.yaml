@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: groundcontrol
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: groundcontrol
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: groundcontrol
+    spec:
+      containers:
+        - name: groundcontrol
+          image: ghcr.io/inoa-io/groundcontrol:latest
+          imagePullPolicy: Never
+          envFrom:
+            - secretRef:
+                name: groundcontrol
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: management
+              containerPort: 8090
+          startupProbe:
+            httpGet:
+              path: /endpoints/health
+              port: management
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 60
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /endpoints/health/liveness
+              port: management
+            periodSeconds: 60
+            successThreshold: 1
+            failureThreshold: 2
+            timeoutSeconds: 2
+          resources:
+            limits:
+              cpu: 20m
+              memory: 25M
+            requests:
+              cpu: 10m
+              memory: 25M
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 0

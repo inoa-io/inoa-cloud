@@ -24,19 +24,6 @@ jobs:
         with:
           args: /github/workspace
 
-  kustomize:
-    strategy:
-      matrix:
-        type: [k3s-minimal, k3s-full]
-      fail-fast: false
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: steebchen/kubectl@v2.1.1
-        with:
-          version: v1.24.10
-          command: kustomize deployment/${{ matrix.type }}
-
   build:
     runs-on: ubuntu-latest
     env:
@@ -61,7 +48,7 @@ jobs:
           distribution: temurin
           java-version: 17
           cache: maven
-      - run: mvn $MAVEN_ARGS install -pl \!test -T1C
-      - run: mvn $MAVEN_ARGS install -pl test
-      - run: mvn $MAVEN_ARGS jib:build -Djib.to.tags=latest,${{ steps.prep.outputs.BUILD_ID }} -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter,:gateway-command-service,:fleet-registry-hono-bridge,:fleet-thing-service -T1C
+      - run: mvn $MAVEN_ARGS install -pl \!inoa-test -T1C
+      - run: mvn $MAVEN_ARGS install -pl inoa-test
+      - run: mvn $MAVEN_ARGS jib:build -Djib.to.tags=latest,${{ steps.prep.outputs.BUILD_ID }} -Djib.from.platforms=linux/amd64,linux/arm64 -pl :inoa-fleet,:inoa-measurement,:inoa-groundcontrol -T1C
         if: ${{ github.ref_name == 'main' }}

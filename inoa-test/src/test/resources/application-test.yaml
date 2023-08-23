@@ -1,0 +1,55 @@
+micronaut:
+
+  ## http clients for testing
+  http:
+    services:
+      grafana:
+        url: http://grafana.${test.host}
+        logger-name: io.inoa.k3s.Grafana
+      keycloak:
+        url: http://keycloak.${test.host}
+        logger-name: io.inoa.k3s.Keycloak
+      registry-gateway:
+        url: http://registry.${test.host}
+        logger-name: io.inoa.fleet.Registry
+      registry-management:
+        url: http://registry.${test.host}
+        logger-name: io.inoa.fleet.Registry
+      admin-ui:
+        url: http://ui.inoa.${test.host}
+        logger-name: io.inoa.fleet.Registry
+        follow-redirects: false
+        exception-on-error-status: false
+
+## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
+jackson:
+  serialization:
+    indentOutput: true
+
+## see https://github.com/kokuwaio/micronaut-influxdb
+influxdb:
+  url: http://influxdb.${test.host}
+  organisation: inoa
+  token: changeMe
+grafana:
+  url: http://grafana.${test.host}
+  username: admin
+  password: password
+
+## custom log configuration
+logger:
+  levels:
+    io.inoa: TRACE
+    io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
+
+## test
+test:
+  host: 127.0.0.1.nip.io:8080
+
+## INOA
+inoa:
+  mqtt:
+    port: ${random.port}
+    tls:
+      port: ${random.port}
+      generate-key: true

@@ -1,0 +1,10 @@
+namespace: infrastructure
+
+resources:
+  - namespace.yaml
+  - hawkbit
+  - influxdb
+  - kafka
+  - keycloak
+  - postgres
+  - traefik

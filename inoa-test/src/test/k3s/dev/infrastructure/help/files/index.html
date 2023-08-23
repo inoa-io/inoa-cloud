@@ -1,0 +1,44 @@
+<body>
+	<h1>URLs</h1>
+	<h2>INOA</h2>
+	<ul>
+		<li>
+			<a target=”_blank" href="http://groundcontrol.127.0.0.1.nip.io:8080">INOA Groundcontrol</a>
+		</li>
+		<li>
+			<a target=”_blank" href="http://hawkbit.127.0.0.1.nip.io:8080">Hawkbit</a>
+		</li>
+	</ul>
+	<h2>Infrastructure</h2>
+	<ul>
+		<li>
+			<a target=”_blank" href="http://dashboard.127.0.0.1.nip.io:8080/#/workloads?namespace=_all" >Dashboard</a>
+		</li>
+		<li>
+			<a target=”_blank" href="http://keycloak.127.0.0.1.nip.io:8080/admin/inoa/console">Keycloak Admin</a> (admin/password)
+		</li>
+		<li>
+			<a target=”_blank" href="http://grafana.127.0.0.1.nip.io:8080">Grafana</a>
+		</li>
+		<li>
+			<a target=”_blank" href="http://traefik.127.0.0.1.nip.io:8080">Traefik Dashboard</a>
+		</li>
+		<li>
+			<a target=”_blank" href="http://kafdrop.127.0.0.1.nip.io:8080">Kafdrop</a>
+		</li>
+		<li>
+			<a target=”_blank" href="http://influxdb.127.0.0.1.nip.io:8080">Influxdb</a> (admin/password)
+		</li>
+		<li>
+			<a target=”_blank" href="http://swaggerui.127.0.0.1.nip.io:8080">SwaggerUI</a>:
+			Use <b>Authorize</b> with <b>Keycloak (OAuth2, implicit) </b> and user credentials or use <b>BearerAuth  (http, Bearer)</b> with token:
+			<pre>curl http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/token \
+  --silent \
+  --data client_id=inoa-swagger \
+  --data username=admin \
+  --data password=password \
+  --data grant_type=password \
+  | jq -r .access_token</pre>
+		</li>
+	</ul>
+</body>

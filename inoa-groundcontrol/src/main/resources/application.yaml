@@ -1,0 +1,28 @@
+micronaut:
+  application:
+    name: groundcontrol
+
+  ## https://docs.micronaut.io/latest/guide/#staticResources
+  router:
+    static-resources:
+      openapi:
+        mapping: /openapi/**
+        paths: classpath:openapi
+      ui:
+        mapping: /**
+        paths: file:/static
+
+## https://docs.micronaut.io/latest/guide/#providedEndpoints
+endpoints:
+  all:
+    enabled: false
+    port: 8090
+    path: /endpoints
+    sensitive: false
+  health:
+    enabled: true
+    details-visible: ANONYMOUS
+    disk-space:
+      enabled: false
+    discovery-client:
+      enabled: false

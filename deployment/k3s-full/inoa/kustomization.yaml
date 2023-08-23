@@ -1,9 +1,0 @@
-namespace: inoa
-
-resources:
-  - namespace.yaml
-  - ../../templates/inoa/fleet-registry-service
-  - ../../templates/inoa/fleet-mqtt-broker
-  - ../../templates/inoa/fleet-admin-ui
-  - ../../templates/inoa/measurement-telemetry-translator
-  - ../../templates/inoa/measurement-telemetry-exporter
