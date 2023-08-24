@@ -12,12 +12,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.hawkbit.api.TargetsApiClient;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.fleet.AbstractTest;
 import io.inoa.fleet.api.CredentialsApiTestClient;
+import io.inoa.fleet.api.GatewayApi;
 import io.inoa.fleet.api.GatewayApiTestClient;
 import io.inoa.fleet.api.GatewayApiTestSpec;
 import io.inoa.fleet.api.GatewaysApiTestClient;
@@ -33,7 +35,7 @@ import jakarta.inject.Inject;
  * @author Stephan Schnabel
  */
 @DisplayName("gateway: configuration")
-public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
+class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 
 	@Inject
 	GatewayApiTestClient client;
@@ -41,6 +43,8 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	GatewaysApiTestClient gatewaysClient;
 	@Inject
 	CredentialsApiTestClient credentialsClient;
+	@Inject
+	TargetsApiClient targetsApiClient;
 	@Inject
 	GatewayTokenHelper gatewayToken;
 
@@ -108,22 +112,23 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	public void register204() {
 
 		var tenant = data.tenant("inoa");
+		var gatewayId = data.gatewayId();
+		var gatewayPsk = UUID.randomUUID().toString();
+
 		var auth = auth(tenant);
 
-		var vo = new RegisterVO()
-				.gatewayId(data.gatewayId())
-				.credentialType(CredentialTypeVO.PSK)
-				.credentialValue(UUID.randomUUID().toString().getBytes());
+		var vo = new RegisterVO().gatewayId(gatewayId).credentialType(CredentialTypeVO.PSK)
+				.credentialValue(gatewayPsk.getBytes());
 		assert204(() -> client.register(vo));
 
-		var gateway = assert200(() -> gatewaysClient.findGateway(auth, vo.getGatewayId()));
-		assertEquals(vo.getGatewayId(), gateway.getGatewayId(), "gatewayId");
-		assertNull(gateway.getName(), "name");
-		assertEquals(false, gateway.getEnabled(), "enabled");
-		assertEquals(Set.of(), gateway.getGroupIds(), "groupIds");
-		assertEquals(Map.of(), gateway.getProperties(), "properties");
-		assertNotNull(gateway.getCreated(), "created");
-		assertNotNull(gateway.getUpdated(), "updated");
+		var foundGateway = assert200(() -> gatewaysClient.findGateway(auth, vo.getGatewayId()));
+		assertEquals(vo.getGatewayId(), foundGateway.getGatewayId(), "gatewayId");
+		assertNull(foundGateway.getName(), "name");
+		assertEquals(false, foundGateway.getEnabled(), "enabled");
+		assertEquals(Set.of(), foundGateway.getGroupIds(), "groupIds");
+		assertEquals(Map.of(), foundGateway.getProperties(), "properties");
+		assertNotNull(foundGateway.getCreated(), "created");
+		assertNotNull(foundGateway.getUpdated(), "updated");
 
 		var credentials = assert200(() -> credentialsClient.findCredentials(auth, vo.getGatewayId()));
 		assertEquals(1, credentials.size(), "credentials: " + credentials);
@@ -134,6 +139,12 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertArrayEquals(vo.getCredentialValue(), credentials.get(0).getValue(), "value");
 		assertNotNull(credentials.get(0).getCreated(), "created");
 		assertNotNull(credentials.get(0).getUpdated(), "updated");
+
+		var target = assert200(() -> targetsApiClient.getTarget(gatewayId));
+		assertNotNull(target);
+		assertEquals(gatewayId, target.getControllerId());
+		assertEquals(gatewayId, target.getName());
+		assertEquals(gatewayPsk, target.getSecurityToken());
 	}
 
 	@DisplayName("register(200): with rsa")
@@ -143,9 +154,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		var tenant = data.tenant("inoa");
 		var auth = auth(tenant);
 
-		var vo = new RegisterVO()
-				.gatewayId(data.gatewayId())
-				.credentialType(CredentialTypeVO.RSA)
+		var vo = new RegisterVO().gatewayId(data.gatewayId()).credentialType(CredentialTypeVO.RSA)
 				.credentialValue(UUID.randomUUID().toString().getBytes());
 		assert204(() -> client.register(vo));
 
@@ -179,9 +188,7 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	@DisplayName("register(400): gatewayId is invalid")
 	@Test
 	public void register400GatewayIdInvalid() {
-		var vo = new RegisterVO()
-				.gatewayId("NOPE")
-				.credentialType(CredentialTypeVO.PSK)
+		var vo = new RegisterVO().gatewayId("NOPE").credentialType(CredentialTypeVO.PSK)
 				.credentialValue(UUID.randomUUID().toString().getBytes());
 		var tenant = data.tenant("inoa");
 		var error = assert400(() -> client.register(vo));
@@ -192,16 +199,15 @@ public class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 	@DisplayName("register(400): rsa key invalid")
 	@Disabled("NYI")
 	@Test
-	public void register400KeyInvalid() {}
+	public void register400KeyInvalid() {
+	}
 
 	@DisplayName("register(409): gatewayId already registered")
 	@Test
 	@Override
 	public void register409() {
 		data.tenant("inoa");
-		var vo = new RegisterVO()
-				.gatewayId(data.gateway().getGatewayId())
-				.credentialType(CredentialTypeVO.PSK)
+		var vo = new RegisterVO().gatewayId(data.gateway().getGatewayId()).credentialType(CredentialTypeVO.PSK)
 				.credentialValue(UUID.randomUUID().toString().getBytes());
 		assert409(() -> client.register(vo));
 	}
