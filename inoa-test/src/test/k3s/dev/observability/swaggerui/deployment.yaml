@@ -44,6 +44,10 @@ spec:
               mountPath: /usr/share/nginx/html/inoa-fleet-api.yaml
               subPath: inoa-fleet-api.yaml
               readOnly: true
+            - name: spec
+              mountPath: /usr/share/nginx/html/hawkbit-management-api.yaml
+              subPath: hawkbit-management-api.yaml
+              readOnly: true
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 0
       volumes:
