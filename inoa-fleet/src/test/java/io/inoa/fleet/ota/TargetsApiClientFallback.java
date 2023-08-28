@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import jakarta.inject.Singleton;
 import org.eclipse.hawkbit.api.TargetsApiClient;
 import org.eclipse.hawkbit.model.TargetSearchResponseItemVO;
 import org.eclipse.hawkbit.model.TargetsCreationRequestPartVO;
@@ -17,6 +16,7 @@ import io.micronaut.context.annotation.Primary;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.retry.annotation.Fallback;
+import jakarta.inject.Singleton;
 
 @Primary
 @Fallback
