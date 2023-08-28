@@ -775,7 +775,7 @@ components:
       minLength: 4
       maxLength: 20
       pattern: ^[A-Z][A-Z0-9\-_]{3,19}$
-      example: GW-00001
+      example: ISRL01-E0E2E6BCBAE4
     GatewayName:
       description: Human friendly description (can change).
       type: string
@@ -915,6 +915,7 @@ components:
       description: Value for credential.
       type: string
       format: binary
+      example: 'MTIzNDU2Nzg5MEFCQw=='
     Credential:
       properties:
         credential_id:
