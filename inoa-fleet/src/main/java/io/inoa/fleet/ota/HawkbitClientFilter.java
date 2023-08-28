@@ -20,7 +20,6 @@ public class HawkbitClientFilter implements HttpClientFilter {
 
 	@Override
 	public Publisher<? extends HttpResponse<?>> doFilter(MutableHttpRequest<?> request, ClientFilterChain chain) {
-		log.warn("Filter for Hawkbit is Active");
 		return chain
 				.proceed(request.basicAuth(properties.getHawkbit().getUser(), properties.getHawkbit().getPassword()));
 	}
