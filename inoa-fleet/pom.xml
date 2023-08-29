@@ -40,6 +40,10 @@
 			<artifactId>micronaut-cache-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.micronaut.cache</groupId>
 			<artifactId>micronaut-cache-caffeine</artifactId>
 			<scope>runtime</scope>
@@ -125,11 +129,6 @@
 		<dependency>
 			<groupId>io.micronaut.test</groupId>
 			<artifactId>micronaut-test-junit5</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-http-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -221,6 +220,10 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/inoa-fleet-api.yaml</inputSpec>
+							<packageName>io.inoa.fleet.api</packageName>
+							<apiPackage>io.inoa.fleet.api</apiPackage>
+							<modelPackage>io.inoa.fleet.model</modelPackage>
 							<configOptions>
 								<pageable>true</pageable>
 							</configOptions>
@@ -233,19 +236,33 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/inoa-fleet-api.yaml</inputSpec>
+							<packageName>io.inoa.fleet.api</packageName>
+							<apiPackage>io.inoa.fleet.api</apiPackage>
+							<modelPackage>io.inoa.fleet.model</modelPackage>
 							<configOptions>
 								<clientId>fleet</clientId>
 								<pageable>true</pageable>
+								<generateAuthentication>true</generateAuthentication>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-generate-hawkbit-management-clients</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/src/main/resources/openapi/hawkbit-management-api.yaml</inputSpec>
+							<apiPackage>org.eclipse.hawkbit.api</apiPackage>
+							<modelPackage>org.eclipse.hawkbit.model</modelPackage>
+							<configOptions>
+								<clientId>hawkbit</clientId>
 							</configOptions>
 						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<inputSpec>${project.basedir}/src/main/resources/openapi/inoa-fleet-api.yaml</inputSpec>
-					<packageName>io.inoa.fleet.api</packageName>
-					<apiPackage>io.inoa.fleet.api</apiPackage>
-					<modelPackage>io.inoa.fleet.model</modelPackage>
-				</configuration>
 			</plugin>
 
 			<!-- configure annotation processors -->

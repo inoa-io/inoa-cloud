@@ -12,6 +12,7 @@ import org.slf4j.MDC;
 import io.inoa.fleet.api.GatewayApi;
 import io.inoa.fleet.model.CredentialTypeVO;
 import io.inoa.fleet.model.RegisterVO;
+import io.inoa.fleet.ota.OTAService;
 import io.inoa.fleet.registry.domain.Credential;
 import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
@@ -47,12 +48,21 @@ public class GatewayController implements GatewayApi {
 	private final GatewayRepository gatewayRepository;
 	private final CredentialRepository credentialRepository;
 
+	private final OTAService otaService;
+
 	@Secured(SecurityRule.IS_AUTHENTICATED)
 	@Override
 	public HttpResponse<Map<String, Object>> getConfiguration() {
 		return HttpResponse.ok(mapper.toConfigurationMap(service.findByGateway(security.getGateway())));
 	}
 
+	/**
+	 * This method is periodically called by all gateways. They do not check if they
+	 * are already registered - this would cause a similar load anyway.
+	 *
+	 * @param vo the {@link RegisterVO}
+	 * @return {@link HttpResponse}
+	 */
 	@Secured(SecurityRule.IS_ANONYMOUS)
 	@Override
 	public HttpResponse<Object> register(@Valid RegisterVO vo) {
@@ -64,29 +74,36 @@ public class GatewayController implements GatewayApi {
 			MDC.put("tenantId", tenant.getTenantId());
 			MDC.put("gatewayId", vo.getGatewayId());
 
-			var gatewayIdPattern = tenant.getGatewayIdPattern();
-			if (!Pattern.matches(gatewayIdPattern, vo.getGatewayId())) {
-				throw new HttpStatusException(HttpStatus.BAD_REQUEST, "GatewayId must match " + gatewayIdPattern + ".");
+			// Fail on bad ID
+			if (!Pattern.matches(tenant.getGatewayIdPattern(), vo.getGatewayId())) {
+				throw new HttpStatusException(HttpStatus.BAD_REQUEST,
+						"GatewayId must match " + tenant.getGatewayIdPattern() + ".");
 			}
+
+			// Register Gateway for OTA
+			try {
+				if (!otaService.checkGatewayRegistered(vo.getGatewayId())) {
+					otaService.registerGateway(vo.getGatewayId(), new String(vo.getCredentialValue()));
+				}
+			} catch (IllegalStateException e) {
+				// We do not stop here, but just log the error to at least register the gateway
+				// in database
+				log.error("Unable to register gateway in Hawkbit.", e);
+			}
+
+			// Fail if Gateway is already in database
 			if (gatewayRepository.findByGatewayId(vo.getGatewayId()).isPresent()) {
 				throw new HttpStatusException(HttpStatus.CONFLICT, "GatewayId already exists.");
 			}
 
-			var gateway = gatewayRepository.save(new Gateway()
-					.setTenant(tenant)
-					.setGatewayId(vo.getGatewayId())
-					.setEnabled(false)
-					.setGroups(List.of())
+			var gateway = gatewayRepository.save(new Gateway().setTenant(tenant).setGatewayId(vo.getGatewayId())
+					.setEnabled(false).setGroups(List.of())
 					.setStatus(new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));
-			credentialRepository.save(new Credential()
-					.setCredentialId(UUID.randomUUID())
-					.setGateway(gateway)
-					.setEnabled(true)
-					.setName("initial")
-					.setType(CredentialTypeVO.valueOf(vo.getCredentialType().name()))
-					.setValue(vo.getCredentialValue()));
+			credentialRepository
+					.save(new Credential().setCredentialId(UUID.randomUUID()).setGateway(gateway).setEnabled(true)
+							.setName("initial").setType(CredentialTypeVO.valueOf(vo.getCredentialType().name()))
+							.setValue(vo.getCredentialValue()));
 			log.info("Gateway registered: {}", gateway);
-
 		} finally {
 			MDC.remove("tenantId");
 			MDC.remove("gatewayId");
