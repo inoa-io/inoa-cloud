@@ -24,6 +24,7 @@ public class ApplicationProperties {
 	private SecurityProperties security = new SecurityProperties();
 	private TenantProperties tenant = new TenantProperties();
 	private GatewayProperties gateway = new GatewayProperties();
+	private HawkbitProperties hawkbit = new HawkbitProperties();
 
 	/** Micronaut security related properties. */
 	@ConfigurationProperties("security")
@@ -113,5 +114,19 @@ public class ApplicationProperties {
 						.setPattern(pattern);
 			}
 		}
+	}
+
+	@ConfigurationProperties("hawkbit")
+	@Getter
+	@Setter
+	public static class HawkbitProperties {
+
+		/** User for Hawkbit Management UI */
+		@NotNull
+		private String user = "admin";
+
+		/** Password for Hawkbit Management UI */
+		@NotNull
+		private String password = "admin";
 	}
 }

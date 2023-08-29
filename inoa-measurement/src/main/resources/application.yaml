@@ -21,6 +21,8 @@ micronaut:
           - POST
           - PUT
           - DELETE
+          - FETCH
+          - OPTIONS
 
   security:
     ## see https://micronaut-projects.github.io/micronaut-security/latest/guide/#interceptUrlMap

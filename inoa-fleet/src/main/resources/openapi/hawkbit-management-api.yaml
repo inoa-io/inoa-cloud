@@ -1,0 +1,749 @@
+openapi: 3.0.2
+info:
+  title: Hawkbit Management API
+  description: |
+    The Management API is a RESTful API that enables to perform Create/Read/Update/Delete operations for provisioning targets (i.e. devices) and repository content (i.e. software).
+    Based on the Management API you can manage and monitor software update operations via HTTP/HTTPS. The Management API supports JSON payload with hypermedia as well as filtering, sorting and paging. Furthermore the Management API provides permission based access control and standard roles as well as custom role creation.
+    See: https://eclipse.dev/hawkbit/apis/management_api/
+  version: 1.0.0
+  license:
+    name: Apache License 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0
+  contact:
+    name: inoa.io
+    url: https://github.com/inoa-io
+servers:
+  - url: http://hawkbit.127.0.0.1.nip.io:8080
+    description: 'Local development server.'
+
+security:
+  - basicAuth: []
+  - bearerAuth: []
+
+tags:
+  - name: Software Modules
+    description: Management of software modules
+  - name: Targets
+    description: Management of targets (gateways)
+
+paths:
+  /rest/v1/targets:
+    get:
+      tags:
+        - Targets
+      summary: Handles the GET request of retrieving all targets within Hawkbit.
+      operationId: getTargets
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/q'
+      responses:
+        200:
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetsSearchResponse'
+        400:
+          description: Bad Request - e.g. invalid parameters
+        401:
+          description: The request requires user authentication.
+        403:
+          description: Insufficient permissions, entity is not allowed to be changed (i.e. read-only) or data volume restriction applies.
+        405:
+          description: The http request method is not allowed on the resource.
+        406:
+          description: In case accept header is specified and not application/json.
+        429:
+          description: Too many requests. The server will refuse further attempts and the client has to wait another second.
+    post:
+      tags:
+        - Targets
+      summary: Handles the POST request of creating new targets within Hawkbit. The request body must always be a list of targets.
+      operationId: createTargets
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TargetsCreationRequest'
+      responses:
+        201:
+          description: Targets created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetsCreationResponse'
+        400:
+          description: Bad Request - e.g. invalid parameters
+        401:
+          description: The request requires user authentication.
+        403:
+          description: Insufficient permissions, entity is not allowed to be changed (i.e. read-only) or data volume restriction applies.
+        405:
+          description: The http request method is not allowed on the resource.
+        406:
+          description: In case accept header is specified and not application/json.
+        409:
+          description: E.g. in case an entity is created or modified by another user in another request at the same time. You may retry your modification request.
+        415:
+          description: The request was attempt with a media-type which is not supported by the server for this resource.
+        429:
+          description: Too many requests. The server will refuse further attempts and the client has to wait another second.
+  /rest/v1/targets/{target_id}:
+    parameters:
+      - name: target_id
+        description: Id of the target (gateway)
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - Targets
+      summary: Handles the GET request of retrieving a single target within Hawkbit.
+      operationId: getTarget
+      responses:
+        200:
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TargetSearchResponseItem'
+        400:
+          description: Bad Request - e.g. invalid parameters
+        401:
+          description: The request requires user authentication.
+        403:
+          description: Insufficient permissions, entity is not allowed to be changed (i.e. read-only) or data volume restriction applies.
+        404:
+          description: Target not found.
+        405:
+          description: The http request method is not allowed on the resource.
+        406:
+          description: In case accept header is specified and not application/json.
+        429:
+          description: Too many requests. The server will refuse further attempts and the client has to wait another second.
+  /rest/v1/softwaremodules:
+    get:
+      tags:
+        - Software Modules
+      summary: Handles the GET request of retrieving all softwaremodules within SP
+      operationId: getSoftwaremodules
+      parameters:
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/offset'
+        - $ref: '#/components/parameters/q'
+      responses:
+        200:
+          description: operation successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoftwaremoduleSearchResponse'
+        400:
+          description: Bad Request - e.g. invalid parameters
+        401:
+          description: The request requires user authentication.
+        403:
+          description: Insufficient permissions, entity is not allowed to be changed (i.e. read-only) or data volume restriction applies.
+        405:
+          description: The http request method is not allowed on the resource.
+        406:
+          description: In case accept header is specified and not application/json.
+        429:
+          description: Too many requests. The server will refuse further attempts and the client has to wait another second.
+    post:
+      tags:
+        - Software Modules
+      summary: Handles the POST request of creating new software modules within SP. The request body must always be a list of modules
+      operationId: createSoftwaremodule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SoftwaremoduleCreationRequest'
+      responses:
+        201:
+          description: Softwaremodule created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SoftwaremoduleCreationResponse'
+        400:
+          description: Bad Request - e.g. invalid parameters
+        401:
+          description: The request requires user authentication.
+        403:
+          description: Insufficient permissions, entity is not allowed to be changed (i.e. read-only) or data volume restriction applies.
+        404:
+          description: Not Found Software Module.
+        405:
+          description: The http request method is not allowed on the resource.
+        406:
+          description: In case accept header is specified and not application/json.
+        415:
+          description: The request was attempt with a media-type which is not supported by the server for this resource.
+        429:
+          description: Too many requests. The server will refuse further attempts and the client has to wait another second.
+  /rest/v1/softwaremodules/{software_module_id}/artifacts:
+    parameters:
+      - name: software_module_id
+        description: Id of the software module
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+          minimum: 0
+        example: 42
+    post:
+      tags:
+        - Software Modules
+      summary: Handles POST request for artifact upload
+      operationId: uploadArtifact
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: string
+                  description: Filename of the artifact
+                file:
+                  type: string
+                  format: binary
+                  description: Binary of file
+                md5sum:
+                  type: string
+                  description: MD5 hash of the artifact
+                sha1sum:
+                  type: string
+                  description: SHA1 hash of the artifact
+      responses:
+        201:
+          description: Softwaremodule created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtifactUploadResponse'
+        400:
+          description: Bad Request - e.g. invalid parameters
+        401:
+          description: The request requires user authentication.
+        403:
+          description: Insufficient permissions, entity is not allowed to be changed (i.e. read-only) or data volume restriction applies.
+        404:
+          description: Not Found Software Module.
+        405:
+          description: The http request method is not allowed on the resource.
+        406:
+          description: In case accept header is specified and not application/json.
+        415:
+          description: The request was attempt with a media-type which is not supported by the server for this resource.
+        429:
+          description: Too many requests. The server will refuse further attempts and the client has to wait another second.
+
+
+  /rest/v1/distributionsets:
+    post:
+      tags:
+        - Distribution Sets
+      summary: Handles the POST request of creating new distribution sets within SP. The request body must always be a list of sets
+      operationId: createDistributionSet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistributionSetCreationRequest'
+      responses:
+        201:
+          description: DistributionSet created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DistributionSetCreationResponse'
+        400:
+          description: Bad Request - e.g. invalid parameters
+        401:
+          description: The request requires user authentication.
+        403:
+          description: Insufficient permissions, entity is not allowed to be changed (i.e. read-only) or data volume restriction applies.
+        405:
+          description: The http request method is not allowed on the resource.
+        406:
+          description: In case accept header is specified and not application/json.
+        409:
+          description: E.g. in case an entity is created or modified by another user in another request at the same time. You may retry your modification request.
+        415:
+          description: The request was attempt with a media-type which is not supported by the server for this resource.
+        429:
+          description: Too many requests. The server will refuse further attempts and the client has to wait another second.
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    TargetsSearchResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        "total":
+          type: integer
+          description: Total number of elements
+        "size":
+          type: integer
+          description: Current page size
+        "content":
+          type: array
+          description: List of software modules
+          items:
+            $ref: '#/components/schemas/TargetSearchResponseItem'
+    TargetsCreationRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/TargetsCreationRequestPart'
+    TargetsCreationRequestPart:
+      type: object
+      additionalProperties: false
+      properties:
+        "controllerId":
+          type: string
+          description: The technical identifier of the entity
+        "name":
+          type: string
+          description: The name of the entity
+        "description":
+          type: string
+          description: The description of the entity
+        "address":
+          type: string
+          description: The last known address URI of the target. Includes information of the target is connected either directly (DDI) through HTTP or indirectly (DMF) through amqp.
+        "securityToken":
+          type: string
+          description: Pre-Shared key that allows targets to authenticate at Direct Device Integration API if enabled in the tenant settings.
+        "targetType":
+          type: number
+          description: ID of the target type
+      required:
+        - controllerId
+        - name
+    TargetsCreationResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/TargetsCreationResponsePart'
+    TargetsCreationResponsePart:
+      type: object
+      additionalProperties: false
+      properties:
+        "controllerId":
+          type: string
+          description: The technical identifier of the entity
+        "name":
+          type: string
+          description: The name of the entity
+        "description":
+          type: string
+          description: The description of the entity
+        "address":
+          type: string
+          description: The last known address URI of the target. Includes information of the target is connected either directly (DDI) through HTTP or indirectly (DMF) through amqp.
+        "createdBy":
+          type: string
+          description: Entity was originally created by (User, AMQP-Controller, anonymous etc.)
+        "lastModifiedBy":
+          type: string
+          description: Entity was last modified by (User, AMQP-Controller, anonymous etc.)
+        "lastModifiedAt":
+          type: number
+          description: Entity was last modified at (timestamp UTC in milliseconds)
+        "ipAddress":
+          type: string
+          description: Last known IP address of the target. Only presented if IP address of the target itself is known (connected directly through DDI API).
+        "createdAt":
+          type: number
+          description: Entity was originally created at (timestamp UTC in milliseconds)
+        "updateStatus":
+          type: string
+          enum:
+            - error
+            - in_sync
+            - pending
+            - registered
+            - unknown
+          description: Current update status of the target.
+        "securityToken":
+          type: string
+          description: Pre-Shared key that allows targets to authenticate at Direct Device Integration API if enabled in the tenant settings.
+        "requestAttributes":
+          type: boolean
+          description: Request re-transmission of target attributes.
+        "autoConfirmActive":
+          type: boolean
+          description: Present if user consent flow active. Indicates if auto-confirm is active
+        "targetType":
+          type: number
+          description: ID of the target type
+        "targetTypeName":
+          type: string
+          description: Name of the target type
+    TargetSearchResponseItem:
+      type: object
+      additionalProperties: false
+      properties:
+        "controllerId":
+          type: string
+          description: The technical identifier of the entity
+        "name":
+          type: string
+          description: The name of the entity
+        "description":
+          type: string
+          description: The description of the entity
+        "securityToken":
+          type: string
+          description: Pre-Shared key that allows targets to authenticate at Direct Device Integration API if enabled in the tenant settings.
+        "updateStatus":
+          type: string
+          enum:
+            - error
+            - in_sync
+            - pending
+            - registered
+            - unknown
+        "address":
+          type: string
+          description: The last known address URI of the target. Includes information of the target is connected either directly (DDI) through HTTP or indirectly (DMF) through amqp.
+        "ipAddress":
+          type: string
+          description: Last known IP address of the target. Only presented if IP address of the target itself is known (connected directly through DDI API).
+        "lastControllerRequestAt":
+          type: number
+          description: Last time where the target polled the server, same as pollStatus.lastRequestAt.
+        "requestAttributes":
+          type: boolean
+          description: Request re-transmission of target attributes.
+        "autoConfirmActive":
+          type: boolean
+          description: Present if user consent flow active. Indicates if auto-confirm is active.
+        "installedAt":
+          type: number
+          description: Installation time of current installed DistributionSet.
+        "createdBy":
+          type: string
+          description: Entity was originally created by User, AMQP-Controller, anonymous etc.)
+        "createdAt":
+          type: number
+          description: Entity was originally created at (timestamp UTC in milliseconds)
+        "lastModifiedBy":
+          type: string
+          description: Entity was last modified by User, AMQP-Controller, anonymous etc.)
+        "targetType":
+          type: string
+          description: The software module type of the entity
+    SoftwaremoduleSearchResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        "total":
+          type: integer
+          description: Total number of elements
+        "size":
+          type: integer
+          description: Current page size
+        "content":
+          type: array
+          description: List of software modules
+          items:
+            $ref: '#/components/schemas/SoftwaremoduleSearchResponseItem'
+    SoftwaremoduleSearchResponseItem:
+      type: object
+      additionalProperties: false
+      properties:
+        "id":
+          type: number
+          description: The technical identifier of the entity
+        "name":
+          type: string
+          description: The name of the entity
+        "vendor":
+          type: string
+          description: The software vendor
+        "createdBy":
+          type: string
+          description: Entity was originally created by User, AMQP-Controller, anonymous etc.)
+        "createdAt":
+          type: number
+          description: Entity was originally created at (timestamp UTC in milliseconds)
+        "lastModifiedBy":
+          type: string
+          description: Entity was last modified by User, AMQP-Controller, anonymous etc.)
+        "type":
+          type: string
+          description: The software module type of the entity
+        "version":
+          type: string
+          description: Package version
+    SoftwaremoduleCreationRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/SoftwaremoduleCreatetionRequestPart'
+    SoftwaremoduleCreatetionRequestPart:
+      type: object
+      additionalProperties: false
+      properties:
+        "name":
+          type: string
+          description: The name of the entity
+        "description":
+          type: string
+          description: The description of the entity
+        "version":
+          type: string
+          description: Package version
+        "vendor":
+          type: string
+          description: The software vendor
+        "type":
+          type: string
+          description: The type of the software module identified by its key
+      required:
+        - name
+        - version
+        - type
+    SoftwaremoduleCreationResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/SoftwaremoduleCreatetionResponsePart'
+    SoftwaremoduleCreatetionResponsePart:
+      type: object
+      additionalProperties: false
+      properties:
+        "id":
+          type: integer
+          description: The technical identifier of the entity
+        "name":
+          type: string
+          description: The name of the entity
+        "description":
+          type: string
+          description: The description of the entity
+        "version":
+          type: string
+          description: Package version
+        "vendor":
+          type: string
+          description: The software vendor
+        "type":
+          type: string
+          description: The type of the software module identified by its key
+        "deleted":
+          type: boolean
+          description: Deleted flag, used for soft deleted entities
+        "createdBy":
+          type: string
+          description: Entity was originally created by User, AMQP-Controller, anonymous etc.)
+        "createdAt":
+          type: integer
+          description: Entity was originally created at (timestamp UTC in milliseconds)
+        "lastModifiedBy":
+          type: string
+          description: Entity was last modified by User, AMQP-Controller, anonymous etc.)
+        "lastModifiedAt":
+          type: integer
+          description: Entity was last modified at (timestamp UTC in milliseconds)
+    DistributionSetCreationRequest:
+      type: array
+      items:
+        $ref: '#/components/schemas/DistributionSetCreationRequestPart'
+    DistributionSetCreationRequestPart:
+      type: object
+      additionalProperties: false
+      properties:
+        "name":
+          type: string
+          description: The name of the entity
+        "description":
+          type: string
+          description: The description of the entity
+        "version":
+          type: string
+          description: Package version
+        "requiredMigrationStep":
+          type: boolean
+          description: |
+            True if DS is a required migration step for another DS. As a result the DS’s assignment will not be cancelled when another DS is assigned (updatable only if DS is not yet assigned to a target)
+        "type":
+          type: string
+          description: The type of the distribution set
+        "modules":
+          type: array
+          description: Software Modules of this distribution set
+          items:
+            $ref: '#/components/schemas/DistributionSetModule'
+      required:
+        - name
+        - version
+        - description
+        - type
+    DistributionSetCreationResponse:
+      type: array
+      items:
+        $ref: '#/components/schemas/DistributionSetCreationResponsePart'
+    DistributionSetCreationResponsePart:
+      type: object
+      additionalProperties: false
+      properties:
+        "id":
+          type: integer
+          description: The technical identifier of the entity
+        "name":
+          type: string
+          description: The name of the entity
+        "description":
+          type: string
+          description: The description of the entity
+        "createdBy":
+          type: string
+          description: Entity was originally created by User, AMQP-Controller, anonymous etc.)
+        "createdAt":
+          type: integer
+          description: Entity was originally created at (timestamp UTC in milliseconds)
+        "lastModifiedBy":
+          type: string
+          description: Entity was last modified by User, AMQP-Controller, anonymous etc.)
+        "lastModifiedAt":
+          type: integer
+          description: Entity was last modified at (timestamp UTC in milliseconds)
+        "requiredMigrationStep":
+          type: boolean
+          description: |
+            True if DS is a required migration step for another DS. As a result the DS’s assignment will not be cancelled when another DS is assigned (updatable only if DS is not yet assigned to a target)
+        "type":
+          type: string
+          description: The type of the distribution set
+        "modules":
+          type: array
+          description: Software Modules of this distribution set
+          items:
+            $ref: '#/components/schemas/DistributionSetModule'
+    DistributionSetModule:
+      type: object
+      additionalProperties: false
+      properties:
+        "id":
+          type: integer
+          description: Technical Id of the software module
+    ArtifactUploadResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        "size":
+          type: integer
+          description: Size of the artifact
+        "id":
+          type: integer
+          description: The technical identifier of the entity
+        "createdBy":
+          type: string
+          description: Entity was originally created by User, AMQP-Controller, anonymous etc.)
+        "createdAt":
+          type: integer
+          description: Entity was originally created at (timestamp UTC in milliseconds)
+        "lastModifiedBy":
+          type: string
+          description: Entity was last modified by User, AMQP-Controller, anonymous etc.)
+        "lastModifiedAt":
+          type: integer
+          description: Entity was last modified at (timestamp UTC in milliseconds)
+        "_links":
+          type: object
+          description: Artifact links
+          additionalProperties: false
+          properties:
+            "self":
+              type: object
+              description: Self link of the artifact
+              additionalProperties: false
+              properties:
+                "href":
+                  type: string
+            "download":
+              type: object
+              description: Download link of the artifact
+              additionalProperties: false
+              properties:
+                "href":
+                  type: string
+        "hashes":
+          type: object
+          additionalProperties: false
+          properties:
+            "md5":
+              type: string
+              description: MD5 hash of the artifact
+            "sha1":
+              type: string
+              description: SHA1 hash of the artifact
+            "sha256":
+              type: string
+              description: SHA256 hash of the artifact
+        "providedFilename":
+          type: string
+          description: Filename of the artifact
+  parameters:
+    SoftwareModuleId:
+      description: Id of the software module
+      name: software_module_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 0
+      example: 42
+    limit:
+      description: The maximum number of entries in a page (default is 50).
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 50
+        minimum: 1
+      example: 10
+    offset:
+      description: The paging offset (default is 0).
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+      example: 0
+    sort:
+      description: The query parameter sort allows to define the sort order for the result of a query. A sort criteria consists of the name of a field and the sort direction (ASC for ascending and DESC descending). The sequence of the sort criteria (multiple can be used) defines the sort order of the entities in the result.
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+      example: 'version:ASC'
+    q:
+      description: Query fields based on the Feed Item Query Language (FIQL). See Entity Definitions for available fields.
+      name: query
+      in: query
+      required: false
+      schema:
+        type: string
+      example: 'name==SM*'

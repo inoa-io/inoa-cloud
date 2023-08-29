@@ -6,7 +6,7 @@ resources:
 configMapGenerator:
   - name: swaggerui-config
     literals:
-      - URLS=[{url:'/inoa-fleet-api.yaml',name:'Fleet'},{url:'/inoa-measurement-api.yaml',name:'Measurement'}]
+      - URLS=[{url:'/inoa-fleet-api.yaml',name:'Fleet'},{url:'/inoa-measurement-api.yaml',name:'Measurement'},{url:'/hawkbit-management-api.yaml',name:'Hawkbit Management API'}]
       - OAUTH_CLIENT_ID=inoa-swagger
       - DISPLAY_OPERATION_ID=true
       - DISPLAY_REQUEST_DURATION=true
@@ -21,3 +21,4 @@ configMapGenerator:
       # These files will be copied by Maven to target/k3s/dev/observability/swaggerui/files
       - files/inoa-fleet-api.yaml
       - files/inoa-measurement-api.yaml
+      - files/hawkbit-management-api.yaml

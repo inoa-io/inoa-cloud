@@ -131,7 +131,7 @@ public class ThingsController implements ThingsApi {
 		} catch (JsonProcessingException e) {
 			return HttpResponse.badRequest();
 		}
-		remoteApiClient.sendRpcCommand(DEFAULT_TENANT, gatewayId, command);
+		remoteApiClient.sendRpcCommand(gatewayId, command);
 		return HttpResponse.noContent();
 	}
 
@@ -139,12 +139,12 @@ public class ThingsController implements ThingsApi {
 	public HttpResponse<Object> syncConfigToGatewaySequential(@NonNull String gatewayId) {
 		// Clear all datapoints via RPC
 		var datapointClearCommand = new RpcCommandVO().id("1").method("dp.clear");
-		remoteApiClient.sendRpcCommand(DEFAULT_TENANT, gatewayId, datapointClearCommand);
+		remoteApiClient.sendRpcCommand(gatewayId, datapointClearCommand);
 		// Sequentially send datapoints via RPC
 		ArrayNode datapointsForThisThing = generateConfigForGateway(gatewayId);
 		for (var node : datapointsForThisThing) {
 			var datapointAddCommand = new RpcCommandVO().id("1").method("dp.add").params(node);
-			remoteApiClient.sendRpcCommand(DEFAULT_TENANT, gatewayId, datapointAddCommand);
+			remoteApiClient.sendRpcCommand(gatewayId, datapointAddCommand);
 		}
 		return HttpResponse.noContent();
 	}

@@ -50,16 +50,12 @@ spec:
           image: hawkbit/hawkbit-update-server:0.3.0M8
           imagePullPolicy: Never
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: postgresql
-            - name: RABBITMQ_SERVER_REQUIRED
-              value: "false"
-            - name: MANAGEMENT_SERVER_PORT
-              value: "9090"
-            - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres.infrastructure:5432/hawkbit
             - name: JAVA_TOOL_OPTIONS
               value: -XX:+UseStringDeduplication -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError
+            - name: SPRING_PROFILES_ACTIVE
+              value: postgresql
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres.infrastructure:5432/hawkbit
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 configMapKeyRef:
@@ -70,42 +66,22 @@ spec:
                 secretKeyRef:
                   name: hawkbit-environment
                   key: DATASOURCES_DEFAULT_PASSWORD
-            - name: SPRING_SECURITY_USER
-              value: admin
-            - name: SPRING_SECURITY_USER_NAME
-              value: admin
-            - name: SPRING_SECURITY_USER_PASSWORD
-              value: password
-            - name: HAWKBIT_SERVER_UI_DEMO_USER
-              value: admin
-            - name: HAWKBIT_SERVER_UI_DEMO_PASSWORD
-              value: password
-            - name: HAWKBIT_SERVER_UI_DEMO_TENANT
-              value: DEFAULT
-            - name: LOGGING_LEVEL_ROOT
-              value: INFO
-            - name: SERVER_SERVLET
-              value: /update/inoa
+            - name: HAWKBIT_DMF_RABBITMQ_ENABLED
+              value: "false"
+            - name: HAWKBIT_DMF_HONO_ENABLED
+              value: "false"
             - name: HAWKBIT_CONTROLLER_POLLINGTIME
               value: 00:10:00
             - name: HAWKBIT_CONTROLLER_POLLING_OVERDUE_TIME
               value: 00:05:00
             - name: HAWKBIT_SERVER_DDI_SECURITY_AUTHENTICATION_TARGETTOKEN_ENABLED
               value: "true"
-            - name: HAWKBIT_DMF_RABBITMQ_ENABLED
-              value: "false"
-            - name: HAWKBIT_DMF_HONO_ENABLED
-              value: "false"
             - name: HAWKBIT_SERVER_TENANT_CONFIGURATION_AUTHENTICATION-TARGETTOKEN-ENABLED_DEFAULTVALUE
               value: "true"
             - name: HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_REF
               value: http://{hostnameRequest}/update/inoa/controller/v1/{controllerId}/softwaremodules/{softwareModuleId}/artifacts/{artifactFileName}
-            - name: MANAGEMENT_ENDPOINT_HEALTH_PROBES_ENABLED
-              value: "true"
-            - name: MANAGEMENT_HEALTH_LIVENESSSTATE_ENABLED
-              value: "true"
-            - name: MANAGEMENT_HEALTH_READINESSSTATE_ENABLED
-              value: "true"
+            - name: LOGGING_LEVEL_ROOT
+              value: INFO
           ports:
             - name: http
               containerPort: 8080

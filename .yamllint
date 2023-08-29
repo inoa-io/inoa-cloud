@@ -27,6 +27,7 @@ rules:
       inoa-test/target/k3s/templates/swaggerui/files/inoa-measurement-api.yaml
       inoa-test/target/k3s/templates/swaggerui/files/inoa-fleet-api.yaml
       inoa-fleet/src/main/resources/openapi/inoa-fleet-api.yaml
+      inoa-fleet/src/main/resources/openapi/hawkbit-management-api.yaml
       inoa-measurement/src/main/resources/openapi/inoa-measurement-api.yaml
       inoa-fleet/src/test/resources/application-test.yaml
 
