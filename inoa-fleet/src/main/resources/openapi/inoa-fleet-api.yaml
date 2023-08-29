@@ -15,21 +15,119 @@ security:
   - Keycloak: []
   - BearerAuth: []
 tags:
+  - name: tenants
+    description: Tenants can be used to divide Inoa resources for different groups of interest
   - name: groups
-    description: Resources related to group management.
+    description: Groups are a logical structure to arrange gateways and their configuration
   - name: gateways
-    description: Resources related to gateway management.
+    description: Gateways are representations of IoT devices
   - name: credentials
-    description: Resources related to credential management.
+    description: Credential definitions, types and values
   - name: configuration
-    description: Resources related to configuration management.
+    description: Gateway configuration for system setup
   - name: gateway
     description: Resources accessible by the physical gateway.
   - name: properties
-    description: Resources related to property management.
+    description: Gateway properties.
   - name: remote
-    description: Resources related to remote control.
+    description: Remote control of gateways.
 paths:
+  /tenants:
+    get:
+      tags: [tenants]
+      summary: Find tenants
+      description: Returns all tenants ordered by name.
+      operationId: findTenants
+      responses:
+        200:
+          description: Sorted list of tenants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tenant'
+        401:
+          description: Unauthorized
+    post:
+      tags: [tenants]
+      summary: Create tenant
+      description: Create tenant.
+      operationId: createTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantCreate'
+      responses:
+        201:
+          description: Created tenant
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: Malformed
+        401:
+          description: Unauthorized
+        409:
+          description: Tenant with name already exists
+  /tenants/{tenant_id}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [tenants]
+      summary: Find tenant
+      description: Find tenant by id.
+      operationId: findTenant
+      responses:
+        200:
+          description: Tenant found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        401:
+          description: Unauthorized
+        404:
+          description: Tenant not found
+    patch:
+      tags: [tenants]
+      summary: Update tenant
+      description: Update tenant name.
+      operationId: updateTenant
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantUpdate'
+      responses:
+        200:
+          description: Tenant updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tenant'
+        400:
+          description: Malformed
+        401:
+          description: Unauthorized
+        404:
+          description: Tenant not found
+    delete:
+      tags: [tenants]
+      summary: Delete tenant
+      description: Delete tenant by id.
+      operationId: deleteTenant
+      responses:
+        204:
+          description: Tenant deleted
+        401:
+          description: Unauthorized
+        404:
+          description: Tenant not found
   /groups:
     get:
       tags: [groups]
@@ -758,11 +856,75 @@ components:
     ### Tenant
     ###
 
+    TenantName:
+      description: Name of a tenant.
+      type: string
+      minLength: 3
+      maxLength: 100
+      pattern: ^[a-zA-Z0-9\-\s]*$
+      example: GrayC
+    Tenant:
+      description: Representation of a tenant.
+      properties:
+        tenant_id:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          description: Is tenant enabled
+          type: boolean
+        gateway_id_pattern:
+          description: Regular expression to force specific gateway IDs for this tenant
+          type: string
+        created:
+          $ref: '#/components/schemas/Timestamp'
+        updated:
+          $ref: '#/components/schemas/Timestamp'
+        deleted:
+          $ref: '#/components/schemas/Timestamp'
+      required:
+        - tenant_id
+        - name
+        - enabled
+        - gateway_id_pattern
+        - created
+        - updated
+    TenantCreate:
+      description: Tenant to create.
+      type: object
+      properties:
+        tenant_id:
+          $ref: '#/components/schemas/TenantId'
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          description: Is tenant enabled
+          type: boolean
+        gateway_id_pattern:
+          description: Regular expression to force specific gateway IDs for this tenant
+          type: string
+      required:
+        - tenant_id
+        - name
+        - enabled
+        - gateway_id_pattern
+    TenantUpdate:
+      description: Group to update.
+      type: object
+      properties:
+        name:
+          $ref: '#/components/schemas/TenantName'
+        enabled:
+          description: Is tenant enabled
+          type: boolean
+        gateway_id_pattern:
+          description: Regular expression to force specific gateway IDs for this tenant
+          type: string
     TenantId:
       description: Id as tenant reference.
       type: string
       minLength: 1
-      maxLength: 32
+      maxLength: 30
       example: inoa
 
     ###
