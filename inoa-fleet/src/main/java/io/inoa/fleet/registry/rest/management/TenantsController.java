@@ -25,6 +25,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class TenantsController implements TenantsApi {
 
+	/**
+	 * Name of the default tenant that is already present in the database and cannot
+	 * be deleted. Reason is to have a tenant to which new gateways are configured
+	 * at self registration.
+	 */
+	public static final String DEFAULT_TENANT_ID = "inoa";
+
 	private final TenantRepository repository;
 	private final TenantMapper mapper;
 
@@ -98,6 +105,10 @@ public class TenantsController implements TenantsApi {
 
 		if (tenant.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Tenant does not exist.");
+		}
+
+		if (DEFAULT_TENANT_ID.equals(tenantId)) {
+			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "The default tenant cannot be deleted.");
 		}
 
 		var deletedTenant = tenant.get();

@@ -2,6 +2,7 @@ package io.inoa.fleet.registry.rest.management;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -29,16 +30,17 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Implementation of {@link CredentialsApi}.
+ * Implementation of {@link ConfigurationApi}.
  *
  * @author Stephan Schnabel
  */
 @Controller
 @RequiredArgsConstructor
-public class ConfigurationController implements ConfigurationApi {
+public class ConfigurationController extends AbstractManagementController implements ConfigurationApi {
 
 	private final Security security;
 	private final ConfigurationMapper mapper;
@@ -53,26 +55,28 @@ public class ConfigurationController implements ConfigurationApi {
 
 	@Override
 	public HttpResponse<List<ConfigurationDefinitionVO>> findConfigurationDefinitions() {
-		return HttpResponse.ok(mapper.toDefinitions(definitionRepository.findByTenantOrderByKey(security.getTenant())));
+		return HttpResponse.ok(
+				mapper.toDefinitions(definitionRepository.findByTenantInListOrderByKey(security.getGrantedTenants())));
 	}
 
 	@Override
-	public HttpResponse<ConfigurationDefinitionVO> createConfigurationDefinition(String key,
-			@Valid @ConfigurationDefinitionValid ConfigurationDefinitionVO vo) {
-		var tenant = security.getTenant();
+	public HttpResponse<ConfigurationDefinitionVO> createConfigurationDefinition(@NonNull String key,
+			@Valid @ConfigurationDefinitionValid ConfigurationDefinitionVO vo, @NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
 		if (!Objects.equals(key, vo.getKey())) {
 			throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Key in path differs from model.");
 		}
 		if (definitionRepository.existsByTenantAndKey(tenant, vo.getKey())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Key already exists.");
 		}
-		var definition = definitionRepository.save(mapper.toDefinition(vo).setTenant(tenant));
+		ConfigurationDefinition definition = definitionRepository.save(mapper.toDefinition(vo).setTenant(tenant));
 		return HttpResponse.created(mapper.toDefinition(definition));
 	}
 
 	@Override
-	public HttpResponse<Object> deleteConfigurationDefinition(String key) {
-		var optional = definitionRepository.findByTenantAndKey(security.getTenant(), key);
+	public HttpResponse<Object> deleteConfigurationDefinition(@NonNull String key, @NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
+		var optional = definitionRepository.findByTenantAndKey(tenant, key);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Definition not found.");
 		}
@@ -84,73 +88,72 @@ public class ConfigurationController implements ConfigurationApi {
 
 	@Override
 	public HttpResponse<List<ConfigurationVO>> findConfigurations() {
-		var tenant = security.getTenant();
-		var configurations = tenantConfigurationRepository.findByDefinitionTenant(tenant);
+		var tenants = security.getGrantedTenants();
+		var configurations = tenantConfigurationRepository.findByDefinitionTenantInList(tenants);
 		return HttpResponse.ok(mapper.toConfigurations(configurations));
 	}
 
 	@Override
-	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGroup(UUID groupId) {
-		var tenant = security.getTenant();
+	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGroup(@NonNull UUID groupId,
+			@NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
 		var group = getGroup(tenant, groupId);
 		var configurations = groupConfigurationRepository.findByGroup(group);
 		return HttpResponse.ok(mapper.toConfigurations(configurations));
 	}
 
 	@Override
-	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGateway(String gatewayId) {
-		var tenant = security.getTenant();
-		var gateway = getGateway(tenant, gatewayId);
+	public HttpResponse<List<ConfigurationVO>> findConfigurationsByGateway(@NonNull String gatewayId) {
+		var tenants = security.getGrantedTenants();
+		var gateway = getGateway(tenants, gatewayId);
 		var configurations = gatewayConfigurationRepository.findByGateway(gateway);
 		return HttpResponse.ok(mapper.toConfigurations(configurations));
 	}
 
 	@Override
-	public HttpResponse<Object> setConfiguration(String key, @Valid ConfigurationSetVO vo) {
-		var tenant = security.getTenant();
+	public HttpResponse<Object> setConfiguration(@NonNull String key, @Valid ConfigurationSetVO vo,
+			@NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
 		var definition = getConfigurationDefinition(tenant, key);
 		var value = mapper.toString(definition, vo.getValue());
 		tenantConfigurationRepository.findByDefinition(definition).ifPresentOrElse(
 				c -> tenantConfigurationRepository.update(definition.getId(), value),
-				() -> tenantConfigurationRepository.save(new TenantConfiguration()
-						.setDefinition(definition)
-						.setValue(value)));
+				() -> tenantConfigurationRepository
+						.save(new TenantConfiguration().setDefinition(definition).setValue(value)));
 		return HttpResponse.noContent();
 	}
 
 	@Override
-	public HttpResponse<Object> setConfigurationByGroup(UUID groupId, String key, @Valid ConfigurationSetVO vo) {
-		var tenant = security.getTenant();
+	public HttpResponse<Object> setConfigurationByGroup(@NonNull UUID groupId, @NonNull String key,
+			@Valid ConfigurationSetVO vo, @NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
 		var group = getGroup(tenant, groupId);
 		var definition = getConfigurationDefinition(tenant, key);
 		var value = mapper.toString(definition, vo.getValue());
 		groupConfigurationRepository.findByGroupAndDefinition(group, definition).ifPresentOrElse(
 				c -> groupConfigurationRepository.update(group.getId(), definition.getId(), value),
-				() -> groupConfigurationRepository.save(new GroupConfiguration()
-						.setGroup(group)
-						.setDefinition(definition)
-						.setValue(value)));
+				() -> groupConfigurationRepository
+						.save(new GroupConfiguration().setGroup(group).setDefinition(definition).setValue(value)));
 		return HttpResponse.noContent();
 	}
 
 	@Override
-	public HttpResponse<Object> setConfigurationByGateway(String gatewayId, String key, @Valid ConfigurationSetVO vo) {
-		var tenant = security.getTenant();
-		var gateway = getGateway(tenant, gatewayId);
-		var definition = getConfigurationDefinition(tenant, key);
+	public HttpResponse<Object> setConfigurationByGateway(@NonNull String gatewayId, @NonNull String key,
+			@Valid ConfigurationSetVO vo, @NonNull Optional<String> tenantId) {
+		var tenants = security.getGrantedTenants();
+		var gateway = getGateway(tenants, gatewayId);
+		var definition = getConfigurationDefinition(gateway.getTenant(), key);
 		var value = mapper.toString(definition, vo.getValue());
 		gatewayConfigurationRepository.findByGatewayAndDefinition(gateway, definition).ifPresentOrElse(
 				c -> gatewayConfigurationRepository.update(gateway.getId(), definition.getId(), value),
-				() -> gatewayConfigurationRepository.save(new GatewayConfiguration()
-						.setGateway(gateway)
-						.setDefinition(definition)
-						.setValue(value)));
+				() -> gatewayConfigurationRepository.save(
+						new GatewayConfiguration().setGateway(gateway).setDefinition(definition).setValue(value)));
 		return HttpResponse.noContent();
 	}
 
 	@Override
-	public HttpResponse<Object> resetConfiguration(String key) {
-		var tenant = security.getTenant();
+	public HttpResponse<Object> resetConfiguration(@NonNull String key, @NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
 		var definition = getConfigurationDefinition(tenant, key);
 		var configuration = tenantConfigurationRepository.findByDefinition(definition);
 		if (configuration.isEmpty()) {
@@ -161,8 +164,9 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<Object> resetConfigurationByGroup(UUID groupId, String key) {
-		var tenant = security.getTenant();
+	public HttpResponse<Object> resetConfigurationByGroup(@NonNull UUID groupId, @NonNull String key,
+			@NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
 		var group = getGroup(tenant, groupId);
 		var definition = getConfigurationDefinition(tenant, key);
 		var configuration = groupConfigurationRepository.findByGroupAndDefinition(group, definition);
@@ -174,10 +178,10 @@ public class ConfigurationController implements ConfigurationApi {
 	}
 
 	@Override
-	public HttpResponse<Object> resetConfigurationByGateway(String gatewayId, String key) {
-		var tenant = security.getTenant();
-		var gateway = getGateway(tenant, gatewayId);
-		var definition = getConfigurationDefinition(tenant, key);
+	public HttpResponse<Object> resetConfigurationByGateway(@NonNull String gatewayId, @NonNull String key) {
+		var tenants = security.getGrantedTenants();
+		var gateway = getGateway(tenants, gatewayId);
+		var definition = getConfigurationDefinition(gateway.getTenant(), key);
 		var configuration = gatewayConfigurationRepository.findByGatewayAndDefinition(gateway, definition);
 		if (configuration.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Configuration not found.");
@@ -202,8 +206,8 @@ public class ConfigurationController implements ConfigurationApi {
 		return optional.get();
 	}
 
-	private Gateway getGateway(Tenant tenant, String gatewayId) {
-		var optional = gatewayRepository.findByTenantAndGatewayId(tenant, gatewayId);
+	private Gateway getGateway(List<Tenant> tenants, String gatewayId) {
+		var optional = gatewayRepository.findByTenantInListAndGatewayId(tenants, gatewayId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
 		}

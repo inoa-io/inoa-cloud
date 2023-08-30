@@ -1,5 +1,7 @@
 package io.inoa.fleet.registry.rest.management;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -37,13 +39,19 @@ public class Security {
 		log.info("Configured whitelist audience: {}", properties.getSecurity().getTenantAudienceWhitelist());
 	}
 
-	Tenant getTenant() {
-		return tenantRepository
-				.findByTenantIdAndDeletedIsNull(getTenantId())
-				.orElseThrow(() -> new HttpStatusException(HttpStatus.UNAUTHORIZED, "Tenant from JWT not found."));
+	List<Tenant> getGrantedTenants() {
+		var tenants = new ArrayList<Tenant>();
+		for (String tenantId : getTenantIds()) {
+			var tenant = tenantRepository.findByTenantIdAndDeletedIsNull(tenantId);
+			if (tenant.isEmpty()) {
+				throw new HttpStatusException(HttpStatus.UNAUTHORIZED, "Tenant from JWT not found.");
+			}
+			tenants.add(tenant.get());
+		}
+		return tenants;
 	}
 
-	String getTenantId() {
+	List<String> getTenantIds() {
 
 		// get attributes
 
@@ -56,31 +64,29 @@ public class Security {
 		// read tenant from http header if audience claim is in whitelist
 
 		var audienceWhitelist = properties.getSecurity().getTenantAudienceWhitelist();
-		var audience = get(attributes, JwtClaims.AUDIENCE).filter(a -> audienceWhitelist.contains(a)).findFirst();
+		var audience = get(attributes, JwtClaims.AUDIENCE).filter(audienceWhitelist::contains).findFirst();
 		if (audience.isPresent()) {
-			var tenantId = ServerRequestContext.currentRequest()
-					.map(HttpRequest::getHeaders)
+			var tenantId = ServerRequestContext.currentRequest().map(HttpRequest::getHeaders)
 					.flatMap(headers -> headers.getFirst(properties.getSecurity().getTenantHeaderName()));
 			log.trace("Audience {} found in JWT with tenantId {}.", audience.get(), tenantId.orElse(null));
 			if (tenantId.isPresent()) {
-				return tenantId.get();
+				return Collections.singletonList(tenantId.get());
 			}
 		}
 
 		// read tenant from jwt claim
 
 		var claim = properties.getSecurity().getClaimTenants();
-		var tenantId = get(attributes, claim).findFirst();
-		if (tenantId.isEmpty()) {
+		var tenantGrants = get(attributes, claim).toList();
+		if (tenantGrants.isEmpty()) {
 			log.warn("Got request without claim '{}' for tenant.", claim);
 			throw new HttpStatusException(HttpStatus.UNAUTHORIZED, "Unable to obtain tenant claim from JWT.");
 		}
-		return tenantId.get();
+		return tenantGrants;
 	}
 
 	private Stream<String> get(Map<String, Object> attributes, String claim) {
-		return Stream
-				.ofNullable(attributes.get(claim))
+		return Stream.ofNullable(attributes.get(claim))
 				.flatMap(obj -> obj instanceof List ? List.class.cast(obj).stream() : Stream.of(obj))
 				.map(Object::toString);
 	}
