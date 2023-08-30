@@ -18,6 +18,8 @@ public interface TenantRepository extends CrudRepository<Tenant, Long> {
 
 	Optional<Tenant> findByTenantIdAndDeletedIsNull(String tenantId);
 
+	List<Tenant> findByTenantIdInListAndDeletedIsNull(List<String> tenantId);
+
 	Optional<Tenant> findByTenantId(String tenantId);
 
 	Boolean existsByTenantId(String tenantId);

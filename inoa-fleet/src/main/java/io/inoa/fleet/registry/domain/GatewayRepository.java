@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import io.micronaut.data.annotation.Join;
@@ -18,10 +19,14 @@ public interface GatewayRepository extends CrudRepository<Gateway, Long> {
 
 	Page<Gateway> findByTenant(Tenant tenant, Optional<String> filter, Pageable pageable);
 
+	Page<Gateway> findByTenantInList(List<Tenant> tenants, Optional<String> filter, Pageable pageable);
+
 	@Join("tenant")
 	Optional<Gateway> findByGatewayId(String gatewayId);
 
 	Optional<Gateway> findByTenantAndGatewayId(Tenant tenant, String gatewayId);
+
+	Optional<Gateway> findByTenantInListAndGatewayId(List<Tenant> tenant, String gatewayId);
 
 	Boolean existsByTenant(Tenant tenant);
 
