@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -65,11 +66,19 @@ public abstract class AbstractTest {
 		return auth(tenant.getTenantId());
 	}
 
+	public String auth(Tenant... tenants) {
+		return new JwtProvider(signature).builder().subject("admin").claim(properties.getSecurity().getClaimTenants(),
+				Arrays.stream(tenants).map(Tenant::getTenantId).collect(Collectors.toList())).toBearer();
+	}
+
 	public String auth(String tenantId) {
-		return new JwtProvider(signature).builder()
-				.subject("admin")
-				.claim(properties.getSecurity().getClaimTenants(), Collections.singleton(tenantId))
-				.toBearer();
+		return new JwtProvider(signature).builder().subject("admin")
+				.claim(properties.getSecurity().getClaimTenants(), Collections.singleton(tenantId)).toBearer();
+	}
+
+	public String auth(String... tenantIds) {
+		return new JwtProvider(signature).builder().subject("admin")
+				.claim(properties.getSecurity().getClaimTenants(), tenantIds).toBearer();
 	}
 
 	// asserts
@@ -97,8 +106,7 @@ public abstract class AbstractTest {
 		} else {
 			var violations = validator.validate(object);
 			assertTrue(violations.isEmpty(), () -> "validation failed with:" + violations.stream()
-					.map(v -> "\n\t" + v.getPropertyPath() + ": " + v.getMessage())
-					.collect(Collectors.joining()));
+					.map(v -> "\n\t" + v.getPropertyPath() + ": " + v.getMessage()).collect(Collectors.joining()));
 		}
 		return object;
 	}

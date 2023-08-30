@@ -3,6 +3,7 @@ package io.inoa.fleet.registry.rest.management;
 import static io.inoa.fleet.api.HttpResponseAssertions.assert204;
 import static io.inoa.fleet.api.HttpResponseAssertions.assert401;
 import static io.inoa.fleet.api.HttpResponseAssertions.assert409;
+import static io.inoa.fleet.registry.rest.management.TenantsController.DEFAULT_TENANT_ID;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -86,11 +87,18 @@ public class TenantApiTest extends AbstractTest implements TenantsApiTestSpec {
 		Assertions.assertEquals(1, tenants.size());
 	}
 
+	@Override
+	public void deleteTenant400() throws Exception {
+		var tenant = data.tenant();
+		var auth = auth(tenant);
+		assert400(() -> client.deleteTenant(auth, DEFAULT_TENANT_ID));
+	}
+
 	@DisplayName("deleteTenant -> 401: no token")
 	@Test
 	@Override
 	public void deleteTenant401() {
-		assert401(() -> client.deleteTenant(null, "inoa"));
+		assert401(() -> client.deleteTenant(null, DEFAULT_TENANT_ID));
 	}
 
 	@DisplayName("deleteTenant -> 404: not found")
@@ -116,7 +124,7 @@ public class TenantApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Test
 	@Override
 	public void findTenant401() {
-		assert401(() -> client.findTenant(null, "inoa"));
+		assert401(() -> client.findTenant(null, DEFAULT_TENANT_ID));
 	}
 
 	@DisplayName("findTenant -> 404: not found")
@@ -171,7 +179,7 @@ public class TenantApiTest extends AbstractTest implements TenantsApiTestSpec {
 	@Test
 	@Override
 	public void updateTenant401() {
-		assert401(() -> client.updateTenant(null, "inoa", new TenantUpdateVO()));
+		assert401(() -> client.updateTenant(null, DEFAULT_TENANT_ID, new TenantUpdateVO()));
 	}
 
 	@DisplayName("updateTenant -> 404: not found")
