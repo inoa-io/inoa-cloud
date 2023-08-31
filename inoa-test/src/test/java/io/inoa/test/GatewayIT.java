@@ -1,7 +1,6 @@
 package io.inoa.test;
 
-import static io.inoa.fleet.registry.rest.management.TenantsController.DEFAULT_TENANT_ID;
-import static io.inoa.junit.HttpAssertions.assert204;
+import static io.inoa.test.junit.HttpAssertions.assert204;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,28 +19,24 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.client.GatewayClientFactory.GatewayClient;
 import io.inoa.fleet.api.GatewayApiClient;
 import io.inoa.fleet.model.GatewayUpdateVO;
 import io.inoa.fleet.model.RegisterVO;
 import io.inoa.fleet.model.TelemetryRawVO;
-import io.inoa.junit.AbstractTest;
+import io.inoa.test.junit.AbstractTest;
 
 public class GatewayIT extends AbstractTest {
 
 	private static final String gatewayId = gatewayId();
 	private static final byte[] preSharedKey = UUID.randomUUID().toString().getBytes();
-	private static GatewayClient gatewayClient;
 
 	@DisplayName("1. self register gateway")
 	@Test
 	void register(GatewayApiClient gatewayApiClient) {
-
 		assert204(
 				() -> gatewayApiClient.register(new RegisterVO().gatewayId(gatewayId)
 						.credentialType(io.inoa.fleet.model.CredentialTypeVO.PSK).credentialValue(preSharedKey)),
 				"failed to register gateway");
-		gatewayClient = gatewayClientFactory.get(gatewayId, preSharedKey);
 
 		var gateway = registry.findGateway(gatewayId, DEFAULT_TENANT_ID);
 		assertEquals(gatewayId, gateway.getGatewayId(), "gatewayId");
@@ -62,6 +57,7 @@ public class GatewayIT extends AbstractTest {
 	@DisplayName("3. read configuration")
 	@Test
 	void getConfiguration() {
+		var gatewayClient = gatewayClientFactory.get(gatewayId, preSharedKey);
 		var expected = Map.of("mqtt.insecure", true, "mqtt.url", "ssl://127.0.0.1:8883", "ntp.host", "pool.ntp.org");
 		var actual = gatewayClient.getConfiguration();
 		assertEquals(expected, actual, "got invalid configuration");
@@ -70,7 +66,7 @@ public class GatewayIT extends AbstractTest {
 	@DisplayName("4. handle properties")
 	@Test
 	void setProperties() {
-
+		var gatewayClient = gatewayClientFactory.get(gatewayId, preSharedKey);
 		var properties = Map.of("aa", "1", "bb", "2");
 		assertEquals(properties, gatewayClient.setProperties(properties), "failed to set properties");
 		assertEquals(properties, gatewayClient.getProperties(), "invalid properties read from gateway endpoint");
@@ -81,7 +77,7 @@ public class GatewayIT extends AbstractTest {
 	@DisplayName("5. send telemetry")
 	@Test
 	void sendTelemetry() throws JsonProcessingException {
-
+		var gatewayClient = gatewayClientFactory.get(gatewayId, preSharedKey);
 		var timestamp = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 		var value = 4_000_000D;
 		var urn = "urn:satellite:" + gatewayId + ":memory_heap";

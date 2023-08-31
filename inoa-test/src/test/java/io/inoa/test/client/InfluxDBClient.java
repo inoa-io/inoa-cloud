@@ -1,4 +1,4 @@
-package io.inoa.client;
+package io.inoa.test.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.function.Executable;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
-import io.inoa.client.GatewayClientFactory.GatewayClient;
+import io.inoa.test.client.GatewayClientFactory.GatewayClient;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 

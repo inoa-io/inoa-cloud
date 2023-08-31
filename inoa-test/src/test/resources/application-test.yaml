@@ -3,6 +3,15 @@ micronaut:
   ## http clients for testing
   http:
     services:
+      fleet:
+        url: http://fleet.${test.host}
+        logger-name: io.inoa.k3s.Fleet
+      measurement:
+        url: http://measurement.${test.host}
+        logger-name: io.inoa.k3s.Measurement
+      hawkbit:
+        url: http://hawkbit.${test.host}
+        logger-name: io.inoa.k3s.Hawkbit
       grafana:
         url: http://grafana.${test.host}
         logger-name: io.inoa.k3s.Grafana

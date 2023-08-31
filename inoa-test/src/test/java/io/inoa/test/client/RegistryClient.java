@@ -1,6 +1,6 @@
-package io.inoa.client;
+package io.inoa.test.client;
 
-import static io.inoa.junit.HttpAssertions.assert200;
+import static io.inoa.test.junit.HttpAssertions.assert200;
 
 import io.inoa.fleet.api.GatewaysApiClient;
 import io.inoa.fleet.model.GatewayDetailVO;
