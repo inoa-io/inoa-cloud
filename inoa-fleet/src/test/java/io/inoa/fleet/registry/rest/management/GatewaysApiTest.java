@@ -192,7 +192,8 @@ class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec {
 		var tenant = data.tenant();
 		var tenant2 = data.tenant("anderer-tenant");
 		var expected = data.gateway(tenant);
-		var actual = assert200(() -> client.findGateway(auth(tenant, tenant2), expected.getGatewayId(), tenant.getTenantId()));
+		var actual = assert200(() -> client.findGateway(auth(tenant, tenant2), expected.getGatewayId(),
+				tenant.getTenantId()));
 		assertEquals(expected.getGatewayId(), actual.getGatewayId(), "gatewayId");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
