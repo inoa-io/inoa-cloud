@@ -1,5 +1,7 @@
 package io.inoa.fleet.registry.rest.gateway;
 
+import static io.inoa.fleet.registry.rest.management.TenantsController.DEFAULT_TENANT_ID;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -68,8 +70,11 @@ public class GatewayController implements GatewayApi {
 	public HttpResponse<Object> register(@Valid RegisterVO vo) {
 		try {
 
-			// TODO used fixed tenant, tenancy will be implemented later
-			var tenant = tenantRepository.findByTenantId("inoa").get();
+			// New gateways are always associated with the default tenant
+			var tenant = tenantRepository.findByTenantId(DEFAULT_TENANT_ID)
+					// This should never happen
+					.orElseThrow(() -> new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+							"Default tenant is missing."));
 
 			MDC.put("tenantId", tenant.getTenantId());
 			MDC.put("gatewayId", vo.getGatewayId());

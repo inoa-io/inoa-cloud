@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.rest.management;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class GroupsController implements GroupsApi {
+public class GroupsController extends AbstractManagementController implements GroupsApi {
 
 	private final Security security;
 	private final GroupMapper mapper;
@@ -35,17 +37,17 @@ public class GroupsController implements GroupsApi {
 
 	@Override
 	public HttpResponse<List<GroupVO>> findGroups() {
-		return HttpResponse.ok(mapper.toGroups(repository.findByTenantOrderByName(security.getTenant())));
+		return HttpResponse.ok(mapper.toGroups(repository.findByTenantInListOrderByName(security.getGrantedTenants())));
 	}
 
 	@Override
-	public HttpResponse<GroupVO> findGroup(UUID groupId) {
-		return HttpResponse.ok(mapper.toGroup(getGroup(groupId)));
+	public HttpResponse<GroupVO> findGroup(@NonNull UUID groupId, @NonNull Optional<String> tenantId) {
+		return HttpResponse.ok(mapper.toGroup(getGroup(groupId, tenantId)));
 	}
 
 	@Override
-	public HttpResponse<GroupVO> createGroup(@Valid GroupCreateVO vo) {
-		var tenant = security.getTenant();
+	public HttpResponse<GroupVO> createGroup(@Valid GroupCreateVO vo, @NonNull Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
 
 		if (repository.existsByTenantAndName(tenant, vo.getName())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
@@ -54,9 +56,7 @@ public class GroupsController implements GroupsApi {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "GroupId already exists.");
 		}
 
-		var group = repository.save(new Group()
-				.setTenant(tenant)
-				.setName(vo.getName())
+		Group group = repository.save(new Group().setTenant(tenant).setName(vo.getName())
 				.setGroupId(vo.getGroupId() == null ? UUID.randomUUID() : vo.getGroupId()));
 
 		log.info("Created group: {}", group);
@@ -64,10 +64,11 @@ public class GroupsController implements GroupsApi {
 	}
 
 	@Override
-	public HttpResponse<GroupVO> updateGroup(UUID groupId, @Valid GroupUpdateVO vo) {
+	public HttpResponse<GroupVO> updateGroup(@NonNull UUID groupId, @Valid GroupUpdateVO vo,
+			@NonNull Optional<String> tenantId) {
 
 		var changed = false;
-		var group = getGroup(groupId);
+		var group = getGroup(groupId, tenantId);
 
 		if (vo.getName() != null) {
 			if (group.getName().equals(vo.getName())) {
@@ -90,15 +91,16 @@ public class GroupsController implements GroupsApi {
 	}
 
 	@Override
-	public HttpResponse<Object> deleteGroup(UUID groupId) {
-		var group = getGroup(groupId);
+	public HttpResponse<Object> deleteGroup(@NonNull UUID groupId, @NonNull Optional<String> tenantId) {
+		var group = getGroup(groupId, tenantId);
 		repository.delete(group);
 		log.info("Group {} deleted.", group.getName());
 		return HttpResponse.noContent();
 	}
 
-	private Group getGroup(UUID groupId) {
-		var optional = repository.findByTenantAndGroupId(security.getTenant(), groupId);
+	private Group getGroup(UUID groupId, Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
+		var optional = repository.findByTenantAndGroupId(tenant, groupId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
 		}

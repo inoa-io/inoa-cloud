@@ -1,6 +1,6 @@
-package io.inoa.client;
+package io.inoa.test.client;
 
-import static io.inoa.junit.HttpAssertions.assert200;
+import static io.inoa.test.junit.HttpAssertions.assert200;
 
 import io.inoa.fleet.api.GatewaysApiClient;
 import io.inoa.fleet.model.GatewayDetailVO;
@@ -17,11 +17,12 @@ public class RegistryClient {
 	private final GatewaysApiClient gatewaysClient;
 
 	public GatewayDetailVO findGateway(String gatewayId) {
-		return assert200(() -> gatewaysClient.findGateway(keycloak.admin(), gatewayId), "faild to get gateway");
+		return assert200(() -> gatewaysClient.findGateway(keycloak.admin(), gatewayId, null),
+				"faild to get gateway");
 	}
 
-	public GatewayDetailVO update(String gatewayId, GatewayUpdateVO vo) {
-		return assert200(() -> gatewaysClient.updateGateway(keycloak.admin(), gatewayId, vo),
+	public GatewayDetailVO update(String gatewayId, GatewayUpdateVO gatewayUpdateVO) {
+		return assert200(() -> gatewaysClient.updateGateway(keycloak.admin(), gatewayId, gatewayUpdateVO, null),
 				"faild to update gateway");
 	}
 }

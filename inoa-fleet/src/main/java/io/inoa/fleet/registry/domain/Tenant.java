@@ -1,7 +1,10 @@
 package io.inoa.fleet.registry.domain;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
+import io.micronaut.data.annotation.DateCreated;
+import io.micronaut.data.annotation.DateUpdated;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
@@ -30,9 +33,9 @@ public class Tenant {
 	@MappedProperty
 	private String gatewayIdPattern;
 
-	@MappedProperty
+	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant created;
-	@MappedProperty
+	@DateUpdated(truncatedTo = ChronoUnit.MILLIS)
 	private Instant updated;
 	@MappedProperty
 	private Instant deleted;

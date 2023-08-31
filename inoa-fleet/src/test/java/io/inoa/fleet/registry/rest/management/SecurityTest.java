@@ -37,7 +37,7 @@ public class SecurityTest extends AbstractTest {
 	@Test
 	void getTenantIdSuccessAuthentication() {
 		ServerRequestContext.with(request("abc", null, null), (Runnable) () -> {
-			assertEquals("abc", security.getTenantId(), "tenantId");
+			assertEquals("abc", security.getTenantIds().iterator().next(), "tenantId");
 		});
 	}
 
@@ -45,7 +45,7 @@ public class SecurityTest extends AbstractTest {
 	@Test
 	void getTenantIdSuccessAusdienceSingle() {
 		ServerRequestContext.with(request(null, "test", "abc"), (Runnable) () -> {
-			assertEquals("abc", security.getTenantId(), "tenantId");
+			assertEquals("abc", security.getTenantIds().iterator().next(), "tenantId");
 		});
 	}
 
@@ -53,7 +53,7 @@ public class SecurityTest extends AbstractTest {
 	@Test
 	void getTenantIdSuccessAusdienceList() {
 		ServerRequestContext.with(request(null, List.of("nope", "test"), "abc"), (Runnable) () -> {
-			assertEquals("abc", security.getTenantId(), "tenantId");
+			assertEquals("abc", security.getTenantIds().iterator().next(), "tenantId");
 		});
 	}
 
@@ -62,7 +62,7 @@ public class SecurityTest extends AbstractTest {
 	void getTenantIdFailNoClaim() {
 		ServerRequestContext.with(request(null, null, null), (Runnable) () -> {
 			try {
-				security.getTenantId();
+				security.getTenantIds();
 				fail("without claim http status exception expected");
 			} catch (HttpStatusException e) {
 				assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus(), "status");
@@ -75,7 +75,7 @@ public class SecurityTest extends AbstractTest {
 	void getTenantIdFailNoTenantHeader() {
 		ServerRequestContext.with(request(null, "test", null), (Runnable) () -> {
 			try {
-				security.getTenantId();
+				security.getTenantIds();
 				fail("without claim http status exception expected");
 			} catch (HttpStatusException e) {
 				assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus(), "status");
@@ -88,7 +88,7 @@ public class SecurityTest extends AbstractTest {
 	void getTenantIdFailNoRequest() {
 		assertTrue(ServerRequestContext.currentRequest().isEmpty(), "request");
 		try {
-			security.getTenantId();
+			security.getTenantIds();
 			fail("without request http status exception expected");
 		} catch (HttpStatusException e) {
 			assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus(), "status");
@@ -100,7 +100,7 @@ public class SecurityTest extends AbstractTest {
 	void getTenantSuccess() {
 		var tenantId = data.tenant().getTenantId();
 		ServerRequestContext.with(request(tenantId, null, null), (Runnable) () -> {
-			assertEquals(tenantId, security.getTenant().getTenantId(), "tenantId");
+			assertEquals(tenantId, security.getGrantedTenants().iterator().next().getTenantId(), "tenantId");
 		});
 	}
 
@@ -109,7 +109,7 @@ public class SecurityTest extends AbstractTest {
 	void getTenantFailUnknown() {
 		ServerRequestContext.with(request("asdf", null, null), (Runnable) () -> {
 			try {
-				security.getTenant();
+				security.getGrantedTenants();
 				fail("without tenant http status exception expected");
 			} catch (HttpStatusException e) {
 				assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus(), "status");
@@ -123,7 +123,7 @@ public class SecurityTest extends AbstractTest {
 		var tenantId = data.tenant("inoa", true, true).getTenantId();
 		ServerRequestContext.with(request(tenantId, null, null), (Runnable) () -> {
 			try {
-				security.getTenant();
+				security.getGrantedTenants();
 				fail("without tenant http status exception expected");
 			} catch (HttpStatusException e) {
 				assertEquals(HttpStatus.UNAUTHORIZED, e.getStatus(), "status");

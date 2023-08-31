@@ -16,7 +16,11 @@ public interface ConfigurationDefinitionRepository extends CrudRepository<Config
 
 	List<ConfigurationDefinition> findByTenantOrderByKey(Tenant tenant);
 
+	List<ConfigurationDefinition> findByTenantInListOrderByKey(List<Tenant> tenant);
+
 	Optional<ConfigurationDefinition> findByTenantAndKey(Tenant tenant, String key);
 
 	boolean existsByTenantAndKey(Tenant tenant, String key);
+
+	boolean existsByTenantInListAndKey(List<Tenant> tenant, String key);
 }

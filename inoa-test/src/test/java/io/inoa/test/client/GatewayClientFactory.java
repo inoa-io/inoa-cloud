@@ -1,6 +1,6 @@
-package io.inoa.client;
+package io.inoa.test.client;
 
-import static io.inoa.junit.HttpAssertions.assert200;
+import static io.inoa.test.junit.HttpAssertions.assert200;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -17,7 +17,6 @@ import com.nimbusds.jwt.SignedJWT;
 
 import io.inoa.fleet.api.GatewayApiClient;
 import io.inoa.fleet.api.PropertiesApiClient;
-import io.inoa.fleet.broker.MqttServiceClient;
 import io.micronaut.http.HttpHeaderValues;
 import jakarta.inject.Singleton;
 import lombok.Getter;
@@ -44,17 +43,13 @@ public class GatewayClientFactory {
 		private final byte[] preSharedKey;
 
 		private String token;
-		private MqttServiceClient mqtt;
+		private MqttBrokerClient mqtt;
 
 		private String bearer() {
 			if (token == null) {
 				var now = Instant.now();
-				var claims = new JWTClaimsSet.Builder()
-						.audience("gateway-registry")
-						.jwtID(UUID.randomUUID().toString())
-						.issuer(gatewayId)
-						.issueTime(Date.from(now))
-						.notBeforeTime(Date.from(now))
+				var claims = new JWTClaimsSet.Builder().audience("gateway-registry").jwtID(UUID.randomUUID().toString())
+						.issuer(gatewayId).issueTime(Date.from(now)).notBeforeTime(Date.from(now))
 						.expirationTime(Date.from(now.plusSeconds(10)));
 				var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
 				assertDoesNotThrow(() -> jwt.sign(new MACSigner(preSharedKey)), "failed to sign gateway jwt");
@@ -79,12 +74,12 @@ public class GatewayClientFactory {
 
 		// mqtt
 
-		public MqttServiceClient mqtt() {
+		public MqttBrokerClient mqtt() {
 			if (mqtt == null) {
 				var mqttUrl = getConfiguration().get("mqtt.url");
 				assertNotNull(mqttUrl, "mqtt.url is null");
 				mqtt = assertDoesNotThrow(
-						() -> new MqttServiceClient(mqttUrl.toString(), "inoa", gatewayId, preSharedKey),
+						() -> new MqttBrokerClient(mqttUrl.toString(), "inoa", gatewayId, preSharedKey),
 						"failed to create hono mqtt client");
 			}
 			return mqtt;

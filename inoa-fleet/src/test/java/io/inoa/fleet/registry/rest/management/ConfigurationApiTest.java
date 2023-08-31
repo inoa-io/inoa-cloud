@@ -28,12 +28,12 @@ import io.inoa.fleet.registry.domain.ConfigurationDefinition;
 import jakarta.inject.Inject;
 
 /**
- * Test for {@link ConfigurationApi}.
+ * Test for {@link io.inoa.fleet.api.ConfigurationApi}.
  *
  * @author Stephan Schnabel
  */
 @DisplayName("management: configuration")
-public class ConfigurationApiTest extends AbstractTest implements ConfigurationApiTestSpec {
+class ConfigurationApiTest extends AbstractTest implements ConfigurationApiTestSpec {
 
 	@Inject
 	ConfigurationApiTestClient client;
@@ -71,7 +71,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var vo = new ConfigurationDefinitionUrlVO().key(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo)));
+		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo, null)));
 		assertEquals(List.of(vo), assert200(() -> client.findConfigurationDefinitions(auth)), "vo");
 	}
 
@@ -81,7 +81,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var vo = new ConfigurationDefinitionBooleanVO().key(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo)));
+		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo, null)));
 		assertEquals(List.of(vo), assert200(() -> client.findConfigurationDefinitions(auth)), "vo");
 	}
 
@@ -91,7 +91,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var vo = new ConfigurationDefinitionStringVO().key(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo)));
+		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo, null)));
 		assertEquals(List.of(vo), assert200(() -> client.findConfigurationDefinitions(auth)), "vo");
 	}
 
@@ -99,14 +99,10 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	@Test
 	public void createConfigurationDefinition201StringWithOptionalProperties() {
 		var tenant = data.tenant();
-		var vo = new ConfigurationDefinitionStringVO()
-				.minLength(10)
-				.maxLength(100)
-				.pattern("^a*$")
-				.key(UUID.randomUUID().toString())
-				.description(UUID.randomUUID().toString());
+		var vo = new ConfigurationDefinitionStringVO().minLength(10).maxLength(100).pattern("^a*$")
+				.key(UUID.randomUUID().toString()).description(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo)));
+		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo, null)));
 		assertEquals(List.of(vo), assert200(() -> client.findConfigurationDefinitions(auth)), "vo");
 	}
 
@@ -116,7 +112,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var vo = new ConfigurationDefinitionIntegerVO().key(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo)));
+		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo, null)));
 		assertEquals(List.of(vo), assert200(() -> client.findConfigurationDefinitions(auth)), "vo");
 	}
 
@@ -124,13 +120,10 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	@Test
 	public void createConfigurationDefinition201IntegerWithOptionalProperties() {
 		var tenant = data.tenant();
-		var vo = new ConfigurationDefinitionIntegerVO()
-				.minimum(-56000)
-				.maximum(-14)
-				.key(UUID.randomUUID().toString())
+		var vo = new ConfigurationDefinitionIntegerVO().minimum(-56000).maximum(-14).key(UUID.randomUUID().toString())
 				.description(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo)));
+		assertEquals(vo, assert201(() -> client.createConfigurationDefinition(auth, vo.getKey(), vo, null)));
 		assertEquals(List.of(vo), assert200(() -> client.findConfigurationDefinitions(auth)), "vo");
 	}
 
@@ -140,7 +133,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void createConfigurationDefinition400() {
 		var tenant = data.tenant();
 		var vo = new ConfigurationDefinitionStringVO().minLength(-1).key(UUID.randomUUID().toString());
-		assert400(() -> client.createConfigurationDefinition(auth(tenant), vo.getKey(), vo));
+		assert400(() -> client.createConfigurationDefinition(auth(tenant), vo.getKey(), vo, null));
 		assertEquals(0, data.countDefinitions(tenant), "created");
 	}
 
@@ -149,7 +142,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void createProject400CustomValidator() {
 		var tenant = data.tenant();
 		var vo = new ConfigurationDefinitionStringVO().pattern("{a}").key(UUID.randomUUID().toString());
-		assert400(() -> client.createConfigurationDefinition(auth(tenant), vo.getKey(), vo));
+		assert400(() -> client.createConfigurationDefinition(auth(tenant), vo.getKey(), vo, null));
 		assertEquals(0, data.countDefinitions(tenant), "created");
 	}
 
@@ -158,7 +151,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void createConfigurationDefinition400Key() {
 		var tenant = data.tenant();
 		var vo = new ConfigurationDefinitionStringVO().key(UUID.randomUUID().toString());
-		assert400(() -> client.createConfigurationDefinition(auth(tenant), UUID.randomUUID().toString(), vo));
+		assert400(() -> client.createConfigurationDefinition(auth(tenant), UUID.randomUUID().toString(), vo, null));
 		assertEquals(0, data.countDefinitions(tenant), "created");
 	}
 
@@ -168,7 +161,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void createConfigurationDefinition401() {
 		var key = UUID.randomUUID().toString();
 		var vo = new ConfigurationDefinitionStringVO().key(key);
-		assert401(() -> client.createConfigurationDefinition(null, key, vo));
+		assert401(() -> client.createConfigurationDefinition(null, key, vo, null));
 	}
 
 	@DisplayName("createConfigurationDefinition(409): key already in use")
@@ -179,7 +172,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var key = UUID.randomUUID().toString();
 		var vo = new ConfigurationDefinitionStringVO().key(key);
 		data.definition(tenant, key, ConfigurationTypeVO.STRING);
-		assert409(() -> client.createConfigurationDefinition(auth(tenant), key, vo));
+		assert409(() -> client.createConfigurationDefinition(auth(tenant), key, vo, null));
 		assertEquals(1, data.countDefinitions(tenant), "created");
 	}
 
@@ -189,8 +182,18 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void deleteConfigurationDefinition204() {
 		var tenant = data.tenant();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
-		assert204(() -> client.deleteConfigurationDefinition(auth(tenant), definition.getKey()));
+		assert204(() -> client.deleteConfigurationDefinition(auth(tenant), definition.getKey(), null));
 		assertEquals(0, data.countDefinitions(tenant), "not deleted");
+	}
+
+	@DisplayName("deleteConfigurationDefinition(400) ambiguous tenant")
+	@Test
+	@Override
+	public void deleteConfigurationDefinition400() {
+		var tenant1 = data.tenant();
+		var tenant2 = data.tenant("inoa");
+		var definition = data.definition(tenant1, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
+		assert400(() -> client.deleteConfigurationDefinition(auth(tenant1, tenant2), definition.getKey(), null));
 	}
 
 	@DisplayName("deleteConfigurationDefinition(204) with values")
@@ -203,7 +206,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		data.configuration(definition, UUID.randomUUID().toString());
 		data.configuration(group, definition, UUID.randomUUID().toString());
 		data.configuration(gateway, definition, UUID.randomUUID().toString());
-		assert204(() -> client.deleteConfigurationDefinition(auth(tenant), definition.getKey()));
+		assert204(() -> client.deleteConfigurationDefinition(auth(tenant), definition.getKey(), null));
 		assertEquals(0, data.countDefinitions(tenant), "not deleted");
 	}
 
@@ -213,7 +216,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void deleteConfigurationDefinition401() {
 		var tenant = data.tenant();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
-		assert401(() -> client.deleteConfigurationDefinition(null, definition.getKey()));
+		assert401(() -> client.deleteConfigurationDefinition(null, definition.getKey(), null));
 		assertEquals(1, data.countDefinitions(tenant), "deleted");
 	}
 
@@ -224,8 +227,9 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var message = "Definition not found.";
-		assert404(message, () -> client.deleteConfigurationDefinition(auth(tenant), UUID.randomUUID().toString()));
-		assert404(message, () -> client.deleteConfigurationDefinition(auth(data.tenant()), definition.getKey()));
+		assert404(message,
+				() -> client.deleteConfigurationDefinition(auth(tenant), UUID.randomUUID().toString(), null));
+		assert404(message, () -> client.deleteConfigurationDefinition(auth(data.tenant()), definition.getKey(), null));
 		assertEquals(1, data.countDefinitions(tenant), "deleted");
 	}
 
@@ -262,7 +266,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assert204(() -> client.setConfiguration(auth, definition.getKey(), vo));
+		assert204(() -> client.setConfiguration(auth, definition.getKey(), vo, null));
 		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurations(auth)));
 	}
 
@@ -274,7 +278,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		data.configuration(definition, UUID.randomUUID().toString());
 		var vo = new ConfigurationSetVO().value(1234526);
 		var auth = auth(tenant);
-		assert204(() -> client.setConfiguration(auth, definition.getKey(), vo));
+		assert204(() -> client.setConfiguration(auth, definition.getKey(), vo, null));
 		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurations(auth)));
 	}
 
@@ -286,7 +290,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(null);
 		var auth = auth(tenant);
-		assert400(() -> client.setConfiguration(auth, definition.getKey(), vo));
+		assert400(() -> client.setConfiguration(auth, definition.getKey(), vo, null));
 		assertTrue(assert200(() -> client.findConfigurations(auth)).isEmpty());
 	}
 
@@ -297,7 +301,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(1234526);
 		var auth = auth(tenant);
-		assert400(() -> client.setConfiguration(auth, definition.getKey(), vo));
+		assert400(() -> client.setConfiguration(auth, definition.getKey(), vo, null));
 		assertTrue(assert200(() -> client.findConfigurations(auth)).isEmpty());
 	}
 
@@ -308,7 +312,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
-		assert401(() -> client.setConfiguration(null, definition.getKey(), vo));
+		assert401(() -> client.setConfiguration(null, definition.getKey(), vo, null));
 		assertTrue(assert200(() -> client.findConfigurations(auth(tenant))).isEmpty());
 	}
 
@@ -320,8 +324,8 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
 		var message = "Definition not found.";
-		assert404(message, () -> client.setConfiguration(auth(tenant), UUID.randomUUID().toString(), vo));
-		assert404(message, () -> client.setConfiguration(auth(data.tenant()), definition.getKey(), vo));
+		assert404(message, () -> client.setConfiguration(auth(tenant), UUID.randomUUID().toString(), vo, null));
+		assert404(message, () -> client.setConfiguration(auth(data.tenant()), definition.getKey(), vo, null));
 		assertTrue(assert200(() -> client.findConfigurations(auth(tenant))).isEmpty());
 	}
 
@@ -332,8 +336,19 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		data.configuration(definition, UUID.randomUUID().toString());
-		assert204(() -> client.resetConfiguration(auth(tenant), definition.getKey()));
+		assert204(() -> client.resetConfiguration(auth(tenant), definition.getKey(), null));
 		assertTrue(assert200(() -> client.findConfigurations(auth(tenant))).isEmpty());
+	}
+
+	@DisplayName("resetConfiguration(400): ambiguous tenant")
+	@Test
+	@Override
+	public void resetConfiguration400() {
+		var tenant1 = data.tenant();
+		var tenant2 = data.tenant("inoa");
+		var definition = data.definition(tenant1, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
+		data.configuration(definition, UUID.randomUUID().toString());
+		assert400(() -> client.resetConfiguration(auth(tenant1, tenant2), definition.getKey(), null));
 	}
 
 	@DisplayName("resetConfiguration(401): no token")
@@ -343,7 +358,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		data.configuration(definition, UUID.randomUUID().toString());
-		assert401(() -> client.resetConfiguration(null, definition.getKey()));
+		assert401(() -> client.resetConfiguration(null, definition.getKey(), null));
 		assertFalse(assert200(() -> client.findConfigurations(auth(tenant))).isEmpty());
 	}
 
@@ -393,7 +408,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var integer = data.configuration(group, data.definition(tenant, "integer", ConfigurationTypeVO.INTEGER), "5");
 		var bool = data.configuration(group, data.definition(tenant, "boolean", ConfigurationTypeVO.BOOLEAN), "true");
 		var url = data.configuration(group, data.definition(tenant, "url", ConfigurationTypeVO.URL), "http://host");
-		var configurations = assert200(() -> client.findConfigurationsByGroup(auth(tenant), group.getGroupId()));
+		var configurations = assert200(() -> client.findConfigurationsByGroup(auth(tenant), group.getGroupId(), null));
 		assertEquals(4, configurations.size(), "size");
 		assertSorted(configurations);
 		assetValue("abcd", string.getDefinition(), configurations);
@@ -402,11 +417,21 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		assetValue("http://host", url.getDefinition(), configurations);
 	}
 
+	@DisplayName("findConfigurationsByGroup(400): ambiguous tenant")
+	@Test
+	@Override
+	public void findConfigurationsByGroup400() {
+		var tenant1 = data.tenant();
+		var tenant2 = data.tenant("inoa");
+		var group = data.group(tenant1);
+		assert400(() -> client.findConfigurationsByGroup(auth(tenant1, tenant2), group.getGroupId(), null));
+	}
+
 	@DisplayName("findConfigurationsByGroup(401): no token")
 	@Test
 	@Override
 	public void findConfigurationsByGroup401() {
-		assert401(() -> client.findConfigurationsByGroup(null, UUID.randomUUID()));
+		assert401(() -> client.findConfigurationsByGroup(null, UUID.randomUUID(), null));
 	}
 
 	@DisplayName("findConfigurationsByGroup(404): not found")
@@ -415,8 +440,8 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 	public void findConfigurationsByGroup404() {
 		var tenant = data.tenant();
 		var groupId = data.group(tenant).getGroupId();
-		assert404("Group not found.", () -> client.findConfigurationsByGroup(auth(tenant), UUID.randomUUID()));
-		assert404("Group not found.", () -> client.findConfigurationsByGroup(auth(data.tenant()), groupId));
+		assert404("Group not found.", () -> client.findConfigurationsByGroup(auth(tenant), UUID.randomUUID(), null));
+		assert404("Group not found.", () -> client.findConfigurationsByGroup(auth(data.tenant()), groupId, null));
 	}
 
 	@DisplayName("resetConfigurationByGateway(204): success")
@@ -453,8 +478,21 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var group = data.group(tenant);
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		data.configuration(group, definition, UUID.randomUUID().toString());
-		assert204(() -> client.resetConfigurationByGroup(auth(tenant), group.getGroupId(), definition.getKey()));
-		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth(tenant), group.getGroupId())).isEmpty());
+		assert204(() -> client.resetConfigurationByGroup(auth(tenant), group.getGroupId(), definition.getKey(), null));
+		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth(tenant), group.getGroupId(), null)).isEmpty());
+	}
+
+	@DisplayName("resetConfigurationByGroup(400): ambiguous tenant")
+	@Test
+	@Override
+	public void resetConfigurationByGroup400() {
+		var tenant1 = data.tenant();
+		var tenant2 = data.tenant("inoa");
+		var group = data.group(tenant1);
+		var definition = data.definition(tenant1, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
+		data.configuration(group, definition, UUID.randomUUID().toString());
+		assert400(() -> client.resetConfigurationByGroup(auth(tenant1, tenant2), group.getGroupId(),
+				definition.getKey(), null));
 	}
 
 	@DisplayName("resetConfigurationByGroup(401): no token")
@@ -465,8 +503,9 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var group = data.group(tenant);
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		data.configuration(group, definition, UUID.randomUUID().toString());
-		assert401(() -> client.resetConfigurationByGroup(null, group.getGroupId(), definition.getKey()));
-		assertFalse(assert200(() -> client.findConfigurationsByGroup(auth(tenant), group.getGroupId())).isEmpty());
+		assert401(() -> client.resetConfigurationByGroup(null, group.getGroupId(), definition.getKey(), null));
+		assertFalse(
+				assert200(() -> client.findConfigurationsByGroup(auth(tenant), group.getGroupId(), null)).isEmpty());
 	}
 
 	@DisplayName("setConfigurationByGateway(204): insert new value")
@@ -478,7 +517,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.BOOLEAN);
 		var vo = new ConfigurationSetVO().value(true);
 		var auth = auth(tenant);
-		assert204(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo));
+		assert204(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo, null));
 		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurationsByGateway(auth, gatewayId)));
 	}
 
@@ -492,7 +531,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		data.configuration(gateway, definition, UUID.randomUUID().toString());
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assert204(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo));
+		assert204(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo, null));
 		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurationsByGateway(auth, gatewayId)));
 	}
 
@@ -505,7 +544,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(null);
 		var auth = auth(tenant);
-		assert400(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo));
+		assert400(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo, null));
 		assertTrue(assert200(() -> client.findConfigurationsByGateway(auth, gatewayId)).isEmpty());
 	}
 
@@ -517,7 +556,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(1234526);
 		var auth = auth(tenant);
-		assert400(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo));
+		assert400(() -> client.setConfigurationByGateway(auth, gatewayId, definition.getKey(), vo, null));
 		assertTrue(assert200(() -> client.findConfigurationsByGateway(auth, gatewayId)).isEmpty());
 	}
 
@@ -529,7 +568,7 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var gatewayId = data.gateway(tenant).getGatewayId();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
-		assert401(() -> client.setConfigurationByGateway(null, gatewayId, definition.getKey(), vo));
+		assert401(() -> client.setConfigurationByGateway(null, gatewayId, definition.getKey(), vo, null));
 		assertTrue(assert200(() -> client.findConfigurationsByGateway(auth(tenant), gatewayId)).isEmpty());
 	}
 
@@ -543,9 +582,9 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
-		assert404("Definition not found.", () -> client.setConfigurationByGateway(auth, gatewayId, "nope", vo));
-		assert404("Gateway not found.", () -> client.setConfigurationByGateway(auth, data.gatewayId(), key, vo));
-		assert404("Gateway not found.", () -> client.setConfigurationByGateway(authOther, gatewayId, key, vo));
+		assert404("Definition not found.", () -> client.setConfigurationByGateway(auth, gatewayId, "nope", vo, null));
+		assert404("Gateway not found.", () -> client.setConfigurationByGateway(auth, data.gatewayId(), key, vo, null));
+		assert404("Gateway not found.", () -> client.setConfigurationByGateway(authOther, gatewayId, key, vo, null));
 		assertTrue(assert200(() -> client.findConfigurationsByGateway(auth(tenant), gatewayId)).isEmpty());
 	}
 
@@ -558,8 +597,8 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.BOOLEAN);
 		var vo = new ConfigurationSetVO().value(true);
 		var auth = auth(tenant);
-		assert204(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo));
-		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurationsByGroup(auth, groupId)));
+		assert204(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo, null));
+		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurationsByGroup(auth, groupId, null)));
 	}
 
 	@DisplayName("setConfigurationByGroup(204): update existing value")
@@ -572,8 +611,8 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		data.configuration(group, definition, UUID.randomUUID().toString());
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
 		var auth = auth(tenant);
-		assert204(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo));
-		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurationsByGroup(auth, groupId)));
+		assert204(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo, null));
+		assetValue(vo.getValue(), definition, assert200(() -> client.findConfigurationsByGroup(auth, groupId, null)));
 	}
 
 	@DisplayName("setConfigurationByGroup(400): is beanvalidation active")
@@ -585,8 +624,8 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(null);
 		var auth = auth(tenant);
-		assert400(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo));
-		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth, groupId)).isEmpty());
+		assert400(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo, null));
+		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth, groupId, null)).isEmpty());
 	}
 
 	@DisplayName("setConfigurationByGroup(400): is custom validator active")
@@ -597,8 +636,8 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(1234526);
 		var auth = auth(tenant);
-		assert400(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo));
-		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth, groupId)).isEmpty());
+		assert400(() -> client.setConfigurationByGroup(auth, groupId, definition.getKey(), vo, null));
+		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth, groupId, null)).isEmpty());
 	}
 
 	@DisplayName("setConfigurationByGroup(401): no token")
@@ -609,8 +648,8 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var groupId = data.group(tenant).getGroupId();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
-		assert401(() -> client.setConfigurationByGroup(null, groupId, definition.getKey(), vo));
-		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth(tenant), groupId)).isEmpty());
+		assert401(() -> client.setConfigurationByGroup(null, groupId, definition.getKey(), vo, null));
+		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth(tenant), groupId, null)).isEmpty());
 	}
 
 	@DisplayName("setConfigurationByGroup(404): not found")
@@ -623,10 +662,10 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var vo = new ConfigurationSetVO().value(UUID.randomUUID().toString());
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
-		assert404("Definition not found.", () -> client.setConfigurationByGroup(auth, groupId, "nope", vo));
-		assert404("Group not found.", () -> client.setConfigurationByGroup(auth, UUID.randomUUID(), key, vo));
-		assert404("Group not found.", () -> client.setConfigurationByGroup(authOther, groupId, key, vo));
-		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth(tenant), groupId)).isEmpty());
+		assert404("Definition not found.", () -> client.setConfigurationByGroup(auth, groupId, "nope", vo, null));
+		assert404("Group not found.", () -> client.setConfigurationByGroup(auth, UUID.randomUUID(), key, vo, null));
+		assert404("Group not found.", () -> client.setConfigurationByGroup(authOther, groupId, key, vo, null));
+		assertTrue(assert200(() -> client.findConfigurationsByGroup(auth(tenant), groupId, null)).isEmpty());
 	}
 
 	@DisplayName("resetConfiguration(404): not found")
@@ -636,8 +675,10 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		var tenant = data.tenant();
 		var definition = data.definition(tenant, UUID.randomUUID().toString(), ConfigurationTypeVO.STRING);
 		data.configuration(definition, UUID.randomUUID().toString());
-		assert404("Definition not found.", () -> client.resetConfiguration(auth(tenant), UUID.randomUUID().toString()));
-		assert404("Definition not found.", () -> client.resetConfiguration(auth(data.tenant()), definition.getKey()));
+		assert404("Definition not found.",
+				() -> client.resetConfiguration(auth(tenant), UUID.randomUUID().toString(), null));
+		assert404("Definition not found.",
+				() -> client.resetConfiguration(auth(data.tenant()), definition.getKey(), null));
 		assertFalse(assert200(() -> client.findConfigurations(auth(tenant))).isEmpty());
 	}
 
@@ -653,10 +694,10 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 		data.configuration(group, definition, UUID.randomUUID().toString());
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
-		assert404("Definition not found.", () -> client.resetConfigurationByGroup(auth, groupId, "nope"));
-		assert404("Group not found.", () -> client.resetConfigurationByGroup(auth, UUID.randomUUID(), key));
-		assert404("Group not found.", () -> client.resetConfigurationByGroup(authOther, groupId, key));
-		assertFalse(assert200(() -> client.findConfigurationsByGroup(auth(tenant), groupId)).isEmpty());
+		assert404("Definition not found.", () -> client.resetConfigurationByGroup(auth, groupId, "nope", null));
+		assert404("Group not found.", () -> client.resetConfigurationByGroup(auth, UUID.randomUUID(), key, null));
+		assert404("Group not found.", () -> client.resetConfigurationByGroup(authOther, groupId, key, null));
+		assertFalse(assert200(() -> client.findConfigurationsByGroup(auth(tenant), groupId, null)).isEmpty());
 	}
 
 	@DisplayName("resetConfigurationByGateway(404): not found")
@@ -682,12 +723,10 @@ public class ConfigurationApiTest extends AbstractTest implements ConfigurationA
 				Comparator.comparing(c -> c.getDefinition().getKey()));
 	}
 
-	private static void assetValue(
-			Object expected,
-			ConfigurationDefinition definition,
+	private static void assetValue(Object expected, ConfigurationDefinition definition,
 			List<ConfigurationVO> configurations) {
 		assertEquals(expected, configurations.stream()
-				.filter(i -> i.getDefinition().getKey().equals(definition.getKey()))
-				.findAny().get().getValue(), "value");
+				.filter(i -> i.getDefinition().getKey().equals(definition.getKey())).findAny().get().getValue(),
+				"value");
 	}
 }

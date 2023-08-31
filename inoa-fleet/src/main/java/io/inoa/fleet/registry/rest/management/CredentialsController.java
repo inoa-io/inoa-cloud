@@ -1,6 +1,7 @@
 package io.inoa.fleet.registry.rest.management;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 @RequiredArgsConstructor
-public class CredentialsController implements CredentialsApi {
+public class CredentialsController extends AbstractManagementController implements CredentialsApi {
 
 	private final Security security;
 	private final CredentialMapper mapper;
@@ -37,18 +39,22 @@ public class CredentialsController implements CredentialsApi {
 	private final CredentialRepository credentialRepository;
 
 	@Override
-	public HttpResponse<List<CredentialVO>> findCredentials(String gatewayId) {
-		return HttpResponse.ok(mapper.toCredentials(credentialRepository.findByGateway(getGateway(gatewayId))));
+	public HttpResponse<List<CredentialVO>> findCredentials(@NonNull String gatewayId,
+			@NonNull Optional<String> tenantId) {
+		return HttpResponse
+				.ok(mapper.toCredentials(credentialRepository.findByGateway(getGateway(gatewayId, tenantId))));
 	}
 
 	@Override
-	public HttpResponse<CredentialVO> findCredential(String gatewayId, UUID credentialId) {
-		return HttpResponse.ok(mapper.toCredential(getCredential(gatewayId, credentialId)));
+	public HttpResponse<CredentialVO> findCredential(@NonNull String gatewayId, @NonNull UUID credentialId,
+			@NonNull Optional<String> tenantId) {
+		return HttpResponse.ok(mapper.toCredential(getCredential(gatewayId, credentialId, tenantId)));
 	}
 
 	@Override
-	public HttpResponse<CredentialVO> createCredential(String gatewayId, @Valid CredentialCreateVO vo) {
-		var gateway = getGateway(gatewayId);
+	public HttpResponse<CredentialVO> createCredential(@NonNull String gatewayId, @Valid CredentialCreateVO vo,
+			@NonNull Optional<String> tenantId) {
+		var gateway = getGateway(gatewayId, tenantId);
 		if (credentialRepository.existsByGatewayAndName(gateway, vo.getName())) {
 			throw new HttpStatusException(HttpStatus.CONFLICT, "Name already exists.");
 		}
@@ -58,9 +64,9 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<CredentialVO> updateCredential(String gatewayId, UUID credentialId,
-			@Valid CredentialUpdateVO vo) {
-		var credential = getCredential(gatewayId, credentialId);
+	public HttpResponse<CredentialVO> updateCredential(@NonNull String gatewayId, @NonNull UUID credentialId,
+			@Valid CredentialUpdateVO vo, @NonNull Optional<String> tenantId) {
+		var credential = getCredential(gatewayId, credentialId, tenantId);
 		var changed = false;
 
 		if (vo.getName() != null) {
@@ -93,23 +99,25 @@ public class CredentialsController implements CredentialsApi {
 	}
 
 	@Override
-	public HttpResponse<Object> deleteCredential(String gatewayId, UUID credentialId) {
-		var credential = getCredential(gatewayId, credentialId);
+	public HttpResponse<Object> deleteCredential(@NonNull String gatewayId, @NonNull UUID credentialId,
+			@NonNull Optional<String> tenantId) {
+		var credential = getCredential(gatewayId, credentialId, tenantId);
 		credentialRepository.delete(credential);
 		log.info("Credential {} deleted.", credential.getCredentialId());
 		return HttpResponse.noContent();
 	}
 
-	private Gateway getGateway(String gatewayId) {
-		var optional = gatewayRepository.findByTenantAndGatewayId(security.getTenant(), gatewayId);
+	private Gateway getGateway(String gatewayId, Optional<String> tenantId) {
+		var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
+		var optional = gatewayRepository.findByTenantAndGatewayId(tenant, gatewayId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
 		}
 		return optional.get();
 	}
 
-	private Credential getCredential(String gatewayId, UUID credentialId) {
-		var optional = credentialRepository.findByGatewayAndCredentialId(getGateway(gatewayId), credentialId);
+	private Credential getCredential(String gatewayId, UUID credentialId, Optional<String> tenantId) {
+		var optional = credentialRepository.findByGatewayAndCredentialId(getGateway(gatewayId, tenantId), credentialId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Credential not found.");
 		}

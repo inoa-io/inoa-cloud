@@ -14,20 +14,6 @@
 
 	<dependencies>
 
-		<!-- Project -->
-		<dependency>
-			<groupId>io.inoa</groupId>
-			<artifactId>fleet</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.inoa</groupId>
-			<artifactId>measurement</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut.security</groupId>
@@ -56,6 +42,16 @@
 		</dependency>
 
 		<!-- test -->
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-codec-mqtt</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>io.micronaut.test</groupId>
 			<artifactId>micronaut-test-junit5</artifactId>
@@ -122,6 +118,86 @@
 					<execution>
 						<id>default-compile</id>
 						<phase />
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- add generated sources -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-test-sources</id>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.build.directory}/generated-test-sources/openapi</source>
+								<source>${project.build.directory}/generated-sources/annotations</source>
+								<source>${project.build.directory}/generated-sources/openapi</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- generate sources from openapi spec -->
+			<plugin>
+				<groupId>org.openapitools</groupId>
+				<artifactId>openapi-generator-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-generate-fleet-clients</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/../inoa-fleet/src/main/resources/openapi/inoa-fleet-api.yaml</inputSpec>
+							<packageName>io.inoa.fleet.api</packageName>
+							<apiPackage>io.inoa.fleet.api</apiPackage>
+							<modelPackage>io.inoa.fleet.model</modelPackage>
+							<configOptions>
+								<clientId>fleet</clientId>
+								<pageable>true</pageable>
+								<generateAuthentication>true</generateAuthentication>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-generate-measurement-clients</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/../inoa-measurement/src/main/resources/openapi/inoa-measurement-api.yaml</inputSpec>
+							<packageName>io.inoa.measurement.api</packageName>
+							<apiPackage>io.inoa.measurement.api</apiPackage>
+							<modelPackage>io.inoa.measurement.model</modelPackage>
+							<configOptions>
+								<clientId>measurement</clientId>
+								<pageable>true</pageable>
+								<generateAuthentication>true</generateAuthentication>
+							</configOptions>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-generate-hawkbit-management-clients</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<configuration>
+							<inputSpec>${project.basedir}/../inoa-fleet/src/main/resources/openapi/hawkbit-management-api.yaml</inputSpec>
+							<apiPackage>org.eclipse.hawkbit.api</apiPackage>
+							<modelPackage>org.eclipse.hawkbit.model</modelPackage>
+							<configOptions>
+								<clientId>hawkbit</clientId>
+							</configOptions>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
