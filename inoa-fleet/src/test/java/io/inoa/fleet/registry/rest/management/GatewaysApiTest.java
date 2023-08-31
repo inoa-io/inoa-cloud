@@ -34,7 +34,7 @@ import jakarta.inject.Inject;
  * @author Stephan Schnabel
  */
 @DisplayName("management: gateways")
-public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec {
+class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec {
 
 	@Inject
 	GatewaysApiTestClient client;
@@ -162,6 +162,37 @@ public class GatewaysApiTest extends AbstractTest implements GatewaysApiTestSpec
 		var tenant = data.tenant();
 		var expected = data.gateway(tenant);
 		var actual = assert200(() -> client.findGateway(auth(tenant), expected.getGatewayId(), null));
+		assertEquals(expected.getGatewayId(), actual.getGatewayId(), "gatewayId");
+		assertEquals(expected.getName(), actual.getName(), "name");
+		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
+		assertEquals(Set.of(), actual.getGroupIds(), "groupIds");
+		assertEquals(Map.of(), actual.getProperties(), "properties");
+		assertEquals(expected.getCreated(), actual.getCreated(), "created");
+		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
+	}
+
+	@DisplayName("findGateway(200): with specific tenant")
+	@Test
+	void findGateway200WithSpecificTenant() {
+		var tenant = data.tenant();
+		var expected = data.gateway(tenant);
+		var actual = assert200(() -> client.findGateway(auth(tenant), expected.getGatewayId(), tenant.getTenantId()));
+		assertEquals(expected.getGatewayId(), actual.getGatewayId(), "gatewayId");
+		assertEquals(expected.getName(), actual.getName(), "name");
+		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
+		assertEquals(Set.of(), actual.getGroupIds(), "groupIds");
+		assertEquals(Map.of(), actual.getProperties(), "properties");
+		assertEquals(expected.getCreated(), actual.getCreated(), "created");
+		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
+	}
+
+	@DisplayName("findGateway(200): with multiple tenants")
+	@Test
+	void findGateway200WithMultipleTenants() {
+		var tenant = data.tenant();
+		var tenant2 = data.tenant("anderer-tenant");
+		var expected = data.gateway(tenant);
+		var actual = assert200(() -> client.findGateway(auth(tenant, tenant2), expected.getGatewayId(), tenant.getTenantId()));
 		assertEquals(expected.getGatewayId(), actual.getGatewayId(), "gatewayId");
 		assertEquals(expected.getName(), actual.getName(), "name");
 		assertEquals(expected.getEnabled(), actual.getEnabled(), "enabled");
