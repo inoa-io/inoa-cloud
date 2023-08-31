@@ -23,7 +23,7 @@ import io.inoa.fleet.model.CredentialUpdateVO;
 import jakarta.inject.Inject;
 
 /**
- * Test for {@link CredentialsApi}.
+ * Test for {@link io.inoa.fleet.api.CredentialsApi}.
  *
  * @author Stephan Schnabel
  */
@@ -42,15 +42,28 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		data.credentialRSA(gateway, data.generateKeyPair());
 		data.credentialPSK(gateway);
 		data.credentialPSK(gateway);
-		var credentials = assert200(() -> client.findCredentials(auth(tenant), gateway.getGatewayId()));
+		var credentials = assert200(() -> client.findCredentials(auth(tenant), gateway.getGatewayId(), null));
 		assertEquals(3, credentials.size(), "credentials");
+	}
+
+	@DisplayName("findCredentials(400): ambiguous tenants")
+	@Test
+	@Override
+	public void findCredentials400() {
+		var tenant1 = data.tenant();
+		var tenant2 = data.tenant("inoa");
+		var gateway = data.gateway(tenant1);
+		data.credentialRSA(gateway, data.generateKeyPair());
+		data.credentialPSK(gateway);
+		data.credentialPSK(gateway);
+		assert400(() -> client.findCredentials(auth(tenant1, tenant2), gateway.getGatewayId(), null));
 	}
 
 	@DisplayName("findCredentials(401): no token")
 	@Test
 	@Override
 	public void findCredentials401() {
-		assert401(() -> client.findCredentials(null, data.gatewayId()));
+		assert401(() -> client.findCredentials(null, data.gatewayId(), null));
 	}
 
 	@DisplayName("findCredentials(404): not found")
@@ -59,8 +72,9 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	public void findCredentials404() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		assert404("Gateway not found.", () -> client.findCredentials(auth(tenant), data.gatewayId()));
-		assert404("Gateway not found.", () -> client.findCredentials(auth(data.tenant()), gateway.getGatewayId()));
+		assert404("Gateway not found.", () -> client.findCredentials(auth(tenant), data.gatewayId(), null));
+		assert404("Gateway not found.",
+				() -> client.findCredentials(auth(data.tenant()), gateway.getGatewayId(), null));
 	}
 
 	@DisplayName("findCredential(200): without secrets")
@@ -72,7 +86,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var gateway = data.gateway(tenant);
 		var expected = data.credentialRSA(gateway, data.generateKeyPair());
 		var actual = assert200(
-				() -> client.findCredential(auth(tenant), gateway.getGatewayId(), expected.getCredentialId()));
+				() -> client.findCredential(auth(tenant), gateway.getGatewayId(), expected.getCredentialId(), null));
 
 		assertEquals(expected.getCredentialId(), actual.getCredentialId(), "credentialId");
 		assertEquals(expected.getName(), actual.getName(), "name");
@@ -82,11 +96,24 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertEquals(expected.getUpdated(), actual.getUpdated(), "updated");
 	}
 
+	@DisplayName("findCredential(400): ambiguous tenants")
+	@Test
+	@Override
+	public void findCredential400() {
+		var tenant1 = data.tenant();
+		var tenant2 = data.tenant("inoa");
+		var gateway = data.gateway(tenant1);
+		var expected = data.credentialRSA(gateway, data.generateKeyPair());
+		assert400(() -> client.findCredential(auth(tenant1, tenant2), gateway.getGatewayId(),
+				expected.getCredentialId(), null));
+
+	}
+
 	@DisplayName("findCredential(401): no token")
 	@Test
 	@Override
 	public void findCredential401() {
-		assert401(() -> client.findCredential(null, data.gatewayId(), UUID.randomUUID()));
+		assert401(() -> client.findCredential(null, data.gatewayId(), UUID.randomUUID(), null));
 	}
 
 	@DisplayName("findCredential(404): not found")
@@ -102,9 +129,9 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
-		assert404("Credential not found.", () -> client.findCredential(auth, gatewayId, UUID.randomUUID()));
-		assert404("Gateway not found.", () -> client.findCredential(auth, data.gatewayId(), credentialId));
-		assert404("Gateway not found.", () -> client.findCredential(authOther, gatewayId, credentialId));
+		assert404("Credential not found.", () -> client.findCredential(auth, gatewayId, UUID.randomUUID(), null));
+		assert404("Gateway not found.", () -> client.findCredential(auth, data.gatewayId(), credentialId, null));
+		assert404("Gateway not found.", () -> client.findCredential(authOther, gatewayId, credentialId, null));
 	}
 
 	@DisplayName("createCredential(201): with mandatory properties")
@@ -114,12 +141,10 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 
 		var tenant = data.tenant();
 		var gatewayId = data.gateway(tenant).getGatewayId();
-		var vo = new CredentialCreateVO()
-				.name(data.credentialName())
-				.type(CredentialTypeVO.PSK)
+		var vo = new CredentialCreateVO().name(data.credentialName()).type(CredentialTypeVO.PSK)
 				.value(UUID.randomUUID().toString().getBytes());
 		var auth = auth(tenant);
-		var created = assert201(() -> client.createCredential(auth, gatewayId, vo));
+		var created = assert201(() -> client.createCredential(auth, gatewayId, vo, null));
 
 		assertNotNull(created.getCredentialId(), "credentialId");
 		assertEquals(vo.getName(), created.getName(), "name");
@@ -128,7 +153,8 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertArrayEquals(vo.getValue(), created.getValue(), "value");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
-		assertEquals(created, assert200(() -> client.findCredential(auth, gatewayId, created.getCredentialId())), "vo");
+		assertEquals(created, assert200(() -> client.findCredential(auth, gatewayId, created.getCredentialId(), null)),
+				"vo");
 	}
 
 	@DisplayName("createCredential(201): with optional properties")
@@ -137,13 +163,10 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 
 		var tenant = data.tenant();
 		var gatewayId = data.gateway(tenant).getGatewayId();
-		var vo = new CredentialCreateVO()
-				.name(data.credentialName())
-				.type(CredentialTypeVO.PSK)
-				.enabled(false)
+		var vo = new CredentialCreateVO().name(data.credentialName()).type(CredentialTypeVO.PSK).enabled(false)
 				.value(UUID.randomUUID().toString().getBytes());
 		var auth = auth(tenant);
-		var created = assert201(() -> client.createCredential(auth, gatewayId, vo));
+		var created = assert201(() -> client.createCredential(auth, gatewayId, vo, null));
 
 		assertNotNull(created.getCredentialId(), "credentialId");
 		assertEquals(vo.getName(), created.getName(), "name");
@@ -152,7 +175,8 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertArrayEquals(vo.getValue(), created.getValue(), "value");
 		assertNotNull(created.getCreated(), "created");
 		assertNotNull(created.getUpdated(), "updated");
-		assertEquals(created, assert200(() -> client.findCredential(auth, gatewayId, created.getCredentialId())), "vo");
+		assertEquals(created, assert200(() -> client.findCredential(auth, gatewayId, created.getCredentialId(), null)),
+				"vo");
 	}
 
 	@DisplayName("createCredential(400): is beanvalidation active")
@@ -161,20 +185,21 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	public void createCredential400() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		assert400(() -> client.createCredential(auth(tenant), gateway.getGatewayId(), new CredentialCreateVO()));
+		assert400(() -> client.createCredential(auth(tenant), gateway.getGatewayId(), new CredentialCreateVO(), null));
 		assertEquals(0, data.countCredentials(gateway), "created");
 	}
 
 	@DisplayName("createCredential(400): rsa key invalid")
 	@Disabled("NYI")
 	@Test
-	public void createCredential400KeyInvalid() {}
+	public void createCredential400KeyInvalid() {
+	}
 
 	@DisplayName("createCredential(401): no token")
 	@Test
 	@Override
 	public void createCredential401() {
-		assert401(() -> client.createCredential(null, data.gatewayId(), new CredentialCreateVO()));
+		assert401(() -> client.createCredential(null, data.gatewayId(), new CredentialCreateVO(), null));
 	}
 
 	@DisplayName("createCredential(404): not found")
@@ -183,12 +208,11 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	public void createCredential404() {
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
-		var vo = new CredentialCreateVO()
-				.name(data.credentialName())
-				.type(CredentialTypeVO.PSK)
+		var vo = new CredentialCreateVO().name(data.credentialName()).type(CredentialTypeVO.PSK)
 				.value(UUID.randomUUID().toString().getBytes());
-		assert404("Gateway not found.", () -> client.createCredential(auth(tenant), data.gatewayId(), vo));
-		assert404("Gateway not found.", () -> client.createCredential(auth(data.tenant()), gateway.getGatewayId(), vo));
+		assert404("Gateway not found.", () -> client.createCredential(auth(tenant), data.gatewayId(), vo, null));
+		assert404("Gateway not found.",
+				() -> client.createCredential(auth(data.tenant()), gateway.getGatewayId(), vo, null));
 		assertEquals(0, data.countCredentials(gateway), "created");
 	}
 
@@ -199,11 +223,9 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var name = data.credentialPSK(gateway).getName();
-		var vo = new CredentialCreateVO()
-				.name(name)
-				.type(CredentialTypeVO.PSK)
+		var vo = new CredentialCreateVO().name(name).type(CredentialTypeVO.PSK)
 				.value(UUID.randomUUID().toString().getBytes());
-		assert409(() -> client.createCredential(auth(tenant), gateway.getGatewayId(), vo));
+		assert409(() -> client.createCredential(auth(tenant), gateway.getGatewayId(), vo, null));
 		assertEquals(1, data.countCredentials(gateway), "created");
 	}
 
@@ -218,7 +240,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var credentialId = credential.getCredentialId();
 		var vo = new CredentialUpdateVO().enabled(null).name(null);
 		var auth = auth(tenant);
-		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo));
+		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo, null));
 		assertEquals(credential.getCredentialId(), updated.getCredentialId(), "credentialId");
 		assertEquals(credential.getName(), updated.getName(), "name");
 		assertEquals(credential.getEnabled(), updated.getEnabled(), "enabled");
@@ -226,7 +248,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertArrayEquals(credential.getValue(), updated.getValue(), "value");
 		assertEquals(credential.getCreated(), updated.getCreated(), "created");
 		assertEquals(credential.getUpdated(), updated.getUpdated(), "updated");
-		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId)), "vo");
+		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId, null)), "vo");
 	}
 
 	@DisplayName("updateCredential(200): update unchanged")
@@ -239,7 +261,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var credentialId = credential.getCredentialId();
 		var vo = new CredentialUpdateVO().enabled(credential.getEnabled()).name(credential.getName());
 		var auth = auth(tenant);
-		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo));
+		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo, null));
 		assertEquals(credential.getCredentialId(), updated.getCredentialId(), "credentialId");
 		assertEquals(credential.getName(), updated.getName(), "name");
 		assertEquals(credential.getEnabled(), updated.getEnabled(), "enabled");
@@ -247,7 +269,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertArrayEquals(credential.getValue(), updated.getValue(), "value");
 		assertEquals(credential.getCreated(), updated.getCreated(), "created");
 		assertEquals(credential.getUpdated(), updated.getUpdated(), "updated");
-		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId)), "vo");
+		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId, null)), "vo");
 	}
 
 	@DisplayName("updateCredential(200): update name")
@@ -260,7 +282,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var credentialId = credential.getCredentialId();
 		var vo = new CredentialUpdateVO().enabled(null).name(data.credentialName());
 		var auth = auth(tenant);
-		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo));
+		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo, null));
 		assertEquals(credential.getCredentialId(), updated.getCredentialId(), "credentialId");
 		assertEquals(vo.getName(), updated.getName(), "name");
 		assertEquals(credential.getEnabled(), updated.getEnabled(), "enabled");
@@ -268,7 +290,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertArrayEquals(credential.getValue(), updated.getValue(), "value");
 		assertEquals(credential.getCreated(), updated.getCreated(), "created");
 		assertTrue(updated.getUpdated().isAfter(credential.getUpdated()), "updated");
-		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId)), "vo");
+		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId, null)), "vo");
 	}
 
 	@DisplayName("updateCredential(200): update enabled")
@@ -281,7 +303,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var credentialId = credential.getCredentialId();
 		var vo = new CredentialUpdateVO().enabled(!credential.getEnabled()).name(null);
 		var auth = auth(tenant);
-		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo));
+		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo, null));
 		assertEquals(credential.getCredentialId(), updated.getCredentialId(), "credentialId");
 		assertEquals(credential.getName(), updated.getName(), "name");
 		assertEquals(vo.getEnabled(), updated.getEnabled(), "enabled");
@@ -289,7 +311,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertArrayEquals(credential.getValue(), updated.getValue(), "value");
 		assertEquals(credential.getCreated(), updated.getCreated(), "created");
 		assertTrue(updated.getUpdated().isAfter(credential.getUpdated()), "updated");
-		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId)), "vo");
+		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId, null)), "vo");
 	}
 
 	@DisplayName("updateCredential(204): update all")
@@ -302,7 +324,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var credentialId = credential.getCredentialId();
 		var vo = new CredentialUpdateVO().enabled(!credential.getEnabled()).name(data.credentialName());
 		var auth = auth(tenant);
-		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo));
+		var updated = assert200(() -> client.updateCredential(auth, gatewayId, credentialId, vo, null));
 		assertEquals(credential.getCredentialId(), updated.getCredentialId(), "credentialId");
 		assertEquals(vo.getName(), updated.getName(), "name");
 		assertEquals(vo.getEnabled(), updated.getEnabled(), "enabled");
@@ -310,7 +332,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		assertArrayEquals(credential.getValue(), updated.getValue(), "value");
 		assertEquals(credential.getCreated(), updated.getCreated(), "created");
 		assertTrue(updated.getUpdated().isAfter(credential.getUpdated()), "updated");
-		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId)), "vo");
+		assertEquals(updated, assert200(() -> client.findCredential(auth, gatewayId, credentialId, null)), "vo");
 	}
 
 	@DisplayName("updateCredential(400): is beanvalidation active")
@@ -322,14 +344,15 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var gatewayId = gateway.getGatewayId();
 		var credentialId = data.credentialPSK(gateway).getCredentialId();
 		var vo = new CredentialUpdateVO().name("");
-		assert400(() -> client.updateCredential(auth(tenant), gatewayId, credentialId, vo));
+		assert400(() -> client.updateCredential(auth(tenant), gatewayId, credentialId, vo, null));
 		assertEquals(gateway, data.find(gateway), "entity changed");
 	}
 
 	@DisplayName("updateCredential(400): rsa key invalid")
 	@Disabled("NYI")
 	@Test
-	public void updateCredential400KeyInvalid() {}
+	public void updateCredential400KeyInvalid() {
+	}
 
 	@DisplayName("updateCredential(401): no token")
 	@Test
@@ -340,7 +363,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var gatewayId = gateway.getGatewayId();
 		var credentialId = data.credentialPSK(gateway).getCredentialId();
 		var vo = new CredentialUpdateVO().name(data.gatewayName());
-		assert401(() -> client.updateCredential(null, gatewayId, credentialId, vo));
+		assert401(() -> client.updateCredential(null, gatewayId, credentialId, vo, null));
 		assertEquals(gateway, data.find(gateway), "entity changed");
 	}
 
@@ -354,11 +377,11 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var credentialId = data.credentialPSK(gateway).getCredentialId();
 		var vo = new CredentialUpdateVO();
 		assert404("Credential not found.",
-				() -> client.updateCredential(auth(tenant), gatewayId, UUID.randomUUID(), vo));
+				() -> client.updateCredential(auth(tenant), gatewayId, UUID.randomUUID(), vo, null));
 		assert404("Gateway not found.",
-				() -> client.updateCredential(auth(tenant), data.gatewayId(), credentialId, vo));
+				() -> client.updateCredential(auth(tenant), data.gatewayId(), credentialId, vo, null));
 		assert404("Gateway not found.",
-				() -> client.updateCredential(auth(data.tenant()), gatewayId, credentialId, vo));
+				() -> client.updateCredential(auth(data.tenant()), gatewayId, credentialId, vo, null));
 	}
 
 	@DisplayName("updateCredential(409): name already in use")
@@ -371,7 +394,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var credential = data.credentialPSK(gateway);
 		var otherCredential = data.credentialPSK(gateway);
 		var vo = new CredentialUpdateVO().name(otherCredential.getName());
-		assert409(() -> client.updateCredential(auth(tenant), gatewayId, credential.getCredentialId(), vo));
+		assert409(() -> client.updateCredential(auth(tenant), gatewayId, credential.getCredentialId(), vo, null));
 	}
 
 	@DisplayName("deleteCredential(204): without secret")
@@ -381,8 +404,21 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var credential = data.credentialPSK(gateway);
-		assert204(() -> client.deleteCredential(auth(tenant), gateway.getGatewayId(), credential.getCredentialId()));
+		assert204(() -> client.deleteCredential(auth(tenant), gateway.getGatewayId(), credential.getCredentialId(),
+				null));
 		assertEquals(0, data.countCredentials(gateway), "credential not deleted");
+	}
+
+	@DisplayName("deleteCredential(400): ambiguous tenant")
+	@Test
+	@Override
+	public void deleteCredential400() {
+		var tenant1 = data.tenant();
+		var tenant2 = data.tenant("inoa");
+		var gateway = data.gateway(tenant1);
+		var credential = data.credentialPSK(gateway);
+		assert400(() -> client.deleteCredential(auth(tenant1, tenant2), gateway.getGatewayId(),
+				credential.getCredentialId(), null));
 	}
 
 	@DisplayName("deleteCredential(204): with secret")
@@ -391,7 +427,8 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 		var tenant = data.tenant();
 		var gateway = data.gateway(tenant);
 		var credential = data.credentialPSK(gateway);
-		assert204(() -> client.deleteCredential(auth(tenant), gateway.getGatewayId(), credential.getCredentialId()));
+		assert204(() -> client.deleteCredential(auth(tenant), gateway.getGatewayId(), credential.getCredentialId(),
+				null));
 		assertEquals(0, data.countCredentials(gateway), "credential not deleted");
 	}
 
@@ -399,7 +436,7 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 	@Test
 	@Override
 	public void deleteCredential401() {
-		assert401(() -> client.deleteCredential(null, data.gatewayId(), UUID.randomUUID()));
+		assert401(() -> client.deleteCredential(null, data.gatewayId(), UUID.randomUUID(), null));
 	}
 
 	@DisplayName("deleteCredential(404): not found")
@@ -415,9 +452,9 @@ public class CredentialsApiTest extends AbstractTest implements CredentialsApiTe
 
 		var auth = auth(tenant);
 		var authOther = auth(data.tenant());
-		assert404("Credential not found.", () -> client.deleteCredential(auth, gatewayId, UUID.randomUUID()));
-		assert404("Gateway not found.", () -> client.deleteCredential(auth, data.gatewayId(), credentialId));
-		assert404("Gateway not found.", () -> client.deleteCredential(authOther, gatewayId, credentialId));
+		assert404("Credential not found.", () -> client.deleteCredential(auth, gatewayId, UUID.randomUUID(), null));
+		assert404("Gateway not found.", () -> client.deleteCredential(auth, data.gatewayId(), credentialId, null));
+		assert404("Gateway not found.", () -> client.deleteCredential(authOther, gatewayId, credentialId, null));
 		assertEquals(1, data.countCredentials(gateway), "deleted");
 	}
 }

@@ -19,7 +19,7 @@ import io.inoa.fleet.registry.domain.GatewayProperty;
 import jakarta.inject.Inject;
 
 /**
- * Test for {@link PropertiesApi}.
+ * Test for {@link io.inoa.fleet.api.PropertiesApi}.
  *
  * @author Stephan Schnabel
  */

@@ -1,4 +1,4 @@
-package io.inoa.junit;
+package io.inoa.test.junit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

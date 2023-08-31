@@ -121,7 +121,7 @@ class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 				.credentialValue(gatewayPsk.getBytes());
 		assert204(() -> client.register(vo));
 
-		var foundGateway = assert200(() -> gatewaysClient.findGateway(auth, vo.getGatewayId()));
+		var foundGateway = assert200(() -> gatewaysClient.findGateway(auth, vo.getGatewayId(), null));
 		assertEquals(vo.getGatewayId(), foundGateway.getGatewayId(), "gatewayId");
 		assertNull(foundGateway.getName(), "name");
 		assertEquals(false, foundGateway.getEnabled(), "enabled");
@@ -130,7 +130,7 @@ class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertNotNull(foundGateway.getCreated(), "created");
 		assertNotNull(foundGateway.getUpdated(), "updated");
 
-		var credentials = assert200(() -> credentialsClient.findCredentials(auth, vo.getGatewayId()));
+		var credentials = assert200(() -> credentialsClient.findCredentials(auth, vo.getGatewayId(), null));
 		assertEquals(1, credentials.size(), "credentials: " + credentials);
 		assertNotNull(credentials.get(0).getCredentialId(), "credentialId");
 		assertNotNull(credentials.get(0).getName(), "name");
@@ -158,7 +158,7 @@ class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 				.credentialValue(UUID.randomUUID().toString().getBytes());
 		assert204(() -> client.register(vo));
 
-		var gateway = assert200(() -> gatewaysClient.findGateway(auth, vo.getGatewayId()));
+		var gateway = assert200(() -> gatewaysClient.findGateway(auth, vo.getGatewayId(), null));
 		assertEquals(vo.getGatewayId(), gateway.getGatewayId(), "gatewayId");
 		assertNull(gateway.getName(), "name");
 		assertEquals(false, gateway.getEnabled(), "enabled");
@@ -167,7 +167,7 @@ class GatewayApiTest extends AbstractTest implements GatewayApiTestSpec {
 		assertNotNull(gateway.getCreated(), "created");
 		assertNotNull(gateway.getUpdated(), "updated");
 
-		var credentials = assert200(() -> credentialsClient.findCredentials(auth, vo.getGatewayId()));
+		var credentials = assert200(() -> credentialsClient.findCredentials(auth, vo.getGatewayId(), null));
 		assertEquals(1, credentials.size(), "credentials: " + credentials);
 		assertNotNull(credentials.get(0).getCredentialId(), "credentialId");
 		assertNotNull(credentials.get(0).getName(), "name");

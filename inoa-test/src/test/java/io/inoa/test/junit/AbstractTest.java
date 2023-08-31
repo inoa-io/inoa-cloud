@@ -1,14 +1,14 @@
-package io.inoa.junit;
+package io.inoa.test.junit;
 
 import java.util.UUID;
 
 import org.junit.jupiter.api.MethodOrderer.DisplayName;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import io.inoa.client.GatewayClientFactory;
-import io.inoa.client.InfluxDBClient;
-import io.inoa.client.KeycloakClient;
-import io.inoa.client.RegistryClient;
+import io.inoa.test.client.GatewayClientFactory;
+import io.inoa.test.client.InfluxDBClient;
+import io.inoa.test.client.KeycloakClient;
+import io.inoa.test.client.RegistryClient;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
@@ -16,7 +16,7 @@ import jakarta.inject.Inject;
 @TestMethodOrder(DisplayName.class)
 public abstract class AbstractTest {
 
-	public static String TENANT_INOA = "iona";
+	public static String DEFAULT_TENANT_ID = "iona";
 
 	@Inject
 	public KeycloakClient keycloak;

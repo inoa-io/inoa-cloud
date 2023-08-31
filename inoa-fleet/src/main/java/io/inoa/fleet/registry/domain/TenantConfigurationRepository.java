@@ -19,6 +19,8 @@ public interface TenantConfigurationRepository extends GenericRepository<TenantC
 
 	List<TenantConfiguration> findByDefinitionTenant(Tenant tenant);
 
+	List<TenantConfiguration> findByDefinitionTenantInList(List<Tenant> tenant);
+
 	Optional<TenantConfiguration> findByDefinition(ConfigurationDefinition definition);
 
 	TenantConfiguration save(TenantConfiguration tenantConfiguration);

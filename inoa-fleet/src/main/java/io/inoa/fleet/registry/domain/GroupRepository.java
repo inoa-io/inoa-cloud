@@ -17,9 +17,13 @@ public interface GroupRepository extends CrudRepository<Group, Long> {
 
 	List<Group> findByTenantOrderByName(Tenant tenant);
 
+	List<Group> findByTenantInListOrderByName(List<Tenant> tenants);
+
 	Optional<Group> findByTenantAndGroupId(Tenant tenant, UUID groupId);
 
 	Boolean existsByTenantAndName(Tenant tenant, String name);
 
 	Boolean existsByTenantAndGroupId(Tenant tenant, UUID groupId);
+
+	List<Group> findByTenantInListAndGroupId(List<Tenant> tenants, UUID groupId);
 }
