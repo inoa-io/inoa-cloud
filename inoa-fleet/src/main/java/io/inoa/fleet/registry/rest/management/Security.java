@@ -40,15 +40,17 @@ public class Security {
 	}
 
 	List<Tenant> getGrantedTenants() {
-		var tenants = new ArrayList<Tenant>();
+		var grantedTenants = new ArrayList<Tenant>();
+		var allAvailableTenants = tenantRepository.findByDeletedIsNullOrderByTenantId();
 		for (String tenantId : getTenantIds()) {
-			var tenant = tenantRepository.findByTenantIdAndDeletedIsNull(tenantId);
+			var tenant = allAvailableTenants.stream().filter(entity -> entity.getTenantId().equals(tenantId))
+					.findFirst();
 			if (tenant.isEmpty()) {
-				throw new HttpStatusException(HttpStatus.UNAUTHORIZED, "Tenant from JWT not found.");
+				throw new HttpStatusException(HttpStatus.UNAUTHORIZED, "Tenant " + tenantId + " from JWT not found.");
 			}
-			tenants.add(tenant.get());
+			grantedTenants.add(tenant.get());
 		}
-		return tenants;
+		return grantedTenants;
 	}
 
 	List<String> getTenantIds() {

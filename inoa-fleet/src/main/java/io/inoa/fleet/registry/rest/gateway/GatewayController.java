@@ -71,13 +71,10 @@ public class GatewayController implements GatewayApi {
 		try {
 
 			// New gateways are always associated with the default tenant
-			var defaultTenant = tenantRepository.findByTenantId(DEFAULT_TENANT_ID);
-			if (defaultTenant.isEmpty()) {
-				// This should never happen
-				throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-						"Default tenant is missing on this system.");
-			}
-			var tenant = defaultTenant.get();
+			var tenant = tenantRepository.findByTenantId(DEFAULT_TENANT_ID)
+					// This should never happen
+					.orElseThrow(() -> new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+							"Default tenant is missing."));
 
 			MDC.put("tenantId", tenant.getTenantId());
 			MDC.put("gatewayId", vo.getGatewayId());
