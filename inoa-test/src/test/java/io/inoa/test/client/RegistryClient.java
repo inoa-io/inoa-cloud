@@ -16,13 +16,13 @@ public class RegistryClient {
 
 	private final GatewaysApiClient gatewaysClient;
 
-	public GatewayDetailVO findGateway(String gatewayId, String tenantId) {
-		return assert200(() -> gatewaysClient.findGateway(keycloak.admin(), gatewayId, tenantId),
+	public GatewayDetailVO findGateway(String gatewayId) {
+		return assert200(() -> gatewaysClient.findGateway(keycloak.admin(), gatewayId, null),
 				"faild to get gateway");
 	}
 
-	public GatewayDetailVO update(String gatewayId, GatewayUpdateVO gatewayUpdateVO, String tenantId) {
-		return assert200(() -> gatewaysClient.updateGateway(keycloak.admin(), gatewayId, gatewayUpdateVO, tenantId),
+	public GatewayDetailVO update(String gatewayId, GatewayUpdateVO gatewayUpdateVO) {
+		return assert200(() -> gatewaysClient.updateGateway(keycloak.admin(), gatewayId, gatewayUpdateVO, null),
 				"faild to update gateway");
 	}
 }

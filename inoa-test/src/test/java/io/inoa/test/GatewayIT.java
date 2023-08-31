@@ -38,7 +38,7 @@ public class GatewayIT extends AbstractTest {
 						.credentialType(io.inoa.fleet.model.CredentialTypeVO.PSK).credentialValue(preSharedKey)),
 				"failed to register gateway");
 
-		var gateway = registry.findGateway(gatewayId, DEFAULT_TENANT_ID);
+		var gateway = registry.findGateway(gatewayId);
 		assertEquals(gatewayId, gateway.getGatewayId(), "gatewayId");
 		assertNull(gateway.getName(), "name");
 		assertFalse(gateway.getEnabled(), "enabled");
@@ -49,9 +49,9 @@ public class GatewayIT extends AbstractTest {
 	@DisplayName("2. enable gateway")
 	@Test
 	void enableGateway() {
-		assertFalse(registry.findGateway(gatewayId, DEFAULT_TENANT_ID).getEnabled(), "gateway should be disabled");
-		registry.update(gatewayId, new GatewayUpdateVO().enabled(true), DEFAULT_TENANT_ID);
-		assertTrue(registry.findGateway(gatewayId, DEFAULT_TENANT_ID).getEnabled(), "enabling gateway failed");
+		assertFalse(registry.findGateway(gatewayId).getEnabled(), "gateway should be disabled");
+		registry.update(gatewayId, new GatewayUpdateVO().enabled(true));
+		assertTrue(registry.findGateway(gatewayId).getEnabled(), "enabling gateway failed");
 	}
 
 	@DisplayName("3. read configuration")
@@ -70,7 +70,7 @@ public class GatewayIT extends AbstractTest {
 		var properties = Map.of("aa", "1", "bb", "2");
 		assertEquals(properties, gatewayClient.setProperties(properties), "failed to set properties");
 		assertEquals(properties, gatewayClient.getProperties(), "invalid properties read from gateway endpoint");
-		assertEquals(properties, registry.findGateway(gatewayId, DEFAULT_TENANT_ID).getProperties(),
+		assertEquals(properties, registry.findGateway(gatewayId).getProperties(),
 				"invalid properties read from registry management endpoint");
 	}
 
