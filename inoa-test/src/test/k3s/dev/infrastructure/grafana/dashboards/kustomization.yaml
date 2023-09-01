@@ -1,4 +1,10 @@
 commonLabels:
   grafana.io/instance: inoa
 
-configMapGenerator: []
+configMapGenerator:
+  - name: grafana-dashboards-fleet
+    files:
+      - fleet/inoa-fleet-iot.json
+    options:
+      annotations:
+        grafana.io/folder: fleet
