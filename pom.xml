@@ -77,7 +77,7 @@
 		<version.io.kokuwa.maven.k3s>1.0.3</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>3.4.3</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.influxdb>3.0.2</version.io.kokuwa.micronaut.influxdb>
-		<version.io.kokuwa.micronaut.logging>3.2.0</version.io.kokuwa.micronaut.logging>
+		<version.io.kokuwa.micronaut.logging>4.0.0</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>3.10.0</version.io.micronaut>
 		<version.io.micronaut.data>3.10.0</version.io.micronaut.data>
 		<version.io.moquette>0.16</version.io.moquette>
