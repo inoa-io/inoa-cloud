@@ -2,7 +2,7 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [mvp-releases]
   pull_request: {}
 
 jobs:
@@ -50,7 +50,7 @@ jobs:
           ts=$(date +%s)
           echo "::set-output name=BUILD_ID::${branch}-${sha}-${ts}"
       - uses: docker/login-action@v2
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_name == 'mvp-releases' }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -64,4 +64,4 @@ jobs:
       - run: mvn $MAVEN_ARGS install -pl \!test -T1C
       - run: mvn $MAVEN_ARGS install -pl test
       - run: mvn $MAVEN_ARGS jib:build -Djib.to.tags=latest,${{ steps.prep.outputs.BUILD_ID }} -Djib.from.platforms=linux/amd64,linux/arm64 -pl :fleet-registry-service,:fleet-mqtt-broker,:fleet-admin-ui,:fleet-gateway-logger,:measurement-telemetry-translator,:measurement-telemetry-exporter,:gateway-command-service,:fleet-registry-hono-bridge,:fleet-thing-service -T1C
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_name == 'mvp-releases' }}
