@@ -71,7 +71,7 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.com.influxdb.client>6.9.0</version.com.influxdb.client>
+		<version.com.influxdb.client>6.10.0</version.com.influxdb.client>
 		<version.com.jayway.jsonpath>2.8.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.maven.k3s>1.1.1</version.io.kokuwa.maven.k3s>
