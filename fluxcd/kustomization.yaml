@@ -1,20 +1,21 @@
 namespace: inoa-dev
 
 resources:
-- certificate.yaml
-- cloudsql.yaml
-- pdb.yaml
-- namespace.yaml
-- gateway.yaml
-- service-account
-- postgres
-- keycloak
-- kafka
-- influxdb
-- hawkbit
-- fleet
-- measurement
-- groundcontrol
+  - certificate.yaml
+  - cloudsql.yaml
+  - pdb.yaml
+  - namespace.yaml
+  - gateway.yaml
+  - service-account
+  - postgres
+  - keycloak
+  - kafka
+  - influxdb
+  - hawkbit
+  - fleet
+  - measurement
+  - groundcontrol
+
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
