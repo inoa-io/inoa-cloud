@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak
+spec:
+  type: ExternalName
+  externalName: keycloak.grayc
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

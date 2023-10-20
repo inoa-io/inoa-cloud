@@ -1,0 +1,6 @@
+commonLabels:
+  app.kubernetes.io/name: kafka
+
+resources:
+  - service.yaml
+  - statefulset.yaml

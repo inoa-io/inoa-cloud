@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: hawkbit
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  rules:
+    - host: dev.inoa.io
+      http:
+        paths:
+          - path: /hawkbit
+            pathType: Prefix
+            backend:
+              service:
+                name: hawkbit
+                port:
+                  name: http
+  tls:
+    - hosts: [dev.inoa.io]
+      secretName: tls-inoa-cloud
