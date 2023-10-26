@@ -20,10 +20,10 @@ import io.inoa.fleet.thing.domain.ThingType;
 import io.inoa.fleet.thing.driver.modbus.ModbusMDVH4006Builder;
 import io.inoa.fleet.thing.driver.modbus.Utils;
 
-public class ModbusMDVH4006BuilderTest {
+class ModbusMDVH4006BuilderTest {
 
 	@Test
-	public void testBuildDefinitionLegacy() {
+	void testBuildDefinitionLegacy() {
 		ModbusMDVH4006Builder builder = new ModbusMDVH4006Builder(new ObjectMapper());
 		Thing thing = new Thing();
 		thing.setName("schrank");
@@ -52,6 +52,31 @@ public class ModbusMDVH4006BuilderTest {
 				.filter(i -> i.get("header").get("id").asText().equals("urn:mdvh4006:39000976:0x4000")).findFirst();
 		assertTrue(obis170.isPresent());
 		assertEquals(Utils.toBase64(HexFormat.of().parseHex("770340000002DA9D")), obis170.get().get("frame").asText());
+	}
 
+	@Test
+	void testBuildDefinitionLegacyHexOverflow() {
+		ModbusMDVH4006Builder builder = new ModbusMDVH4006Builder(new ObjectMapper());
+		Thing thing = new Thing();
+		thing.setName("schrank");
+		HashMap<String, Object> config = new HashMap<>();
+		HashMap<String, Object> properties = new HashMap<>();
+		HashMap<String, Object> channels = new HashMap<>();
+		properties.put("serial", 39000979);
+		properties.put("modbus_interface", 1);
+
+		channels.put("obis_1_8_0", true);
+		config.put("properties", properties);
+		config.put("channels", channels);
+		thing.setConfig(config);
+		ThingType thingType = new ThingType();
+		thingType.setThingTypeReference("mdvh4006");
+		ArrayNode build = builder.buildLegacy(thing, thingType);
+		List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
+
+		Optional<JsonNode> obis180 = items.stream()
+			.filter(i -> i.get("header").get("id").asText().equals("urn:mdvh4006:39000979:0x4000")).findFirst();
+		assertTrue(obis180.isPresent());
+		assertEquals(Utils.toBase64(HexFormat.of().parseHex("7A0340000002DB80")), obis180.get().get("frame").asText());
 	}
 }
