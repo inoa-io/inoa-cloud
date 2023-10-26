@@ -39,8 +39,8 @@ public class ModbusDVH4013Builder extends ModbusBuilderBase implements ConfigCre
 	public ArrayNode build(Thing thing, ThingType thingType) throws JsonProcessingException {
 		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
 		Integer serial = (Integer) properties.get("serial");
-		String hex = String.format("%02d", abs(serial + 1) % 100);
-		int slaveId = Integer.parseInt(hex, 16);
+		String hex = String.format("%02d", abs(serial) % 100);
+		int slaveId = Integer.parseInt(hex, 16) + 1;
 		if (slaveId > 255) {
 			log.warn("slaveId greater then 255 id: {} -- serial: {}", slaveId, serial);
 		}
@@ -51,8 +51,9 @@ public class ModbusDVH4013Builder extends ModbusBuilderBase implements ConfigCre
 	public ArrayNode buildLegacy(Thing thing, ThingType thingType) {
 		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
 		Integer serial = (Integer) properties.get("serial");
-		String hex = String.format("%02d", abs(serial + 1) % 100);
-		int slaveId = Integer.parseInt(hex, 16);
+		String hex = String.format("%02d", abs(serial) % 100);
+		int slaveId = Integer.parseInt(hex, 16) + 1;
+
 		if (slaveId > 255) {
 			log.warn("slaveId greater then 255 id: {} -- serial: {}", slaveId, serial);
 		}
