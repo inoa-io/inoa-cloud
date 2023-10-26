@@ -1,6 +1,5 @@
 package io.inoa.fleet.thing;
 
-import static java.lang.Math.abs;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
