@@ -220,14 +220,14 @@ public class ThingsApiTest extends AbstractTest implements ThingsApiTestSpec {
 			postRequestedFor(urlPathEqualTo(String.format("/%s/%s/rpc", tenantId, gatewayId)))
 			.withRequestBody(matchingJsonPath("$[?("
 				+ "@.method == 'dp.add' && "
-				+ "@.params.id == 'urn:dvh4013:123456:0x4001' && "
+				+ "@.params.id == 'urn:dvh4013:123456:0x4000' && "
 				+ "@.params.type == 'RS485' && "
 				+ "@.params.name == 'my_thing' && "
 				+ "@.params.interval == 30000 && "
 				+ "@.params.enabled == true && "
 				+ "@.params.timeout == 1000 && "
 				+ "@.params.interface == 1 && "
-				+ "@.params.frame == '5703400100028c3d')]")));
+				+ "@.params.frame == '570340000002ddfd')]")));
 	}
 
 	@Override

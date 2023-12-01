@@ -52,13 +52,13 @@ class ModbusDVH4013BuilderTest {
 		assertTrue(obis181.isPresent());
 		assertEquals("IwMAAgACY0k=", obis181.get().get("frame").asText());
 		Optional<JsonNode> obis182 = items.stream()
-				.filter(i -> i.get("header").get("id").asText().equals("urn:dvh4013:100022:0x4001")).findFirst();
+				.filter(i -> i.get("header").get("id").asText().equals("urn:dvh4013:100022:0x4000")).findFirst();
 		assertTrue(obis182.isPresent());
-		assertEquals("IwNAAQAChok=", obis182.get().get("frame").asText());
+		assertEquals("IwNAAAAC10k=", obis182.get().get("frame").asText());
 		Optional<JsonNode> obis280 = items.stream()
-				.filter(i -> i.get("header").get("id").asText().equals("urn:dvh4013:100022:0x4101")).findFirst();
+				.filter(i -> i.get("header").get("id").asText().equals("urn:dvh4013:100022:0x4100")).findFirst();
 		assertTrue(obis280.isPresent());
-		assertEquals("IwNBAQACh3U=", obis280.get().get("frame").asText());
+		assertEquals("IwNBAAAC1rU=", obis280.get().get("frame").asText());
 	}
 
 	@Test
@@ -82,8 +82,8 @@ class ModbusDVH4013BuilderTest {
 		List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
 
 		Optional<JsonNode> obis180 = items.stream()
-			.filter(i -> i.get("header").get("id").asText().equals("urn:dvh4013:100029:0x4001")).findFirst();
+			.filter(i -> i.get("header").get("id").asText().equals("urn:dvh4013:100029:0x4000")).findFirst();
 		assertTrue(obis180.isPresent());
-		assertEquals("KgNAAQAChhA=", obis180.get().get("frame").asText());
+		assertEquals("KgNAAAAC19A=", obis180.get().get("frame").asText());
 	}
 }
