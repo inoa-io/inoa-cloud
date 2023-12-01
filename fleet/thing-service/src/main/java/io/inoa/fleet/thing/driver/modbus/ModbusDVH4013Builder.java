@@ -21,8 +21,23 @@ public class ModbusDVH4013Builder extends ModbusBuilderBase implements ConfigCre
 
 	private static final short FUNCTION_CODE_POWER_IN = 0x0000;
 	private static final short FUNCTION_CODE_POWER_OUT = 0x0002;
-	private static final short FUNCTION_CODE_OBIS_1_8_0 = 0x4001;
-	private static final short FUNCTION_CODE_OBIS_2_8_0 = 0x4101;
+
+	/**
+	 * Energy Demand Values:
+	 * AA BBBBB C D EE FFFF G
+	 * 01 00000 0 0 00 0000 0
+	 * |  |     |   |  |    |
+	 * |  |     |   |  |    +- High / Low Word (Always 0)
+	 * |  |     |   |  +- Tariff Rate (0 is "All")
+	 * |  |     |   +- Phases (0 is "All Phases")
+	 * |  |     +- Forward / Reverse (0 is "Demand")
+	 * |  +- History (0 is "Current Data")
+	 * +- Energy
+	 * 1.8.0 --> 01 00000 0 0 00 0000 0 --> 0x4000
+	 * 2.8.0 --> 01 00000 1 0 00 0000 0 --> 0x4100
+	 */
+	private static final short FUNCTION_CODE_OBIS_1_8_0 = 0x4000;
+	private static final short FUNCTION_CODE_OBIS_2_8_0 = 0x4100;
 	private static final Map<String, RegisterSetting> MAPPINGS;
 	private final ObjectMapper objectMapper;
 
