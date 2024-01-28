@@ -1,11 +1,5 @@
 extends: default
 
-ignore:
-  - inoa-test/target
-  - inoa-fleet/target
-  - inoa-measurement/target
-  - inoa-groundcontrol/target
-
 ## see https://yamllint.readthedocs.io/en/stable/rules.html
 rules:
 

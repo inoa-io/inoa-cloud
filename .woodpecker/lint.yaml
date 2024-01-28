@@ -1,0 +1,25 @@
+when:
+  event: [manual, pull_request, push]
+
+steps:
+
+  kustomize:
+    image: ghcr.io/grayc-de/plugins/kubectl
+    depends_on: []
+    commands: [kubectl kustomize ./fluxcd/live]
+    when: [path: {include: [fluxcd/*]}]
+
+  markdown:
+    image: ghcr.io/grayc-de/plugins/markdownlint
+    depends_on: []
+    when: [path: {include: [.markdownlint.yaml, .markdownlintignore, "**/*.md"]}]
+
+  shell:
+    image: ghcr.io/grayc-de/plugins/shellcheck
+    depends_on: []
+    when: [path: {include: ["**/*.sh"]}]
+
+  yaml:
+    image: ghcr.io/grayc-de/plugins/yamllint
+    depends_on: []
+    when: [path: {include: [.yamllint.yaml, "**/*.yaml"]}]
