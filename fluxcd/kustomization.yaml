@@ -1,0 +1,45 @@
+namespace: inoa-dev
+
+resources:
+  - certificate.yaml
+  - cloudsql.yaml
+  - pdb.yaml
+  - namespace.yaml
+  - gateway.yaml
+  - service-account
+  - postgres
+  - keycloak
+  - kafka
+  - influxdb
+  - hawkbit
+  - fleet
+  - measurement
+  - groundcontrol
+
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+configMapGenerator:
+  - name: inoa-cloud-environment
+    literals:
+      - MICRONAUT_ENVIRONMENTS=postgres
+      # use external url because OpenID endpoints will use external url
+      # maybe remove OpenID lookup and provide internal token and cert url
+      - KEYCLOAK_URL=https://dev.inoa.io
+      - KEYCLOAK_PATH=/auth/
+      - KEYCLOAK_REALM=inoa
+      - KEYCLOAK_CLIENT_ID=inoa-cloud-service
+      - DATASOURCES_DEFAULT_HOST=sqlproxy.infra
+      - DATASOURCES_DEFAULT_DATABASE=inoa-cloud
+      - DATASOURCES_DEFAULT_USERNAME=inoa-cloud
+      - GOOGLE_APPLICATION_CREDENTIALS=/etc/gcp/secrets/key.json
+  - name: inoa-cloud-keycloak
+    files: [files/keycloak.json]
+
+secretGenerator:
+  - name: inoa-cloud-environment
+    literals:
+      - KEYCLOAK_CLIENT_SECRET=<patched>
+      - DATASOURCES_DEFAULT_PASSWORD=<patched>
+    options:
+      disableNameSuffixHash: true

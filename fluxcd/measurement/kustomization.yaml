@@ -1,0 +1,31 @@
+commonLabels:
+  app.kubernetes.io/name: measurement
+
+resources:
+  - deployment.yaml
+
+configMapGenerator:
+  - name: measurement-environment
+    literals:
+      - LOGBACK_APPENDER=CONSOLE
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_IO_MICRONAUT=INFO
+      - LOGGER_LEVELS_IO_MICRONAUT_DATA=INFO
+      - LOGGER_LEVELS_IO_MICRONAUT_RETRY_INTERCEPT_REOVERYINTERCEPTOR=OFF
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+      - ENDPOINTS_ALL_PORT=8090
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+      - INFLUXDB_URL=http://influxdb
+      - INFLUXDB_ORGANISATION=inoa
+      - INFLUXDB_BUCKET=default
+      - MICRONAUT_ENVIRONMENTS=postgres
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak/realms/inoa/protocol/openid-connect/certs
+      - DATASOURCES_DEFAULT_HOST=postgres
+      - DATASOURCES_DEFAULT_DATABASE=measurement
+      - DATASOURCES_DEFAULT_USERNAME=measurement
+      - INOA_FLEET_REGISTRY_SECURITY_TENANT_AUDIENCE_WHITELIST=inoa-measurement
+
+secretGenerator:
+  - name: measurement-environment
+    envs: [secrets/config.env]

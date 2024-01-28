@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fleet
+  annotations:
+    kubernetes.io/ingress.class: istio
+spec:
+  rules:
+    - host: dev.inoa.io
+      http:
+        paths:
+          - path: /fleet
+            pathType: Prefix
+            backend:
+              service:
+                name: fleet
+                port:
+                  name: http
+  tls:
+    - hosts: [dev.inoa.io]
+      secretName: tls-inoa-cloud

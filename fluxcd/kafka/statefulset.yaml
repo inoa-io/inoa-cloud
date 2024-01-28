@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  serviceName: kafka
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka
+    spec:
+      securityContext:
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+      containers:
+        - name: kafka
+          image: quay.io/strimzi/kafka:latest-kafka-3.2.0
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - bin/kafka-storage.sh format -t $CLUSTER_ID -c config/kraft/server.properties --ignore-formatted && bin/kafka-server-start.sh config/kraft/server.properties --override advertised.listeners=${KAFKA_ADVERTISED_LISTENERS} --override listener.security.protocol.map=${KAFKA_LISTENER_SECURITY_PROTOCOL_MAP} --override listeners=${KAFKA_LISTENERS} --override inter.broker.listener.name=${KAFKA_INTER_BROKER_LISTENER_NAME}
+          env:
+            - name: LOG_DIR
+              value: /tmp/logs
+            - name: CLUSTER_ID
+              value: m1Ze6AjGRwqarkcxJscgyQ
+            - name: KAFKA_LISTENERS
+              value: LISTENER_INTERNAL://:9092,CONTROLLER://:9093
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: LISTENER_INTERNAL://kafka:9092
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: LISTENER_INTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: LISTENER_INTERNAL
+          ports:
+            - name: kafka
+              containerPort: 9092
+            - name: controller
+              containerPort: 9093
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - netstat -lnt | grep -Eq 'tcp6?[[:space:]]+[0-9]+[[:space:]]+[0-9]+[[:space:]]+[^ ]+:9092.*LISTEN[[:space:]]'
+            initialDelaySeconds: 20
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 100
+          securityContext:
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: tmp
+          emptyDir: {}

@@ -1,0 +1,6 @@
+{
+  "issuer": "https://dev.inoa.io/auth/realms/inoa",
+  "clientId": "inoa-cloud",
+  "scope": "profile email",
+  "requireHttps": true
+}
