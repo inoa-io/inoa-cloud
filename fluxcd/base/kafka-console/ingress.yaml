@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kafka-console
+  annotations:
+    kubernetes.io/tls-acme: true
+    traefik.ingress.kubernetes.io/router.tls: true
+    traefik.ingress.kubernetes.io/router.middlewares: auth-grayc-de@file
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: kafka-console.<patched>.inoa.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kafka-console
+                port:
+                  name: http
+  tls:
+    - hosts: [kafka-console.<patched>.inoa.io]
+      secretName: kafka-console-tls
