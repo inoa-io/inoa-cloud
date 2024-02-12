@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: kafka
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  minAvailable: 1

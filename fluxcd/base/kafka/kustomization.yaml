@@ -1,0 +1,37 @@
+commonLabels:
+  app.kubernetes.io/part-of: inoa
+  app.kubernetes.io/name: kafka
+
+resources:
+  - pdb.yaml
+  - pvc.yaml
+  - service.yaml
+  - statefulset.yaml
+
+replacements:
+  - source:
+      kind: StatefulSet
+      fieldPath: spec.replicas
+    targets:
+      - select:
+          kind: StatefulSet
+        fieldPaths:
+          - spec.template.spec.initContainers.[name=kafka-init-properties].env.[name=KAFKA_REPLICAS].value
+  - source:
+      kind: StatefulSet
+      fieldPath: spec.serviceName
+    targets:
+      - select:
+          kind: StatefulSet
+        fieldPaths:
+          - spec.template.spec.initContainers.[name=kafka-init-properties].env.[name=KAFKA_CONTROLLER_SERVICE].value
+  - source:
+      kind: ComputeDisk
+      name: kafka-0
+      fieldPath: spec.resourceID
+    targets:
+      - select:
+          kind: PersistentVolume
+          name: kafka-0
+        fieldPaths:
+          - spec.gcePersistentDisk.pdName

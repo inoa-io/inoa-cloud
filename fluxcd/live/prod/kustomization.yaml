@@ -7,8 +7,11 @@ commonLabels:
 images:
   - name: docker.io/library/influxdb
     newTag: 2.7.5
+  - name: ghcr.io/grayc-de/kafka
+    newTag: 3.6.1
 
 resources:
   - public/redirect
   - public/documentation
   - influxdb
+  - kafka

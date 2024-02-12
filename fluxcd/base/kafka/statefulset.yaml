@@ -1,0 +1,163 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  podManagementPolicy: Parallel
+  replicas: 3
+  revisionHistoryLimit: 0
+  serviceName: kafka-headless
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        fluentbit.io/exclude_stdout-kafka-init-properties: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9090"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/name: kafka
+    spec:
+      imagePullSecrets:
+        - name: dockerconfigjson-ghcr-io
+      initContainers:
+        - name: kafka-init-properties
+          image: ghcr.io/grayc-de/kafka
+          imagePullPolicy: Always
+          command: [/opt/kafka/bin/kafka-init-properties.sh]
+          env:
+            - name: KAFKA_REPLICAS
+              value: <patched>
+            - name: KAFKA_CONTROLLER_SERVICE
+              value: <patched>
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            limits:
+              cpu: 10m
+              memory: 10Mi
+            requests:
+              cpu: 10m
+              memory: 10Mi
+          volumeMounts:
+            - name: config
+              mountPath: /opt/kafka/config
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+        - name: kafka-init-storage
+          image: ghcr.io/grayc-de/kafka
+          imagePullPolicy: Never
+          command: [/opt/kafka/bin/kafka-init-storage.sh]
+          env:
+            - name: KAFKA_CLUSTER_ID
+              value: <patched>
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          volumeMounts:
+            - name: config
+              mountPath: /opt/kafka/config
+              readOnly: true
+            - name: kafka-data
+              mountPath: /opt/kafka/data
+              subPath: data
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      containers:
+        - name: kafka
+          image: ghcr.io/grayc-de/kafka
+          imagePullPolicy: Never
+          env:
+            - name: KAFKA_HEAP_OPTS
+              value: -XX:MaxRAMPercentage=70 -XX:+ExitOnOutOfMemoryError
+          ports:
+            - name: metrics
+              containerPort: 9090
+            - name: client
+              containerPort: 9092
+            - name: controller
+              containerPort: 9093
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 512Mi
+            requests:
+              cpu: 10m
+              memory: 512Mi
+          startupProbe:
+            tcpSocket:
+              port: controller
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 60
+          livenessProbe:
+            tcpSocket:
+              port: controller
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 2
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /opt/kafka/config
+              readOnly: true
+            - name: kafka-data
+              mountPath: /opt/kafka/data
+              subPath: data
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: kafka
+              topologyKey: kubernetes.io/hostname
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: config
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Mi
+        - name: kafka-data
+          emptyDir: {}
+#  volumeClaimTemplates:
+#    - metadata:
+#        name: kafka-data

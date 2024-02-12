@@ -1,0 +1,55 @@
+resources:
+  - ../../../base/kafka
+
+patches:
+  - target:
+      kind: StatefulSet
+    patch: |-
+      - op: test
+        path: /spec/template/spec/initContainers/1/env/0/name
+        value: KAFKA_CLUSTER_ID
+      - op: replace
+        path: /spec/template/spec/initContainers/1/env/0/value
+        value: ZGI1NTk0YmY3NzVjNDk5MD
+  - target:
+      kind: ComputeDisk
+      name: kafka-0
+    patch: |-
+      - op: replace
+        path: /spec/resourceID
+        value: inoa-prod-kafka-0
+  - target:
+      kind: ComputeDisk
+      name: kafka-1
+    patch: |-
+      - op: replace
+        path: /spec/resourceID
+        value: inoa-prod-kafka-1
+  - target:
+      kind: ComputeDisk
+      name: kafka-2
+    patch: |-
+      - op: replace
+        path: /spec/resourceID
+        value: inoa-prod-kafka-2
+  - target:
+      kind: PersistentVolume
+      name: kafka-0
+    patch: |-
+      - op: replace
+        path: /spec/gcePersistentDisk/pdName
+        value: inoa-prod-kafka-0
+  - target:
+      kind: PersistentVolume
+      name: kafka-1
+    patch: |-
+      - op: replace
+        path: /spec/gcePersistentDisk/pdName
+        value: inoa-prod-kafka-1
+  - target:
+      kind: PersistentVolume
+      name: kafka-2
+    patch: |-
+      - op: replace
+        path: /spec/gcePersistentDisk/pdName
+        value: inoa-prod-kafka-2
