@@ -1,0 +1,23 @@
+resources:
+  - ../../../base/influxdb
+
+secretGenerator:
+  - name: influxdb-env
+    behavior: merge
+    envs: [config.env]
+
+patches:
+  - target:
+      kind: ComputeDisk
+      name: influxdb
+    patch: |-
+      - op: replace
+        path: /spec/resourceID
+        value: inoa-influxdb-prod
+  - target:
+      kind: PersistentVolume
+      name: influxdb
+    patch: |-
+      - op: replace
+        path: /spec/gcePersistentDisk/pdName
+        value: inoa-influxdb-prod

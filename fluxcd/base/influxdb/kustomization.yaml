@@ -1,0 +1,25 @@
+commonLabels:
+  app.kubernetes.io/part-of: inoa
+  app.kubernetes.io/name: influxdb
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - pvc.yaml
+
+configMapGenerator:
+  - name: influxdb-env
+    literals:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_ORG=inoa
+      - DOCKER_INFLUXDB_INIT_BUCKET=inoa
+      - DOCKER_INFLUXDB_INIT_RETENTION=0s
+      - INFLUXD_BOLT_PATH=/var/lib/influxdb2/influxd.bolt
+      - INFLUXD_ENGINE_PATH=/var/lib/influxdb2
+
+secretGenerator:
+  - name: influxdb-env
+    literals:
+      - DOCKER_INFLUXDB_INIT_USERNAME=<patched>
+      - DOCKER_INFLUXDB_INIT_PASSWORD=<patched>
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=<patched>

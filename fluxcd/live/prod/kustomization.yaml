@@ -4,6 +4,11 @@ commonLabels:
   app.kubernetes.io/part-of: inoa
   app.kubernetes.io/env: prod
 
+images:
+  - name: docker.io/library/influxdb
+    newTag: 2.7.5
+
 resources:
   - public/redirect
   - public/documentation
+  - influxdb
