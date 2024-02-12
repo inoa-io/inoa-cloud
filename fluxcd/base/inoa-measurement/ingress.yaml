@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: measurement
+  annotations:
+    kubernetes.io/tls-acme: true
+    traefik.ingress.kubernetes.io/router.tls: true
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: api.<patched>.inoa.io
+      http:
+        paths:
+          - path: /measurement
+            pathType: Prefix
+            backend:
+              service:
+                name: measurement
+                port:
+                  name: http
+  tls:
+    - hosts: [api.<patched>.inoa.io]
+      secretName: fleet-http-tls

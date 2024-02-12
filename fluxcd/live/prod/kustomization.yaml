@@ -17,6 +17,8 @@ images:
     newTag: 3.6.1
   - name: ghcr.io/inoa-io/fleet
     newTag: ssc
+  - name: ghcr.io/inoa-io/measurement
+    newTag: ssc
 
 resources:
   - public/redirect
@@ -27,6 +29,7 @@ resources:
   - kafka-ui
   - kafdrop
   - inoa-fleet
+  - inoa-measurement
 
 configMapGenerator:
   - name: inoa-env
