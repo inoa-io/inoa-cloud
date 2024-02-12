@@ -7,7 +7,7 @@ steps:
     image: ghcr.io/grayc-de/plugins/kubectl
     depends_on: []
     commands: [kubectl kustomize ./fluxcd/live]
-    when: [path: {include: [fluxcd/*]}]
+    when: [path: {include: [fluxcd/**]}]
 
   markdown:
     image: ghcr.io/grayc-de/plugins/markdownlint
