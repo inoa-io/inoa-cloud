@@ -1,0 +1,13 @@
+resources:
+  - ../../../base/kafdrop
+
+patches:
+  - target:
+      kind: Ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: kafdrop.dev.inoa.io
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: kafdrop.dev.inoa.io

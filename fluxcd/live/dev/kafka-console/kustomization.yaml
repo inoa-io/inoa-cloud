@@ -1,0 +1,13 @@
+resources:
+  - ../../../base/kafka-console
+
+patches:
+  - target:
+      kind: Ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: kafka-console.dev.inoa.io
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: kafka-console.dev.inoa.io
