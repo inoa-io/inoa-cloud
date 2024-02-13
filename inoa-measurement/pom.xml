@@ -14,22 +14,6 @@
 
 	<dependencies>
 
-		<!-- project -->
-		<dependency>
-			<groupId>io.inoa</groupId>
-			<artifactId>fleet</artifactId>
-			<version>${project.version}</version>
-			<type>yaml</type>
-			<classifier>spec</classifier>
-			<!-- We want just the YAML file, nothing else, please! -->
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut</groupId>
@@ -172,34 +156,6 @@
 		</testResources>
 		<plugins>
 
-			<!-- copy project dependencies -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-inoa-fleet-api-spec</id>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<phase>generate-sources</phase>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>io.inoa</groupId>
-									<artifactId>fleet</artifactId>
-									<classifier>spec</classifier>
-									<type>yaml</type>
-									<version>${project.version}</version>
-									<destFileName>inoa-fleet-api.yaml</destFileName>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>${project.build.outputDirectory}/openapi</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- generate sources from openapi spec -->
 			<plugin>
 				<groupId>org.openapitools</groupId>
@@ -227,8 +183,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>${project.build.outputDirectory}/openapi/inoa-fleet-api.yaml
-							</inputSpec>
+							<inputSpec>${project.basedir}/../inoa-fleet/src/main/resources/openapi/inoa-fleet-api.yaml</inputSpec>
 							<modelPackage>io.inoa.fleet.model</modelPackage>
 							<packageName>io.inoa.fleet.api</packageName>
 							<configOptions>
