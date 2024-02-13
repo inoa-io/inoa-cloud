@@ -6,67 +6,17 @@ metadata:
     cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   location: europe-west3-c
-  resourceID: <patched>-kafka-0
-  size: 1
-  type: pd-standard
----
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeDisk
-metadata:
-  name: kafka-1
-  annotations:
-    cnrm.cloud.google.com/deletion-policy: abandon
-spec:
-  location: europe-west3-c
-  resourceID: <patched>-kafka-1
-  size: 1
-  type: pd-standard
----
-apiVersion: compute.cnrm.cloud.google.com/v1beta1
-kind: ComputeDisk
-metadata:
-  name: kafka-2
-  annotations:
-    cnrm.cloud.google.com/deletion-policy: abandon
-spec:
-  location: europe-west3-c
-  resourceID: <patched>-kafka-2
+  resourceID: inoa-prod-kafka-0
   size: 1
   type: pd-standard
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: kafka-0
+  name: inoa-prod-kafka-0
 spec:
   gcePersistentDisk:
-    pdName: <patched>-kafka-0
-    fsType: ext4
-  storageClassName: standard
-  accessModes: [ReadWriteOnce]
-  capacity:
-    storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kafka-1
-spec:
-  gcePersistentDisk:
-    pdName: <patched>-kafka-1
-    fsType: ext4
-  storageClassName: standard
-  accessModes: [ReadWriteOnce]
-  capacity:
-    storage: 1Gi
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kafka-2
-spec:
-  gcePersistentDisk:
-    pdName: <patched>-kafka-2
+    pdName: inoa-prod-kafka-0
     fsType: ext4
   storageClassName: standard
   accessModes: [ReadWriteOnce]
@@ -78,31 +28,81 @@ kind: PersistentVolumeClaim
 metadata:
   name: kafka-data-kafka-0
 spec:
-  volumeName: kafka-0
+  volumeName: inoa-prod-kafka-0
   storageClassName: standard
   accessModes: [ReadWriteOnce]
   resources:
     requests:
       storage: 1Gi
+---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeDisk
+metadata:
+  name: kafka-1
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  location: europe-west3-c
+  resourceID: inoa-prod-kafka-1
+  size: 1
+  type: pd-standard
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: inoa-prod-kafka-1
+spec:
+  gcePersistentDisk:
+    pdName: inoa-prod-kafka-1
+    fsType: ext4
+  storageClassName: standard
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 1Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: kafka-data-kafka-1
 spec:
-  volumeName: kafka-1
+  volumeName: inoa-prod-kafka-1
   storageClassName: standard
   accessModes: [ReadWriteOnce]
   resources:
     requests:
       storage: 1Gi
 ---
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeDisk
+metadata:
+  name: kafka-2
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  location: europe-west3-c
+  resourceID: inoa-prod-kafka-2
+  size: 1
+  type: pd-standard
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: inoa-prod-kafka-2
+spec:
+  gcePersistentDisk:
+    pdName: inoa-prod-kafka-2
+    fsType: ext4
+  storageClassName: standard
+  accessModes: [ReadWriteOnce]
+  capacity:
+    storage: 1Gi
+---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: kafka-data-kafka-2
 spec:
-  volumeName: kafka-2
+  volumeName: inoa-prod-kafka-2
   storageClassName: standard
   accessModes: [ReadWriteOnce]
   resources:

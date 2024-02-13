@@ -6,29 +6,29 @@ metadata:
     cnrm.cloud.google.com/deletion-policy: abandon
 spec:
   location: europe-west3-c
-  resourceID: <patched>
+  resourceID: inoa-prod-influxdb
   size: 5
   type: pd-standard
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: influxdb
+  name: inoa-prod-influxdb
 spec:
   gcePersistentDisk:
-    pdName: <patched>
+    pdName: inoa-prod-influxdb
     fsType: ext4
   storageClassName: standard
   accessModes: [ReadWriteOnce]
   capacity:
-    storage: 20Gi
+    storage: 5Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: influxdb
 spec:
-  volumeName: influxdb
+  volumeName: inoa-prod-influxdb
   storageClassName: standard
   accessModes: [ReadWriteOnce]
   resources:

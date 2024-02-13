@@ -1,5 +1,9 @@
+commonLabels:
+  app.kubernetes.io/name: influxdb
+
 resources:
   - ../../../base/influxdb
+  - pvc.yaml
 
 secretGenerator:
   - name: influxdb-env
@@ -8,16 +12,9 @@ secretGenerator:
 
 patches:
   - target:
-      kind: ComputeDisk
+      kind: PersistentVolumeClaim
       name: influxdb
     patch: |-
       - op: replace
-        path: /spec/resourceID
-        value: inoa-influxdb-prod
-  - target:
-      kind: PersistentVolume
-      name: influxdb
-    patch: |-
-      - op: replace
-        path: /spec/gcePersistentDisk/pdName
-        value: inoa-influxdb-prod
+        path: /spec/volumeName
+        value: inoa-prod-influxdb

@@ -4,7 +4,6 @@ commonLabels:
 
 resources:
   - pdb.yaml
-  - pvc.yaml
   - service.yaml
   - statefulset.yaml
 
@@ -25,13 +24,3 @@ replacements:
           kind: StatefulSet
         fieldPaths:
           - spec.template.spec.initContainers.[name=kafka-init-properties].env.[name=KAFKA_CONTROLLER_SERVICE].value
-  - source:
-      kind: ComputeDisk
-      name: kafka-0
-      fieldPath: spec.resourceID
-    targets:
-      - select:
-          kind: PersistentVolume
-          name: kafka-0
-        fieldPaths:
-          - spec.gcePersistentDisk.pdName
