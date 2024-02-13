@@ -11,7 +11,35 @@ spec:
     - host: api.<patched>.inoa.io
       http:
         paths:
-          - path: /fleet
+          - path: /tenants
+            pathType: Prefix
+            backend:
+              service:
+                name: fleet
+                port:
+                  name: http
+          - path: /gateway
+            pathType: Prefix
+            backend:
+              service:
+                name: fleet
+                port:
+                  name: http
+          - path: /gateways
+            pathType: Prefix
+            backend:
+              service:
+                name: fleet
+                port:
+                  name: http
+          - path: /groups
+            pathType: Prefix
+            backend:
+              service:
+                name: fleet
+                port:
+                  name: http
+          - path: /configuration
             pathType: Prefix
             backend:
               service:
