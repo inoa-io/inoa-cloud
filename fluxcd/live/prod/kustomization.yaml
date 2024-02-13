@@ -21,6 +21,7 @@ images:
     newTag: ssc
 
 resources:
+  - ../../base/fluxcd
   - public/redirect
   - public/documentation
   - influxdb
