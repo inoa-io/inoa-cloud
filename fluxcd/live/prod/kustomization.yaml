@@ -16,9 +16,9 @@ images:
   - name: ghcr.io/grayc-de/kafka
     newTag: 3.6.1
   - name: ghcr.io/inoa-io/fleet
-    newTag: ssc
+    newTag: release
   - name: ghcr.io/inoa-io/measurement
-    newTag: ssc
+    newTag: release
 
 resources:
   - ../../base/fluxcd

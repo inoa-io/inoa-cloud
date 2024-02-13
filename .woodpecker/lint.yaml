@@ -1,5 +1,7 @@
 when:
-  event: [manual, pull_request, push]
+  - event: [manual, pull_request]
+  - event: push
+    branch: main
 
 steps:
 

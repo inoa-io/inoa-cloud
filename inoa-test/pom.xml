@@ -350,6 +350,18 @@
 							</resources>
 							<subdir>dev</subdir>
 						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>io.inoa</groupId>
+								<artifactId>fleet</artifactId>
+								<version>${project.version}</version>
+							</dependency>
+							<dependency>
+								<groupId>io.inoa</groupId>
+								<artifactId>measurement</artifactId>
+								<version>${project.version}</version>
+							</dependency>
+						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
