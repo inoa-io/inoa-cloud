@@ -4,31 +4,34 @@ micronaut:
   http:
     services:
       fleet:
-        url: http://fleet.${test.host}
+        url: http://fleet.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.k3s.Fleet
       measurement:
-        url: http://measurement.${test.host}
+        url: http://measurement.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.k3s.Measurement
       hawkbit:
-        url: http://hawkbit.${test.host}
+        url: http://hawkbit.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.k3s.Hawkbit
       grafana:
-        url: http://grafana.${test.host}
+        url: http://grafana.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.k3s.Grafana
       keycloak:
-        url: http://keycloak.${test.host}
+        url: http://keycloak.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.k3s.Keycloak
       registry-gateway:
-        url: http://registry.${test.host}
+        url: http://registry.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.fleet.Registry
       registry-management:
-        url: http://registry.${test.host}
+        url: http://registry.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.fleet.Registry
       admin-ui:
-        url: http://ui.inoa.${test.host}
+        url: http://ui.inoa.${k3s.ip}.nip.io:8080
         logger-name: io.inoa.fleet.Registry
         follow-redirects: false
         exception-on-error-status: false
+
+mqtt:
+  url: ssl://${k3s.ip}:8883
 
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
@@ -37,11 +40,11 @@ jackson:
 
 ## see https://github.com/kokuwaio/micronaut-influxdb
 influxdb:
-  url: http://influxdb.${test.host}
+  url: http://influxdb.${k3s.ip}.nip.io:8080
   organisation: inoa
   token: changeMe
 grafana:
-  url: http://grafana.${test.host}
+  url: http://grafana.${k3s.ip}.nip.io:8080
   username: admin
   password: password
 
@@ -50,10 +53,6 @@ logger:
   levels:
     io.inoa: TRACE
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
-
-## test
-test:
-  host: 127.0.0.1.nip.io:8080
 
 ## INOA
 inoa:

@@ -12,6 +12,10 @@
 
 	<name>INOA :: Integration Test</name>
 
+	<properties>
+		<k3s.ip>127.0.0.1</k3s.ip>
+	</properties>
+
 	<dependencies>
 
 		<!-- micronaut -->
@@ -72,18 +76,18 @@
 				<directory>${project.basedir}/src/test/resources</directory>
 				<targetPath>${project.build.testOutputDirectory}</targetPath>
 			</testResource>
-			<!-- Copy and filter only YAML files -->
+			<!-- Copy and filter only YAML/JSON/SQL files -->
 			<testResource>
 				<directory>${project.basedir}/src/test/k3s</directory>
 				<targetPath>../k3s</targetPath>
-				<includes><include>**/*.yaml</include></includes>
+				<includes><include>**/*.yaml</include><include>**/*.json</include><include>**/*.sql</include></includes>
 				<filtering>true</filtering>
 			</testResource>
 			<!-- Copy all other files without filtering -->
 			<testResource>
 				<directory>${project.basedir}/src/test/k3s</directory>
 				<targetPath>../k3s</targetPath>
-				<excludes><exclude>**/*.yaml</exclude></excludes>
+				<excludes><exclude>**/*.yaml</exclude><exclude>**/*.json</exclude><exclude>**/*.sql</exclude></excludes>
 			</testResource>
 			<testResource>
 				<directory>${project.basedir}/../inoa-fleet/src/main/resources/openapi</directory>

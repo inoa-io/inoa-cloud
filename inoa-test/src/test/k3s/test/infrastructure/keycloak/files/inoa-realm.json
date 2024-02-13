@@ -3,7 +3,7 @@
 	"enabled": true,
 	"realm": "inoa",
 	"attributes": {
-		"frontendUrl": "http://keycloak.127.0.0.1.nip.io:8080"
+		"frontendUrl": "http://keycloak.${k3s.ip}.nip.io:8080"
 	},
 	"groups": [
 		{
@@ -41,9 +41,9 @@
 			"serviceAccountsEnabled": false,
 			"protocol": "openid-connect",
 			"protocolMappers": [],
-			"baseUrl": "http://grafana.127.0.0.1.nip.io:8080",
-			"redirectUris": [ "http://grafana.127.0.0.1.nip.io:8080/*" ],
-			"webOrigins": [ "http://grafana.127.0.0.1.nip.io:8080/*" ],
+			"baseUrl": "http://grafana.${k3s.ip}.nip.io:8080",
+			"redirectUris": [ "http://grafana.${k3s.ip}.nip.io:8080/*" ],
+			"webOrigins": [ "http://grafana.${k3s.ip}.nip.io:8080/*" ],
 			"defaultClientScopes": [ "email" ],
 			"optionalClientScopes": []
 		},{
@@ -82,9 +82,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://admin.127.0.0.1.nip.io:8080",
-			"redirectUris": [ "http://admin.127.0.0.1.nip.io:8080/oauth/callback/keycloak", "http://localhost:8080/oauth/callback/keycloak" ],
-			"webOrigins": [ "http://admin.127.0.0.1.nip.io:8080/*" ],
+			"baseUrl": "http://admin.${k3s.ip}.nip.io:8080",
+			"redirectUris": [ "http://admin.${k3s.ip}.nip.io:8080/oauth/callback/keycloak", "http://localhost:8080/oauth/callback/keycloak" ],
+			"webOrigins": [ "http://admin.${k3s.ip}.nip.io:8080/*" ],
 			"defaultClientScopes": [ "email", "profile" ],
 			"optionalClientScopes": []
 		},{
@@ -135,9 +135,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://swaggerui.127.0.0.1.nip.io:8080/",
+			"baseUrl": "http://swaggerui.${k3s.ip}.nip.io:8080/",
 			"redirectUris": [
-				"http://swaggerui.127.0.0.1.nip.io:8080/oauth2-redirect.html"
+				"http://swaggerui.${k3s.ip}.nip.io:8080/oauth2-redirect.html"
 			],
 			"webOrigins": [ "*" ],
 			"defaultClientScopes": [ "profile", "email" ],
@@ -180,9 +180,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://hawkbit.127.0.0.1.nip.io:8080/",
+			"baseUrl": "http://hawkbit.${k3s.ip}.nip.io:8080/",
 			"redirectUris": [
-				"http://hawkbit.127.0.0.1.nip.io:8080/oauth2-redirect.html"
+				"http://hawkbit.${k3s.ip}.nip.io:8080/oauth2-redirect.html"
 			],
 			"webOrigins": [ "*" ],
 			"defaultClientScopes": [ "profile", "email" ],

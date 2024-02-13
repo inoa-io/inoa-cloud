@@ -58,7 +58,7 @@ public class GatewayIT extends AbstractTest {
 	@Test
 	void getConfiguration() {
 		var gatewayClient = gatewayClientFactory.get(gatewayId, preSharedKey);
-		var expected = Map.of("mqtt.insecure", true, "mqtt.url", "ssl://127.0.0.1:8883", "ntp.host", "pool.ntp.org");
+		var expected = Map.of("mqtt.insecure", true, "mqtt.url", mqttUrl, "ntp.host", "pool.ntp.org");
 		var actual = gatewayClient.getConfiguration();
 		assertEquals(expected, actual, "got invalid configuration");
 	}

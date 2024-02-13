@@ -4,7 +4,7 @@ metadata:
   name: fleet
 spec:
   rules:
-    - host: fleet.127.0.0.1.nip.io
+    - host: fleet.${k3s.ip}.nip.io
       http:
         paths:
           - path: /

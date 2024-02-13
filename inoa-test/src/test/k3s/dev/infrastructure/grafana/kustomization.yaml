@@ -15,8 +15,8 @@ configMapGenerator:
       - GF_SERVER_PROTOCOL=http
       - GF_SERVER_HTTP_PORT=8080
       - GF_SERVER_ENFORCE_DOMAIN=false
-      - GF_SERVER_DOMAIN=grafana.127.0.0.1.nip.io
-      - GF_SERVER_ROOT_URL=http://grafana.127.0.0.1.nip.io:8080
+      - GF_SERVER_DOMAIN=grafana.${k3s.ip}.nip.io
+      - GF_SERVER_ROOT_URL=http://grafana.${k3s.ip}.nip.io:8080
       - GF_SERVER_ROUTER_LOGGING=false
       - GF_SERVER_ENABLE_GZIP=false
       - GF_DATABASE_TYPE=postgres
@@ -36,7 +36,7 @@ configMapGenerator:
       - GF_AUTH_GENERIC_OAUTH_NAME=Keycloak
       - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
       - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=grafana
-      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/auth
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=http://keycloak.${k3s.ip}.nip.io:8080/realms/inoa/protocol/openid-connect/auth
       - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=http://keycloak/realms/inoa/protocol/openid-connect/token
       - GF_AUTH_GENERIC_OAUTH_API_URL=http://keycloak/realms/inoa/protocol/openid-connect/userinfo
       - GF_AUTH_GENERIC_OAUTH_SCOPES=openid

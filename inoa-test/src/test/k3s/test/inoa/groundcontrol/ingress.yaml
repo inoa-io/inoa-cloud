@@ -4,7 +4,7 @@ metadata:
   name: groundcontrol
 spec:
   rules:
-    - host: groundcontrol.127.0.0.1.nip.io
+    - host: groundcontrol.${k3s.ip}.nip.io
       http:
         paths:
           - path: /

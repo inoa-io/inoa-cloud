@@ -4,7 +4,7 @@ metadata:
   name: swaggerui
 spec:
   rules:
-    - host: swaggerui.127.0.0.1.nip.io
+    - host: swaggerui.${k3s.ip}.nip.io
       http:
         paths:
           - path: /

@@ -91,6 +91,9 @@ spec:
             - name: tls
               mountPath: /tls
               readOnly: true
+            - name: flyway
+              mountPath: /app/flyway
+              readOnly: true
             - name: moquette
               mountPath: /moquette
               readOnly: false
@@ -98,6 +101,9 @@ spec:
       terminationGracePeriodSeconds: 5
       enableServiceLinks: false
       volumes:
+        - name: flyway
+          configMap:
+            name: fleet-flyway
         - name: tls
           configMap:
             name: fleet-tls

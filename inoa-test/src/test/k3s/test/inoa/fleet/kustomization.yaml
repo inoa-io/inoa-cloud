@@ -31,6 +31,10 @@ configMapGenerator:
       - INOA_FLEET_MQTT_TLS_CERT=/tls/cert.pem
       - INOA_FLEET_MQTT_DATA_PATH=/moquette
       - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit.infrastructure
+      # import initial test data
+      - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/app/flyway
+  - name: fleet-flyway
+    files: [R__data.sql]
   - name: fleet-tls
     files:
       - files/cert.pem

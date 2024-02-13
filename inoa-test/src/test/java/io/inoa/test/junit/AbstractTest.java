@@ -9,6 +9,7 @@ import io.inoa.test.client.GatewayClientFactory;
 import io.inoa.test.client.InfluxDBClient;
 import io.inoa.test.client.KeycloakClient;
 import io.inoa.test.client.RegistryClient;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
@@ -18,6 +19,7 @@ public abstract class AbstractTest {
 
 	public static String DEFAULT_TENANT_ID = "iona";
 
+	public @Value("${mqtt.url}") String mqttUrl;
 	@Inject
 	public KeycloakClient keycloak;
 	@Inject
@@ -28,6 +30,6 @@ public abstract class AbstractTest {
 	public GatewayClientFactory gatewayClientFactory;
 
 	public static String gatewayId() {
-		return "ISIT01-" + UUID.randomUUID().toString().replaceAll("-", "").toUpperCase().substring(0, 12);
+		return "ISIT01-" + UUID.randomUUID().toString().replace("-", "").toUpperCase().substring(0, 12);
 	}
 }

@@ -4,7 +4,7 @@ metadata:
   name: hawkbit
 spec:
   rules:
-    - host: hawkbit.127.0.0.1.nip.io
+    - host: hawkbit.${k3s.ip}.nip.io
       http:
         paths:
           - path: /
