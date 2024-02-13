@@ -48,4 +48,4 @@ spec:
                   name: http
   tls:
     - hosts: [api.<patched>.inoa.io]
-      secretName: fleet-http-tls
+      secretName: inoa-api-tls
