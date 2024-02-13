@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fleet
+  annotations:
+    kubernetes.io/tls-acme: true
+    traefik.ingress.kubernetes.io/router.tls: true
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: api.<patched>.inoa.io
+      http:
+        paths:
+          - path: /fleet
+            pathType: Prefix
+            backend:
+              service:
+                name: fleet
+                port:
+                  name: http
+  tls:
+    - hosts: [api.<patched>.inoa.io]
+      secretName: fleet-http-tls

@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleet
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fleet
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /endpoints/prometheus
+        prometheus.io/port: "8090"
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/name: fleet
+    spec:
+      imagePullSecrets:
+        - name: dockerconfigjson-ghcr-io
+      containers:
+        - name: inoa-fleet
+          image: ghcr.io/inoa-io/fleet
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: inoa-env
+                optional: true
+            - configMapRef:
+                name: fleet-env
+            - secretRef:
+                name: fleet-env
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: managment
+              containerPort: 8090
+            - name: mqtts
+              containerPort: 8883
+          startupProbe:
+            httpGet:
+              path: /endpoints/health
+              port: managment
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 300
+          readinessProbe:
+            httpGet:
+              path: /endpoints/health/readiness
+              port: managment
+            periodSeconds: 30
+            failureThreshold: 2
+          livenessProbe:
+            httpGet:
+              path: /endpoints/health/liveness
+              port: managment
+            periodSeconds: 60
+            failureThreshold: 2
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 300Mi
+            requests:
+              cpu: 10m
+              memory: 300Mi
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            - name: moquette
+              mountPath: /moquette
+            - name: tmp
+              mountPath: /tmp
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: tls
+          secret:
+            secretName: fleet-mqtt-tls
+        - name: moquette
+          emptyDir:
+            sizeLimit: 100Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 100Mi
