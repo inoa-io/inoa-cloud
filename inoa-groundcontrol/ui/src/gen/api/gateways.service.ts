@@ -26,6 +26,8 @@ import { GatewayDetail } from '../model/gatewayDetail';
 import { GatewayPage } from '../model/gatewayPage';
 // @ts-ignore
 import { GatewayUpdate } from '../model/gatewayUpdate';
+// @ts-ignore
+import { MoveGatewayRequest } from '../model/moveGatewayRequest';
 
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS }                     from '../variables';
@@ -101,15 +103,22 @@ export class GatewaysService {
      * Create gateway
      * Create gateway.
      * @param gatewayCreate 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createGateway(gatewayCreate: GatewayCreate, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GatewayDetail>;
-    public createGateway(gatewayCreate: GatewayCreate, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GatewayDetail>>;
-    public createGateway(gatewayCreate: GatewayCreate, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GatewayDetail>>;
-    public createGateway(gatewayCreate: GatewayCreate, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createGateway(gatewayCreate: GatewayCreate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GatewayDetail>;
+    public createGateway(gatewayCreate: GatewayCreate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GatewayDetail>>;
+    public createGateway(gatewayCreate: GatewayCreate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GatewayDetail>>;
+    public createGateway(gatewayCreate: GatewayCreate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayCreate === null || gatewayCreate === undefined) {
             throw new Error('Required parameter gatewayCreate was null or undefined when calling createGateway.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -169,6 +178,7 @@ export class GatewaysService {
             {
                 context: localVarHttpContext,
                 body: gatewayCreate,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -182,15 +192,22 @@ export class GatewaysService {
      * Delete gateway
      * Delete gateway by id.
      * @param gatewayId 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteGateway(gatewayId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public deleteGateway(gatewayId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public deleteGateway(gatewayId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteGateway(gatewayId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public deleteGateway(gatewayId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public deleteGateway(gatewayId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public deleteGateway(gatewayId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public deleteGateway(gatewayId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling deleteGateway.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -239,6 +256,7 @@ export class GatewaysService {
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -252,15 +270,22 @@ export class GatewaysService {
      * Find gateway
      * Find gateway by id.
      * @param gatewayId 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findGateway(gatewayId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GatewayDetail>;
-    public findGateway(gatewayId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GatewayDetail>>;
-    public findGateway(gatewayId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GatewayDetail>>;
-    public findGateway(gatewayId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public findGateway(gatewayId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GatewayDetail>;
+    public findGateway(gatewayId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GatewayDetail>>;
+    public findGateway(gatewayId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GatewayDetail>>;
+    public findGateway(gatewayId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling findGateway.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -310,6 +335,7 @@ export class GatewaysService {
         return this.httpClient.request<GatewayDetail>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -412,22 +438,109 @@ export class GatewaysService {
     }
 
     /**
+     * Update gateway-to-tenant association
+     * Moves the gateway from one tenant to another. One would need to have access grants for the source and the target tenant
+     * @param moveGatewayRequest 
+     * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
+     * @param reportProgress flag to report request and response progress.
+     */
+    public moveGateway(moveGatewayRequest: MoveGatewayRequest, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public moveGateway(moveGatewayRequest: MoveGatewayRequest, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public moveGateway(moveGatewayRequest: MoveGatewayRequest, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public moveGateway(moveGatewayRequest: MoveGatewayRequest, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+        if (moveGatewayRequest === null || moveGatewayRequest === undefined) {
+            throw new Error('Required parameter moveGatewayRequest was null or undefined when calling moveGateway.');
+        }
+
+        let localVarHeaders = this.defaultHeaders;
+
+        let localVarCredential: string | undefined;
+        // authentication (Keycloak) required
+        localVarCredential = this.configuration.lookupCredential('Keycloak');
+        if (localVarCredential) {
+        }
+
+        // authentication (BearerAuth) required
+        localVarCredential = this.configuration.lookupCredential('BearerAuth');
+        if (localVarCredential) {
+            localVarHeaders = localVarHeaders.set('Authorization', 'Bearer ' + localVarCredential);
+        }
+
+        let localVarHttpHeaderAcceptSelected: string | undefined = options && options.httpHeaderAccept;
+        if (localVarHttpHeaderAcceptSelected === undefined) {
+            // to determine the Accept header
+            const httpHeaderAccepts: string[] = [
+            ];
+            localVarHttpHeaderAcceptSelected = this.configuration.selectHeaderAccept(httpHeaderAccepts);
+        }
+        if (localVarHttpHeaderAcceptSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Accept', localVarHttpHeaderAcceptSelected);
+        }
+
+        let localVarHttpContext: HttpContext | undefined = options && options.context;
+        if (localVarHttpContext === undefined) {
+            localVarHttpContext = new HttpContext();
+        }
+
+
+        // to determine the Content-Type header
+        const consumes: string[] = [
+            'application/json'
+        ];
+        const httpContentTypeSelected: string | undefined = this.configuration.selectHeaderContentType(consumes);
+        if (httpContentTypeSelected !== undefined) {
+            localVarHeaders = localVarHeaders.set('Content-Type', httpContentTypeSelected);
+        }
+
+        let responseType_: 'text' | 'json' | 'blob' = 'json';
+        if (localVarHttpHeaderAcceptSelected) {
+            if (localVarHttpHeaderAcceptSelected.startsWith('text')) {
+                responseType_ = 'text';
+            } else if (this.configuration.isJsonMime(localVarHttpHeaderAcceptSelected)) {
+                responseType_ = 'json';
+            } else {
+                responseType_ = 'blob';
+            }
+        }
+
+        let localVarPath = `/gateways`;
+        return this.httpClient.request<any>('patch', `${this.configuration.basePath}${localVarPath}`,
+            {
+                context: localVarHttpContext,
+                body: moveGatewayRequest,
+                responseType: <any>responseType_,
+                withCredentials: this.configuration.withCredentials,
+                headers: localVarHeaders,
+                observe: observe,
+                reportProgress: reportProgress
+            }
+        );
+    }
+
+    /**
      * Update gateway
      * Update gateway by id.
      * @param gatewayId 
      * @param gatewayUpdate 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GatewayDetail>;
-    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GatewayDetail>>;
-    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GatewayDetail>>;
-    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<GatewayDetail>;
+    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<GatewayDetail>>;
+    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<GatewayDetail>>;
+    public updateGateway(gatewayId: string, gatewayUpdate: GatewayUpdate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling updateGateway.');
         }
         if (gatewayUpdate === null || gatewayUpdate === undefined) {
             throw new Error('Required parameter gatewayUpdate was null or undefined when calling updateGateway.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -487,6 +600,7 @@ export class GatewaysService {
             {
                 context: localVarHttpContext,
                 body: gatewayUpdate,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kafka
+spec:
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 0
+  serviceName: kafka-headless
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kafka
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kafka
+    spec:
+      initContainers:
+        - name: kafka-init-properties
+          image: ghcr.io/grayc-de/kafka:${version.org.apache.kafka}
+          imagePullPolicy: Never
+          command: [/opt/kafka/bin/kafka-init-properties.sh]
+          env:
+            - name: KAFKA_REPLICAS
+              value: "1"
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: config
+              mountPath: /opt/kafka/config
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+        - name: kafka-init-storage
+          image: ghcr.io/grayc-de/kafka:${version.org.apache.kafka}
+          imagePullPolicy: Never
+          command: [/opt/kafka/bin/kafka-init-storage.sh]
+          env:
+            - name: KAFKA_CLUSTER_ID
+              value: ZGI1NTk0YmY3NzVjNDk5MD
+          volumeMounts:
+            - name: config
+              mountPath: /opt/kafka/config
+              readOnly: true
+            - name: data
+              mountPath: /opt/kafka/data
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      containers:
+        - name: kafka
+          image: ghcr.io/grayc-de/kafka:${version.org.apache.kafka}
+          imagePullPolicy: Never
+          ports:
+            - name: metrics
+              containerPort: 9090
+            - name: client
+              containerPort: 9092
+            - name: controller
+              containerPort: 9093
+          startupProbe:
+            tcpSocket:
+              port: controller
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 60
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /opt/kafka/config
+              readOnly: true
+            - name: data
+              mountPath: /opt/kafka/data
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: config
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Mi
+        - name: data
+          emptyDir: {}

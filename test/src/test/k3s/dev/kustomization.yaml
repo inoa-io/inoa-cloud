@@ -1,0 +1,7 @@
+resources:
+  - ../test
+  - dashboard
+  - grafana
+  - help
+  - kafka-console
+  - swagger-ui

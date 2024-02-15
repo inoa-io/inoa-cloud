@@ -1,0 +1,13 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+
+configMapGenerator:
+  - name: postgres-config
+    files: [init.sh]
+
+secretGenerator:
+  - name: postgres-secret
+    literals:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password

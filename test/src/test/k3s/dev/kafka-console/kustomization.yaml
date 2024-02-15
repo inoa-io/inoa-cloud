@@ -1,0 +1,9 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: kafka-console-env
+    literals:
+      - KAFKA_BROKERS=kafka:9092

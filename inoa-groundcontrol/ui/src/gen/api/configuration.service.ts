@@ -100,18 +100,25 @@ export class ConfigurationService {
      * Save configuration definition.
      * @param configurationKey 
      * @param configurationDefinition 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ConfigurationDefinition>;
-    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ConfigurationDefinition>>;
-    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ConfigurationDefinition>>;
-    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ConfigurationDefinition>;
+    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ConfigurationDefinition>>;
+    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ConfigurationDefinition>>;
+    public createConfigurationDefinition(configurationKey: string, configurationDefinition: ConfigurationDefinition, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (configurationKey === null || configurationKey === undefined) {
             throw new Error('Required parameter configurationKey was null or undefined when calling createConfigurationDefinition.');
         }
         if (configurationDefinition === null || configurationDefinition === undefined) {
             throw new Error('Required parameter configurationDefinition was null or undefined when calling createConfigurationDefinition.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -171,6 +178,7 @@ export class ConfigurationService {
             {
                 context: localVarHttpContext,
                 body: configurationDefinition,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -184,15 +192,22 @@ export class ConfigurationService {
      * Delete configuration definition
      * Delete configuration definition.
      * @param configurationKey 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteConfigurationDefinition(configurationKey: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public deleteConfigurationDefinition(configurationKey: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public deleteConfigurationDefinition(configurationKey: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteConfigurationDefinition(configurationKey: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public deleteConfigurationDefinition(configurationKey: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public deleteConfigurationDefinition(configurationKey: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public deleteConfigurationDefinition(configurationKey: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public deleteConfigurationDefinition(configurationKey: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (configurationKey === null || configurationKey === undefined) {
             throw new Error('Required parameter configurationKey was null or undefined when calling deleteConfigurationDefinition.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -241,6 +256,7 @@ export class ConfigurationService {
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -459,15 +475,22 @@ export class ConfigurationService {
      * Find configuration.
      * Find configurations on group level ordered by key.
      * @param groupId 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findConfigurationsByGroup(groupId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Configuration>>;
-    public findConfigurationsByGroup(groupId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Configuration>>>;
-    public findConfigurationsByGroup(groupId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Configuration>>>;
-    public findConfigurationsByGroup(groupId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public findConfigurationsByGroup(groupId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Configuration>>;
+    public findConfigurationsByGroup(groupId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Configuration>>>;
+    public findConfigurationsByGroup(groupId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Configuration>>>;
+    public findConfigurationsByGroup(groupId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (groupId === null || groupId === undefined) {
             throw new Error('Required parameter groupId was null or undefined when calling findConfigurationsByGroup.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -517,6 +540,7 @@ export class ConfigurationService {
         return this.httpClient.request<Array<Configuration>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -530,15 +554,22 @@ export class ConfigurationService {
      * Delete configuration
      * Delete configuration.
      * @param configurationKey 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public resetConfiguration(configurationKey: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public resetConfiguration(configurationKey: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public resetConfiguration(configurationKey: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public resetConfiguration(configurationKey: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public resetConfiguration(configurationKey: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public resetConfiguration(configurationKey: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public resetConfiguration(configurationKey: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public resetConfiguration(configurationKey: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (configurationKey === null || configurationKey === undefined) {
             throw new Error('Required parameter configurationKey was null or undefined when calling resetConfiguration.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -587,6 +618,7 @@ export class ConfigurationService {
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -675,18 +707,25 @@ export class ConfigurationService {
      * Delete configuration.
      * @param groupId 
      * @param configurationKey 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public resetConfigurationByGroup(groupId: string, configurationKey: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public resetConfigurationByGroup(groupId: string, configurationKey: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public resetConfigurationByGroup(groupId: string, configurationKey: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public resetConfigurationByGroup(groupId: string, configurationKey: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public resetConfigurationByGroup(groupId: string, configurationKey: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public resetConfigurationByGroup(groupId: string, configurationKey: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public resetConfigurationByGroup(groupId: string, configurationKey: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public resetConfigurationByGroup(groupId: string, configurationKey: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (groupId === null || groupId === undefined) {
             throw new Error('Required parameter groupId was null or undefined when calling resetConfigurationByGroup.');
         }
         if (configurationKey === null || configurationKey === undefined) {
             throw new Error('Required parameter configurationKey was null or undefined when calling resetConfigurationByGroup.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -735,6 +774,7 @@ export class ConfigurationService {
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -749,18 +789,25 @@ export class ConfigurationService {
      * Save configuration.
      * @param configurationKey 
      * @param configurationSet 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public setConfiguration(configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (configurationKey === null || configurationKey === undefined) {
             throw new Error('Required parameter configurationKey was null or undefined when calling setConfiguration.');
         }
         if (configurationSet === null || configurationSet === undefined) {
             throw new Error('Required parameter configurationSet was null or undefined when calling setConfiguration.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -819,6 +866,7 @@ export class ConfigurationService {
             {
                 context: localVarHttpContext,
                 body: configurationSet,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -834,13 +882,14 @@ export class ConfigurationService {
      * @param gatewayId 
      * @param configurationKey 
      * @param configurationSet 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public setConfigurationByGateway(gatewayId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling setConfigurationByGateway.');
         }
@@ -849,6 +898,12 @@ export class ConfigurationService {
         }
         if (configurationSet === null || configurationSet === undefined) {
             throw new Error('Required parameter configurationSet was null or undefined when calling setConfigurationByGateway.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -907,6 +962,7 @@ export class ConfigurationService {
             {
                 context: localVarHttpContext,
                 body: configurationSet,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -922,13 +978,14 @@ export class ConfigurationService {
      * @param groupId 
      * @param configurationKey 
      * @param configurationSet 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public setConfigurationByGroup(groupId: string, configurationKey: string, configurationSet: ConfigurationSet, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (groupId === null || groupId === undefined) {
             throw new Error('Required parameter groupId was null or undefined when calling setConfigurationByGroup.');
         }
@@ -937,6 +994,12 @@ export class ConfigurationService {
         }
         if (configurationSet === null || configurationSet === undefined) {
             throw new Error('Required parameter configurationSet was null or undefined when calling setConfigurationByGroup.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -995,6 +1058,7 @@ export class ConfigurationService {
             {
                 context: localVarHttpContext,
                 body: configurationSet,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

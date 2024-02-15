@@ -1,6 +1,6 @@
 /**
- * Inoa Measurement API
- * Definitions for Inoa Measurement.
+ * Inoa Fleet API
+ * Definitions for Inoa Fleet.
  *
  * The version of the OpenAPI document: ${project.version}
  * 
@@ -38,7 +38,7 @@ import { Configuration }                                     from '../configurat
 })
 export class ThingTypesService {
 
-    protected basePath = 'http://measurement.127.0.0.1.nip.io:8080';
+    protected basePath = 'http://fleet.127.0.0.1.nip.io:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -352,11 +352,11 @@ export class ThingTypesService {
         }
         if (nameFilter !== undefined && nameFilter !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>nameFilter, 'nameFilter');
+            <any>nameFilter, 'name_filter');
         }
         if (referenceFilter !== undefined && referenceFilter !== null) {
           localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>referenceFilter, 'referenceFilter');
+            <any>referenceFilter, 'reference_filter');
         }
 
         let localVarHeaders = this.defaultHeaders;

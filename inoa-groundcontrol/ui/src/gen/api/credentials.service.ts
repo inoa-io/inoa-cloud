@@ -100,18 +100,25 @@ export class CredentialsService {
      * Create credential.
      * @param gatewayId 
      * @param credentialCreate 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling createCredential.');
         }
         if (credentialCreate === null || credentialCreate === undefined) {
             throw new Error('Required parameter credentialCreate was null or undefined when calling createCredential.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -171,6 +178,7 @@ export class CredentialsService {
             {
                 context: localVarHttpContext,
                 body: credentialCreate,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -185,18 +193,25 @@ export class CredentialsService {
      * Delete credential.
      * @param gatewayId 
      * @param credentialId 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteCredential(gatewayId: string, credentialId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public deleteCredential(gatewayId: string, credentialId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public deleteCredential(gatewayId: string, credentialId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteCredential(gatewayId: string, credentialId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling deleteCredential.');
         }
         if (credentialId === null || credentialId === undefined) {
             throw new Error('Required parameter credentialId was null or undefined when calling deleteCredential.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -245,6 +260,7 @@ export class CredentialsService {
         return this.httpClient.request<any>('delete', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -259,18 +275,25 @@ export class CredentialsService {
      * Find credential.
      * @param gatewayId 
      * @param credentialId 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findCredential(gatewayId: string, credentialId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
-    public findCredential(gatewayId: string, credentialId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
-    public findCredential(gatewayId: string, credentialId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
-    public findCredential(gatewayId: string, credentialId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling findCredential.');
         }
         if (credentialId === null || credentialId === undefined) {
             throw new Error('Required parameter credentialId was null or undefined when calling findCredential.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -320,6 +343,7 @@ export class CredentialsService {
         return this.httpClient.request<Credential>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -333,15 +357,22 @@ export class CredentialsService {
      * Get credentials
      * Get credentials for gateway.
      * @param gatewayId 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findCredentials(gatewayId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Credential>>;
-    public findCredentials(gatewayId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Credential>>>;
-    public findCredentials(gatewayId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Credential>>>;
-    public findCredentials(gatewayId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Credential>>;
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Credential>>>;
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Credential>>>;
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling findCredentials.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -391,6 +422,7 @@ export class CredentialsService {
         return this.httpClient.request<Array<Credential>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
@@ -406,13 +438,14 @@ export class CredentialsService {
      * @param gatewayId 
      * @param credentialId 
      * @param credentialUpdate 
+     * @param tenantSpecification If an issuer has multiple tenants granted, a specific tenant has to be given, so the method applies to only one tenant
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling updateCredential.');
         }
@@ -421,6 +454,12 @@ export class CredentialsService {
         }
         if (credentialUpdate === null || credentialUpdate === undefined) {
             throw new Error('Required parameter credentialUpdate was null or undefined when calling updateCredential.');
+        }
+
+        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
+        if (tenantSpecification !== undefined && tenantSpecification !== null) {
+          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
+            <any>tenantSpecification, 'tenant_specification');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -480,6 +519,7 @@ export class CredentialsService {
             {
                 context: localVarHttpContext,
                 body: credentialUpdate,
+                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

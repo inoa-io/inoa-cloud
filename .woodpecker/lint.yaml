@@ -27,7 +27,7 @@ steps:
   markdown:
     image: ghcr.io/grayc-de/plugins/markdownlint
     depends_on: []
-    when: [path: {include: [.markdownlint.yaml, .markdownlintignore, "**/*.md"]}]
+    when: [path: {include: [.markdownlint.yaml, "**/*.md"]}]
 
   shell:
     image: ghcr.io/grayc-de/plugins/shellcheck

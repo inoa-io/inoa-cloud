@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+    spec:
+      initContainers:
+        - name: postgres-init
+          image: docker.io/library/postgres:${version.org.postgresql}
+          imagePullPolicy: Never
+          command: [sh, -c, chown -R 999:999 /var/lib/postgresql/data]
+          volumeMounts:
+            - name: storage
+              mountPath: /var/lib/postgresql/data
+          securityContext:
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+      containers:
+        - name: postgres
+          image: docker.io/library/postgres:${version.org.postgresql}
+          imagePullPolicy: Never
+          envFrom:
+            - secretRef:
+                name: postgres-secret
+          ports:
+            - name: postgres
+              containerPort: 5432
+          startupProbe:
+            exec:
+              command: [/bin/sh, -c, exec pg_isready --user=$POSTGRES_USER]
+            initialDelaySeconds: 1
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 60
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: config
+              mountPath: /docker-entrypoint-initdb.d/init.sh
+              subPath: init.sh
+              readOnly: true
+            - name: storage
+              mountPath: /var/lib/postgresql/data
+            - name: tmp
+              mountPath: /var/run/postgresql
+      enableServiceLinks: false
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: config
+          configMap:
+            name: postgres-config
+        - name: storage
+          hostPath:
+            path: /var/lib/rancher/k3s/storage/postgres
+            type: DirectoryOrCreate
+        - name: tmp
+          emptyDir: {}

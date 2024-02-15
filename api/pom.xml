@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.inoa</groupId>
+		<artifactId>inoa-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>inoa-api</artifactId>
+
+	<name>INOA :: API Spec</name>
+
+	<properties>
+		<openapi.generator.maven.plugin.ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</openapi.generator.maven.plugin.ignoreFileOverride>
+		<openapi.generator.inputSpec>${project.basedir}/openapi.yaml</openapi.generator.inputSpec>
+		<openapi.style.validateInfoLicense>false</openapi.style.validateInfoLicense>
+		<openapi.style.validateModelPropertiesExample>false</openapi.style.validateModelPropertiesExample>
+	</properties>
+
+	<dependencies>
+
+		<!-- apis -->
+		<dependency><!-- scope compile needed for compiler plugin -->
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+
+		<!-- micronaut -->
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.data</groupId>
+			<artifactId>micronaut-data-runtime</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.test</groupId>
+			<artifactId>micronaut-test-junit5</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- libraries -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+
+			<!-- add generated sources -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>openapi-sources</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.basedir}/gen/main/java</source>
+							</sources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>openapi-test-sources</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>add-test-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${project.basedir}/gen/test/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- configure annotation processors -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${version.org.projectlombok}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut}</version>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+
+			<!-- create jars for client, server and test -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- remove default invocations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<executions><execution><id>default</id><phase /></execution></executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions><execution><id>default-resources</id><phase /></execution></executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>check</id>
+			<activation>
+				<property>
+					<name>!check.skip</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.openapitools.openapistylevalidator</groupId>
+						<artifactId>openapi-style-validator-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals><goal>validate</goal></goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>generate</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-clean-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>default-clean</id>
+								<phase>clean</phase>
+								<configuration>
+									<filesets>
+										<fileset><directory>${project.basedir}/gen</directory></fileset>
+										<fileset><directory>${project.basedir}/../inoa-groundcontrol/ui/src/gen</directory></fileset>
+									</filesets>
+								</configuration>
+							</execution>
+							<execution>
+								<id>openapi-clean</id>
+								<goals><goal>clean</goal></goals>
+								<phase>process-sources</phase>
+								<configuration>
+									<excludeDefaultDirectories>true</excludeDefaultDirectories>
+									<filesets>
+										<fileset><directory>${project.basedir}/gen/.openapi-generator</directory></fileset>
+										<fileset><directory>${project.basedir}/../inoa-groundcontrol/ui/src/gen/.openapi-generator</directory></fileset>
+									</filesets>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.openapitools</groupId>
+						<artifactId>openapi-generator-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>micronaut-server</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<generatorName>micronaut</generatorName>
+									<output>${project.basedir}/gen</output>
+									<packageName>io.inoa.rest</packageName>
+									<modelNameSuffix>VO</modelNameSuffix>
+									<configOptions>
+										<pageable>true</pageable>
+										<sourceFolder>main/java</sourceFolder>
+										<testFolder>test/java</testFolder>
+									</configOptions>
+								</configuration>
+							</execution>
+							<execution>
+								<id>hawkbit-client</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<generatorName>micronaut</generatorName>
+									<generateSupportingFiles>false</generateSupportingFiles>
+									<inputSpec>${project.basedir}/hawkbit.yaml</inputSpec>
+									<output>${project.basedir}/gen</output>
+									<packageName>org.eclipse.hawkbit.api</packageName>
+									<modelPackage>org.eclipse.hawkbit.model</modelPackage>
+									<modelNameSuffix>VO</modelNameSuffix>
+									<configOptions>
+										<clientId>hawkbit</clientId>
+										<sourceFolder>main/java</sourceFolder>
+										<testFolder>test/java</testFolder>
+									</configOptions>
+								</configuration>
+							</execution>
+							<execution>
+								<id>angular</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<configuration>
+									<generatorName>typescript-angular</generatorName>
+									<generateSupportingFiles>false</generateSupportingFiles>
+									<output>${project.basedir}/../inoa-groundcontrol/ui/src/gen</output>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

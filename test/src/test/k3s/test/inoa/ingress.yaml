@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: inoa
+spec:
+  rules:
+    - host: inoa.${k3s.ip}.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: inoa-http
+                port:
+                  name: http

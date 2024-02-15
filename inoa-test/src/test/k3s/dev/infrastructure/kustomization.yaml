@@ -1,5 +1,0 @@
-namespace: infrastructure
-
-resources:
-  - grafana
-  - help

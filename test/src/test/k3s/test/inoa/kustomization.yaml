@@ -1,0 +1,46 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: inoa-env
+    literals:
+      - MICRONAUT_ENVIRONMENTS=postgres
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak.default/realms/inoa/protocol/openid-connect/certs
+      - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit.default
+      - DATASOURCES_DEFAULT_HOST=postgres.default
+      - DATASOURCES_DEFAULT_DATABASE=inoa
+      - DATASOURCES_DEFAULT_USERNAME=inoa
+      - INFLUXDB_URL=http://influxdb.default
+      - INFLUXDB_ORGANISATION=inoa
+      - INFLUXDB_BUCKET=default
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
+      - INOA_FLEET_MQTT_TLS_GENERATE_KEY=false
+      - INOA_FLEET_MQTT_TLS_KEY=/tls/key.pem
+      - INOA_FLEET_MQTT_TLS_CERT=/tls/cert.pem
+      - INOA_FLEET_MQTT_DATA_PATH=/moquette
+      # map endpoints to default port to expose them
+      - ENDPOINTS_ALL_PORT=8080
+      # import initial test data
+      - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/app/flyway
+      # custom log levels
+      - LOGBACK_APPENDER=CONSOLE
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_IO_MOQUETTE=INFO
+      - LOGGER_LEVELS_IO_MICRONAUT_DATA=INFO
+      - LOGGER_LEVELS_IO_MICRONAUT_HTTP=INFO
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
+  - name: inoa-flyway
+    files: [R__data.sql]
+  - name: inoa-tls
+    files:
+      - files/cert.pem
+      - files/key.pem
+
+secretGenerator:
+  - name: inoa-env
+    literals:
+      - DATASOURCES_DEFAULT_PASSWORD=changeMe
+      - INFLUXDB_TOKEN=changeMe

@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inoa
+spec:
+  replicas: 1
+  revisionHistoryLimit: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: inoa
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: inoa
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: docker.io/library/postgres:${version.org.postgresql}
+          imagePullPolicy: Never
+          command: [sh, -c, until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
+          env:
+            - name: PGCONNECT_TIMEOUT
+              value: "1"
+            - name: PGHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: inoa-env
+                  key: DATASOURCES_DEFAULT_HOST
+            - name: PGUSER
+              valueFrom:
+                configMapKeyRef:
+                  name: inoa-env
+                  key: DATASOURCES_DEFAULT_USERNAME
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: inoa-env
+                  key: DATASOURCES_DEFAULT_PASSWORD
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      containers:
+        - name: inoa
+          image: ${image.inoa}
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: inoa-env
+            - secretRef:
+                name: inoa-env
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: mqtt
+              containerPort: 8883
+          startupProbe:
+            httpGet:
+              path: /endpoints/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 120
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            # TODO make read only
+            readOnlyRootFilesystem: false
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            - name: flyway
+              mountPath: /app/flyway
+              readOnly: true
+            - name: moquette
+              mountPath: /moquette
+              readOnly: false
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 5
+      enableServiceLinks: false
+      volumes:
+        - name: flyway
+          configMap:
+            name: inoa-flyway
+        - name: tls
+          configMap:
+            name: inoa-tls
+        - name: moquette
+          emptyDir: {}

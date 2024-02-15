@@ -1,0 +1,208 @@
+{
+	"enabled": true,
+	"realm": "inoa",
+	"displayName": "INOA",
+	"loginTheme": null,
+	"emailTheme": null,
+	"internationalizationEnabled": false,
+	"defaultLocale": "en",
+	"supportedLocales": [ "de", "en", "it" ],
+	"duplicateEmailsAllowed": false,
+	"loginWithEmailAllowed": true,
+	"verifyEmail": true,
+	"accessTokenLifespan": 86400,
+	"accessTokenLifespanForImplicitFlow": 86400,
+	"ssoSessionIdleTimeout": 86400,
+	"ssoSessionMaxLifespan": 86400,
+	"attributes": {
+		"frontendUrl": "http://keycloak.${k3s.ip}.nip.io:8080"
+	},
+	"groups": [
+		{
+			"id": "inoa",
+			"name": "inoa",
+			"path": "/inoa",
+			"attributes": {},
+			"realmRoles": [],
+			"clientRoles": {},
+			"subGroups": []
+		}
+	],
+	"users": [
+		{
+			"id": "inoa-admin",
+			"enabled": true,
+			"username": "admin",
+			"email": "admin@example.org",
+			"emailVerified": true,
+			"credentials": [ { "type": "password", "value": "password" } ],
+			"clientRoles": { "realm-management": [ "realm-admin" ] },
+			"groups": [ "inoa" ]
+		}
+	],
+	"clients": [
+		{
+			"id": "inoa-grafana",
+			"enabled": true,
+			"clientId": "grafana",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": true,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": false,
+			"serviceAccountsEnabled": false,
+			"protocol": "openid-connect",
+			"protocolMappers": [],
+			"baseUrl": "http://grafana.${k3s.ip}.nip.io:8080",
+			"redirectUris": [ "http://grafana.${k3s.ip}.nip.io:8080/*" ],
+			"webOrigins": [ "http://grafana.${k3s.ip}.nip.io:8080/*" ],
+			"defaultClientScopes": [ "email" ],
+			"optionalClientScopes": []
+		},{
+			"id": "inoa-ui",
+			"enabled": true,
+			"clientId": "inoa-ui",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": true,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "audience",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-audience-mapper",
+					"config": {
+						"included.custom.audience": "inoa-registry",
+						"id.token.claim": "true",
+						"access.token.claim": "true"
+					}
+				},
+				{
+					"name": "Group-to-Tenant Mapper",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-group-membership-mapper",
+					"consentRequired": false,
+					"config": {
+						"full.path": "false",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"claim.name": "tenants",
+						"userinfo.token.claim": "false"
+					}
+				}
+			],
+			"baseUrl": "http://admin.${k3s.ip}.nip.io:8080",
+			"redirectUris": [ "http://admin.${k3s.ip}.nip.io:8080/oauth/callback/keycloak", "http://localhost:8080/oauth/callback/keycloak" ],
+			"webOrigins": [ "http://admin.${k3s.ip}.nip.io:8080/*" ],
+			"defaultClientScopes": [ "email", "profile" ],
+			"optionalClientScopes": []
+		},{
+			"id": "inoa-swagger",
+			"enabled": true,
+			"clientId": "inoa-swagger",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": true,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"publicClient": true,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "audience",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-audience-mapper",
+					"config": {
+						"included.custom.audience": "inoa-registry",
+						"id.token.claim": "false",
+						"access.token.claim": "true"
+					}
+				},
+				{
+					"name": "Group-to-Tenant Mapper",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-group-membership-mapper",
+					"consentRequired": false,
+					"config": {
+						"full.path": "false",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"claim.name": "tenants",
+						"userinfo.token.claim": "false"
+					}
+				},
+				{
+					"name": "realm-roles",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-usermodel-realm-role-mapper",
+					"config": {
+						"claim.name": "roles",
+						"multivalued": "true",
+						"id.token.claim": "true",
+						"jsonType.label": "String",
+						"access.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
+				}
+			],
+			"baseUrl": "http://swaggerui.${k3s.ip}.nip.io:8080/",
+			"redirectUris": [
+				"http://swaggerui.${k3s.ip}.nip.io:8080/oauth2-redirect.html"
+			],
+			"webOrigins": [ "*" ],
+			"defaultClientScopes": [ "profile", "email" ],
+			"optionalClientScopes": []
+		},{
+			"id": "hawkbit",
+			"enabled": true,
+			"clientId": "hawkbit",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": true,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": false,
+			"publicClient": true,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "Group-to-Tenant Mapper",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-group-membership-mapper",
+					"consentRequired": false,
+					"config": {
+						"full.path": "false",
+						"id.token.claim": "true",
+						"access.token.claim": "true",
+						"claim.name": "tenants",
+						"userinfo.token.claim": "false"
+					}
+				},
+				{
+					"name": "realm-roles",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-usermodel-realm-role-mapper",
+					"config": {
+						"claim.name": "roles",
+						"multivalued": "true",
+						"id.token.claim": "true",
+						"jsonType.label": "String",
+						"access.token.claim": "true",
+						"userinfo.token.claim": "true"
+					}
+				}
+			],
+			"baseUrl": "http://hawkbit.${k3s.ip}.nip.io:8080/",
+			"redirectUris": [
+				"http://hawkbit.${k3s.ip}.nip.io:8080/oauth2-redirect.html"
+			],
+			"webOrigins": [ "*" ],
+			"defaultClientScopes": [ "profile", "email" ],
+			"optionalClientScopes": []
+		}
+	],
+	"eventsEnabled": true,
+	"eventsListeners": [ "metrics-listener", "jboss-logging" ],
+	"adminEventsEnabled": true,
+	"adminEventsDetailsEnabled": true
+}

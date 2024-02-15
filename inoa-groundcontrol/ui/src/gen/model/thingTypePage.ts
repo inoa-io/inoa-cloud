@@ -1,6 +1,6 @@
 /**
- * Inoa Measurement API
- * Definitions for Inoa Measurement.
+ * Inoa Fleet API
+ * Definitions for Inoa Fleet.
  *
  * The version of the OpenAPI document: ${project.version}
  * 

@@ -1,6 +1,6 @@
 /**
- * Inoa Measurement API
- * Definitions for Inoa Measurement.
+ * Inoa Fleet API
+ * Definitions for Inoa Fleet.
  *
  * The version of the OpenAPI document: ${project.version}
  * 
@@ -14,9 +14,10 @@
 /**
  * Subject for cloud events.
  */
-export type CloudEventType = 'io.inoa.measurement.telemetry';
+export type CloudEventType = 'io.inoa.log.emitted' | 'io.inoa.measurement.telemetry';
 
 export const CloudEventType = {
-    IoInoaMeasurementTelemetry: 'io.inoa.measurement.telemetry' as CloudEventType
+    LogEmitted: 'io.inoa.log.emitted' as CloudEventType,
+    MeasurementTelemetry: 'io.inoa.measurement.telemetry' as CloudEventType
 };
 

@@ -1,0 +1,16 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: hawkbit-env
+    literals:
+      - DATASOURCES_DEFAULT_HOST=postgres.default
+      - DATASOURCES_DEFAULT_DATABASE=hawkbit
+      - DATASOURCES_DEFAULT_USERNAME=hawkbit
+  - name: hawkbit
+
+secretGenerator:
+  - name: hawkbit-env
+    literals: [DATASOURCES_DEFAULT_PASSWORD=changeMe]

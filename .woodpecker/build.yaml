@@ -2,10 +2,13 @@ when:
   event: [manual, push]
   branch: main
   path:
-    - inoa-fleet/**
-    - inoa-groundcontrol/**
-    - inoa-measurement/**
+    - .woodpecker/build.yaml
+    - api/**
+    - app/**
+    - service/**
+    - image/**
     - pom.xml
+    - lombok.config
 
 services:
   - name: inoa-dockerd-build
@@ -13,37 +16,12 @@ services:
     privileged: true
     ports: [2375]
 
-variables:
-  - &defaults
-    image: ghcr.io/grayc-de/plugins/maven
-    environment: [DOCKER_HOST=tcp://inoa-dockerd-build:2375]
-    pull: false
-    when:
-      path:
-        - .woodpecker/build.yaml
-        - inoa-fleet/**
-        - inoa-measurement/**
-        - inoa-groundcontrol/**
-        - inoa-test/**
-        - pom.xml
-        - lombok.config
-
 steps:
 
-  build:
-    <<: *defaults
-    commands:
-      - mvn install -pl inoa-fleet,inoa-measurement -Dcheck.skip -DskipTests -T1C
-
   deploy:
-    <<: *defaults
+    image: ghcr.io/grayc-de/plugins/maven
+    environment: [DOCKER_HOST=tcp://inoa-dockerd-build:2375]
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
-      - docker load --input inoa-measurement/target/jib-image.tar
-      - docker load --input inoa-fleet/target/jib-image.tar
-      # tag snapshots with new to avoid conflict with old images
-      - docker tag ghcr.io/inoa-io/measurement:latest ghcr.io/inoa-io/measurement:snapshot
-      - docker tag ghcr.io/inoa-io/fleet:latest ghcr.io/inoa-io/fleet:snapshot
-      - docker push --quiet ghcr.io/inoa-io/fleet:snapshot
-      - docker push --quiet ghcr.io/inoa-io/measurement:snapshot
+      - mvn deploy -pl image -am -Dcheck.skip -DskipTests -T1C
     secrets: [DOCKER_CONFIG_JSON]

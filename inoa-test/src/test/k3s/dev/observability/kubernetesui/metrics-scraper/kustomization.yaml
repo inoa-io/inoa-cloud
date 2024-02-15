@@ -1,6 +1,0 @@
-commonLabels:
-  app.kubernetes.io/component: metrics
-
-resources:
-  - deployment.yaml
-  - service.yaml

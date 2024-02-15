@@ -10,16 +10,16 @@
 	</parent>
 
 	<groupId>io.inoa</groupId>
-	<artifactId>parent</artifactId>
+	<artifactId>inoa-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>INOA</name>
-	<url>https://github.com/inoa-io/inoa-cloud</url>
+	<url>https://docs.inoa.io</url>
 	<inceptionYear>2021</inceptionYear>
 	<organization>
 		<name>INOA</name>
-		<url>https://github.com/inoa-io</url>
+		<url>https://git.grayc.io/inoa/cloud</url>
 	</organization>
 	<licenses>
 		<license>
@@ -30,25 +30,26 @@
 	</licenses>
 
 	<modules>
-		<module>inoa-fleet</module>
-		<module>inoa-measurement</module>
-		<module>inoa-groundcontrol</module>
-		<module>inoa-test</module>
+		<module>api</module>
+		<module>service</module>
+		<module>app</module>
+		<module>image</module>
+		<module>test</module>
 	</modules>
 
 	<scm>
-		<url>https://github.com/inoa-io/inoa-cloud</url>
-		<connection>scm:git:https://github.com/inoa-io/inoa-cloud.git</connection>
-		<developerConnection>scm:git:https://github.com/inoa-io/inoa-cloud.git</developerConnection>
+		<url>https://git.grayc.io/inoa/cloud</url>
+		<connection>scm:git:https://git.grayc.io/inoa/cloud.git</connection>
+		<developerConnection>scm:git:https://git.grayc.io/inoa/cloud.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 	<issueManagement>
-		<system>jira</system>
-		<url>https://github.com/inoa-io/inoa-cloud/issues</url>
+		<system>gitea</system>
+		<url>https://git.grayc.io/inoa/cloud/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>github</system>
-		<url>https://github.com/inoa-io/inoa-cloud/actions</url>
+		<system>woodpecker</system>
+		<url>https://ci.grayc.io/repos/15</url>
 	</ciManagement>
 
 	<properties>
@@ -57,15 +58,21 @@
 		<!-- ============================== Build ================================ -->
 		<!-- ===================================================================== -->
 
+		<project.build.outputTimestamp>2024-01-10T14:04:49Z</project.build.outputTimestamp>
+
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
-		<maven.source.skip>true</maven.source.skip>
-		<maven.javadoc.skip>true</maven.javadoc.skip>
 
-		<jib.container.jvmFlags>-XX:+ExitOnOutOfMemoryError</jib.container.jvmFlags>
-		<jib.from.image>eclipse-temurin:${maven.compiler.target}-jre</jib.from.image>
-		<jib.to.image>ghcr.io/inoa-io/${project.artifactId}</jib.to.image>
+		<maven.release.preparationGoals>verify -N -P release-prepare</maven.release.preparationGoals>
+		<maven.release.releaseProfiles>release-perform</maven.release.releaseProfiles>
+		<maven.release.goals>deploy -Dcheck.skip -DskipTests -pl !test -T1C</maven.release.goals>
+		<maven.release.scmReleaseCommitComment>@{prefix} prepare release @{releaseLabel} [CI SKIP]</maven.release.scmReleaseCommitComment>
+		<maven.release.signTag>false</maven.release.signTag>
+
+		<image.registry>ghcr.io/inoa-io</image.registry>
+		<image.inoa.tag>snapshot</image.inoa.tag>
+		<image.inoa>${image.registry}/inoa:${image.inoa.tag}</image.inoa>
 
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
@@ -81,13 +88,17 @@
 		<version.io.micronaut>3.10.2</version.io.micronaut>
 		<version.io.micronaut.data>3.10.0</version.io.micronaut.data>
 		<version.io.moquette>0.16</version.io.moquette>
+		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.awaitility>4.2.0</version.org.awaitility>
 		<version.org.bouncycastle>1.76</version.org.bouncycastle>
-		<version.org.eclipse.hono>2.1.1</version.org.eclipse.hono>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
-		<version.org.keycloak>21.1.1</version.org.keycloak>
+		<version.org.keycloak>23.0.6</version.org.keycloak>
 		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
 		<version.org.projectlombok>1.18.28</version.org.projectlombok>
+
+		<version.io.traefik>v2.11.0</version.io.traefik>
+		<version.org.postgresql>14.11-bullseye</version.org.postgresql>
+		<version.com.influxdb>2.1.1-alpine</version.com.influxdb>
 
 	</properties>
 
@@ -95,6 +106,13 @@
 		<dependencies>
 
 			<!-- micronaut -->
+			<dependency>
+				<groupId>io.micronaut.data</groupId>
+				<artifactId>micronaut-data-bom</artifactId>
+				<version>${version.io.micronaut.data}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>io.micronaut</groupId>
 				<artifactId>micronaut-bom</artifactId>
@@ -112,11 +130,6 @@
 						<artifactId>javax.annotation-api</artifactId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>io.micronaut.data</groupId>
-				<artifactId>micronaut-data-processor</artifactId>
-				<version>${version.io.micronaut.data}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.kokuwa.micronaut</groupId>
@@ -140,6 +153,11 @@
 						<artifactId>jsr305</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.jayway.jsonpath</groupId>
+				<artifactId>json-path</artifactId>
+				<version>${version.com.jayway.jsonpath}</version>
 			</dependency>
 			<dependency>
 				<groupId>io.cloudevents</groupId>
@@ -183,9 +201,19 @@
 				</exclusions>
 			</dependency>
 			<dependency>
-				<groupId>org.eclipse.hono</groupId>
-				<artifactId>hono-bom</artifactId>
-				<version>${version.org.eclipse.hono}</version>
+				<groupId>org.apache.kafka</groupId>
+				<artifactId>kafka-clients</artifactId>
+				<version>${version.org.apache.kafka}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.awaitility</groupId>
+				<artifactId>awaitility</artifactId>
+				<version>${version.org.awaitility}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk18on </artifactId>
+				<version>${version.org.bouncycastle}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.eclipse.paho</groupId>
@@ -198,24 +226,14 @@
 				<version>${version.org.keycloak}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${version.org.projectlombok}</version>
-			</dependency>
-			<dependency>
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct</artifactId>
 				<version>${version.org.mapstruct}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.awaitility</groupId>
-				<artifactId>awaitility</artifactId>
-				<version>${version.org.awaitility}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcpkix-jdk18on </artifactId>
-				<version>${version.org.bouncycastle}</version>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${version.org.projectlombok}</version>
 			</dependency>
 
 		</dependencies>
@@ -223,6 +241,7 @@
 	<dependencies>
 
 		<!-- avoid compiler warning, see https://docs.micronaut.io/latest/guide/#_nullable_annotations -->
+		<!-- TODO mit micronaut 4 entfernen -->
 		<dependency>
 			<groupId>com.google.code.findbugs</groupId>
 			<artifactId>jsr305</artifactId>
@@ -242,14 +261,18 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<configuration>
+						<!-- we do not deploy our jars, so exclude unused maven descriptor -->
+						<archive>
+							<addMavenDescriptor>false</addMavenDescriptor>
+						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.openapitools</groupId>
 					<artifactId>openapi-generator-maven-plugin</artifactId>
-					<configuration>
-						<generatorName>micronaut</generatorName>
-						<modelNameSuffix>VO</modelNameSuffix>
-						<output>${project.build.directory}</output>
-						<skipIfSpecIsUnchanged>true</skipIfSpecIsUnchanged>
-					</configuration>
 					<dependencies>
 						<dependency>
 							<groupId>io.kokuwa.micronaut</groupId>
@@ -259,36 +282,99 @@
 					</dependencies>
 				</plugin>
 				<plugin>
-					<groupId>com.google.cloud.tools</groupId>
-					<artifactId>jib-maven-plugin</artifactId>
-					<configuration>
-						<container>
-							<labels>
-								<org.opencontainers.image.title>${project.name}</org.opencontainers.image.title>
-								<org.opencontainers.image.description>TODO</org.opencontainers.image.description>
-								<org.opencontainers.image.url>https://docs.inoa.io</org.opencontainers.image.url>
-								<org.opencontainers.image.source>https://github.com/inoa-io/inoa-cloud</org.opencontainers.image.source>
-								<org.opencontainers.image.vendor>${project.organization.name}</org.opencontainers.image.vendor>
-								<org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
-								<org.opencontainers.image.authors>https://github.com/orgs/inoa-io/people</org.opencontainers.image.authors>
-							</labels>
-						</container>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.openapitools.openapistylevalidator</groupId>
-					<artifactId>openapi-style-validator-maven-plugin</artifactId>
-					<configuration>
-						<!-- skip examples -->
-						<validateModelPropertiesExample>false</validateModelPropertiesExample>
-					</configuration>
-				</plugin>
-				<plugin>
 					<groupId>io.kokuwa.maven</groupId>
 					<artifactId>k3s-maven-plugin</artifactId>
 					<version>${version.io.kokuwa.maven.k3s}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
+		<plugins>
+
+			<!-- remove default invocations -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<executions><execution><id>default-deploy</id><phase /></execution></executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions><execution><id>default</id><phase /></execution></executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions><execution><id>default</id><phase /></execution></executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<executions><execution><id>default</id><phase /></execution></executions>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<executions><execution><id>default</id><phase /></execution></executions>
+			</plugin>
+
+		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>release-prepare</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.google.code.maven-replacer-plugin</groupId>
+						<artifactId>replacer</artifactId>
+						<version>1.5.3</version>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>replace</goal>
+								</goals>
+								<configuration>
+									<file>fluxcd/minoa/prod/kustomization.yaml</file>
+									<replacements>
+										<replacement>
+											<token>newTag: [0-9]+\.[0-9]+\.[0-9]+  # inoa</token>
+											<value>newTag: ${project.version}  # inoa</value>
+										</replacement>
+									</replacements>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>verify</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>git</executable>
+									<arguments>
+										<argument>add</argument>
+										<argument>${project.basedir}/fluxcd/live/prod/kustomization.yaml</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>release-perform</id>
+			<properties>
+				<image.minoa.tag>${project.version}</image.minoa.tag>
+				<image.skipTestImages>true</image.skipTestImages>
+			</properties>
+		</profile>
+	</profiles>
 </project>

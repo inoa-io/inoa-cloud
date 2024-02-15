@@ -1,0 +1,9 @@
+resources:
+  - rbac.yaml
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: traefik-config
+    files: [files/config.toml]

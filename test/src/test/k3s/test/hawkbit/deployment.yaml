@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hawkbit
+  labels:
+    app.kubernetes.io/name: hawkbit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: hawkbit
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hawkbit
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: docker.io/library/postgres:${version.org.postgresql}
+          imagePullPolicy: Never
+          command: [sh, -c, until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
+          env:
+            - name: PGCONNECT_TIMEOUT
+              value: "1"
+            - name: PGHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: hawkbit-env
+                  key: DATASOURCES_DEFAULT_HOST
+            - name: PGUSER
+              valueFrom:
+                configMapKeyRef:
+                  name: hawkbit-env
+                  key: DATASOURCES_DEFAULT_USERNAME
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hawkbit-env
+                  key: DATASOURCES_DEFAULT_PASSWORD
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      containers:
+        - name: hawkbit
+          image: docker.io/hawkbit/hawkbit-update-server:0.3.0M8
+          imagePullPolicy: Never
+          env:
+            - name: JAVA_TOOL_OPTIONS
+              value: -XX:+UseStringDeduplication -XX:+UseCompressedOops -XX:+HeapDumpOnOutOfMemoryError
+            - name: SPRING_PROFILES_ACTIVE
+              value: postgresql
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres.default:5432/hawkbit
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: hawkbit-env
+                  key: DATASOURCES_DEFAULT_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hawkbit-env
+                  key: DATASOURCES_DEFAULT_PASSWORD
+            - name: HAWKBIT_DMF_RABBITMQ_ENABLED
+              value: "false"
+            - name: HAWKBIT_DMF_HONO_ENABLED
+              value: "false"
+            - name: HAWKBIT_CONTROLLER_POLLINGTIME
+              value: 00:10:00
+            - name: HAWKBIT_CONTROLLER_POLLING_OVERDUE_TIME
+              value: 00:05:00
+            - name: HAWKBIT_SERVER_DDI_SECURITY_AUTHENTICATION_TARGETTOKEN_ENABLED
+              value: "true"
+            - name: HAWKBIT_SERVER_TENANT_CONFIGURATION_AUTHENTICATION-TARGETTOKEN-ENABLED_DEFAULTVALUE
+              value: "true"
+            - name: HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_REF
+              value: http://{hostnameRequest}/update/inoa/controller/v1/{controllerId}/softwaremodules/{softwareModuleId}/artifacts/{artifactFileName}
+            - name: LOGGING_LEVEL_ROOT
+              value: INFO
+          ports:
+            - name: http
+              containerPort: 8080
+          startupProbe:
+            httpGet:
+              path: /UI/login
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 1
+            successThreshold: 1
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /UI/login
+              port: http
+            periodSeconds: 3
+            timeoutSeconds: 60

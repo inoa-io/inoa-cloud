@@ -1,0 +1,8 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: help
+    files: [index.html]
