@@ -9,9 +9,7 @@ import io.micronaut.http.annotation.Filter;
 import io.micronaut.http.filter.ClientFilterChain;
 import io.micronaut.http.filter.HttpClientFilter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @Filter(serviceId = "hawkbit")
 @RequiredArgsConstructor
 public class HawkbitClientFilter implements HttpClientFilter {

@@ -154,7 +154,6 @@ class GatewaysApiTest extends AbstractUnitTest implements GatewaysApiTestSpec {
 	public void moveGateway404() {
 		var tenant1 = data.tenant();
 		var tenant2 = data.tenant("inoa");
-		var auth = auth(tenant1, tenant2);
 		assert401(() -> client.moveGateway(null, new MoveGatewayRequestVO().gatewayId("gibtsni")
 				.sourceTenantId(tenant1.getTenantId()).targetTenantId(tenant2.getTenantId())));
 	}

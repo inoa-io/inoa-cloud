@@ -21,7 +21,6 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Handles RPC commands to be distributed to gateways. This procedure is single
@@ -29,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
  * gateway.
  */
 @Controller
-@Slf4j
 @AllArgsConstructor
 public class RemoteController implements RemoteApi {
 

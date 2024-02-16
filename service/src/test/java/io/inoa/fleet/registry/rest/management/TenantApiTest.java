@@ -8,8 +8,9 @@ import static io.inoa.HttpAssertions.assert401;
 import static io.inoa.HttpAssertions.assert404;
 import static io.inoa.HttpAssertions.assert409;
 import static io.inoa.fleet.registry.rest.management.TenantsController.DEFAULT_TENANT_ID;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -86,9 +87,8 @@ public class TenantApiTest extends AbstractUnitTest implements TenantsApiTestSpe
 		// Check that it cannot be found by Id
 		assert404("Tenant does not exist.", () -> client.findTenant(auth, tenantCreateVO.getTenantId()));
 		// Check that it cannot be found by finding "all"
-		var pre = client.findTenants(auth);
 		var tenants = assert200(() -> client.findTenants(auth));
-		Assertions.assertEquals(1, tenants.size());
+		assertEquals(1, tenants.size());
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class TenantApiTest extends AbstractUnitTest implements TenantsApiTestSpe
 		var tenant = data.tenant();
 		var auth = auth(tenant);
 		var result = assert200(() -> client.findTenant(auth, tenant.getTenantId()));
-		Assertions.assertEquals(tenant.getTenantId(), result.getTenantId());
+		assertEquals(tenant.getTenantId(), result.getTenantId());
 	}
 
 	@DisplayName("findTenant -> 401: no token")
@@ -147,7 +147,7 @@ public class TenantApiTest extends AbstractUnitTest implements TenantsApiTestSpe
 		var tenant = data.tenant();
 		var auth = auth(tenant);
 		var result = assert200(() -> client.findTenants(auth));
-		Assertions.assertFalse(result.isEmpty());
+		assertFalse(result.isEmpty());
 	}
 
 	@DisplayName("findTenants -> 401: no token")
@@ -166,7 +166,7 @@ public class TenantApiTest extends AbstractUnitTest implements TenantsApiTestSpe
 		var tenantUpdateVO = new TenantUpdateVO().name("INOA-UPDATED").enabled(true)
 				.gatewayIdPattern(tenant.getGatewayIdPattern());
 		var response = assert200(() -> client.updateTenant(auth, tenant.getTenantId(), tenantUpdateVO));
-		Assertions.assertEquals("INOA-UPDATED", response.getName());
+		assertEquals("INOA-UPDATED", response.getName());
 	}
 
 	@DisplayName("updateTenant -> 400: bad pattern")

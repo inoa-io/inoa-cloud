@@ -14,9 +14,7 @@ import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.rest.DatapointVO;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 public class S0Builder implements ConfigCreator {
 
@@ -49,8 +47,7 @@ public class S0Builder implements ConfigCreator {
 		return null;
 	}
 
-	private JsonNode createS0JsonNode(String serial, String thingTypeReference, Thing thing, String sensor,
-		int iface) throws JsonProcessingException {
+	private JsonNode createS0JsonNode(String serial, String thingTypeReference, Thing thing, String sensor, int iface) {
 		return new ObjectMapper()
 			.valueToTree(
 				new DatapointVO()

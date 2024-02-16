@@ -9,9 +9,7 @@ import io.inoa.measurement.things.builder.ConfigCreator;
 import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 public class ShellyBuilder extends HttpBuilderBase implements ConfigCreator {
 

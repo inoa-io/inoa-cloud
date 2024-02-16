@@ -17,8 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
@@ -48,8 +46,6 @@ public class LogEventListenerTest extends AbstractUnitTest {
 	LogEventListener listener;
 	@Inject
 	LogMetrics metrics;
-	@Inject
-	ObjectMapper mapper;
 
 	@BeforeAll
 	static void setUpListAppender() {

@@ -1,10 +1,5 @@
 package io.inoa.fleet.registry.rest.mapper;
 
-import static io.inoa.rest.ConfigurationTypeVO.BOOLEAN;
-import static io.inoa.rest.ConfigurationTypeVO.INTEGER;
-import static io.inoa.rest.ConfigurationTypeVO.STRING;
-import static io.inoa.rest.ConfigurationTypeVO.URL;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Comparator;
@@ -85,33 +80,23 @@ public interface ConfigurationMapper {
 	ConfigurationDefinitionUrlVO toDefinitionUrl(ConfigurationDefinition configurationDefinition);
 
 	default ConfigurationDefinitionVO toDefinition(ConfigurationDefinition configurationDefinition) {
-		switch (configurationDefinition.getType()) {
-			case BOOLEAN:
-				return toDefinitionBoolean(configurationDefinition);
-			case STRING:
-				return toDefinitionString(configurationDefinition);
-			case INTEGER:
-				return toDefinitionInteger(configurationDefinition);
-			case URL:
-				return toDefinitionUrl(configurationDefinition);
-			default:
-				throw new IllegalArgumentException("Unsupported type: " + configurationDefinition.getType());
-		}
+		return switch (configurationDefinition.getType()) {
+			case BOOLEAN -> toDefinitionBoolean(configurationDefinition);
+			case STRING -> toDefinitionString(configurationDefinition);
+			case INTEGER -> toDefinitionInteger(configurationDefinition);
+			case URL -> toDefinitionUrl(configurationDefinition);
+			default -> throw new IllegalArgumentException("Unsupported type: " + configurationDefinition.getType());
+		};
 	}
 
 	default ConfigurationDefinition toDefinition(ConfigurationDefinitionVO configurationDefinition) {
-		switch (configurationDefinition.getType()) {
-			case BOOLEAN:
-				return toDefinitionBoolean((ConfigurationDefinitionBooleanVO) configurationDefinition);
-			case STRING:
-				return toDefinitionString((ConfigurationDefinitionStringVO) configurationDefinition);
-			case INTEGER:
-				return toDefinitionInteger((ConfigurationDefinitionIntegerVO) configurationDefinition);
-			case URL:
-				return toDefinitionUrl((ConfigurationDefinitionUrlVO) configurationDefinition);
-			default:
-				throw new IllegalArgumentException("Unsupported type: " + configurationDefinition.getType());
-		}
+		return switch (configurationDefinition.getType()) {
+			case BOOLEAN -> toDefinitionBoolean((ConfigurationDefinitionBooleanVO) configurationDefinition);
+			case STRING -> toDefinitionString((ConfigurationDefinitionStringVO) configurationDefinition);
+			case INTEGER -> toDefinitionInteger((ConfigurationDefinitionIntegerVO) configurationDefinition);
+			case URL -> toDefinitionUrl((ConfigurationDefinitionUrlVO) configurationDefinition);
+			default -> throw new IllegalArgumentException("Unsupported type: " + configurationDefinition.getType());
+		};
 	}
 
 	// configuration
@@ -130,19 +115,16 @@ public interface ConfigurationMapper {
 	default Map<String, Object> toConfigurationMap(List<Configuration> configurations) {
 		return configurations.stream().collect(Collectors.toMap(
 				configuration -> configuration.getDefinition().getKey(),
-				configuration -> toValue(configuration),
+				this::toValue,
 				(a, b) -> b, TreeMap::new));
 	}
 
 	default Object toValue(Configuration configuration) {
-		switch (configuration.getDefinition().getType()) {
-			case BOOLEAN:
-				return Boolean.parseBoolean(configuration.getValue());
-			case INTEGER:
-				return Integer.parseInt(configuration.getValue());
-			default:
-				return configuration.getValue();
-		}
+		return switch (configuration.getDefinition().getType()) {
+			case BOOLEAN -> Boolean.parseBoolean(configuration.getValue());
+			case INTEGER -> Integer.parseInt(configuration.getValue());
+			default -> configuration.getValue();
+		};
 	}
 
 	default String toString(ConfigurationDefinition definition, Object object) {
@@ -154,7 +136,7 @@ public interface ConfigurationMapper {
 		switch (definition.getType()) {
 
 			case BOOLEAN: {
-				if (!Boolean.class.isInstance(object)) {
+				if (!(object instanceof Boolean)) {
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
 							"Boolean expected, got: " + object.getClass().getSimpleName());
 				}
@@ -162,11 +144,10 @@ public interface ConfigurationMapper {
 			}
 
 			case INTEGER: {
-				if (!Integer.class.isInstance(object)) {
+				if (!(object instanceof Integer value)) {
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
 							"Integer expected, got: " + object.getClass().getSimpleName());
 				}
-				var value = (Integer) object;
 				if (minimum != null && value < minimum) {
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Minimum is " + minimum + ".");
 				}
@@ -177,7 +158,7 @@ public interface ConfigurationMapper {
 			}
 
 			case URL: {
-				if (!String.class.isInstance(object)) {
+				if (!(object instanceof String)) {
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
 							"String expected, got: " + object.getClass().getSimpleName());
 				}
@@ -189,11 +170,10 @@ public interface ConfigurationMapper {
 			}
 
 			case STRING: {
-				if (!String.class.isInstance(object)) {
+				if (!(object instanceof String value)) {
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST,
 							"String expected, got: " + object.getClass().getSimpleName());
 				}
-				var value = (String) object;
 				if (minimum != null && value.length() < minimum) {
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "MinLength is " + minimum + ".");
 				}
