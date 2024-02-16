@@ -20,6 +20,7 @@ images:
 
 resources:
   - ../../base/fluxcd
+  - service-account
   - influxdb
   - kafka
   - kafka-console
