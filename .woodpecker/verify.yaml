@@ -4,6 +4,19 @@ when:
     branch:
       exclude: [mains]
 
+variables:
+  - &when-path
+    path: [api/**, app/**, service/**, image/**, test/**, pom.xml, lombok.config]
+  - &defaults
+    image: ghcr.io/grayc-de/plugins/maven
+    depends_on: []
+    environment:
+      - DOCKER_HOST=tcp://inoa-dockerd-verify:2375
+      - TESTCONTAINERS_RYUK_DISABLED=true
+    pull: false
+    when:
+      <<: *when-path
+
 services:
   - name: inoa-dockerd-verify
     image: ghcr.io/grayc-de/plugins/dockerd
@@ -13,24 +26,7 @@ services:
     # 8080 k3s http api
     # 8883 k3s mqtt api
     ports: [2375, 6443, 8080, 8883]
-
-variables:
-  - &defaults
-    image: ghcr.io/grayc-de/plugins/maven
-    depends_on: []
-    environment:
-      - DOCKER_HOST=tcp://inoa-dockerd-verify:2375
-      - TESTCONTAINERS_RYUK_DISABLED=true
-    pull: false
-    when:
-      path:
-        - api/**
-        - app/**
-        - service/**
-        - image/**
-        - test/**
-        - pom.xml
-        - lombok.config
+    when: {<<: *when-path}
 
 steps:
 
@@ -95,4 +91,6 @@ steps:
     commands:
       - docker ps -a
       - docker logs k3s-maven-plugin
-    when: [status: [failure]]
+    when:
+      <<: *when-path
+      status: failure

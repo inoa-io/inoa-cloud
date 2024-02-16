@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: measurement
+  name: inoa
 spec:
   replicas: 1
   revisionHistoryLimit: 0
   selector:
     matchLabels:
-      app.kubernetes.io/name: measurement
+      app.kubernetes.io/name: inoa
   template:
     metadata:
       annotations:
@@ -15,27 +15,26 @@ spec:
         prometheus.io/port: "8090"
         prometheus.io/scrape: "true"
       labels:
-        app.kubernetes.io/name: measurement
+        app.kubernetes.io/name: inoa
     spec:
       imagePullSecrets:
         - name: dockerconfigjson-ghcr-io
       containers:
-        - name: inoa-measurement
-          image: ghcr.io/inoa-io/measurement
+        - name: inoa
+          image: ghcr.io/inoa-io/inoa
           imagePullPolicy: Always
           envFrom:
             - configMapRef:
                 name: inoa-env
-                optional: true
-            - configMapRef:
-                name: measurement-env
             - secretRef:
-                name: measurement-env
+                name: inoa-env
           ports:
             - name: http
               containerPort: 8080
             - name: managment
               containerPort: 8090
+            - name: mqtts
+              containerPort: 8883
           startupProbe:
             httpGet:
               path: /endpoints/health
@@ -72,6 +71,24 @@ spec:
             allowPrivilegeEscalation: false
             capabilities:
               drop: [ALL]
+          volumeMounts:
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            - name: moquette
+              mountPath: /moquette
+            - name: tmp
+              mountPath: /tmp
       automountServiceAccountToken: false
-      terminationGracePeriodSeconds: 5
       enableServiceLinks: false
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: tls
+          secret:
+            secretName: inoa-mqtt-tls
+        - name: moquette
+          emptyDir:
+            sizeLimit: 100Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 100Mi

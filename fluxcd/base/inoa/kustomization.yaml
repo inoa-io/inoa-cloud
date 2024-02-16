@@ -1,6 +1,6 @@
 commonLabels:
   app.kubernetes.io/part-of: inoa
-  app.kubernetes.io/name: fleet
+  app.kubernetes.io/name: inoa
 
 resources:
   - cloudsql.yaml
@@ -10,20 +10,29 @@ resources:
   - ingress.yaml
 
 configMapGenerator:
-  - name: fleet-env
+  - name: inoa-env
     literals:
       - MICRONAUT_ENVIRONMENTS=postgres
       - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak.infrastructure:8080/realms/inoa/protocol/openid-connect/certs
       - DATASOURCES_DEFAULT_HOST=sqlproxy.infrastructure
-      - DATASOURCES_DEFAULT_DATABASE=inoa-<patched>-fleet
-      - DATASOURCES_DEFAULT_USERNAME=inoa-<patched>-fleet
+      - DATASOURCES_DEFAULT_DATABASE=inoa-<patched>
+      - DATASOURCES_DEFAULT_USERNAME=inoa-<patched>
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - INOA_FLEET_SECURITY_TENANT_AUDIENCE_WHITELIST=inoa-fleet
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_ORGANISATION=inoa
+      - INFLUXDB_BUCKET=default
       - INOA_FLEET_MQTT_TLS_GENERATE_KEY=false
       - INOA_FLEET_MQTT_TLS_KEY=/tls/tls.key
       - INOA_FLEET_MQTT_TLS_CERT=/tls/tls.crt
       - INOA_FLEET_MQTT_DATA_PATH=/moquette
+      # TODO set as default in all deployments
+      - ENDPOINTS_ALL_PORT=8090
+      # custom log levels
+      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_ORG_APACHE_KAFKA=WARN
 
 secretGenerator:
-  - name: fleet-env
-    literals: [DATASOURCES_DEFAULT_PASSWORD=<patched>]
+  - name: inoa-env
+    literals:
+      - DATASOURCES_DEFAULT_PASSWORD=<patched>
+      - INFLUXDB_TOKEN=<patched>

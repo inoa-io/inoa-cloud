@@ -15,9 +15,7 @@ images:
     newTag: v2.4.3
   - name: ghcr.io/grayc-de/kafka
     newTag: 3.6.1
-  - name: ghcr.io/inoa-io/fleet
-    newTag: release
-  - name: ghcr.io/inoa-io/measurement
+  - name: ghcr.io/inoa-io/inoa
     newTag: release
 
 resources:
@@ -29,16 +27,7 @@ resources:
   - kafka-console
   - kafka-ui
   - kafdrop
-  - inoa-fleet
-  - inoa-measurement
-
-configMapGenerator:
-  - name: inoa-env
-    literals:
-      # TODO set as default in all deployments
-      - ENDPOINTS_ALL_PORT=8090
-      - LOGGER_LEVELS_IO_INOA=TRACE
-      - LOGGER_LEVELS_ORG_APACHE_KAFKA=WARN
+  - inoa
 
 # scale prod down to 0 to avoid costs
 patches:
@@ -51,14 +40,7 @@ patches:
         value: 0
   - target:
       kind: Deployment
-      name: fleet
-    patch: |-
-      - op: replace
-        path: /spec/replicas
-        value: 0
-  - target:
-      kind: Deployment
-      name: measurement
+      name: inoa
     patch: |-
       - op: replace
         path: /spec/replicas
