@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>io.kokuwa.maven</groupId>
 		<artifactId>maven-parent</artifactId>
-		<version>0.6.9</version>
+		<version>0.6.14</version>
 		<relativePath/>
 	</parent>
 
@@ -78,23 +78,23 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.com.influxdb.client>6.9.0</version.com.influxdb.client>
-		<version.com.jayway.jsonpath>2.8.0</version.com.jayway.jsonpath>
+		<version.com.influxdb.client>7.0.0</version.com.influxdb.client>
+		<version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
-		<version.io.kokuwa.maven.k3s>1.2.3</version.io.kokuwa.maven.k3s>
+		<version.io.kokuwa.maven.k3s>1.2.4</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>3.4.3</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.influxdb>3.0.2</version.io.kokuwa.micronaut.influxdb>
-		<version.io.kokuwa.micronaut.logging>3.2.0</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut>3.10.2</version.io.micronaut>
+		<version.io.kokuwa.micronaut.logging>3.3.0</version.io.kokuwa.micronaut.logging>
+		<version.io.micronaut>3.10.3</version.io.micronaut>
 		<version.io.micronaut.data>3.10.0</version.io.micronaut.data>
 		<version.io.moquette>0.16</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.awaitility>4.2.0</version.org.awaitility>
-		<version.org.bouncycastle>1.76</version.org.bouncycastle>
+		<version.org.bouncycastle>1.77</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>23.0.6</version.org.keycloak>
 		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
-		<version.org.projectlombok>1.18.28</version.org.projectlombok>
+		<version.org.projectlombok>1.18.30</version.org.projectlombok>
 
 		<version.io.traefik>v2.11.0</version.io.traefik>
 		<version.org.postgresql>14.11-bullseye</version.org.postgresql>
@@ -268,6 +268,56 @@
 						<archive>
 							<addMavenDescriptor>false</addMavenDescriptor>
 						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<configuration>
+						<ruleSet>
+							<rules>
+								<rule>
+									<groupId>io.micronaut</groupId>
+									<artifactId>micronaut-bom</artifactId>
+									<ignoreVersions>
+										<ignoreVersion>
+											<type>regex</type>
+											<version>4\..*</version>
+										</ignoreVersion>
+									</ignoreVersions>
+								</rule>
+								<rule>
+									<groupId>io.micronaut.data</groupId>
+									<artifactId>micronaut-data-bom</artifactId>
+									<ignoreVersions>
+										<ignoreVersion>
+											<type>regex</type>
+											<version>4\..*</version>
+										</ignoreVersion>
+									</ignoreVersions>
+								</rule>
+								<rule>
+									<groupId>io.kokuwa.micronaut</groupId>
+									<artifactId>micronaut-logging</artifactId>
+									<ignoreVersions>
+										<ignoreVersion>
+											<type>regex</type>
+											<version>4\..*</version>
+										</ignoreVersion>
+									</ignoreVersions>
+								</rule>
+								<rule>
+									<groupId>io.kokuwa.micronaut</groupId>
+									<artifactId>micronaut-openapi-codegen</artifactId>
+									<ignoreVersions>
+										<ignoreVersion>
+											<type>regex</type>
+											<version>4\..*</version>
+										</ignoreVersion>
+									</ignoreVersions>
+								</rule>
+							</rules>
+						</ruleSet>
 					</configuration>
 				</plugin>
 				<plugin>
