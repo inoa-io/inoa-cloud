@@ -82,7 +82,8 @@ jackson:
 ## see https://micronaut-projects.github.io/micronaut-sql/latest/guide/#jdbc
 datasources:
   default:
-    url: jdbc:h2:mem:${datasources.default.database};MODE=PostgreSQL;CASE_INSENSITIVE_IDENTIFIERS=TRUE
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${datasources.default.host:postgres}:${datasources.default.port:5432}/${datasources.default.database}
     database: inoa
     username: inoa
     password: changeMe

@@ -6,7 +6,6 @@ resources:
 configMapGenerator:
   - name: inoa-env
     literals:
-      - MICRONAUT_ENVIRONMENTS=postgres
       - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak.default/realms/inoa/protocol/openid-connect/certs
       - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit.default
       - DATASOURCES_DEFAULT_HOST=postgres.default

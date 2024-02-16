@@ -56,11 +56,6 @@ inoa:
     security:
       tenant-audience-whitelist: test
 
-datasources:
-  default:
-    driverClassName: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:postgresql:14.4-bullseye:///${datasources.default.database}
-
 ## custom log configuration
 logger:
   levels:
