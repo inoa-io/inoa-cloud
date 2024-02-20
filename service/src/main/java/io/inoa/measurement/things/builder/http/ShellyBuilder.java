@@ -10,6 +10,7 @@ import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingType;
 import lombok.RequiredArgsConstructor;
 
+@SuppressWarnings("unchecked")
 @RequiredArgsConstructor
 public class ShellyBuilder extends HttpBuilderBase implements ConfigCreator {
 
@@ -25,6 +26,7 @@ public class ShellyBuilder extends HttpBuilderBase implements ConfigCreator {
 		return datapoints;
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public ArrayNode buildLegacy(Thing thing, ThingType thingType) {
 		ArrayNode datapoints = objectMapper.createArrayNode();

@@ -17,12 +17,17 @@ import io.micronaut.data.model.Page;
 @Mapper(componentModel = ComponentModel.JAKARTA)
 public interface ThingMapper {
 
+	@Mapping(target = "removeConfigItem", ignore = true)
 	@Mapping(source = "thingId", target = "id")
 	@Mapping(source = "thingType.thingTypeId", target = "thingTypeId")
 	ThingVO toThingVO(Thing thing);
 
+	@Mapping(target = "removeContentItem", ignore = true)
 	ThingPageVO toThingPage(Page<Thing> page);
 
+	@Mapping(target = "tenantId", ignore = true)
+	@Mapping(target = "thingType", ignore = true)
+	@Mapping(target = "urn", ignore = true)
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "created", ignore = true)
 	@Mapping(target = "updated", ignore = true)

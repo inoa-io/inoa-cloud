@@ -156,6 +156,7 @@ public class ThingsController implements ThingsApi {
 			ThingType thingType = thing.getThingType();
 			Optional<ConfigCreator> configCreator = configCreatorHolder.getConfigCreator(thingType);
 			if (configCreator.isPresent()) {
+				@SuppressWarnings("removal")
 				JsonNode nodes = configCreator.get().buildLegacy(thing, thingType);
 				for (var node : nodes) {
 					result.add(node);

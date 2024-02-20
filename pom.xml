@@ -62,7 +62,6 @@
 
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<maven.compiler.failOnWarning>false</maven.compiler.failOnWarning>
 
 		<maven.release.preparationGoals>verify -N -P release-prepare</maven.release.preparationGoals>
 		<maven.release.releaseProfiles>release-perform</maven.release.releaseProfiles>

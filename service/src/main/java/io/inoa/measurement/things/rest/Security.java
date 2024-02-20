@@ -72,7 +72,7 @@ public class Security {
 	private Stream<String> get(Map<String, Object> attributes, String claim) {
 		return Stream
 				.ofNullable(attributes.get(claim))
-				.flatMap(obj -> obj instanceof List ? List.class.cast(obj).stream() : Stream.of(obj))
+				.flatMap(obj -> obj instanceof List<?> list ? list.stream() : Stream.of(obj))
 				.map(Object::toString);
 	}
 }

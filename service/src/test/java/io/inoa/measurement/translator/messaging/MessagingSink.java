@@ -45,6 +45,7 @@ public class MessagingSink implements Producer<String, TelemetryVO> {
 	@Override
 	public void beginTransaction() {}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void sendOffsetsToTransaction(Map<TopicPartition, OffsetAndMetadata> offsets, String consumerGroupId) {}
 

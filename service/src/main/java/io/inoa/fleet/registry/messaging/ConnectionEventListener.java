@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.slf4j.MDC;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.fleet.registry.KafkaHeader;
@@ -69,7 +70,7 @@ public class ConnectionEventListener {
 
 		Map<String, Object> data;
 		try {
-			data = mapper.readValue(payload, Map.class);
+			data = mapper.readValue(payload, new TypeReference<Map<String, Object>>() {});
 		} catch (Exception e) {
 			log.warn("Gateway {}/{} send invalid connection payload:", tenantId, gatewayId, e);
 			return;

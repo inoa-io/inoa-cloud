@@ -12,6 +12,7 @@ import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.rest.DatapointVO;
 
+@SuppressWarnings("unchecked")
 public abstract class ModbusBuilderBase {
 
 	protected abstract ObjectMapper getObjectMapper();

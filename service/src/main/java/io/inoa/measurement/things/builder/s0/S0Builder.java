@@ -15,6 +15,7 @@ import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.rest.DatapointVO;
 import lombok.RequiredArgsConstructor;
 
+@SuppressWarnings("unchecked")
 @RequiredArgsConstructor
 public class S0Builder implements ConfigCreator {
 
@@ -31,6 +32,7 @@ public class S0Builder implements ConfigCreator {
 		return datapoints;
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public ArrayNode buildLegacy(Thing thing, ThingType thingType) {
 		ArrayNode datapoints = objectMapper.createArrayNode();

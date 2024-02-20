@@ -45,7 +45,7 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 
 	@Override
 	public Class<?>[] getInterceptedMessageTypes() {
-		return new Class[] {
+		return new Class<?>[] {
 				InterceptConnectMessage.class,
 				InterceptDisconnectMessage.class,
 				InterceptConnectionLostMessage.class };

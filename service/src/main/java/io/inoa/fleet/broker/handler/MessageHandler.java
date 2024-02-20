@@ -45,7 +45,7 @@ public class MessageHandler extends AbstractInterceptHandler {
 
 	@Override
 	public Class<?>[] getInterceptedMessageTypes() {
-		return new Class[] { InterceptPublishMessage.class };
+		return new Class<?>[] { InterceptPublishMessage.class };
 	}
 
 	@Override

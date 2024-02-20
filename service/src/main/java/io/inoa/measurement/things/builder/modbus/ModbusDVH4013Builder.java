@@ -15,6 +15,7 @@ import io.inoa.measurement.things.domain.ThingType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@SuppressWarnings("unchecked")
 @Slf4j
 @RequiredArgsConstructor
 public class ModbusDVH4013Builder extends ModbusBuilderBase implements ConfigCreator {
@@ -47,6 +48,7 @@ public class ModbusDVH4013Builder extends ModbusBuilderBase implements ConfigCre
 		return toDatapoints(thing, thingType, slaveId, MAPPINGS);
 	}
 
+	@SuppressWarnings("removal")
 	@Override
 	public ArrayNode buildLegacy(Thing thing, ThingType thingType) {
 		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");

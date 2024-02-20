@@ -18,7 +18,7 @@ public class SubscriptionHandler extends AbstractInterceptHandler {
 
 	@Override
 	public Class<?>[] getInterceptedMessageTypes() {
-		return new Class[] { InterceptSubscribeMessage.class, InterceptUnsubscribeMessage.class };
+		return new Class<?>[] { InterceptSubscribeMessage.class, InterceptUnsubscribeMessage.class };
 	}
 
 	@Override

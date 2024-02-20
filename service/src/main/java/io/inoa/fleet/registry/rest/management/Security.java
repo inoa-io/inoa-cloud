@@ -87,6 +87,7 @@ public class Security {
 		return tenantGrants;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Stream<String> get(Map<String, Object> attributes, String claim) {
 		return Stream.ofNullable(attributes.get(claim))
 				.flatMap(obj -> obj instanceof List ? List.class.cast(obj).stream() : Stream.of(obj))
