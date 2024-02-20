@@ -12,19 +12,16 @@ public class DistributionSetCreationRequestPartVO {
 	public static final java.lang.String JSON_PROPERTY_MODULES = "modules";
 
 	/** The name of the entity */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	/** The description of the entity */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DESCRIPTION)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String description;
 
 	/** Package version */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VERSION)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String version;
@@ -35,13 +32,11 @@ public class DistributionSetCreationRequestPartVO {
 	private java.lang.Boolean requiredMigrationStep;
 
 	/** The type of the distribution set */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String type;
 
 	/** Software Modules of this distribution set */
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MODULES)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.util.List<DistributionSetModuleVO> modules;

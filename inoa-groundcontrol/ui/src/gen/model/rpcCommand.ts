@@ -20,7 +20,7 @@ export interface RpcCommand {
      */
     id?: string;
     /**
-     * 
+     * TODO
      */
     method: string;
     /**

@@ -2,5 +2,5 @@
 **/.gitignore
 **/git_push.sh
 **/README.md
-**/1HttpResponseAssertions.java
-**/1TimeTypeConverterRegistrar.java
+**/HttpResponseAssertions.java
+**/TimeTypeConverterRegistrar.java

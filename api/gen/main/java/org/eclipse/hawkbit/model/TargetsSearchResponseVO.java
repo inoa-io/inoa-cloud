@@ -19,7 +19,6 @@ public class TargetsSearchResponseVO {
 	private java.lang.Integer size;
 
 	/** List of software modules */
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONTENT)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.util.List<TargetSearchResponseItemVO> content;

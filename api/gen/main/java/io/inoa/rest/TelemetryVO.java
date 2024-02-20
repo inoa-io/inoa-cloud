@@ -35,21 +35,21 @@ public class TelemetryVO {
 
 	/** TODO */
 	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "[a-zA-Z0-9\\-]{2,32}")
+	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]{2,32}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DEVICE_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String deviceType;
 
 	/** TODO */
 	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "[a-zA-Z0-9\\-]{2,36}")
+	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]{2,36}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DEVICE_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String deviceId;
 
 	/** TODO */
 	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "[a-zA-Z0-9\\-\\:*]{2,64}")
+	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\:*]{2,64}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SENSOR)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String sensor;

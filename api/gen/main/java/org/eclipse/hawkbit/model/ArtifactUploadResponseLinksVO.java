@@ -7,12 +7,10 @@ public class ArtifactUploadResponseLinksVO {
 	public static final java.lang.String JSON_PROPERTY_SELF = "self";
 	public static final java.lang.String JSON_PROPERTY_DOWNLOAD = "download";
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SELF)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseLinksSelfVO self;
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DOWNLOAD)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseLinksDownloadVO download;

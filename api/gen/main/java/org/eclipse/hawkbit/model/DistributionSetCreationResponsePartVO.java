@@ -61,7 +61,6 @@ public class DistributionSetCreationResponsePartVO {
 	private java.lang.String type;
 
 	/** Software Modules of this distribution set */
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MODULES)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.util.List<DistributionSetModuleVO> modules;

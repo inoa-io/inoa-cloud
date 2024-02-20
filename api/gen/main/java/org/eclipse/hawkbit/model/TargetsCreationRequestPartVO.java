@@ -12,13 +12,11 @@ public class TargetsCreationRequestPartVO {
 	public static final java.lang.String JSON_PROPERTY_TARGET_TYPE = "targetType";
 
 	/** The technical identifier of the entity */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONTROLLER_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String controllerId;
 
 	/** The name of the entity */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;

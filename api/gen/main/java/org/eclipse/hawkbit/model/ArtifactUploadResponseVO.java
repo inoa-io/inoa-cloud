@@ -44,12 +44,10 @@ public class ArtifactUploadResponseVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer lastModifiedAt;
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LINKS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseLinksVO links;
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_HASHES)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseHashesVO hashes;

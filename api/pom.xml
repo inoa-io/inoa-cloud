@@ -235,6 +235,7 @@
 									<modelPackage>org.eclipse.hawkbit.model</modelPackage>
 									<modelNameSuffix>VO</modelNameSuffix>
 									<configOptions>
+										<useBeanValidation>false</useBeanValidation>
 										<clientId>hawkbit</clientId>
 										<sourceFolder>main/java</sourceFolder>
 										<testFolder>test/java</testFolder>

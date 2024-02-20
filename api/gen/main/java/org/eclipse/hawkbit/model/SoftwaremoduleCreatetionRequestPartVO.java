@@ -11,7 +11,6 @@ public class SoftwaremoduleCreatetionRequestPartVO {
 	public static final java.lang.String JSON_PROPERTY_TYPE = "type";
 
 	/** The name of the entity */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
@@ -22,7 +21,6 @@ public class SoftwaremoduleCreatetionRequestPartVO {
 	private java.lang.String description;
 
 	/** Package version */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VERSION)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String version;
@@ -33,7 +31,6 @@ public class SoftwaremoduleCreatetionRequestPartVO {
 	private java.lang.String vendor;
 
 	/** The type of the software module identified by its key */
-	@javax.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String type;
