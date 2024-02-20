@@ -6,15 +6,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import org.awaitility.Awaitility;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import io.inoa.Await;
 import jakarta.inject.Singleton;
+import lombok.extern.slf4j.Slf4j;
 
 @Singleton
+@Slf4j
 public class TestMqttListener implements IMqttMessageListener {
 
 	private final Map<String, List<MqttMessage>> records = new HashMap<>();
@@ -24,14 +25,14 @@ public class TestMqttListener implements IMqttMessageListener {
 	}
 
 	public MqttMessage await() {
-		Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS).until(() -> !records.isEmpty());
+		Await.await(log, "wait for mqtt messages").until(() -> !records.isEmpty());
 		assertEquals(1, records.size(), "expected only one entry");
 		assertEquals(1, records.entrySet().iterator().next().getValue().size(), "expected only one entry");
 		return records.entrySet().iterator().next().getValue().get(0);
 	}
 
 	public MqttMessage await(String topic) {
-		Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS)
+		Await.await(log, "wait for mqtt messages")
 				.until(() -> records.containsKey(topic) && !records.get(topic).isEmpty());
 		assertEquals(1, records.get(topic).size(), "expected only one entry");
 		return records.get(topic).get(0);

@@ -2,7 +2,6 @@ package io.inoa.test.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -10,17 +9,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.function.Executable;
 
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
+import io.inoa.Await;
 import io.inoa.test.client.GatewayClientFactory.GatewayClient;
 import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Singleton
+@Slf4j
 @RequiredArgsConstructor
 public class InfluxDBClient {
 
@@ -40,9 +41,8 @@ public class InfluxDBClient {
 	}
 
 	public List<FluxTable> awaitTables(GatewayClient gateway, int amount) {
-		return Awaitility.await("wait for " + amount + " messages for " + gateway.getGatewayId())
-				.pollInterval(Duration.ofMillis(200))
-				.timeout(Duration.ofSeconds(30))
+		return Await
+				.await(log, "wait for " + amount + " messages for " + gateway.getGatewayId())
 				.until(() -> findByGateway(gateway), tables -> tables.size() >= amount);
 	}
 

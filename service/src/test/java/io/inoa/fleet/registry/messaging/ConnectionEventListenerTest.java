@@ -8,12 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Instant;
 import java.util.UUID;
 
-import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.testcontainers.shaded.org.awaitility.Awaitility;
 
 import io.inoa.AbstractUnitTest;
+import io.inoa.Await;
 import io.inoa.fleet.registry.KafkaHeader;
 import io.inoa.fleet.registry.domain.GatewayStatusMqtt;
 import jakarta.inject.Inject;
@@ -35,7 +36,8 @@ public class ConnectionEventListenerTest extends AbstractUnitTest {
 
 		var timestamp = Instant.parse("2000-01-01T00:00:00Z");
 		producer.send(gateway, timestamp, true);
-		var mqtt = Awaitility.await()
+		var mqtt = Await
+				.await(log, "wait for mqtt connected")
 				.until(() -> data.find(gateway).getStatus().getMqtt(), GatewayStatusMqtt::getConnected);
 		assertEquals(timestamp, mqtt.getTimestamp(), "connected timestamp");
 		assertTrue(mqtt.getConnected(), "connected");

@@ -2,9 +2,7 @@ package io.inoa.fleet.remoting;
 
 import java.util.Collections;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
-import org.awaitility.Awaitility;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.AbstractUnitTest;
+import io.inoa.Await;
 import io.inoa.fleet.broker.MqttProperties;
 import io.inoa.fleet.broker.MqttServiceClient;
 import io.inoa.fleet.broker.TestMqttListener;
@@ -66,7 +65,8 @@ class RemotingServiceTest extends AbstractUnitTest {
 						new RpcResponseVO().id(command.getId()).result(Collections.singletonList("dp.get"))));
 
 		// Wait for the response to arrive
-		Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS)
+		Await
+				.await(log, "wait for command respoinse")
 				.until(() -> remotingHandler.getCommandResponse(command.getId()).isPresent());
 
 		// Check if the ID and result is as expected

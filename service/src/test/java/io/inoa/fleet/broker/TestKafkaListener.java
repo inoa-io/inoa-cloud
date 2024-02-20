@@ -7,14 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.awaitility.Awaitility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.inoa.Await;
 import io.inoa.fleet.registry.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
@@ -40,7 +39,7 @@ public class TestKafkaListener {
 	}
 
 	public ConsumerRecord<String, byte[]> await(String tenantId, String gatewayId) {
-		Awaitility.await().pollDelay(500, TimeUnit.MILLISECONDS).until(() -> !records.isEmpty());
+		Await.await(log, "wait for kafka record").until(() -> !records.isEmpty());
 		assertEquals(1, records.size(), "expected only one entry");
 		var record = records.get(0);
 		records.remove(record);
