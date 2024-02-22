@@ -16,6 +16,7 @@ import io.inoa.fleet.ApplicationProperties;
 import io.inoa.fleet.Data;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.rest.JwtProvider;
+import io.micronaut.core.io.socket.SocketUtils;
 import io.micronaut.data.jdbc.runtime.JdbcOperations;
 import io.micronaut.logging.impl.LogbackLoggingSystem;
 import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
@@ -93,6 +94,9 @@ public abstract class AbstractUnitTest extends AbstractMicronautTest {
 		Stream.of(postgres, influxContainer).parallel().forEach(GenericContainer::start);
 
 		return Map.of(
+				// use fixed ports for all tests, this avoids port conflicts
+				"inoa.fleet.mqtt.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
+				"inoa.fleet.mqtt.tls.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
 				"influxdb.url", "http://" + influxContainer.getHost() + ":" + influxContainer.getMappedPort(8086),
 				"influxdb.token", influxToken,
 				"influxdb.organisation", influxOrganisation,
