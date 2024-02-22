@@ -97,7 +97,7 @@ spec:
           imagePullPolicy: Never
           env:
             - name: KAFKA_HEAP_OPTS
-              value: -XX:MaxRAMPercentage=70 -XX:+ExitOnOutOfMemoryError
+              value: -Xms400m -Xmx400m -XX:+ExitOnOutOfMemoryError
           ports:
             - name: metrics
               containerPort: 9090
@@ -108,10 +108,10 @@ spec:
           resources:
             limits:
               cpu: 2000m
-              memory: 512Mi
+              memory: 600Mi
             requests:
               cpu: 10m
-              memory: 512Mi
+              memory: 600Mi
           startupProbe:
             tcpSocket:
               port: controller
