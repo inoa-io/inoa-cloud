@@ -4,4 +4,5 @@ commonLabels:
   app.kubernetes.io/part-of: inoa
   app.kubernetes.io/env: dev
 
-resources: []
+resources:
+  - mcnoize
