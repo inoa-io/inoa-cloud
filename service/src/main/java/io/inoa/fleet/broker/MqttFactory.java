@@ -7,7 +7,6 @@ import java.util.Properties;
 import javax.net.ssl.SSLException;
 
 import io.micronaut.context.annotation.Factory;
-import io.moquette.BrokerConstants;
 import io.moquette.broker.ISslContextCreator;
 import io.moquette.broker.config.IConfig;
 import io.moquette.broker.config.MemoryConfig;
@@ -32,14 +31,13 @@ public class MqttFactory {
 	IConfig config(MqttProperties properties) {
 		log.info("Configuration: {}", properties);
 		var config = new MemoryConfig(new Properties());
-		config.setProperty(BrokerConstants.ALLOW_ANONYMOUS_PROPERTY_NAME, String.valueOf(false));
-		config.setProperty(BrokerConstants.HOST_PROPERTY_NAME, properties.getHost());
-		config.setProperty(BrokerConstants.PORT_PROPERTY_NAME, String.valueOf(properties.getPort()));
-		config.setProperty(BrokerConstants.SSL_PORT_PROPERTY_NAME, String.valueOf(properties.getTls().getPort()));
-		// disable h2 persistence
-		// config.setProperty(BrokerConstants.PERSISTENT_STORE_PROPERTY_NAME, properties.getDataPath());
+		config.setProperty(IConfig.ALLOW_ANONYMOUS_PROPERTY_NAME, String.valueOf(false));
+		config.setProperty(IConfig.HOST_PROPERTY_NAME, properties.getHost());
+		config.setProperty(IConfig.PORT_PROPERTY_NAME, String.valueOf(properties.getPort()));
+		config.setProperty(IConfig.SSL_PORT_PROPERTY_NAME, String.valueOf(properties.getTls().getPort()));
+		config.setProperty(IConfig.PERSISTENCE_ENABLED_PROPERTY_NAME, String.valueOf(false));
 		// Immediate flush to avoid timing issues in tests or dependant clients
-		config.setProperty(BrokerConstants.IMMEDIATE_BUFFER_FLUSH_PROPERTY_NAME, String.valueOf(true));
+		config.setProperty(IConfig.BUFFER_FLUSH_MS_PROPERTY_NAME, String.valueOf(0));
 		return config;
 	}
 
@@ -56,6 +54,7 @@ public class MqttFactory {
 		return builder.protocols(SslProtocols.TLS_v1_2).build();
 	}
 
+	// TODO Dokumentieren warum das gebraucht wird.
 	@Singleton
 	ISslContextCreator sslContextCreator(SslContext sslContext) {
 		return () -> sslContext;

@@ -65,14 +65,15 @@ public class MessageHandler extends AbstractInterceptHandler {
 
 			// Check for valid topics
 			var topic = switch (message.getTopicName()) {
-			case TELEMETRY_TOPIC_SHORT_NAME, TELEMETRY_TOPIC_LONG_NAME -> "hono.telemetry." + gateway.tenantId();
-			case EVENT_TOPIC_SHORT_NAME, EVENT_TOPIC_LONG_NAME -> "hono.event." + gateway.tenantId();
-			// should not happen because `InoaAuthorizator#canWrite` will not allow this
-			default -> throw new IllegalArgumentException("Unexpected topic: " + message.getTopicName());
+				case TELEMETRY_TOPIC_SHORT_NAME, TELEMETRY_TOPIC_LONG_NAME -> "hono.telemetry." + gateway.tenantId();
+				case EVENT_TOPIC_SHORT_NAME, EVENT_TOPIC_LONG_NAME -> "hono.event." + gateway.tenantId();
+				// should not happen because `InoaAuthorizator#canWrite` will not allow this
+				default -> throw new IllegalArgumentException("Unexpected topic: " + message.getTopicName());
 			};
 			var payload = new byte[message.getPayload().readableBytes()];
 			message.getPayload().readBytes(payload);
-			var headers = List.<Header>of(new RecordHeader(KafkaHeader.TENANT_ID, gateway.tenantId().getBytes()),
+			var headers = List.<Header>of(
+					new RecordHeader(KafkaHeader.TENANT_ID, gateway.tenantId().getBytes()),
 					new RecordHeader(KafkaHeader.DEVICE_ID, gateway.gatewayId().getBytes()),
 					new RecordHeader(KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON.getBytes()),
 					new RecordHeader(KafkaHeader.CREATION_TIME, String.valueOf(System.currentTimeMillis()).getBytes()),
@@ -88,5 +89,10 @@ public class MessageHandler extends AbstractInterceptHandler {
 			}
 			message.getPayload().release();
 		});
+	}
+
+	@Override
+	public void onSessionLoopError(Throwable error) {
+		log.warn("Got session loop error", error);
 	}
 }

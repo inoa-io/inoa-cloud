@@ -71,4 +71,9 @@ public class RemotingHandler extends AbstractInterceptHandler {
 	public String getID() {
 		return RemotingHandler.class.getName();
 	}
+
+	@Override
+	public void onSessionLoopError(Throwable error) {
+		log.warn("Got session loop error", error);
+	}
 }

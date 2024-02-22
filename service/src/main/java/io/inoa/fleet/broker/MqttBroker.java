@@ -1,5 +1,6 @@
 package io.inoa.fleet.broker;
 
+import java.io.IOException;
 import java.util.List;
 
 import io.micronaut.context.annotation.Context;
@@ -39,7 +40,7 @@ public class MqttBroker {
 	private final Server server = new Server();
 
 	@PostConstruct
-	public void start() {
+	public void start() throws IOException {
 		server.startServer(config, handler, tls, authenticator, authorizator);
 	}
 

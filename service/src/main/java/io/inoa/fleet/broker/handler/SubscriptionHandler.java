@@ -33,4 +33,9 @@ public class SubscriptionHandler extends AbstractInterceptHandler {
 		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> log.debug("Gateway unsubscribed from {}",
 				message.getTopicFilter()));
 	}
+
+	@Override
+	public void onSessionLoopError(Throwable error) {
+		log.warn("Got session loop error", error);
+	}
 }

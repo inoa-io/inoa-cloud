@@ -37,6 +37,7 @@ public class MqttServiceClient {
 	private final MqttClient client;
 	private final MqttConnectOptions options;
 
+	@SuppressWarnings("resource") // memory persistence is not a real resource
 	public MqttServiceClient(String url, String tenantId, String gatewayId, byte[] psk) throws MqttException {
 		this.client = new MqttClient(url, clientId, new MemoryPersistence());
 		this.options = new MqttConnectOptions();

@@ -99,4 +99,9 @@ public class ConnectionHandler extends AbstractInterceptHandler {
 			return;
 		}
 	}
+
+	@Override
+	public void onSessionLoopError(Throwable error) {
+		log.warn("Got session loop error", error);
+	}
 }
