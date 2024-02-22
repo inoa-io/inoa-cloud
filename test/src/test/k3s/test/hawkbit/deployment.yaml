@@ -16,7 +16,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-postgres
-          image: docker.io/library/postgres:${version.org.postgresql}
+          image: ${image.postgresql}
           imagePullPolicy: Never
           command: [sh, -c, until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
           env:
@@ -48,7 +48,7 @@ spec:
               drop: [ALL]
       containers:
         - name: hawkbit
-          image: docker.io/hawkbit/hawkbit-update-server:0.3.0M8
+          image: ${image.hawkbit}
           imagePullPolicy: Never
           env:
             - name: JAVA_TOOL_OPTIONS

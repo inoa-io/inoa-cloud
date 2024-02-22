@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: traefik
-          image: docker.io/library/traefik:${version.io.traefik}
+          image: ${image.traefik}
           imagePullPolicy: Never
           args:
             - --providers.file.filename=/k8s/config.toml

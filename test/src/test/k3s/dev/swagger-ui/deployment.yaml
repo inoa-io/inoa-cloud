@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-keycloak
-          image: docker.io/library/traefik:${version.io.traefik}
+          image: ${image.traefik}
           imagePullPolicy: Never
           command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://keycloak/realms/inoa/protocol/openid-connect/certs --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
           securityContext:

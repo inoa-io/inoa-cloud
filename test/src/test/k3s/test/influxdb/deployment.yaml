@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: influxdb
-          image: docker.io/library/influxdb:${version.com.influxdb}
+          image: ${image.influxdb}
           imagePullPolicy: Never
           envFrom:
             - configMapRef:

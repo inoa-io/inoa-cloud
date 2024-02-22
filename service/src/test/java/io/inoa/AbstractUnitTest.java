@@ -4,13 +4,13 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.utility.DockerImageName;
 
 import io.inoa.fleet.ApplicationProperties;
 import io.inoa.fleet.Data;
@@ -20,6 +20,7 @@ import io.micronaut.data.jdbc.runtime.JdbcOperations;
 import io.micronaut.logging.impl.LogbackLoggingSystem;
 import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
 import jakarta.inject.Inject;
+import lombok.SneakyThrows;
 
 /**
  * Base for all unit tests.
@@ -56,14 +57,24 @@ public abstract class AbstractUnitTest extends AbstractMicronautTest {
 
 	@SuppressWarnings("resource")
 	@Override
+	@SneakyThrows
 	public Map<String, String> getSuiteProperties() {
 
+		// configure logback before starting
+
 		new LogbackLoggingSystem(null, null).refresh();
+
+		// get properties
+
+		var properties = new Properties();
+		properties.load(AbstractUnitTest.class.getResourceAsStream("/application-test.properties"));
+
+		// start docker containers
 
 		var influxOrganisation = "test-org";
 		var influxBucket = "test-bucket";
 		var influxToken = "changeMe";
-		var influxContainer = new GenericContainer<>(DockerImageName.parse("influxdb:2.1.1-alpine"))
+		var influxContainer = new GenericContainer<>(properties.getProperty("image.influxdb"))
 				.withEnv("DOCKER_INFLUXDB_INIT_MODE", "setup")
 				.withEnv("DOCKER_INFLUXDB_INIT_USERNAME", "username")
 				.withEnv("DOCKER_INFLUXDB_INIT_PASSWORD", "password")
@@ -73,7 +84,7 @@ public abstract class AbstractUnitTest extends AbstractMicronautTest {
 				.withExposedPorts(8086)
 				.waitingFor(Wait.forListeningPort());
 
-		var postgres = new GenericContainer<>(DockerImageName.parse("postgres:15.4"))
+		var postgres = new GenericContainer<>(properties.getProperty("image.postgresql"))
 				.withEnv("POSTGRES_DB", "inoa")
 				.withEnv("POSTGRES_USER", "inoa").withEnv("POSTGRES_PASSWORD", "changeMe")
 				.withExposedPorts(5432)

@@ -14,7 +14,7 @@
 
 	<properties>
 		<k3s.ip>127.0.0.1</k3s.ip>
-		<k3s.imageTag>v1.24.12-k3s1</k3s.imageTag>
+		<k3s.imageTag>v1.28.6-k3s2</k3s.imageTag>
 		<k3s.manifests>${project.build.directory}/k3s</k3s.manifests>
 		<k3s.subdir>test</k3s.subdir>
 		<k3s.clusterDns>10.53.0.10</k3s.clusterDns>
@@ -138,15 +138,15 @@
 						<portBinding>8883:8883</portBinding>
 					</portBindings>
 					<ctrImages>
-						<ctrImage>docker.io/library/influxdb:${version.com.influxdb}</ctrImage>
-						<ctrImage>docker.io/library/postgres:${version.org.postgresql}</ctrImage>
-						<ctrImage>docker.io/library/traefik:${version.io.traefik}</ctrImage>
-						<ctrImage>docker.io/hawkbit/hawkbit-update-server:0.3.0M8</ctrImage>
-						<ctrImage>docker.io/kokuwaio/keycloak:${version.org.keycloak}</ctrImage>
+						<ctrImage>${image.hawkbit}</ctrImage>
+						<ctrImage>${image.influxdb}</ctrImage>
+						<ctrImage>${image.keycloak}</ctrImage>
+						<ctrImage>${image.postgresql}</ctrImage>
+						<ctrImage>${image.traefik}</ctrImage>
 					</ctrImages>
 					<dockerImages>
-						<dockerImages>ghcr.io/grayc-de/kafka:${version.org.apache.kafka}</dockerImages>
 						<dockerImage>${image.inoa}</dockerImage>
+						<dockerImage>${image.kafka}</dockerImage>
 					</dockerImages>
 				</configuration>
 			</plugin>

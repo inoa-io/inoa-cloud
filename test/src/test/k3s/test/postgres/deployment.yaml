@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
         - name: postgres-init
-          image: docker.io/library/postgres:${version.org.postgresql}
+          image: ${image.postgresql}
           imagePullPolicy: Never
           command: [sh, -c, chown -R 999:999 /var/lib/postgresql/data]
           volumeMounts:
@@ -29,7 +29,7 @@ spec:
             allowPrivilegeEscalation: false
       containers:
         - name: postgres
-          image: docker.io/library/postgres:${version.org.postgresql}
+          image: ${image.postgresql}
           imagePullPolicy: Never
           envFrom:
             - secretRef:

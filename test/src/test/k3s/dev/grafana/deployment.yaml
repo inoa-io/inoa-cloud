@@ -13,7 +13,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-postgres
-          image: docker.io/library/postgres:${version.org.postgresql}
+          image: ${image.postgresql}
           imagePullPolicy: Never
           command: [sh, -c, until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
           env:
