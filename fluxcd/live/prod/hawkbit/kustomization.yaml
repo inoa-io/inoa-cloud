@@ -1,0 +1,34 @@
+resources:
+  - ../../../base/hawkbit
+
+secretGenerator:
+  - name: hawkbit-env
+    behavior: merge
+    envs: [config.env]
+
+patches:
+  - target:
+      kind: Ingress
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: hawkbit.prod.inoa.io
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: hawkbit.prod.inoa.io
+  - target:
+      group: sql.cnrm.cloud.google.com
+    patch: |-
+      - op: replace
+        path: /spec/resourceID
+        value: inoa-prod-hawkbit
+  - target:
+      kind: ConfigMap
+      name: hawkbit-env
+    patch: |-
+      - op: replace
+        path: /data/SPRING_DATASOURCE_URL
+        value: jdbc:postgresql://sqlproxy.infrastructure:5432/inoa-prod-hawkbit
+      - op: replace
+        path: /data/SPRING_DATASOURCE_USERNAME
+        value: inoa-prod-hawkbit
