@@ -100,6 +100,34 @@
 			"defaultClientScopes": [ "email", "profile" ],
 			"optionalClientScopes": []
 		},{
+			"id": "inoa-mcnoize",
+			"enabled": true,
+			"clientId": "inoa-mcnoize",
+			"publicClient": false,
+			"secret": "changeMe",
+			"standardFlowEnabled": false,
+			"implicitFlowEnabled": false,
+			"directAccessGrantsEnabled": true,
+			"serviceAccountsEnabled": true,
+			"protocol": "openid-connect",
+			"protocolMappers": [
+				{
+					"name": "audience",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-audience-mapper",
+					"config": {
+						"included.custom.audience": "inoa-registry",
+						"id.token.claim": "true",
+						"access.token.claim": "true"
+					}
+				}
+			],
+			"baseUrl": null,
+			"redirectUris": [],
+			"webOrigins": [],
+			"defaultClientScopes": [],
+			"optionalClientScopes": []
+		},{
 			"id": "inoa-swagger",
 			"enabled": true,
 			"clientId": "inoa-swagger",
