@@ -49,50 +49,64 @@ public class MessageHandler extends AbstractInterceptHandler {
 	}
 
 	@Override
-	public void onPublish(InterceptPublishMessage message) {
-		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> {
-
-			log.trace("Gateway {}/{} sent message on topic {} with qos {}", gateway.tenantId(), gateway.gatewayId(),
-					message.getTopicName(), message.getQos());
-
-			var key = gateway.gatewayId();
-
-			// We will ignore all RPC responses
-			if (matchesTopic(message.getTopicName(), COMMAND_RESPONSE_TOPIC_LONG_MATCHER)
-					|| matchesTopic(message.getTopicName(), COMMAND_RESPONSE_TOPIC_SHORT_MATCHER)) {
-				return;
-			}
-
-			// Check for valid topics
-			var topic = switch (message.getTopicName()) {
-				case TELEMETRY_TOPIC_SHORT_NAME, TELEMETRY_TOPIC_LONG_NAME -> "hono.telemetry." + gateway.tenantId();
-				case EVENT_TOPIC_SHORT_NAME, EVENT_TOPIC_LONG_NAME -> "hono.event." + gateway.tenantId();
-				// should not happen because `InoaAuthorizator#canWrite` will not allow this
-				default -> throw new IllegalArgumentException("Unexpected topic: " + message.getTopicName());
-			};
-			var payload = new byte[message.getPayload().readableBytes()];
-			message.getPayload().readBytes(payload);
-			var headers = List.<Header>of(
-					new RecordHeader(KafkaHeader.TENANT_ID, gateway.tenantId().getBytes()),
-					new RecordHeader(KafkaHeader.DEVICE_ID, gateway.gatewayId().getBytes()),
-					new RecordHeader(KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON.getBytes()),
-					new RecordHeader(KafkaHeader.CREATION_TIME, String.valueOf(System.currentTimeMillis()).getBytes()),
-					new RecordHeader(KafkaHeader.ORIG_ADDRESS, message.getTopicName().getBytes()),
-					new RecordHeader(KafkaHeader.QOS, String.valueOf(message.getQos().value()).getBytes()));
-
-			try {
-				producer.send(new ProducerRecord<>(topic, null, key, payload, headers)).get();
-				log.trace("Send message to kafka topic {}", topic);
-			} catch (InterruptedException | ExecutionException e) {
-				log.warn("Failed to publish message", e);
-				return;
-			}
-			message.getPayload().release();
-		});
+	public void onSessionLoopError(Throwable error) {
+		log.warn("Got session loop error", error);
 	}
 
 	@Override
-	public void onSessionLoopError(Throwable error) {
-		log.warn("Got session loop error", error);
+	public void onPublish(InterceptPublishMessage message) {
+		MqttGatewayIdentifier.of(message.getUsername()).mdc(gateway -> {
+			try {
+				handle(gateway, message);
+			} finally {
+				message.getPayload().release();
+			}
+		});
+	}
+
+	private void handle(MqttGatewayIdentifier gateway, InterceptPublishMessage message) {
+
+		var tenantId = gateway.tenantId();
+		var gatewayId = gateway.gatewayId();
+		var topicIn = message.getTopicName();
+		var qos = message.getQos();
+
+		log.trace("Gateway {}/{} sent message on topic {} with qos {}", tenantId, gatewayId, topicIn, qos);
+
+		// We will ignore all RPC responses
+		if (matchesTopic(topicIn, COMMAND_RESPONSE_TOPIC_LONG_MATCHER)
+				|| matchesTopic(topicIn, COMMAND_RESPONSE_TOPIC_SHORT_MATCHER)) {
+			return;
+		}
+
+		// Check for valid topics
+		var topicOut = switch (topicIn) {
+			case TELEMETRY_TOPIC_SHORT_NAME, TELEMETRY_TOPIC_LONG_NAME -> "hono.telemetry." + tenantId;
+			case EVENT_TOPIC_SHORT_NAME, EVENT_TOPIC_LONG_NAME -> "hono.event." + tenantId;
+			// should not happen because `InoaAuthorizator#canWrite` will not allow this
+			default -> null;
+		};
+		if (topicOut == null) {
+			log.warn("Gateway {}/{} sent message to unsupported topic {} with payload: {}");
+			return;
+		}
+
+		var payload = new byte[message.getPayload().readableBytes()];
+		message.getPayload().readBytes(payload);
+		var headers = List.<Header>of(
+				new RecordHeader(KafkaHeader.TENANT_ID, tenantId.getBytes()),
+				new RecordHeader(KafkaHeader.DEVICE_ID, gatewayId.getBytes()),
+				new RecordHeader(KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON.getBytes()),
+				new RecordHeader(KafkaHeader.CREATION_TIME, String.valueOf(System.currentTimeMillis()).getBytes()),
+				new RecordHeader(KafkaHeader.ORIG_ADDRESS, topicIn.getBytes()),
+				new RecordHeader(KafkaHeader.QOS, String.valueOf(qos.value()).getBytes()));
+
+		try {
+			producer.send(new ProducerRecord<>(topicOut, null, gatewayId, payload, headers)).get();
+			log.trace("Send message to kafka topic {}", topicOut);
+		} catch (InterruptedException | ExecutionException e) {
+			log.warn("Failed to publish message", e);
+			return;
+		}
 	}
 }
