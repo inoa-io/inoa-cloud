@@ -51,10 +51,6 @@
 			<artifactId>micronaut-logging</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.kokuwa.micronaut</groupId>
-			<artifactId>micronaut-influxdb</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.micronaut.cache</groupId>
 			<artifactId>micronaut-cache-core</artifactId>
 		</dependency>
@@ -91,8 +87,12 @@
 
 		<!-- libraries -->
 		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
+			<groupId>com.influxdb</groupId>
+			<artifactId>influxdb-client-java</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.jayway.jsonpath</groupId>
+			<artifactId>json-path</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>io.moquette</groupId>
@@ -109,8 +109,8 @@
 			<artifactId>bcpkix-jdk18on </artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.jayway.jsonpath</groupId>
-			<artifactId>json-path</artifactId>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct</artifactId>
 		</dependency>
 
 		<!-- messaging -->
@@ -131,7 +131,6 @@
 		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-management</artifactId>
-			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.micrometer</groupId>

@@ -11,21 +11,32 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.function.Executable;
 
+import com.influxdb.LogLevel;
+import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
 import io.inoa.Await;
 import io.inoa.test.client.GatewayClientFactory.GatewayClient;
+import io.micronaut.context.annotation.Value;
 import jakarta.inject.Singleton;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Singleton
 @Slf4j
-@RequiredArgsConstructor
 public class InfluxDBClient {
 
-	private final com.influxdb.client.InfluxDBClient influxdb;
+	private final com.influxdb.client.InfluxDBClient client;
+
+	@SuppressWarnings("resource")
+	InfluxDBClient(
+			@Value("${influxdb.url}") String url,
+			@Value("${influxdb.token}") char[] token,
+			@Value("${influxdb.organisation}") String organisation,
+			@Value("${influxdb.bucket}") String bucket,
+			@Value("${influxdb.log-level}") LogLevel level) {
+		this.client = InfluxDBClientFactory.create(url, token, bucket, organisation).disableGzip().setLogLevel(level);
+	}
 
 	// query
 
@@ -37,7 +48,7 @@ public class InfluxDBClient {
 		var query = "from(bucket:\"default\")"
 				+ " |> range(start: -10h)"
 				+ " |> filter(fn: (r) => r.gateway_id == \"" + gatewayId + "\")";
-		return influxdb.getQueryApi().query(query);
+		return client.getQueryApi().query(query);
 	}
 
 	public List<FluxTable> awaitTables(GatewayClient gateway, int amount) {

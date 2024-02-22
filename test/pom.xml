@@ -57,16 +57,15 @@
 		</dependency>
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
-			<artifactId>micronaut-influxdb</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-logging</artifactId>
 			<scope>test</scope>
 		</dependency>
 
 		<!-- test -->
+		<dependency>
+			<groupId>com.influxdb</groupId>
+			<artifactId>influxdb-client-java</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>io.micronaut.test</groupId>
 			<artifactId>micronaut-test-junit5</artifactId>

@@ -24,7 +24,6 @@ micronaut:
         follow-redirects: false
         exception-on-error-status: false
 
-## see https://github.com/kokuwaio/micronaut-influxdb
 influxdb:
   url: http://influxdb.${k3s.ip}.nip.io:8080
   organisation: inoa

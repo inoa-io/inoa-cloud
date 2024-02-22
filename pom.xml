@@ -82,7 +82,6 @@
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.maven.k3s>1.2.4</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>3.4.3</version.io.kokuwa.micronaut.codegen>
-		<version.io.kokuwa.micronaut.influxdb>3.0.2</version.io.kokuwa.micronaut.influxdb>
 		<version.io.kokuwa.micronaut.logging>3.3.0</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>3.10.3</version.io.micronaut>
 		<version.io.micronaut.data>3.10.0</version.io.micronaut.data>
@@ -134,16 +133,11 @@
 				<artifactId>micronaut-logging</artifactId>
 				<version>${version.io.kokuwa.micronaut.logging}</version>
 			</dependency>
-			<dependency>
-				<groupId>io.kokuwa.micronaut</groupId>
-				<artifactId>micronaut-influxdb</artifactId>
-				<version>${version.io.kokuwa.micronaut.influxdb}</version>
-			</dependency>
 
 			<!-- libraries -->
 			<dependency>
 				<groupId>com.influxdb</groupId>
-				<artifactId>influxdb-client-reactive</artifactId>
+				<artifactId>influxdb-client-java</artifactId>
 				<version>${version.com.influxdb.client}</version>
 				<exclusions>
 					<exclusion>
