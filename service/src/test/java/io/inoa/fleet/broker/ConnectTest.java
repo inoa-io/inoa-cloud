@@ -3,7 +3,6 @@ package io.inoa.fleet.broker;
 import static io.inoa.fleet.broker.MqttAssertions.assertHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,7 +21,7 @@ public class ConnectTest extends AbstractUnitTest {
 
 	@DisplayName("connect & disconnect graceful")
 	@Test
-	void graceful(TestKafkaListener listener) throws MqttException, IOException {
+	void graceful() throws MqttException {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";
@@ -32,10 +31,8 @@ public class ConnectTest extends AbstractUnitTest {
 		var clientId = client.getClientId();
 
 		client.connect();
-		var record = listener.await(tenantId, gatewayId);
-		assertEquals("hono.event." + tenantId, record.topic(), "topic");
-		assertEquals(record.key(), gatewayId, "key");
-		assertEquals(mapper.readValue(record.value(), Map.class),
+		var record = kafka.awaitHonoEvent(tenantId, gatewayId);
+		assertEquals(record.value(),
 				Map.of("cause", "connected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
 		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
 		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
@@ -43,10 +40,8 @@ public class ConnectTest extends AbstractUnitTest {
 		assertHeader(record, KafkaHeader.QOS, 1);
 
 		client.disconnect();
-		record = listener.await(tenantId, gatewayId);
-		assertEquals("hono.event." + tenantId, record.topic(), "topic");
-		assertEquals(record.key(), gatewayId, "key");
-		assertEquals(mapper.readValue(record.value(), Map.class),
+		record = kafka.awaitHonoEvent(tenantId, gatewayId);
+		assertEquals(record.value(),
 				Map.of("cause", "disconnected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
 		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
 		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
@@ -56,7 +51,7 @@ public class ConnectTest extends AbstractUnitTest {
 
 	@DisplayName("connect & disconnect hard")
 	@Test
-	void hard(TestKafkaListener listener) throws MqttException, IOException {
+	void hard() throws MqttException {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";
@@ -66,10 +61,8 @@ public class ConnectTest extends AbstractUnitTest {
 		var clientId = client.getClientId();
 
 		client.connect();
-		var record = listener.await(tenantId, gatewayId);
-		assertEquals("hono.event." + tenantId, record.topic(), "topic");
-		assertEquals(record.key(), gatewayId, "key");
-		assertEquals(mapper.readValue(record.value(), Map.class),
+		var record = kafka.awaitHonoEvent(tenantId, gatewayId);
+		assertEquals(record.value(),
 				Map.of("cause", "connected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
 		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
 		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
@@ -77,10 +70,8 @@ public class ConnectTest extends AbstractUnitTest {
 		assertHeader(record, KafkaHeader.QOS, 1);
 
 		client.disconnectWithoutNotification();
-		record = listener.await(tenantId, gatewayId);
-		assertEquals("hono.event." + tenantId, record.topic(), "topic");
-		assertEquals(record.key(), gatewayId, "key");
-		assertEquals(mapper.readValue(record.value(), Map.class),
+		record = kafka.awaitHonoEvent(tenantId, gatewayId);
+		assertEquals(record.value(),
 				Map.of("cause", "disconnected", "remote-id", clientId, "source", "inoa-mqtt"), "value");
 		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
 		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);

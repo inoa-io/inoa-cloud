@@ -41,7 +41,6 @@ steps:
       # test containers
       - docker pull --quiet docker.io/library/postgres:15.4 &
       - docker pull --quiet docker.io/library/influxdb:2.1.1-alpine &
-      - docker pull --quiet docker.io/confluentinc/cp-kafka:6.2.6 &
       # integration tests
       - docker pull --quiet docker.io/rancher/k3s:v1.24.12-k3s1 &
       - docker pull --quiet ghcr.io/grayc-de/kafka:3.6.1 &

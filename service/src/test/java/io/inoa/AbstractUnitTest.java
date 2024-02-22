@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
@@ -32,18 +31,20 @@ public abstract class AbstractUnitTest extends AbstractMicronautTest {
 	public @Inject SignatureGeneratorConfiguration signature;
 	public @Inject Data data;
 	public @Inject ApplicationProperties properties;
+	public @Inject KafkaSink kafka;
 
 	// test setup
 
 	@BeforeEach
 	void init(JdbcOperations jdbc) {
 
-		// cleanup database
+		// cleanup database and other stores
 
 		jdbc.execute(c -> c.createStatement().execute(Stream
 				.of("thing_type", "gateway", "tenant")
 				.map(table -> "TRUNCATE TABLE " + table + " CASCADE;")
 				.collect(Collectors.joining())));
+		kafka.reset();
 
 		// handle token
 
@@ -58,8 +59,6 @@ public abstract class AbstractUnitTest extends AbstractMicronautTest {
 	public Map<String, String> getSuiteProperties() {
 
 		new LogbackLoggingSystem(null, null).refresh();
-
-		var kafkaContainer = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.6"));
 
 		var influxOrganisation = "test-org";
 		var influxBucket = "test-bucket";
@@ -80,10 +79,9 @@ public abstract class AbstractUnitTest extends AbstractMicronautTest {
 				.withExposedPorts(5432)
 				.waitingFor(Wait.forListeningPort());
 
-		Stream.of(kafkaContainer, postgres, influxContainer).parallel().forEach(GenericContainer::start);
+		Stream.of(postgres, influxContainer).parallel().forEach(GenericContainer::start);
 
 		return Map.of(
-				"kafka.bootstrap.servers", kafkaContainer.getBootstrapServers(),
 				"influxdb.url", "http://" + influxContainer.getHost() + ":" + influxContainer.getMappedPort(8086),
 				"influxdb.token", influxToken,
 				"influxdb.organisation", influxOrganisation,

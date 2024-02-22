@@ -24,9 +24,7 @@ endpoints:
 
 ## see https://micronaut-projects.github.io/micronaut-kafka/latest/guide
 kafka:
-  consumers:
-    default:
-      metadata.max.age.ms: 200
+  enabled: false
 
 ## config for registry
 inoa:

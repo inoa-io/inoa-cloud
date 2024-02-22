@@ -38,7 +38,8 @@ public class ConnectionEventListener {
 			@MessageHeader(KafkaHeader.DEVICE_ID) String gatewayId,
 			@MessageHeader(KafkaHeader.CONTENT_TYPE) String contentType,
 			@MessageHeader(KafkaHeader.CONTENT_TTD) @Nullable Integer ttd,
-			@MessageHeader(KafkaHeader.CREATION_TIME) Long timestampMillis, @MessageBody @Nullable String payload) {
+			@MessageHeader(KafkaHeader.CREATION_TIME) Long timestampMillis,
+			@MessageBody @Nullable String payload) {
 
 		MDC.put("tenantId", tenantId);
 		MDC.put("gatewayId", gatewayId);
@@ -87,7 +88,7 @@ public class ConnectionEventListener {
 		}
 
 		var timestamp = Instant.ofEpochMilli(timestampMillis);
-		var connected = data.get("cause").equals("connected");
+		var connected = "connected".equals(data.get("cause"));
 		repository.updateStatusMqtt(gatewayId, timestamp, connected);
 		log.info("Gateway {}/{} {}connected at {}", tenantId, gatewayId, connected ? "" : "dis", timestamp);
 

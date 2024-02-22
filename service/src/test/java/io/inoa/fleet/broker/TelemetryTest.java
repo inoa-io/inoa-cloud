@@ -1,9 +1,12 @@
 package io.inoa.fleet.broker;
 
+import static io.inoa.fleet.broker.MqttAssertions.assertConnectionEvent;
 import static io.inoa.fleet.broker.MqttAssertions.assertHeader;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -21,7 +24,7 @@ public class TelemetryTest extends AbstractUnitTest {
 
 	@DisplayName("telemetry message")
 	@Test
-	void telemetry(TestKafkaListener listener) throws MqttException {
+	void telemetry() throws MqttException {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
@@ -31,14 +34,12 @@ public class TelemetryTest extends AbstractUnitTest {
 
 		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
-		listener.awaitConnection(tenantId, gatewayId, true);
+		assertConnectionEvent(kafka, tenantId, gatewayId, true);
 		client.publishTelemetry(payload);
-		var record = listener.await(tenantId, gatewayId);
+		var record = kafka.awaitHonoTelemetry(tenantId, gatewayId);
 		client.disconnect();
-		listener.awaitConnection(tenantId, gatewayId, false);
+		assertConnectionEvent(kafka, tenantId, gatewayId, false);
 
-		assertEquals("hono.telemetry." + tenantId, record.topic(), "topic");
-		assertEquals(record.key(), gatewayId, "key");
 		assertArrayEquals(record.value(), payload, "payload");
 		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
 		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
@@ -49,25 +50,23 @@ public class TelemetryTest extends AbstractUnitTest {
 
 	@DisplayName("event message")
 	@Test
-	void event(TestKafkaListener listener) throws MqttException {
+	void event() throws MqttException {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
 		var psk = UUID.randomUUID().toString().getBytes();
-		var payload = UUID.randomUUID().toString().getBytes();
+		var payload = Map.of("uuid", UUID.randomUUID());
 
 		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		client.trustAllCertificates().connect();
-		listener.awaitConnection(tenantId, gatewayId, true);
-		client.publishEvent(payload);
-		var record = listener.await(tenantId, gatewayId);
+		assertConnectionEvent(kafka, tenantId, gatewayId, true);
+		client.publishEvent(assertDoesNotThrow(() -> mapper.writeValueAsBytes(payload)));
+		var record = kafka.awaitHonoEvent(tenantId, gatewayId);
 		client.disconnect();
-		listener.awaitConnection(tenantId, gatewayId, false);
+		assertConnectionEvent(kafka, tenantId, gatewayId, false);
 
-		assertEquals("hono.event." + tenantId, record.topic(), "topic");
-		assertEquals(record.key(), gatewayId, "key");
-		assertArrayEquals(record.value(), payload, "payload");
+		assertEquals(payload.toString(), record.value().toString(), "payload");
 		assertHeader(record, KafkaHeader.TENANT_ID, tenantId);
 		assertHeader(record, KafkaHeader.DEVICE_ID, gatewayId);
 		assertHeader(record, KafkaHeader.CONTENT_TYPE, KafkaHeader.CONTENT_TYPE_JSON);

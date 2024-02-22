@@ -7,23 +7,19 @@ import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.AbstractUnitTest;
-import io.inoa.measurement.translator.messaging.MessagingSink;
 import io.inoa.rest.TelemetryVO;
 import jakarta.inject.Inject;
 
 public class TranslateListenerTest extends AbstractUnitTest {
 
-	private @Inject MessagingSink messaging;
 	private @Inject TranslateListener listener;
 	private @Inject TranslateMetrics metrics;
 
 	@DisplayName("send message to translate")
-	@Disabled("Works not with measurement, replace kafka with mocks and everybody is happy")
 	@Test
 	void success() {
 
@@ -44,7 +40,7 @@ public class TranslateListenerTest extends AbstractUnitTest {
 
 		// validate translated message
 
-		var actual = messaging.getRecords().get(0).value();
+		var actual = kafka.getInoaTelemetry(tenantId, gatewayId).value();
 		var expected = new TelemetryVO()
 				.tenantId(tenantId)
 				.gatewayId(gatewayId)
