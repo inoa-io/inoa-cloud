@@ -7,8 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.ClockProvider;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +16,7 @@ import io.inoa.rest.ConfigurationDefinitionUrlVO;
 import io.inoa.rest.ConfigurationDefinitionVO;
 import io.micronaut.validation.validator.constraints.ConstraintValidator;
 import io.micronaut.validation.validator.constraints.ConstraintValidatorContext;
+import jakarta.validation.ClockProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -159,6 +158,24 @@ public class ConfigurationDefinitionValidatorTest {
 		@Override
 		public void messageTemplate(String message) {
 			messages.add(message);
+		}
+
+		@Override
+		public void disableDefaultConstraintViolation() {}
+
+		@Override
+		public String getDefaultConstraintMessageTemplate() {
+			return null;
+		}
+
+		@Override
+		public ConstraintViolationBuilder buildConstraintViolationWithTemplate(String messageTemplate) {
+			return null;
+		}
+
+		@Override
+		public <T> T unwrap(Class<T> type) {
+			return null;
 		}
 	}
 }

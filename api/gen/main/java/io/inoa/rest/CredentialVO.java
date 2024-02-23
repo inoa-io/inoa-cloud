@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class CredentialVO {
 
 	public static final java.lang.String JSON_PROPERTY_CREDENTIAL_ID = "credential_id";
@@ -13,26 +13,26 @@ public class CredentialVO {
 	public static final java.lang.String JSON_PROPERTY_UPDATED = "updated";
 
 	/** Id as technical reference (never changes). */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREDENTIAL_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.util.UUID credentialId;
 
 	/** Name to identify credential. */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]*$")
-	@javax.validation.constraints.Size(min = 3, max = 32)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]*$")
+	@jakarta.validation.constraints.Size(min = 3, max = 32)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	/** Flag if enabled or not. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ENABLED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Boolean enabled = true;
 
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private CredentialTypeVO type;
@@ -43,13 +43,13 @@ public class CredentialVO {
 	private byte[] value;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant created;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UPDATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant updated;

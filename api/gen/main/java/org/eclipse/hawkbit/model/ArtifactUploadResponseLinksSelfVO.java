@@ -1,12 +1,10 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ArtifactUploadResponseLinksSelfVO {
 
-	public static final java.lang.String JSON_PROPERTY_HREF = "href";
-
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_HREF)
+	@com.fasterxml.jackson.annotation.JsonProperty("href")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String href;
 

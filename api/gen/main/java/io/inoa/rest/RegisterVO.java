@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class RegisterVO {
 
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID = "gateway_id";
@@ -9,20 +9,20 @@ public class RegisterVO {
 	public static final java.lang.String JSON_PROPERTY_CREDENTIAL_VALUE = "credential_value";
 
 	/** Id as technical reference (never changes). */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
-	@javax.validation.constraints.Size(min = 4, max = 20)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
+	@jakarta.validation.constraints.Size(min = 4, max = 20)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GATEWAY_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String gatewayId;
 
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREDENTIAL_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private CredentialTypeVO credentialType;
 
 	/** Value for credential. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREDENTIAL_VALUE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private byte[] credentialValue;

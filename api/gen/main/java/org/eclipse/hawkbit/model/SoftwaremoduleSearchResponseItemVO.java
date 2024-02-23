@@ -1,55 +1,46 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class SoftwaremoduleSearchResponseItemVO {
 
-	public static final java.lang.String JSON_PROPERTY_ID = "id";
-	public static final java.lang.String JSON_PROPERTY_NAME = "name";
-	public static final java.lang.String JSON_PROPERTY_VENDOR = "vendor";
-	public static final java.lang.String JSON_PROPERTY_CREATED_BY = "createdBy";
-	public static final java.lang.String JSON_PROPERTY_CREATED_AT = "createdAt";
-	public static final java.lang.String JSON_PROPERTY_LAST_MODIFIED_BY = "lastModifiedBy";
-	public static final java.lang.String JSON_PROPERTY_TYPE = "type";
-	public static final java.lang.String JSON_PROPERTY_VERSION = "version";
-
 	/** The technical identifier of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ID)
+	@com.fasterxml.jackson.annotation.JsonProperty("id")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Double id;
 
 	/** The name of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
+	@com.fasterxml.jackson.annotation.JsonProperty("name")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
 
 	/** The software vendor */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VENDOR)
+	@com.fasterxml.jackson.annotation.JsonProperty("vendor")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String vendor;
 
 	/** Entity was originally created by User, AMQP-Controller, anonymous etc.) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED_BY)
+	@com.fasterxml.jackson.annotation.JsonProperty("createdBy")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String createdBy;
 
 	/** Entity was originally created at (timestamp UTC in milliseconds) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED_AT)
+	@com.fasterxml.jackson.annotation.JsonProperty("createdAt")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Double createdAt;
 
 	/** Entity was last modified by User, AMQP-Controller, anonymous etc.) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LAST_MODIFIED_BY)
+	@com.fasterxml.jackson.annotation.JsonProperty("lastModifiedBy")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String lastModifiedBy;
 
 	/** The software module type of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TYPE)
+	@com.fasterxml.jackson.annotation.JsonProperty("type")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String type;
 
 	/** Package version */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VERSION)
+	@com.fasterxml.jackson.annotation.JsonProperty("version")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String version;
 

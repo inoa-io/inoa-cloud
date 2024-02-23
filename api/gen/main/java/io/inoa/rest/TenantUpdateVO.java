@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class TenantUpdateVO {
 
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
@@ -9,8 +9,8 @@ public class TenantUpdateVO {
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID_PATTERN = "gateway_id_pattern";
 
 	/** Name of a tenant. */
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$")
-	@javax.validation.constraints.Size(min = 3, max = 100)
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$")
+	@jakarta.validation.constraints.Size(min = 3, max = 100)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;

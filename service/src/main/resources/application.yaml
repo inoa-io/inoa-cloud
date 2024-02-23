@@ -10,8 +10,10 @@ micronaut:
         mapping: /**
         paths: file:/static
 
-  ## see https://docs.micronaut.io/latest/guide/index.html#cors
   server:
+    # https://docs.micronaut.io/snapshot/guide/index.html#atBlocking
+    thread-selection: AUTO
+    ## see https://docs.micronaut.io/latest/guide/index.html#cors
     cors:
       enabled: true
       default:

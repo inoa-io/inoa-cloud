@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ThingTypeCreateVO {
 
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
@@ -10,13 +10,13 @@ public class ThingTypeCreateVO {
 	public static final java.lang.String JSON_PROPERTY_UI_LAYOUT = "ui_layout";
 
 	/** Name. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	/** External thing type Id */
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\_]{1,64}$")
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\_]{1,64}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_THING_TYPE_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String thingTypeId;
@@ -29,7 +29,7 @@ public class ThingTypeCreateVO {
 	/** ui_layout */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UI_LAYOUT)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<java.util.Map<String, java.lang.Object>> uiLayout;
+	private java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> uiLayout;
 
 	// methods
 
@@ -97,7 +97,7 @@ public class ThingTypeCreateVO {
 		return this;
 	}
 
-	public ThingTypeCreateVO uiLayout(java.util.List<java.util.Map<String, java.lang.Object>> newUiLayout) {
+	public ThingTypeCreateVO uiLayout(java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> newUiLayout) {
 		this.uiLayout = newUiLayout;
 		return this;
 	}
@@ -143,11 +143,11 @@ public class ThingTypeCreateVO {
 		this.jsonSchema = newJsonSchema;
 	}
 
-	public java.util.List<java.util.Map<String, java.lang.Object>> getUiLayout() {
+	public java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> getUiLayout() {
 		return uiLayout;
 	}
 
-	public void setUiLayout(java.util.List<java.util.Map<String, java.lang.Object>> newUiLayout) {
+	public void setUiLayout(java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> newUiLayout) {
 		this.uiLayout = newUiLayout;
 	}
 }

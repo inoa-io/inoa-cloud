@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class GroupCreateVO {
 
 	public static final java.lang.String JSON_PROPERTY_GROUP_ID = "group_id";
@@ -13,9 +13,9 @@ public class GroupCreateVO {
 	private java.util.UUID groupId;
 
 	/** Name of a group. */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]*$")
-	@javax.validation.constraints.Size(min = 3, max = 20)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]*$")
+	@jakarta.validation.constraints.Size(min = 3, max = 20)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;

@@ -41,24 +41,36 @@
 
 		<!-- micronaut -->
 		<dependency>
-			<groupId>io.micronaut.security</groupId>
-			<artifactId>micronaut-security-jwt</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-client</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-validation</artifactId>
+			<artifactId>micronaut-jackson-databind</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-jwt</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.validation</groupId>
+			<artifactId>micronaut-validation</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.kokuwa.micronaut</groupId>
 			<artifactId>micronaut-logging</artifactId>
 			<scope>test</scope>
+		</dependency>
+
+		<!-- library -->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- test -->
@@ -166,7 +178,7 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut}</version>
+							<version>${version.io.micronaut.core}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -187,11 +199,6 @@
 			</plugin>
 
 			<!-- skip useless executions -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions><execution><id>default-resources</id><phase /></execution></executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>

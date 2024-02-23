@@ -8,6 +8,7 @@ import io.inoa.fleet.registry.domain.Tenant;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.model.Page;
 import io.micronaut.data.model.Pageable;
+import io.micronaut.data.model.query.builder.sql.Dialect;
 
 /**
  * Implmentation of {@link GatewayRepository}.
@@ -15,7 +16,7 @@ import io.micronaut.data.model.Pageable;
  * @author Stephan Schnabel
  * @author Rico Pahlisch
  */
-@JdbcRepository
+@JdbcRepository(dialect = Dialect.POSTGRES)
 public abstract class GatewayRepositoryImpl implements GatewayRepository {
 
 	@Override

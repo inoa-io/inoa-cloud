@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class GroupVO {
 
 	public static final java.lang.String JSON_PROPERTY_GROUP_ID = "group_id";
@@ -10,27 +10,27 @@ public class GroupVO {
 	public static final java.lang.String JSON_PROPERTY_UPDATED = "updated";
 
 	/** Id as technical reference (never changes). */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GROUP_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.util.UUID groupId;
 
 	/** Name of a group. */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]*$")
-	@javax.validation.constraints.Size(min = 3, max = 20)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]*$")
+	@jakarta.validation.constraints.Size(min = 3, max = 20)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant created;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UPDATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant updated;

@@ -9,16 +9,18 @@ import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.io.IOUtils;
 import io.micronaut.core.util.StringUtils;
+import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.PathVariable;
 import io.micronaut.http.annotation.Produces;
-import io.micronaut.http.server.exceptions.InternalServerException;
+import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.runtime.context.scope.Refreshable;
 import io.micronaut.security.annotation.Secured;
 import io.micronaut.security.rules.SecurityRule;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Publish spec with patched server url.
@@ -28,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @Requires(property = "registry.openapi.enabled", notEquals = StringUtils.FALSE)
 @Controller
 @Refreshable
+@Slf4j
 @RequiredArgsConstructor
 public class OpenApiController {
 
@@ -43,7 +46,8 @@ public class OpenApiController {
 		try (var reader = new InputStreamReader(OpenApiController.class.getResourceAsStream(specResourceName))) {
 			specString = IOUtils.readText(new BufferedReader(reader));
 		} catch (IOException e) {
-			throw new InternalServerException("Failed to parse spec " + spec + ".", e);
+			log.error("Failed to serve openapi spec.", e);
+			throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to parse spec " + spec + ".");
 		}
 
 		Optional<String> contextPath = env.get("micronaut.server.context-path", String.class);

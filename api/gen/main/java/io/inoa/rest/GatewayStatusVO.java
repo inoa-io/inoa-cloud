@@ -1,12 +1,12 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class GatewayStatusVO {
 
 	public static final java.lang.String JSON_PROPERTY_MQTT = "mqtt";
 
-	@javax.validation.Valid
+	@jakarta.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MQTT)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private GatewayMqttStatusVO mqtt;

@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class GatewayVO {
 
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID = "gateway_id";
@@ -12,38 +12,38 @@ public class GatewayVO {
 	public static final java.lang.String JSON_PROPERTY_STATUS = "status";
 
 	/** Id as technical reference (never changes). */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
-	@javax.validation.constraints.Size(min = 4, max = 20)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
+	@jakarta.validation.constraints.Size(min = 4, max = 20)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GATEWAY_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String gatewayId;
 
 	/** Human friendly description (can change). */
-	@javax.validation.constraints.Size(max = 100)
+	@jakarta.validation.constraints.Size(max = 100)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
 
 	/** Flag if enabled or not. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ENABLED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Boolean enabled = true;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant created;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UPDATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant updated;
 
-	@javax.validation.Valid
+	@jakarta.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_STATUS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private GatewayStatusVO status;

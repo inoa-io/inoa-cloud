@@ -1,59 +1,49 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ArtifactUploadResponseVO {
 
-	public static final java.lang.String JSON_PROPERTY_SIZE = "size";
-	public static final java.lang.String JSON_PROPERTY_ID = "id";
-	public static final java.lang.String JSON_PROPERTY_CREATED_BY = "createdBy";
-	public static final java.lang.String JSON_PROPERTY_CREATED_AT = "createdAt";
-	public static final java.lang.String JSON_PROPERTY_LAST_MODIFIED_BY = "lastModifiedBy";
-	public static final java.lang.String JSON_PROPERTY_LAST_MODIFIED_AT = "lastModifiedAt";
-	public static final java.lang.String JSON_PROPERTY_LINKS = "_links";
-	public static final java.lang.String JSON_PROPERTY_HASHES = "hashes";
-	public static final java.lang.String JSON_PROPERTY_PROVIDED_FILENAME = "providedFilename";
-
 	/** Size of the artifact */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SIZE)
+	@com.fasterxml.jackson.annotation.JsonProperty("size")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer size;
 
 	/** The technical identifier of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ID)
+	@com.fasterxml.jackson.annotation.JsonProperty("id")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer id;
 
 	/** Entity was originally created by User, AMQP-Controller, anonymous etc.) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED_BY)
+	@com.fasterxml.jackson.annotation.JsonProperty("createdBy")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String createdBy;
 
 	/** Entity was originally created at (timestamp UTC in milliseconds) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED_AT)
+	@com.fasterxml.jackson.annotation.JsonProperty("createdAt")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer createdAt;
 
 	/** Entity was last modified by User, AMQP-Controller, anonymous etc.) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LAST_MODIFIED_BY)
+	@com.fasterxml.jackson.annotation.JsonProperty("lastModifiedBy")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String lastModifiedBy;
 
 	/** Entity was last modified at (timestamp UTC in milliseconds) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LAST_MODIFIED_AT)
+	@com.fasterxml.jackson.annotation.JsonProperty("lastModifiedAt")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer lastModifiedAt;
 
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LINKS)
+	@com.fasterxml.jackson.annotation.JsonProperty("_links")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseLinksVO links;
 
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_HASHES)
+	@com.fasterxml.jackson.annotation.JsonProperty("hashes")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseHashesVO hashes;
 
 	/** Filename of the artifact */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_PROVIDED_FILENAME)
+	@com.fasterxml.jackson.annotation.JsonProperty("providedFilename")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String providedFilename;
 

@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
  */
 @Singleton
 @RequiredArgsConstructor
-public class GatewayTokenValidator implements TokenValidator {
+public class GatewayTokenValidator implements TokenValidator<HttpRequest<?>> {
 
 	private final GatewayTokenService service;
 

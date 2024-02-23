@@ -1,19 +1,19 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ConfigurationVO {
 
 	public static final java.lang.String JSON_PROPERTY_DEFINITION = "definition";
 	public static final java.lang.String JSON_PROPERTY_VALUE = "value";
 
-	@javax.validation.Valid
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.Valid
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DEFINITION)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private ConfigurationDefinitionVO definition;
 
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VALUE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Object value;

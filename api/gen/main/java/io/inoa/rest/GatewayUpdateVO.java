@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class GatewayUpdateVO {
 
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
@@ -9,7 +9,7 @@ public class GatewayUpdateVO {
 	public static final java.lang.String JSON_PROPERTY_GROUP_IDS = "group_ids";
 
 	/** Human friendly description (can change). */
-	@javax.validation.constraints.Size(max = 100)
+	@jakarta.validation.constraints.Size(max = 100)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
@@ -22,7 +22,7 @@ public class GatewayUpdateVO {
 	/** Ids of groups where gateway is member. */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GROUP_IDS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.Set<java.util.UUID> groupIds;
+	private java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> groupIds;
 
 	// methods
 
@@ -68,7 +68,7 @@ public class GatewayUpdateVO {
 		return this;
 	}
 
-	public GatewayUpdateVO groupIds(java.util.Set<java.util.UUID> newGroupIds) {
+	public GatewayUpdateVO groupIds(java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> newGroupIds) {
 		this.groupIds = newGroupIds;
 		return this;
 	}
@@ -106,11 +106,11 @@ public class GatewayUpdateVO {
 		this.enabled = newEnabled;
 	}
 
-	public java.util.Set<java.util.UUID> getGroupIds() {
+	public java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> getGroupIds() {
 		return groupIds;
 	}
 
-	public void setGroupIds(java.util.Set<java.util.UUID> newGroupIds) {
+	public void setGroupIds(java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> newGroupIds) {
 		this.groupIds = newGroupIds;
 	}
 }

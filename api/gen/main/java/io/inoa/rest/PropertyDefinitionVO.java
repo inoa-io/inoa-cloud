@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class PropertyDefinitionVO {
 
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
@@ -98,7 +98,6 @@ public class PropertyDefinitionVO {
 		this.inputType = newInputType;
 	}
 
-@io.micronaut.core.annotation.Introspected
 public enum InputType {
 
 	TEXT("text"),

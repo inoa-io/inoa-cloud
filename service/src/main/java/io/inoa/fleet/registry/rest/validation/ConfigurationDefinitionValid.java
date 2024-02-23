@@ -5,9 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.validation.Constraint;
-
 import io.inoa.fleet.registry.domain.ConfigurationDefinition;
+import jakarta.validation.Constraint;
 
 /**
  * Constraint annotation for {@link ConfigurationDefinition}.

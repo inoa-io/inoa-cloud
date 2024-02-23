@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -43,7 +44,7 @@ public final class HttpAssertions {
 	}
 
 	public static <T> JsonError assert400(Supplier<HttpResponse<T>> executeable) {
-		return assertValid(assertStatus(HttpStatus.BAD_REQUEST, executeable, null)).getBody(JsonError.class).get();
+		return assertValid(assertStatus(HttpStatus.BAD_REQUEST, executeable, null).getBody(JsonError.class).get());
 	}
 
 	public static <T> HttpResponse<T> assert401(Supplier<HttpResponse<T>> executeable) {
@@ -89,7 +90,7 @@ public final class HttpAssertions {
 	public static <T> T assertValid(T object) {
 		if (object instanceof Iterable<?> iterable) {
 			iterable.forEach(HttpAssertions::assertValid);
-		} else if (object != null) {
+		} else if (object != null && !(object instanceof Map)) {
 			var violations = VALIDATOR.validate(object);
 			assertTrue(violations.isEmpty(),
 					() -> "validation of object <" + object + "> failed with:" + violations.stream()

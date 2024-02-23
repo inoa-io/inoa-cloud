@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ThingTypeChannelCreateVO {
 
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
@@ -9,7 +9,7 @@ public class ThingTypeChannelCreateVO {
 	public static final java.lang.String JSON_PROPERTY_PROPERTIES = "properties";
 
 	/** Name. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
@@ -19,10 +19,9 @@ public class ThingTypeChannelCreateVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String key;
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_PROPERTIES)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<PropertyDefinitionVO> properties;
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> properties;
 
 	// methods
 
@@ -68,7 +67,7 @@ public class ThingTypeChannelCreateVO {
 		return this;
 	}
 
-	public ThingTypeChannelCreateVO properties(java.util.List<PropertyDefinitionVO> newProperties) {
+	public ThingTypeChannelCreateVO properties(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> newProperties) {
 		this.properties = newProperties;
 		return this;
 	}
@@ -106,11 +105,11 @@ public class ThingTypeChannelCreateVO {
 		this.key = newKey;
 	}
 
-	public java.util.List<PropertyDefinitionVO> getProperties() {
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(java.util.List<PropertyDefinitionVO> newProperties) {
+	public void setProperties(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> newProperties) {
 		this.properties = newProperties;
 	}
 }

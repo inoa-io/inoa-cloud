@@ -19,7 +19,7 @@ import io.micronaut.http.context.ServerRequestContext;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.http.simple.SimpleHttpRequest;
 import io.micronaut.security.authentication.ServerAuthentication;
-import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
+import io.micronaut.security.token.Claims;
 import jakarta.inject.Inject;
 
 /**
@@ -138,7 +138,7 @@ public class SecurityTest extends AbstractUnitTest {
 			headers.put(properties.getSecurity().getClaimTenants(), tenantClaim);
 		}
 		if (audience != null) {
-			headers.put(JwtClaims.AUDIENCE, audience);
+			headers.put(Claims.AUDIENCE, audience);
 		}
 
 		var request = new SimpleHttpRequest<>(HttpMethod.GET, "/", null);

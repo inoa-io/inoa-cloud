@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class LogEventVO {
 
 	public static final java.lang.String JSON_PROPERTY_TAG = "tag";
@@ -10,28 +10,28 @@ public class LogEventVO {
 	public static final java.lang.String JSON_PROPERTY_MSG = "msg";
 
 	/** Log tag */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TAG)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String tag;
 
 	/** Log level */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Min(0)
-	@javax.validation.constraints.Max(5)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Min(0)
+	@jakarta.validation.constraints.Max(5)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LEVEL)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Integer level;
 
 	/** Log time */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Min(0)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Min(0)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TIME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Long time;
 
 	/** Log message */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MSG)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String msg;

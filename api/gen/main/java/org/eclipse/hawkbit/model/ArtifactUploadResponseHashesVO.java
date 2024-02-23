@@ -1,25 +1,21 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ArtifactUploadResponseHashesVO {
 
-	public static final java.lang.String JSON_PROPERTY_MD5 = "md5";
-	public static final java.lang.String JSON_PROPERTY_SHA1 = "sha1";
-	public static final java.lang.String JSON_PROPERTY_SHA256 = "sha256";
-
 	/** MD5 hash of the artifact */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MD5)
+	@com.fasterxml.jackson.annotation.JsonProperty("md5")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String md5;
 
 	/** SHA1 hash of the artifact */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SHA1)
+	@com.fasterxml.jackson.annotation.JsonProperty("sha1")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String sha1;
 
 	/** SHA256 hash of the artifact */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SHA256)
+	@com.fasterxml.jackson.annotation.JsonProperty("sha256")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String sha256;
 

@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
+import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
 /**
@@ -12,7 +13,7 @@ import io.micronaut.data.repository.CrudRepository;
  *
  * @author Stephan Schnabel
  */
-@JdbcRepository
+@JdbcRepository(dialect = Dialect.POSTGRES)
 public interface CredentialRepository extends CrudRepository<Credential, Long> {
 
 	List<Credential> findByGateway(Gateway gateway);

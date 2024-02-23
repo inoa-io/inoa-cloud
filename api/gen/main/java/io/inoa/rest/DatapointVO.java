@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class DatapointVO {
 
 	public static final java.lang.String JSON_PROPERTY_ID = "id";
@@ -15,50 +15,50 @@ public class DatapointVO {
 	public static final java.lang.String JSON_PROPERTY_URI = "uri";
 
 	/** Unique identifier */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String id;
 
 	/** Readable name */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	/** Is datapoint enabled */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ENABLED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Boolean enabled;
 
 	/** Poll interval in Seconds */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Min(0)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Min(0)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_INTERVAL)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Integer interval;
 
 	/** Poll type */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private Type type;
 
 	/** Interface to poll */
-	@javax.validation.constraints.Min(0)
+	@jakarta.validation.constraints.Min(0)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_INTERFACE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer _interface;
 
 	/** Polling timeout */
-	@javax.validation.constraints.Min(0)
+	@jakarta.validation.constraints.Min(0)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TIMEOUT)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer timeout;
 
 	/** RS485 frame as hex string */
-	@javax.validation.constraints.Pattern(regexp = "^[a-fA-F0-9]+$")
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-fA-F0-9]+$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_FRAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String frame;
@@ -233,7 +233,6 @@ public class DatapointVO {
 		this.uri = newUri;
 	}
 
-@io.micronaut.core.annotation.Introspected
 public enum Type {
 
 	RS485("RS485"),

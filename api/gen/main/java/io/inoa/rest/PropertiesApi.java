@@ -3,7 +3,6 @@ package io.inoa.rest;
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 @io.micronaut.validation.Validated
 public interface PropertiesApi {
-
 	java.lang.String PATH_DELETE_PROPERTY = "/gateway/properties/{key}";
 	java.lang.String PATH_GET_PROPERTIES = "/gateway/properties";
 	java.lang.String PATH_SET_PROPERTIES = "/gateway/properties";
@@ -13,7 +12,7 @@ public interface PropertiesApi {
 	io.micronaut.http.HttpResponse<Object> deleteProperty(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "key")
-			@javax.validation.constraints.Pattern(regexp = "^[a-z0-9_\\-\\.]{2,100}$")
+			@jakarta.validation.constraints.Pattern(regexp = "^[a-z0-9_\\-\\.]{2,100}$")
 			java.lang.String key);
 
 	@io.micronaut.http.annotation.Get(PATH_GET_PROPERTIES)
@@ -26,7 +25,6 @@ public interface PropertiesApi {
 	io.micronaut.http.HttpResponse<java.util.Map<String, java.lang.String>> setProperties(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.Body
-			@javax.validation.Valid
 			java.util.Map<String, java.lang.String> requestBody);
 
 	@io.micronaut.http.annotation.Put(PATH_SET_PROPERTY)
@@ -34,10 +32,10 @@ public interface PropertiesApi {
 	io.micronaut.http.HttpResponse<Object> setProperty(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "key")
-			@javax.validation.constraints.Pattern(regexp = "^[a-z0-9_\\-\\.]{2,100}$")
+			@jakarta.validation.constraints.Pattern(regexp = "^[a-z0-9_\\-\\.]{2,100}$")
 			java.lang.String key,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.Body
-			@javax.validation.constraints.Size(max = 1000)
+			@jakarta.validation.constraints.Size(max = 1000)
 			java.lang.String body);
 }

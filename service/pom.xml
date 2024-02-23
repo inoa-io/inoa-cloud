@@ -31,7 +31,20 @@
 		<!-- micronaut -->
 		<dependency>
 			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-runtime</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-http-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-server-netty</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+			<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-jackson-databind</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -55,13 +68,13 @@
 			<artifactId>micronaut-cache-core</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.micronaut</groupId>
-			<artifactId>micronaut-http-client</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>io.micronaut.cache</groupId>
 			<artifactId>micronaut-cache-caffeine</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.validation</groupId>
+			<artifactId>micronaut-validation</artifactId>
 		</dependency>
 
 		<!-- persistence -->
@@ -77,6 +90,11 @@
 		<dependency>
 			<groupId>io.micronaut.flyway</groupId>
 			<artifactId>micronaut-flyway</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
@@ -111,6 +129,11 @@
 		<dependency>
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<!-- messaging -->
@@ -190,17 +213,12 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut}</version>
+							<version>${version.io.micronaut.core}</version>
 						</path>
 						<path>
-							<groupId>io.micronaut</groupId>
-							<artifactId>micronaut-validation</artifactId>
-							<version>${version.io.micronaut}</version>
-						</path>
-						<path>
-							<groupId>io.micronaut</groupId>
-							<artifactId>micronaut-http-validation</artifactId>
-							<version>${version.io.micronaut}</version>
+							<groupId>io.micronaut.validation</groupId>
+							<artifactId>micronaut-validation-processor</artifactId>
+							<version>${version.io.micronaut.validation}</version>
 						</path>
 						<path>
 							<groupId>io.micronaut.data</groupId>

@@ -14,6 +14,7 @@ import java.util.List;
 import org.slf4j.MDC;
 
 import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jwt.JWTClaimNames;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
@@ -23,7 +24,6 @@ import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
-import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
 import io.micronaut.security.token.jwt.signature.SignatureConfiguration;
 import io.micronaut.security.token.jwt.signature.rsa.RSASignature;
 import io.micronaut.security.token.jwt.signature.secret.SecretSignature;
@@ -117,7 +117,7 @@ public class GatewayTokenService {
 
 		var gatewayId = claims.getIssuer();
 		if (gatewayId == null) {
-			throw error("token does not contain claim " + JwtClaims.ISSUER);
+			throw error("token does not contain claim " + JWTClaimNames.ISSUER);
 		}
 		MDC.put("gateway", gatewayId);
 
@@ -125,7 +125,7 @@ public class GatewayTokenService {
 
 		var expirationTime = claims.getExpirationTime();
 		if (expirationTime == null) {
-			throw error("token does not contain claim " + JwtClaims.EXPIRATION_TIME);
+			throw error("token does not contain claim " + JWTClaimNames.EXPIRATION_TIME);
 		}
 		if (now.isAfter(expirationTime.toInstant())) {
 			throw error("token is expired: " + expirationTime.toInstant());
@@ -135,7 +135,7 @@ public class GatewayTokenService {
 
 		var notBefore = claims.getNotBeforeTime();
 		if (notBefore == null && tokenProperties.isForceNotBefore()) {
-			throw error("token does not contain claim " + JwtClaims.NOT_BEFORE);
+			throw error("token does not contain claim " + JWTClaimNames.NOT_BEFORE);
 		}
 		if (notBefore != null && now.isBefore(notBefore.toInstant())) {
 			throw error("token is not valid before: " + notBefore.toInstant());
@@ -145,7 +145,7 @@ public class GatewayTokenService {
 
 		var issueTime = claims.getIssueTime();
 		if (issueTime == null && tokenProperties.isForceIssuedAt()) {
-			throw error("token does not contain claim " + JwtClaims.ISSUED_AT);
+			throw error("token does not contain claim " + JWTClaimNames.ISSUED_AT);
 		}
 		var issuedAtThreshold = tokenProperties.getIssuedAtThreshold();
 		if (issueTime != null && issuedAtThreshold.map(now::minus)
@@ -158,7 +158,7 @@ public class GatewayTokenService {
 
 		var audienceList = claims.getAudience();
 		if (audienceList.isEmpty()) {
-			throw error("token does not contain claim " + JwtClaims.AUDIENCE);
+			throw error("token does not contain claim " + JWTClaimNames.AUDIENCE);
 		}
 		if (!audienceList.contains(tokenProperties.getAudience())) {
 			throw error("token audience expected: " + tokenProperties.getAudience());
@@ -167,7 +167,7 @@ public class GatewayTokenService {
 		// check jwt id
 
 		if (claims.getJWTID() == null && tokenProperties.isForceJwtId()) {
-			throw error("token does not contain claim " + JwtClaims.JWT_ID);
+			throw error("token does not contain claim " + JWTClaimNames.JWT_ID);
 		}
 
 		return gatewayId;

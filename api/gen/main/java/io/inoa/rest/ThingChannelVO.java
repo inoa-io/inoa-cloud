@@ -1,22 +1,21 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ThingChannelVO {
 
 	public static final java.lang.String JSON_PROPERTY_KEY = "key";
 	public static final java.lang.String JSON_PROPERTY_PROPERTIES = "properties";
 
 	/** key for the channel */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_KEY)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String key;
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_PROPERTIES)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<PropertyVO> properties;
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyVO> properties;
 
 	// methods
 
@@ -55,7 +54,7 @@ public class ThingChannelVO {
 		return this;
 	}
 
-	public ThingChannelVO properties(java.util.List<PropertyVO> newProperties) {
+	public ThingChannelVO properties(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyVO> newProperties) {
 		this.properties = newProperties;
 		return this;
 	}
@@ -85,11 +84,11 @@ public class ThingChannelVO {
 		this.key = newKey;
 	}
 
-	public java.util.List<PropertyVO> getProperties() {
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyVO> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(java.util.List<PropertyVO> newProperties) {
+	public void setProperties(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyVO> newProperties) {
 		this.properties = newProperties;
 	}
 }

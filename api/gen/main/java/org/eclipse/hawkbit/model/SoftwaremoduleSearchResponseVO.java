@@ -1,25 +1,21 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class SoftwaremoduleSearchResponseVO {
 
-	public static final java.lang.String JSON_PROPERTY_TOTAL = "total";
-	public static final java.lang.String JSON_PROPERTY_SIZE = "size";
-	public static final java.lang.String JSON_PROPERTY_CONTENT = "content";
-
 	/** Total number of elements */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TOTAL)
+	@com.fasterxml.jackson.annotation.JsonProperty("total")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer total;
 
 	/** Current page size */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SIZE)
+	@com.fasterxml.jackson.annotation.JsonProperty("size")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Integer size;
 
 	/** List of software modules */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONTENT)
+	@com.fasterxml.jackson.annotation.JsonProperty("content")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.util.List<SoftwaremoduleSearchResponseItemVO> content;
 

@@ -1,43 +1,36 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class DistributionSetCreationRequestPartVO {
 
-	public static final java.lang.String JSON_PROPERTY_NAME = "name";
-	public static final java.lang.String JSON_PROPERTY_DESCRIPTION = "description";
-	public static final java.lang.String JSON_PROPERTY_VERSION = "version";
-	public static final java.lang.String JSON_PROPERTY_REQUIRED_MIGRATION_STEP = "requiredMigrationStep";
-	public static final java.lang.String JSON_PROPERTY_TYPE = "type";
-	public static final java.lang.String JSON_PROPERTY_MODULES = "modules";
-
 	/** The name of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
+	@com.fasterxml.jackson.annotation.JsonProperty("name")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	/** The description of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DESCRIPTION)
+	@com.fasterxml.jackson.annotation.JsonProperty("description")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String description;
 
 	/** Package version */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VERSION)
+	@com.fasterxml.jackson.annotation.JsonProperty("version")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String version;
 
 	/** True if DS is a required migration step for another DS. As a result the DS’s assignment will not be cancelled when another DS is assigned (updatable only if DS is not yet assigned to a target)  */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_REQUIRED_MIGRATION_STEP)
+	@com.fasterxml.jackson.annotation.JsonProperty("requiredMigrationStep")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Boolean requiredMigrationStep;
 
 	/** The type of the distribution set */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TYPE)
+	@com.fasterxml.jackson.annotation.JsonProperty("type")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String type;
 
 	/** Software Modules of this distribution set */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MODULES)
+	@com.fasterxml.jackson.annotation.JsonProperty("modules")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.util.List<DistributionSetModuleVO> modules;
 

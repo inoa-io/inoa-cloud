@@ -1,17 +1,14 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ArtifactUploadResponseLinksVO {
 
-	public static final java.lang.String JSON_PROPERTY_SELF = "self";
-	public static final java.lang.String JSON_PROPERTY_DOWNLOAD = "download";
-
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SELF)
+	@com.fasterxml.jackson.annotation.JsonProperty("self")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseLinksSelfVO self;
 
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DOWNLOAD)
+	@com.fasterxml.jackson.annotation.JsonProperty("download")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private ArtifactUploadResponseLinksDownloadVO download;
 

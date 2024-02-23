@@ -3,7 +3,6 @@ package io.inoa.rest;
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 @io.micronaut.validation.Validated
 public interface TenantsApi {
-
 	java.lang.String PATH_CREATE_TENANT = "/tenants";
 	java.lang.String PATH_DELETE_TENANT = "/tenants/{tenant_id:30}";
 	java.lang.String PATH_FIND_TENANT = "/tenants/{tenant_id:30}";
@@ -16,14 +15,14 @@ public interface TenantsApi {
 	io.micronaut.http.HttpResponse<TenantVO> createTenant(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.Body
-			@javax.validation.Valid
+			@jakarta.validation.Valid
 			TenantCreateVO tenantCreateVO);
 
 	@io.micronaut.http.annotation.Delete(PATH_DELETE_TENANT)
 	io.micronaut.http.HttpResponse<Object> deleteTenant(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "tenant_id")
-			@javax.validation.constraints.Size(min = 1, max = 30)
+			@jakarta.validation.constraints.Size(min = 1, max = 30)
 			java.lang.String tenantId);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_TENANT)
@@ -31,7 +30,7 @@ public interface TenantsApi {
 	io.micronaut.http.HttpResponse<TenantVO> findTenant(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "tenant_id")
-			@javax.validation.constraints.Size(min = 1, max = 30)
+			@jakarta.validation.constraints.Size(min = 1, max = 30)
 			java.lang.String tenantId);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_TENANTS)
@@ -44,10 +43,10 @@ public interface TenantsApi {
 	io.micronaut.http.HttpResponse<TenantVO> updateTenant(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "tenant_id")
-			@javax.validation.constraints.Size(min = 1, max = 30)
+			@jakarta.validation.constraints.Size(min = 1, max = 30)
 			java.lang.String tenantId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.Body
-			@javax.validation.Valid
+			@jakarta.validation.Valid
 			TenantUpdateVO tenantUpdateVO);
 }

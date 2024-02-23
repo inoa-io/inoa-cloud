@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class ThingTypeVO {
 
 	public static final java.lang.String JSON_PROPERTY_ID = "id";
@@ -14,14 +14,14 @@ public class ThingTypeVO {
 	public static final java.lang.String JSON_PROPERTY_UPDATED = "updated";
 
 	/** Id as technical reference (never changes). */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\_]{1,64}$")
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\_]{1,64}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String id;
 
 	/** Name. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
@@ -34,26 +34,24 @@ public class ThingTypeVO {
 	/** ui_layout */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UI_LAYOUT)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<java.util.Map<String, java.lang.Object>> uiLayout;
+	private java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> uiLayout;
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_PROPERTIES)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<PropertyDefinitionVO> properties;
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> properties;
 
-	@javax.validation.Valid
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CHANNELS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<ThingTypeChannelVO> channels;
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingTypeChannelVO> channels;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant created;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UPDATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant updated;
@@ -132,7 +130,7 @@ public class ThingTypeVO {
 		return this;
 	}
 
-	public ThingTypeVO uiLayout(java.util.List<java.util.Map<String, java.lang.Object>> newUiLayout) {
+	public ThingTypeVO uiLayout(java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> newUiLayout) {
 		this.uiLayout = newUiLayout;
 		return this;
 	}
@@ -152,7 +150,7 @@ public class ThingTypeVO {
 		return this;
 	}
 
-	public ThingTypeVO properties(java.util.List<PropertyDefinitionVO> newProperties) {
+	public ThingTypeVO properties(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> newProperties) {
 		this.properties = newProperties;
 		return this;
 	}
@@ -172,7 +170,7 @@ public class ThingTypeVO {
 		return this;
 	}
 
-	public ThingTypeVO channels(java.util.List<ThingTypeChannelVO> newChannels) {
+	public ThingTypeVO channels(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingTypeChannelVO> newChannels) {
 		this.channels = newChannels;
 		return this;
 	}
@@ -228,27 +226,27 @@ public class ThingTypeVO {
 		this.jsonSchema = newJsonSchema;
 	}
 
-	public java.util.List<java.util.Map<String, java.lang.Object>> getUiLayout() {
+	public java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> getUiLayout() {
 		return uiLayout;
 	}
 
-	public void setUiLayout(java.util.List<java.util.Map<String, java.lang.Object>> newUiLayout) {
+	public void setUiLayout(java.util.List<java.util.Map<String, java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.Valid Object>> newUiLayout) {
 		this.uiLayout = newUiLayout;
 	}
 
-	public java.util.List<PropertyDefinitionVO> getProperties() {
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(java.util.List<PropertyDefinitionVO> newProperties) {
+	public void setProperties(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid PropertyDefinitionVO> newProperties) {
 		this.properties = newProperties;
 	}
 
-	public java.util.List<ThingTypeChannelVO> getChannels() {
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingTypeChannelVO> getChannels() {
 		return channels;
 	}
 
-	public void setChannels(java.util.List<ThingTypeChannelVO> newChannels) {
+	public void setChannels(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingTypeChannelVO> newChannels) {
 		this.channels = newChannels;
 	}
 

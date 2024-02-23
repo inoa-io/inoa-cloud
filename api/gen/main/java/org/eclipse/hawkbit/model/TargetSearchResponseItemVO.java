@@ -1,96 +1,80 @@
 package org.eclipse.hawkbit.model;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class TargetSearchResponseItemVO {
 
-	public static final java.lang.String JSON_PROPERTY_CONTROLLER_ID = "controllerId";
-	public static final java.lang.String JSON_PROPERTY_NAME = "name";
-	public static final java.lang.String JSON_PROPERTY_DESCRIPTION = "description";
-	public static final java.lang.String JSON_PROPERTY_SECURITY_TOKEN = "securityToken";
-	public static final java.lang.String JSON_PROPERTY_UPDATE_STATUS = "updateStatus";
-	public static final java.lang.String JSON_PROPERTY_ADDRESS = "address";
-	public static final java.lang.String JSON_PROPERTY_IP_ADDRESS = "ipAddress";
-	public static final java.lang.String JSON_PROPERTY_LAST_CONTROLLER_REQUEST_AT = "lastControllerRequestAt";
-	public static final java.lang.String JSON_PROPERTY_REQUEST_ATTRIBUTES = "requestAttributes";
-	public static final java.lang.String JSON_PROPERTY_AUTO_CONFIRM_ACTIVE = "autoConfirmActive";
-	public static final java.lang.String JSON_PROPERTY_INSTALLED_AT = "installedAt";
-	public static final java.lang.String JSON_PROPERTY_CREATED_BY = "createdBy";
-	public static final java.lang.String JSON_PROPERTY_CREATED_AT = "createdAt";
-	public static final java.lang.String JSON_PROPERTY_LAST_MODIFIED_BY = "lastModifiedBy";
-	public static final java.lang.String JSON_PROPERTY_TARGET_TYPE = "targetType";
-
 	/** The technical identifier of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONTROLLER_ID)
+	@com.fasterxml.jackson.annotation.JsonProperty("controllerId")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String controllerId;
 
 	/** The name of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
+	@com.fasterxml.jackson.annotation.JsonProperty("name")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
 
 	/** The description of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DESCRIPTION)
+	@com.fasterxml.jackson.annotation.JsonProperty("description")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String description;
 
 	/** Pre-Shared key that allows targets to authenticate at Direct Device Integration API if enabled in the tenant settings. */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SECURITY_TOKEN)
+	@com.fasterxml.jackson.annotation.JsonProperty("securityToken")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String securityToken;
 
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UPDATE_STATUS)
+	@com.fasterxml.jackson.annotation.JsonProperty("updateStatus")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private UpdateStatus updateStatus;
 
 	/** The last known address URI of the target. Includes information of the target is connected either directly (DDI) through HTTP or indirectly (DMF) through amqp. */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ADDRESS)
+	@com.fasterxml.jackson.annotation.JsonProperty("address")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String address;
 
 	/** Last known IP address of the target. Only presented if IP address of the target itself is known (connected directly through DDI API). */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_IP_ADDRESS)
+	@com.fasterxml.jackson.annotation.JsonProperty("ipAddress")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String ipAddress;
 
 	/** Last time where the target polled the server, same as pollStatus.lastRequestAt. */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LAST_CONTROLLER_REQUEST_AT)
+	@com.fasterxml.jackson.annotation.JsonProperty("lastControllerRequestAt")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Double lastControllerRequestAt;
 
 	/** Request re-transmission of target attributes. */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_REQUEST_ATTRIBUTES)
+	@com.fasterxml.jackson.annotation.JsonProperty("requestAttributes")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Boolean requestAttributes;
 
 	/** Present if user consent flow active. Indicates if auto-confirm is active. */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_AUTO_CONFIRM_ACTIVE)
+	@com.fasterxml.jackson.annotation.JsonProperty("autoConfirmActive")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Boolean autoConfirmActive;
 
 	/** Installation time of current installed DistributionSet. */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_INSTALLED_AT)
+	@com.fasterxml.jackson.annotation.JsonProperty("installedAt")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Double installedAt;
 
 	/** Entity was originally created by User, AMQP-Controller, anonymous etc.) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED_BY)
+	@com.fasterxml.jackson.annotation.JsonProperty("createdBy")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String createdBy;
 
 	/** Entity was originally created at (timestamp UTC in milliseconds) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED_AT)
+	@com.fasterxml.jackson.annotation.JsonProperty("createdAt")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.Double createdAt;
 
 	/** Entity was last modified by User, AMQP-Controller, anonymous etc.) */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LAST_MODIFIED_BY)
+	@com.fasterxml.jackson.annotation.JsonProperty("lastModifiedBy")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String lastModifiedBy;
 
 	/** The software module type of the entity */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TARGET_TYPE)
+	@com.fasterxml.jackson.annotation.JsonProperty("targetType")
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String targetType;
 
@@ -349,7 +333,6 @@ public class TargetSearchResponseItemVO {
 		this.targetType = newTargetType;
 	}
 
-@io.micronaut.core.annotation.Introspected
 public enum UpdateStatus {
 
 	ERROR("error"),

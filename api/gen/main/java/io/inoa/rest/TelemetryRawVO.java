@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class TelemetryRawVO {
 
 	public static final java.lang.String JSON_PROPERTY_URN = "urn";
@@ -10,20 +10,20 @@ public class TelemetryRawVO {
 	public static final java.lang.String JSON_PROPERTY_EXT = "ext";
 
 	/** URN with device type and id plus sensor identifier. Sensor can by anything, e.g. obis code or modbus register. */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "urn:(?<deviceType>[a-zA-Z0-9\\-]{2,32}):(?<deviceId>[a-zA-Z0-9\\-]{2,36}):(?<sensor>[a-zA-Z0-9_\\-\\:*]{2,64})")
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "urn:(?<deviceType>[a-zA-Z0-9\\-]{2,32}):(?<deviceId>[a-zA-Z0-9\\-]{2,36}):(?<sensor>[a-zA-Z0-9_\\-\\:*]{2,64})")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_URN)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String urn;
 
 	/** Timestamp of measurement (epoch milliseconds). */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TIMESTAMP)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Long timestamp;
 
 	/** Value of measurement, is a base64 encoded byte array. Will be interpreted later. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VALUE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private byte[] value;

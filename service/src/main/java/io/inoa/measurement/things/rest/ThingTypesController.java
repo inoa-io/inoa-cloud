@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.validation.Valid;
-
 import io.inoa.measurement.things.builder.ThingTypeMapper;
 import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.measurement.things.domain.ThingTypeRepository;
@@ -20,6 +18,7 @@ import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller

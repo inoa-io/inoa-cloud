@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
+import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.CrudRepository;
 
 /**
@@ -11,7 +12,7 @@ import io.micronaut.data.repository.CrudRepository;
  *
  * @author Stephan Schnabel
  */
-@JdbcRepository
+@JdbcRepository(dialect = Dialect.POSTGRES)
 public interface TenantRepository extends CrudRepository<Tenant, Long> {
 
 	List<Tenant> findByDeletedIsNullOrderByTenantId();

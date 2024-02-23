@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class TenantCreateVO {
 
 	public static final java.lang.String JSON_PROPERTY_TENANT_ID = "tenant_id";
@@ -10,28 +10,28 @@ public class TenantCreateVO {
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID_PATTERN = "gateway_id_pattern";
 
 	/** Id as tenant reference. */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Size(min = 1, max = 30)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Size(min = 1, max = 30)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TENANT_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String tenantId;
 
 	/** Name of a tenant. */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$")
-	@javax.validation.constraints.Size(min = 3, max = 100)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\s]*$")
+	@jakarta.validation.constraints.Size(min = 3, max = 100)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	/** Is tenant enabled */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ENABLED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Boolean enabled;
 
 	/** Regular expression to force specific gateway IDs for this tenant */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GATEWAY_ID_PATTERN)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String gatewayIdPattern;

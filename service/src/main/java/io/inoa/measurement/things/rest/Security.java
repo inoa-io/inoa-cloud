@@ -9,7 +9,7 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.context.ServerRequestContext;
 import io.micronaut.http.exceptions.HttpStatusException;
-import io.micronaut.security.token.jwt.generator.claims.JwtClaims;
+import io.micronaut.security.token.Claims;
 import io.micronaut.security.utils.SecurityService;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
@@ -47,7 +47,7 @@ public class Security {
 		// read tenant from http header if audience claim is in whitelist
 
 		var audienceWhitelist = properties.getSecurity().getTenantAudienceWhitelist();
-		var audience = get(attributes, JwtClaims.AUDIENCE).filter(a -> audienceWhitelist.contains(a)).findFirst();
+		var audience = get(attributes, Claims.AUDIENCE).filter(a -> audienceWhitelist.contains(a)).findFirst();
 		if (audience.isPresent()) {
 			var tenantId = ServerRequestContext.currentRequest()
 					.map(HttpRequest::getHeaders)

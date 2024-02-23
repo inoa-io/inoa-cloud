@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class TelemetryVO {
 
 	public static final java.lang.String JSON_PROPERTY_TENANT_ID = "tenant_id";
@@ -15,53 +15,53 @@ public class TelemetryVO {
 	public static final java.lang.String JSON_PROPERTY_EXT = "ext";
 
 	/** Id of tenant. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TENANT_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String tenantId;
 
 	/** Id of gateway @ tenant. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GATEWAY_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String gatewayId;
 
 	/** TODO */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "urn:(?<deviceType>[a-zA-Z0-9\\-]{2,32}):(?<deviceId>[a-zA-Z0-9\\-]{2,36}):(?<sensor>[a-zA-Z0-9_\\-\\:*]{2,64})")
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "urn:(?<deviceType>[a-zA-Z0-9\\-]{2,32}):(?<deviceId>[a-zA-Z0-9\\-]{2,36}):(?<sensor>[a-zA-Z0-9_\\-\\:*]{2,64})")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_URN)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String urn;
 
 	/** TODO */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]{2,32}$")
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]{2,32}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DEVICE_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String deviceType;
 
 	/** TODO */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]{2,36}$")
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-]{2,36}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DEVICE_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String deviceId;
 
 	/** TODO */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\:*]{2,64}$")
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\:*]{2,64}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_SENSOR)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String sensor;
 
 	/** Timestamp of measurement value. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TIMESTAMP)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant timestamp;
 
 	/** Value of measurement. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_VALUE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Double value;

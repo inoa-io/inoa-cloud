@@ -5,13 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.constraints.NotNull;
-
 import io.inoa.fleet.registry.domain.ConfigurationDefinition;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.rest.ConfigurationTypeVO;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Context;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 

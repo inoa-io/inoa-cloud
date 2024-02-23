@@ -36,21 +36,21 @@ public interface ConfigurationApiTestClient {
 
 	@io.micronaut.http.annotation.Get("/configuration/definition")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<java.util.List<@javax.validation.constraints.NotNull @javax.validation.Valid ConfigurationDefinitionVO>> findConfigurationDefinitions(
+	io.micronaut.http.HttpResponse<java.util.List<ConfigurationDefinitionVO>> findConfigurationDefinitions(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
 			java.lang.String authorization);
 
 	@io.micronaut.http.annotation.Get("/configuration")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<java.util.List<@javax.validation.constraints.NotNull @javax.validation.Valid ConfigurationVO>> findConfigurations(
+	io.micronaut.http.HttpResponse<java.util.List<ConfigurationVO>> findConfigurations(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
 			java.lang.String authorization);
 
 	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/configuration")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<java.util.List<@javax.validation.constraints.NotNull @javax.validation.Valid ConfigurationVO>> findConfigurationsByGateway(
+	io.micronaut.http.HttpResponse<java.util.List<ConfigurationVO>> findConfigurationsByGateway(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
 			java.lang.String authorization,
@@ -60,7 +60,7 @@ public interface ConfigurationApiTestClient {
 
 	@io.micronaut.http.annotation.Get("/groups/{group_id}/configuration")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<java.util.List<@javax.validation.constraints.NotNull @javax.validation.Valid ConfigurationVO>> findConfigurationsByGroup(
+	io.micronaut.http.HttpResponse<java.util.List<ConfigurationVO>> findConfigurationsByGroup(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
 			java.lang.String authorization,

@@ -1,7 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class GatewayDetailVO {
 
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID = "gateway_id";
@@ -13,45 +13,45 @@ public class GatewayDetailVO {
 	public static final java.lang.String JSON_PROPERTY_UPDATED = "updated";
 
 	/** Id as technical reference (never changes). */
-	@javax.validation.constraints.NotNull
-	@javax.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
-	@javax.validation.constraints.Size(min = 4, max = 20)
+	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
+	@jakarta.validation.constraints.Size(min = 4, max = 20)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GATEWAY_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String gatewayId;
 
 	/** Human friendly description (can change). */
-	@javax.validation.constraints.Size(max = 100)
+	@jakarta.validation.constraints.Size(max = 100)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
 
 	/** Flag if enabled or not. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ENABLED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Boolean enabled = true;
 
 	/** Ids of groups where gateway is member. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GROUP_IDS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private java.util.Set<java.util.UUID> groupIds = new java.util.LinkedHashSet<>();
+	private java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> groupIds = new java.util.LinkedHashSet<>();
 
 	/** Properties set by gateway. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_PROPERTIES)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.util.Map<String, java.lang.String> properties = new java.util.HashMap<>();
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant created;
 
 	/** Common timestamp for created/updated timestamps. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UPDATED)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.time.Instant updated;
@@ -113,7 +113,7 @@ public class GatewayDetailVO {
 		return this;
 	}
 
-	public GatewayDetailVO groupIds(java.util.Set<java.util.UUID> newGroupIds) {
+	public GatewayDetailVO groupIds(java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> newGroupIds) {
 		this.groupIds = newGroupIds;
 		return this;
 	}
@@ -189,11 +189,11 @@ public class GatewayDetailVO {
 		this.enabled = newEnabled;
 	}
 
-	public java.util.Set<java.util.UUID> getGroupIds() {
+	public java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> getGroupIds() {
 		return groupIds;
 	}
 
-	public void setGroupIds(java.util.Set<java.util.UUID> newGroupIds) {
+	public void setGroupIds(java.util.Set<java.util.@jakarta.validation.constraints.NotNull UUID> newGroupIds) {
 		this.groupIds = newGroupIds;
 	}
 

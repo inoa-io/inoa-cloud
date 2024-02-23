@@ -87,10 +87,12 @@
 		<version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.maven.k3s>1.2.4</version.io.kokuwa.maven.k3s>
-		<version.io.kokuwa.micronaut.codegen>3.4.3</version.io.kokuwa.micronaut.codegen>
-		<version.io.kokuwa.micronaut.logging>3.3.0</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut>3.10.3</version.io.micronaut>
-		<version.io.micronaut.data>3.10.0</version.io.micronaut.data>
+		<version.io.kokuwa.micronaut.codegen>4.1.1</version.io.kokuwa.micronaut.codegen>
+		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
+		<version.io.micronaut.core>4.3.7</version.io.micronaut.core>
+		<version.io.micronaut.platform>4.3.2</version.io.micronaut.platform>
+		<version.io.micronaut.data>4.6.2</version.io.micronaut.data>
+		<version.io.micronaut.validation>4.4.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.77</version.org.bouncycastle>
@@ -106,6 +108,11 @@
 
 			<!-- micronaut -->
 			<dependency>
+				<groupId>io.micronaut</groupId>
+				<artifactId>micronaut-inject-java</artifactId>
+				<version>${version.io.micronaut.core}</version>
+			</dependency>
+			<dependency>
 				<groupId>io.micronaut.data</groupId>
 				<artifactId>micronaut-data-bom</artifactId>
 				<version>${version.io.micronaut.data}</version>
@@ -113,22 +120,18 @@
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-bom</artifactId>
-				<version>${version.io.micronaut}</version>
+				<groupId>io.micronaut.validation</groupId>
+				<artifactId>micronaut-validation-bom</artifactId>
+				<version>${version.io.micronaut.validation}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
 			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-inject</artifactId>
-				<version>${version.io.micronaut}</version>
-				<exclusions>
-					<exclusion>
-						<groupId>javax.annotation</groupId>
-						<artifactId>javax.annotation-api</artifactId>
-					</exclusion>
-				</exclusions>
+				<groupId>io.micronaut.platform</groupId>
+				<artifactId>micronaut-platform</artifactId>
+				<version>${version.io.micronaut.platform}</version>
+				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 			<dependency>
 				<groupId>io.kokuwa.micronaut</groupId>
@@ -229,14 +232,6 @@
 	</dependencyManagement>
 	<dependencies>
 
-		<!-- avoid compiler warning, see https://docs.micronaut.io/latest/guide/#_nullable_annotations -->
-		<!-- TODO mit micronaut 4 entfernen -->
-		<dependency>
-			<groupId>com.google.code.findbugs</groupId>
-			<artifactId>jsr305</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
 		<!-- build -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -257,56 +252,6 @@
 						<archive>
 							<addMavenDescriptor>false</addMavenDescriptor>
 						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>versions-maven-plugin</artifactId>
-					<configuration>
-						<ruleSet>
-							<rules>
-								<rule>
-									<groupId>io.micronaut</groupId>
-									<artifactId>micronaut-bom</artifactId>
-									<ignoreVersions>
-										<ignoreVersion>
-											<type>regex</type>
-											<version>4\..*</version>
-										</ignoreVersion>
-									</ignoreVersions>
-								</rule>
-								<rule>
-									<groupId>io.micronaut.data</groupId>
-									<artifactId>micronaut-data-bom</artifactId>
-									<ignoreVersions>
-										<ignoreVersion>
-											<type>regex</type>
-											<version>4\..*</version>
-										</ignoreVersion>
-									</ignoreVersions>
-								</rule>
-								<rule>
-									<groupId>io.kokuwa.micronaut</groupId>
-									<artifactId>micronaut-logging</artifactId>
-									<ignoreVersions>
-										<ignoreVersion>
-											<type>regex</type>
-											<version>4\..*</version>
-										</ignoreVersion>
-									</ignoreVersions>
-								</rule>
-								<rule>
-									<groupId>io.kokuwa.micronaut</groupId>
-									<artifactId>micronaut-openapi-codegen</artifactId>
-									<ignoreVersions>
-										<ignoreVersion>
-											<type>regex</type>
-											<version>4\..*</version>
-										</ignoreVersion>
-									</ignoreVersions>
-								</rule>
-							</rules>
-						</ruleSet>
 					</configuration>
 				</plugin>
 				<plugin>

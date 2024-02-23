@@ -12,9 +12,6 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-import javax.transaction.Transactional.TxType;
-
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -48,6 +45,8 @@ import io.inoa.fleet.registry.domain.TenantRepository;
 import io.inoa.rest.ConfigurationTypeVO;
 import io.inoa.rest.CredentialTypeVO;
 import jakarta.inject.Singleton;
+import jakarta.transaction.Transactional;
+import jakarta.transaction.Transactional.TxType;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 

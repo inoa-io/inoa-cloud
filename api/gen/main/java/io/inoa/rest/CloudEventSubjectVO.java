@@ -1,7 +1,6 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
 public enum CloudEventSubjectVO {
 
 	TELEMETRY("telemetry");

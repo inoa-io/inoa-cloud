@@ -1,21 +1,20 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-@io.micronaut.core.annotation.Introspected
+@io.micronaut.serde.annotation.Serdeable
 public class GatewayPageVO {
 
 	public static final java.lang.String JSON_PROPERTY_CONTENT = "content";
 	public static final java.lang.String JSON_PROPERTY_TOTAL_SIZE = "total_size";
 
 	/** List of entries on page. */
-	@javax.validation.Valid
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONTENT)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private java.util.List<GatewayVO> content = new java.util.ArrayList<>();
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid GatewayVO> content = new java.util.ArrayList<>();
 
 	/** Total available entries. */
-	@javax.validation.constraints.NotNull
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TOTAL_SIZE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.Integer totalSize;
@@ -52,7 +51,7 @@ public class GatewayPageVO {
 
 	// fluent
 
-	public GatewayPageVO content(java.util.List<GatewayVO> newContent) {
+	public GatewayPageVO content(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid GatewayVO> newContent) {
 		this.content = newContent;
 		return this;
 	}
@@ -79,11 +78,11 @@ public class GatewayPageVO {
 
 	// getter/setter
 
-	public java.util.List<GatewayVO> getContent() {
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid GatewayVO> getContent() {
 		return content;
 	}
 
-	public void setContent(java.util.List<GatewayVO> newContent) {
+	public void setContent(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid GatewayVO> newContent) {
 		this.content = newContent;
 	}
 

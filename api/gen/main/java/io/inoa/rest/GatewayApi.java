@@ -3,7 +3,6 @@ package io.inoa.rest;
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 @io.micronaut.validation.Validated
 public interface GatewayApi {
-
 	java.lang.String PATH_GET_CONFIGURATION = "/gateway/configuration";
 	java.lang.String PATH_REGISTER = "/gateway";
 
@@ -16,6 +15,6 @@ public interface GatewayApi {
 	io.micronaut.http.HttpResponse<Object> register(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.Body
-			@javax.validation.Valid
+			@jakarta.validation.Valid
 			RegisterVO registerVO);
 }

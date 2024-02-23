@@ -6,6 +6,7 @@ import java.util.Optional;
 import io.micronaut.data.annotation.Join;
 import io.micronaut.data.annotation.Query;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
+import io.micronaut.data.model.query.builder.sql.Dialect;
 import io.micronaut.data.repository.GenericRepository;
 
 /**
@@ -13,7 +14,7 @@ import io.micronaut.data.repository.GenericRepository;
  *
  * @author Stephan Schnabel
  */
-@JdbcRepository
+@JdbcRepository(dialect = Dialect.POSTGRES)
 @Join("definition")
 public interface GatewayConfigurationRepository extends GenericRepository<GatewayConfiguration, Void> {
 
