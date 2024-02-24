@@ -1,8 +1,10 @@
-package io.inoa.measurement.exporter.influx;
+package io.inoa.controller.exporter;
 
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.influxdb.client.InfluxDBClient;
 
@@ -13,8 +15,6 @@ import io.micronaut.health.HealthStatus;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import jakarta.inject.Singleton;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * A {@link HealthIndicator} for InfluxDB.
@@ -22,14 +22,18 @@ import lombok.extern.slf4j.Slf4j;
  * @author stephan.schnabel@grayc.de
  */
 @Requires(notEnv = Environment.TEST)
-@Requires(beans = InfluxDBClient.class)
+@Requires(bean = InfluxDBClient.class)
 @Singleton
-@Slf4j
-@RequiredArgsConstructor
 public class InfluxDBHealthIndicator implements HealthIndicator {
+
+	private static final Logger log = LoggerFactory.getLogger(InfluxDBHealthIndicator.class);
 
 	private final AtomicReference<HealthStatus> status = new AtomicReference<>();
 	private final InfluxDBClient influxdb;
+
+	public InfluxDBHealthIndicator(InfluxDBClient influxdb) {
+		this.influxdb = influxdb;
+	}
 
 	@Override
 	public Publisher<HealthResult> getResult() {

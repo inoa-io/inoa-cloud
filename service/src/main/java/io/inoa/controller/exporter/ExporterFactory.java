@@ -1,4 +1,7 @@
-package io.inoa.measurement.exporter.influx;
+package io.inoa.controller.exporter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.influxdb.LogLevel;
 import com.influxdb.client.InfluxDBClient;
@@ -9,15 +12,23 @@ import io.micronaut.context.annotation.Bean;
 import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Factory;
 import io.micronaut.context.annotation.Value;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 
 /**
- * Factory for InfluxDB client.
+ * Factory for telemetry exporter.
  *
  * @author stephan.schnabel@grayc.de
  */
 @Factory
-public class InfluxDBFactory {
+public class ExporterFactory {
+
+	private static final Logger log = LoggerFactory.getLogger(ExporterFactory.class);
+
+	@PostConstruct
+	void log() {
+		log.info("Starting controller: {}", getClass().getPackage().getName());
+	}
 
 	@Singleton
 	InfluxDBClientOptions options(
@@ -28,7 +39,8 @@ public class InfluxDBFactory {
 			@Value("${influxdb.log-level:NONE}") LogLevel logLevel) {
 		return InfluxDBClientOptions
 				.builder()
-				.url(url).authenticateToken(token)
+				.url(url)
+				.authenticateToken(token)
 				.org(organisation)
 				.bucket(bucket)
 				.logLevel(logLevel).build();

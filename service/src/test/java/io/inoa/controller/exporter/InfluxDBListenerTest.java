@@ -1,7 +1,8 @@
-package io.inoa.measurement.exporter.influx;
+package io.inoa.controller.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -12,22 +13,33 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.influxdb.client.InfluxDBClient;
+import com.influxdb.exceptions.BadRequestException;
 
 import io.inoa.rest.TelemetryVO;
 import io.inoa.test.AbstractUnitTest;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
+/**
+ * Test for {@link InfluxDBListener}.
+ *
+ * @author stephan.schnabel@grayc.de
+ */
+@DisplayName("exporter: kafka listener")
+@MicronautTest(environments = "exporter")
 public class InfluxDBListenerTest extends AbstractUnitTest {
 
-	@Inject InfluxDBListener listener;
 	@Inject InfluxDBClient influx;
+	@Inject InfluxDBListener listener;
 	@Inject MeterRegistry meterRegistry;
 
 	@DisplayName("write to influx")
 	@Test
 	void success() {
 
+		var countSuccessBefore = countSuccess();
+		var countFailureBefore = countFailure();
 		var telemetry = new TelemetryVO()
 				.tenantId("inoa")
 				.gatewayId("GW-0001")
@@ -63,7 +75,41 @@ public class InfluxDBListenerTest extends AbstractUnitTest {
 
 		// check metrics
 
-		assertEquals(1D, meterRegistry.counter(InfluxDBMetrics.COUNTER_SUCCESS).count(), "meter success");
-		assertEquals(0D, meterRegistry.counter(InfluxDBMetrics.COUNTER_FAILURE).count(), "meter failure");
+		assertEquals(countSuccessBefore + 1D, countSuccess(), "count success");
+		assertEquals(countFailureBefore, countFailure(), "count failure");
+	}
+
+	@DisplayName("failure because of invalid payload")
+	@Test
+	void failure() {
+
+		var countSuccessBefore = countSuccess();
+		var countFailureBefore = countFailure();
+		var telemetry = new TelemetryVO()
+				.tenantId("inoa")
+				.gatewayId("GW-0001")
+				.urn("urn")
+				.deviceId(UUID.randomUUID().toString())
+				.deviceType(UUID.randomUUID().toString())
+				.sensor(UUID.randomUUID().toString())
+				.timestamp(Instant.MAX)
+				.value(123.456D);
+
+		// send message
+
+		assertThrows(BadRequestException.class, () -> listener.receive(telemetry));
+
+		// check metrics
+
+		assertEquals(countSuccessBefore, countSuccess(), "count success");
+		assertEquals(countFailureBefore + 1D, countFailure(), "count failure");
+	}
+
+	private int countSuccess() {
+		return (int) meterRegistry.counter("inoa_exporter_influxdb_success").count();
+	}
+
+	private int countFailure() {
+		return (int) meterRegistry.counter("inoa_exporter_influxdb_failure").count();
 	}
 }
