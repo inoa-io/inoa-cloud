@@ -134,14 +134,14 @@ public class SecurityTest extends AbstractUnitTest {
 
 		var headers = new HashMap<String, Object>();
 		if (tenantClaim != null) {
-			headers.put(properties.getSecurity().getClaimTenants(), tenantClaim);
+			headers.put(oldProperties.getSecurity().getClaimTenants(), tenantClaim);
 		}
 		if (audience != null) {
 			headers.put(Claims.AUDIENCE, audience);
 		}
 
 		var request = new SimpleHttpRequest<>(HttpMethod.GET, "/", null);
-		request.getHeaders().add(properties.getSecurity().getTenantHeaderName(), tenantHeader);
+		request.getHeaders().add(oldProperties.getSecurity().getTenantHeaderName(), tenantHeader);
 		request.getAttributes().put(HttpAttributes.PRINCIPAL.toString(), new ServerAuthentication("", null, headers));
 		return request;
 	}

@@ -76,7 +76,7 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
 	@DisplayName("error: claim nbf missing")
 	@Test
 	void errorClaimNbfMissing() {
-		assertTrue(properties.getGateway().getToken().isForceNotBefore(), "nbf optional");
+		assertTrue(oldProperties.getGateway().getToken().isForceNotBefore(), "nbf optional");
 		assertError(claims -> claims.notBeforeTime(null), "token does not contain claim nbf");
 	}
 
@@ -90,16 +90,16 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
 	@DisplayName("error: claim iat missing")
 	@Test
 	void errorClaimIatMissing() {
-		assertTrue(properties.getGateway().getToken().isForceIssuedAt(), "iat optional");
+		assertTrue(oldProperties.getGateway().getToken().isForceIssuedAt(), "iat optional");
 		assertError(claims -> claims.issueTime(null), "token does not contain claim iat");
 	}
 
 	@DisplayName("error: claim iat exceeds threshold")
 	@Test
 	void errorClaimIatThreshold() {
-		assertTrue(properties.getGateway().getToken().isForceIssuedAt(), "iat optional");
-		assertTrue(properties.getGateway().getToken().getIssuedAtThreshold().isPresent(), "iat threshold missing");
-		var threshold = properties.getGateway().getToken().getIssuedAtThreshold().get();
+		assertTrue(oldProperties.getGateway().getToken().isForceIssuedAt(), "iat optional");
+		assertTrue(oldProperties.getGateway().getToken().getIssuedAtThreshold().isPresent(), "iat threshold missing");
+		var threshold = oldProperties.getGateway().getToken().getIssuedAtThreshold().get();
 		var iat = now.minus(threshold).minusSeconds(1);
 		assertError(claims -> claims.issueTime(Date.from(iat)),
 				"token is too old (older than " + threshold + "): " + iat);
@@ -108,7 +108,7 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
 	@DisplayName("error: claim jti missing")
 	@Test
 	void errorClaimJtiMissing() {
-		assertTrue(properties.getGateway().getToken().isForceJwtId(), "jti optional");
+		assertTrue(oldProperties.getGateway().getToken().isForceJwtId(), "jti optional");
 		assertError(claims -> claims.jwtID(null), "token does not contain claim jti");
 	}
 
@@ -122,7 +122,7 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
 	@Test
 	void errorClaimAudMismatch() {
 		assertError(claims -> claims.audience("a"),
-				"token audience expected: " + properties.getGateway().getToken().getAudience());
+				"token audience expected: " + oldProperties.getGateway().getToken().getAudience());
 	}
 
 	@DisplayName("error: gateway not found")
@@ -182,10 +182,10 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
 	@Test
 	void successFullToken() {
 
-		assertTrue(properties.getGateway().getToken().isForceJwtId(), "jti optional");
-		assertTrue(properties.getGateway().getToken().isForceNotBefore(), "nbf optional");
-		assertTrue(properties.getGateway().getToken().isForceIssuedAt(), "iat optional");
-		assertTrue(properties.getGateway().getToken().getIssuedAtThreshold().isPresent(), "iat threshold missing");
+		assertTrue(oldProperties.getGateway().getToken().isForceJwtId(), "jti optional");
+		assertTrue(oldProperties.getGateway().getToken().isForceNotBefore(), "nbf optional");
+		assertTrue(oldProperties.getGateway().getToken().isForceIssuedAt(), "iat optional");
+		assertTrue(oldProperties.getGateway().getToken().getIssuedAtThreshold().isPresent(), "iat threshold missing");
 
 		var gateway = data.gateway(data.tenant());
 		var credential = data.credentialPSK(gateway);
@@ -197,17 +197,17 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
 	@Test
 	void successMinimalToken() throws JOSEException {
 
-		properties.getGateway().getToken().setForceJwtId(false);
-		properties.getGateway().getToken().setForceNotBefore(false);
-		properties.getGateway().getToken().setForceIssuedAt(false);
-		properties.getGateway().getToken().setIssuedAtThreshold(Optional.empty());
+		oldProperties.getGateway().getToken().setForceJwtId(false);
+		oldProperties.getGateway().getToken().setForceNotBefore(false);
+		oldProperties.getGateway().getToken().setForceIssuedAt(false);
+		oldProperties.getGateway().getToken().setIssuedAtThreshold(Optional.empty());
 
 		var keyPair = data.generateKeyPair();
 		var gateway = data.gateway(data.tenant());
 		data.credentialRSA(gateway, keyPair);
 
 		var claims = new JWTClaimsSet.Builder()
-				.audience(properties.getGateway().getToken().getAudience())
+				.audience(oldProperties.getGateway().getToken().getAudience())
 				.issuer(gateway.getGatewayId())
 				.expirationTime(Date.from(now.plusSeconds(1)));
 		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.RS512), claims.build());

@@ -43,7 +43,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 	public @Inject Validator validator;
 	public @Inject SignatureGeneratorConfiguration signature;
 	public @Inject Data data;
-	public @Inject ApplicationProperties properties;
+	public @Inject ApplicationProperties oldProperties;
 	public @Inject KafkaSink kafka;
 
 	// test setup
@@ -61,10 +61,10 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 
 		// handle token
 
-		properties.getGateway().getToken().setForceNotBefore(true);
-		properties.getGateway().getToken().setForceJwtId(true);
-		properties.getGateway().getToken().setForceIssuedAt(true);
-		properties.getGateway().getToken().setIssuedAtThreshold(Optional.of(Duration.ofSeconds(5)));
+		oldProperties.getGateway().getToken().setForceNotBefore(true);
+		oldProperties.getGateway().getToken().setForceJwtId(true);
+		oldProperties.getGateway().getToken().setForceIssuedAt(true);
+		oldProperties.getGateway().getToken().setIssuedAtThreshold(Optional.of(Duration.ofSeconds(5)));
 	}
 
 	@SuppressWarnings("resource")
@@ -128,7 +128,8 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 	public String auth(Tenant... tenants) {
 		return new JwtProvider(signature).builder()
 				.subject("admin")
-				.claim(properties.getSecurity().getClaimTenants(), Stream.of(tenants).map(Tenant::getTenantId).toList())
+				.claim(oldProperties.getSecurity().getClaimTenants(),
+						Stream.of(tenants).map(Tenant::getTenantId).toList())
 				.toBearer();
 	}
 
@@ -143,13 +144,13 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 		return new JwtProvider(signature).builder()
 				.subject("admin")
 				.claim("email", "test@example.org")
-				.claim(properties.getSecurity().getClaimTenants(), List.of(tenantId)).toBearer();
+				.claim(oldProperties.getSecurity().getClaimTenants(), List.of(tenantId)).toBearer();
 	}
 
 	public String auth(String... tenantIds) {
 		return new JwtProvider(signature).builder()
 				.subject("admin")
 				.claim("email", "test@example.org")
-				.claim(properties.getSecurity().getClaimTenants(), tenantIds).toBearer();
+				.claim(oldProperties.getSecurity().getClaimTenants(), tenantIds).toBearer();
 	}
 }
