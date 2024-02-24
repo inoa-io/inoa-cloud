@@ -2,7 +2,7 @@ package io.inoa.measurement.things.builder.modbus;
 
 import java.util.Base64;
 
-import io.inoa.measurement.translator.modbus.CRC16;
+import io.inoa.controller.translator.modbus.CRC16;
 
 public class Utils {
 	private Utils() {
