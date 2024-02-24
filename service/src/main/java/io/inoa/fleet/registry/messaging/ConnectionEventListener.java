@@ -38,7 +38,7 @@ public class ConnectionEventListener {
 			@MessageHeader(KafkaHeader.DEVICE_ID) String gatewayId,
 			@MessageHeader(KafkaHeader.CONTENT_TYPE) String contentType,
 			@MessageHeader(KafkaHeader.CONTENT_TTD) @Nullable Integer ttd,
-			@MessageHeader(KafkaHeader.CREATION_TIME) Long timestampMillis,
+			@MessageHeader(KafkaHeader.CREATION_TIME) @Nullable Long timestampMillis,
 			@MessageBody @Nullable String payload) {
 
 		MDC.put("tenantId", tenantId);
@@ -62,7 +62,7 @@ public class ConnectionEventListener {
 			log.warn("Gateway {}/{} not found", tenantId, gatewayId);
 			return;
 		}
-		var timestamp = Instant.ofEpochMilli(timestampMillis);
+		var timestamp = timestampMillis == null ? Instant.now() : Instant.ofEpochMilli(timestampMillis);
 		repository.updateStatusMqtt(gatewayId, timestamp, ttd == -1);
 		log.info("Gateway {}/{} {}connected at {}", tenantId, gatewayId, ttd == -1 ? "" : "dis", timestamp);
 	}
@@ -87,7 +87,7 @@ public class ConnectionEventListener {
 			return;
 		}
 
-		var timestamp = Instant.ofEpochMilli(timestampMillis);
+		var timestamp = timestampMillis == null ? Instant.now() : Instant.ofEpochMilli(timestampMillis);
 		var connected = "connected".equals(data.get("cause"));
 		repository.updateStatusMqtt(gatewayId, timestamp, connected);
 		log.info("Gateway {}/{} {}connected at {}", tenantId, gatewayId, connected ? "" : "dis", timestamp);

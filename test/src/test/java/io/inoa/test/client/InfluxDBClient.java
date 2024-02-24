@@ -2,6 +2,7 @@ package io.inoa.test.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 public class InfluxDBClient {
 
 	private final com.influxdb.client.InfluxDBClient client;
+	private final String organisation;
+	private final String bucket;
 
 	@SuppressWarnings("resource")
 	InfluxDBClient(
@@ -36,6 +39,8 @@ public class InfluxDBClient {
 			@Value("${influxdb.bucket}") String bucket,
 			@Value("${influxdb.log-level}") LogLevel level) {
 		this.client = InfluxDBClientFactory.create(url, token, bucket, organisation).disableGzip().setLogLevel(level);
+		this.organisation = organisation;
+		this.bucket = bucket;
 	}
 
 	// query
@@ -45,15 +50,16 @@ public class InfluxDBClient {
 	}
 
 	public List<FluxTable> findByGatewayId(String gatewayId) {
-		var query = "from(bucket:\"default\")"
+		var query = "from(bucket:\"" + bucket + "\")"
 				+ " |> range(start: -10h)"
 				+ " |> filter(fn: (r) => r.gateway_id == \"" + gatewayId + "\")";
-		return client.getQueryApi().query(query);
+		return client.getQueryApi().query(query, organisation);
 	}
 
 	public List<FluxTable> awaitTables(GatewayClient gateway, int amount) {
 		return Await
 				.await(log, "wait for " + amount + " messages for " + gateway.getGatewayId())
+				.timeout(Duration.ofSeconds(30))
 				.until(() -> findByGateway(gateway), tables -> tables.size() >= amount);
 	}
 

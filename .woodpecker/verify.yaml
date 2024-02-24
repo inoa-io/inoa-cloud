@@ -83,7 +83,7 @@ steps:
   integration-test:
     <<: *defaults
     depends_on: [image, integration-prepare]
-    commands: [mvn -Dcheck.skip -pl test integration-test -Dk3s.failIfExists=false -Dk3s.ip=$INOA_DOCKERD_VERIFY_SERVICE_HOST]
+    commands: [mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dk3s.ip=$INOA_DOCKERD_VERIFY_SERVICE_HOST]
   integration-errors:
     <<: *defaults
     depends_on: [integration-test]
