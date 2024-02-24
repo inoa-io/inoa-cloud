@@ -1,24 +1,24 @@
 package io.inoa.fleet.registry.rest.management;
 
-import static io.inoa.HttpAssertions.assert200;
-import static io.inoa.HttpAssertions.assert201;
-import static io.inoa.HttpAssertions.assert204;
-import static io.inoa.HttpAssertions.assert400;
-import static io.inoa.HttpAssertions.assert401;
-import static io.inoa.HttpAssertions.assert404;
-import static io.inoa.HttpAssertions.assert409;
 import static io.inoa.fleet.registry.rest.management.TenantsController.DEFAULT_TENANT_ID;
+import static io.inoa.test.HttpAssertions.assert200;
+import static io.inoa.test.HttpAssertions.assert201;
+import static io.inoa.test.HttpAssertions.assert204;
+import static io.inoa.test.HttpAssertions.assert400;
+import static io.inoa.test.HttpAssertions.assert401;
+import static io.inoa.test.HttpAssertions.assert404;
+import static io.inoa.test.HttpAssertions.assert409;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.rest.TenantCreateVO;
 import io.inoa.rest.TenantUpdateVO;
 import io.inoa.rest.TenantsApiTestClient;
 import io.inoa.rest.TenantsApiTestSpec;
+import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
 
 /**
@@ -29,8 +29,7 @@ import jakarta.inject.Inject;
 @DisplayName("management: configuration")
 public class TenantApiTest extends AbstractUnitTest implements TenantsApiTestSpec {
 
-	@Inject
-	TenantsApiTestClient client;
+	@Inject TenantsApiTestClient client;
 
 	@DisplayName("createTenant -> 201: ok")
 	@Test

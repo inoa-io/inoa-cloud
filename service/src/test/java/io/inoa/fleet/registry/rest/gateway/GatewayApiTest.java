@@ -1,10 +1,10 @@
 package io.inoa.fleet.registry.rest.gateway;
 
-import static io.inoa.HttpAssertions.assert200;
-import static io.inoa.HttpAssertions.assert204;
-import static io.inoa.HttpAssertions.assert400;
-import static io.inoa.HttpAssertions.assert401;
-import static io.inoa.HttpAssertions.assert409;
+import static io.inoa.test.HttpAssertions.assert200;
+import static io.inoa.test.HttpAssertions.assert204;
+import static io.inoa.test.HttpAssertions.assert400;
+import static io.inoa.test.HttpAssertions.assert401;
+import static io.inoa.test.HttpAssertions.assert409;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.fleet.registry.auth.GatewayTokenHelper;
 import io.inoa.rest.ConfigurationTypeVO;
 import io.inoa.rest.CredentialTypeVO;
@@ -29,6 +28,7 @@ import io.inoa.rest.GatewayApiTestClient;
 import io.inoa.rest.GatewayApiTestSpec;
 import io.inoa.rest.GatewaysApiTestClient;
 import io.inoa.rest.RegisterVO;
+import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
 
 /**
@@ -37,18 +37,13 @@ import jakarta.inject.Inject;
  * @author Stephan Schnabel
  */
 @DisplayName("gateway: configuration")
-class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSpec {
+public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSpec {
 
-	@Inject
-	GatewayApiTestClient client;
-	@Inject
-	GatewaysApiTestClient gatewaysClient;
-	@Inject
-	CredentialsApiTestClient credentialsClient;
-	@Inject
-	TargetsApiClient targetsApiClient;
-	@Inject
-	GatewayTokenHelper gatewayToken;
+	@Inject GatewayApiTestClient client;
+	@Inject GatewaysApiTestClient gatewaysClient;
+	@Inject CredentialsApiTestClient credentialsClient;
+	@Inject TargetsApiClient targetsApiClient;
+	@Inject GatewayTokenHelper gatewayToken;
 
 	@DisplayName("getConfiguration(200): without configuration")
 	@Test

@@ -17,7 +17,7 @@ import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.query.FluxRecord;
 import com.influxdb.query.FluxTable;
 
-import io.inoa.Await;
+import io.inoa.test.Await;
 import io.inoa.test.client.GatewayClientFactory.GatewayClient;
 import io.micronaut.context.annotation.Value;
 import jakarta.inject.Singleton;

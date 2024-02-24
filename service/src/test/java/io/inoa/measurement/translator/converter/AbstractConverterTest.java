@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.rest.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
+import io.inoa.test.AbstractUnitTest;
 
 public abstract class AbstractConverterTest extends AbstractUnitTest {
 

@@ -1,6 +1,6 @@
 package io.inoa.test.client;
 
-import static io.inoa.HttpAssertions.assert200;
+import static io.inoa.test.HttpAssertions.assert200;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

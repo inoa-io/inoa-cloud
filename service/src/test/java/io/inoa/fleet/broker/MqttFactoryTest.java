@@ -11,14 +11,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 
-import io.inoa.AbstractUnitTest;
+import io.inoa.test.AbstractUnitTest;
 import io.netty.handler.ssl.SslContext;
 import jakarta.inject.Inject;
 
 public class MqttFactoryTest extends AbstractUnitTest {
 
-	@Inject
-	MqttFactory factory;
+	@Inject MqttFactory factory;
 
 	@DisplayName("ssl: with self signed certificate")
 	@Test

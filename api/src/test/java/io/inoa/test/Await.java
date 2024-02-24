@@ -1,4 +1,4 @@
-package io.inoa;
+package io.inoa.test;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -17,6 +17,8 @@ import org.slf4j.Logger;
  * <li><a>https://github.com/rnorth/duct-tape</a> - archived project</li>
  * <li><a>https://github.com/awaitility/awaitility</a> - has junit dependency and is unmaintained since 3 years</li>
  * </ul>
+ *
+ * @author stephan.schnabel@grayc.de
  */
 public class Await {
 

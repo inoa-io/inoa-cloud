@@ -8,14 +8,9 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
-import io.micronaut.validation.validator.Validator;
-import jakarta.inject.Inject;
+import io.inoa.test.AbstractUnitTest;
 
 public class MqttPropertiesTest extends AbstractUnitTest {
-
-	@Inject
-	Validator validator;
 
 	@DisplayName("tls with generate key")
 	@Test

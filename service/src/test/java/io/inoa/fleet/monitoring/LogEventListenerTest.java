@@ -23,10 +23,9 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 import io.cloudevents.core.builder.CloudEventBuilder;
 import io.cloudevents.core.data.PojoCloudEventData;
-import io.inoa.AbstractUnitTest;
 import io.inoa.rest.CloudEventTypeVO;
+import io.inoa.test.AbstractUnitTest;
 import io.micronaut.http.MediaType;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
 /**
@@ -34,7 +33,6 @@ import jakarta.inject.Inject;
  *
  * @author Fabian Schlegel
  */
-@MicronautTest
 public class LogEventListenerTest extends AbstractUnitTest {
 
 	private static String tenantId = "inoa";
@@ -42,10 +40,8 @@ public class LogEventListenerTest extends AbstractUnitTest {
 	private static List<ILoggingEvent> logsGateway = new ArrayList<>();
 	private static List<ILoggingEvent> logsListener = new ArrayList<>();
 
-	@Inject
-	LogEventListener listener;
-	@Inject
-	LogMetrics metrics;
+	@Inject LogEventListener listener;
+	@Inject LogMetrics metrics;
 
 	@BeforeAll
 	static void setUpListAppender() {

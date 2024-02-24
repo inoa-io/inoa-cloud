@@ -13,19 +13,16 @@ import org.junit.jupiter.api.Test;
 
 import com.influxdb.client.InfluxDBClient;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.rest.TelemetryVO;
+import io.inoa.test.AbstractUnitTest;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Inject;
 
 public class InfluxDBListenerTest extends AbstractUnitTest {
 
-	@Inject
-	InfluxDBListener listener;
-	@Inject
-	InfluxDBClient influx;
-	@Inject
-	MeterRegistry meterRegistry;
+	@Inject InfluxDBListener listener;
+	@Inject InfluxDBClient influx;
+	@Inject MeterRegistry meterRegistry;
 
 	@DisplayName("write to influx")
 	@Test

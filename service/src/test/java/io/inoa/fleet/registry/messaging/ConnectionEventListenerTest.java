@@ -13,16 +13,15 @@ import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.fleet.registry.KafkaHeader;
 import io.inoa.fleet.registry.domain.Gateway;
+import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
 
 @DisplayName("kafka: Connection Event")
 public class ConnectionEventListenerTest extends AbstractUnitTest {
 
-	@Inject
-	ConnectionEventListener listener;
+	@Inject ConnectionEventListener listener;
 
 	@DisplayName("connect, disconnect and reconnect again")
 	@Test

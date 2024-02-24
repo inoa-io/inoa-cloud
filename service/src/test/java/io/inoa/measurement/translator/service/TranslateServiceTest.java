@@ -10,16 +10,15 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.rest.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
+import io.inoa.test.AbstractUnitTest;
 import io.micronaut.cache.CacheManager;
 import jakarta.inject.Inject;
 
 public class TranslateServiceTest extends AbstractUnitTest {
 
-	@Inject
-	TranslateService service;
+	@Inject TranslateService service;
 
 	@DisplayName("Watthour")
 	@Test

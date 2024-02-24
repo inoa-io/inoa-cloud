@@ -1,4 +1,4 @@
-package io.inoa;
+package io.inoa.test;
 
 import java.time.Duration;
 import java.util.List;
@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -18,8 +19,12 @@ import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.rest.JwtProvider;
 import io.micronaut.core.io.socket.SocketUtils;
 import io.micronaut.data.jdbc.runtime.JdbcOperations;
+import io.micronaut.json.JsonMapper;
 import io.micronaut.logging.impl.LogbackLoggingSystem;
 import io.micronaut.security.token.jwt.signature.SignatureGeneratorConfiguration;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import io.micronaut.test.support.TestPropertyProvider;
+import io.micronaut.validation.validator.Validator;
 import jakarta.inject.Inject;
 import lombok.SneakyThrows;
 
@@ -28,8 +33,14 @@ import lombok.SneakyThrows;
  *
  * @author stephan.schnabel@grayc.de
  */
-public abstract class AbstractUnitTest extends AbstractMicronautTest {
+@MicronautTest(transactional = false)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+public abstract class AbstractUnitTest extends AbstractTest implements TestPropertyProvider {
 
+	private static Map<String, String> testProperties;
+
+	public @Inject JsonMapper mapper;
+	public @Inject Validator validator;
 	public @Inject SignatureGeneratorConfiguration signature;
 	public @Inject Data data;
 	public @Inject ApplicationProperties properties;
@@ -59,50 +70,53 @@ public abstract class AbstractUnitTest extends AbstractMicronautTest {
 	@SuppressWarnings("resource")
 	@Override
 	@SneakyThrows
-	public Map<String, String> getSuiteProperties() {
+	public Map<String, String> getProperties() {
+		if (testProperties == null) {
 
-		// configure logback before starting
+			// configure logback before starting
 
-		new LogbackLoggingSystem(null, null).refresh();
+			new LogbackLoggingSystem(null, null).refresh();
 
-		// get properties
+			// get properties
 
-		var properties = new Properties();
-		properties.load(AbstractUnitTest.class.getResourceAsStream("/application-test.properties"));
+			var imageProperties = new Properties();
+			imageProperties.load(AbstractUnitTest.class.getResourceAsStream("/application-test.properties"));
 
-		// start docker containers
+			// start docker containers
 
-		var influxOrganisation = "test-org";
-		var influxBucket = "test-bucket";
-		var influxToken = "changeMe";
-		var influxContainer = new GenericContainer<>(properties.getProperty("image.influxdb"))
-				.withEnv("DOCKER_INFLUXDB_INIT_MODE", "setup")
-				.withEnv("DOCKER_INFLUXDB_INIT_USERNAME", "username")
-				.withEnv("DOCKER_INFLUXDB_INIT_PASSWORD", "password")
-				.withEnv("DOCKER_INFLUXDB_INIT_ORG", influxOrganisation)
-				.withEnv("DOCKER_INFLUXDB_INIT_BUCKET", influxBucket)
-				.withEnv("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN", influxToken)
-				.withExposedPorts(8086)
-				.waitingFor(Wait.forListeningPort());
+			var influxOrganisation = "test-org";
+			var influxBucket = "test-bucket";
+			var influxToken = "changeMe";
+			var influxContainer = new GenericContainer<>(imageProperties.getProperty("image.influxdb"))
+					.withEnv("DOCKER_INFLUXDB_INIT_MODE", "setup")
+					.withEnv("DOCKER_INFLUXDB_INIT_USERNAME", "username")
+					.withEnv("DOCKER_INFLUXDB_INIT_PASSWORD", "password")
+					.withEnv("DOCKER_INFLUXDB_INIT_ORG", influxOrganisation)
+					.withEnv("DOCKER_INFLUXDB_INIT_BUCKET", influxBucket)
+					.withEnv("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN", influxToken)
+					.withExposedPorts(8086)
+					.waitingFor(Wait.forListeningPort());
 
-		var postgres = new GenericContainer<>(properties.getProperty("image.postgresql"))
-				.withEnv("POSTGRES_DB", "inoa")
-				.withEnv("POSTGRES_USER", "inoa").withEnv("POSTGRES_PASSWORD", "changeMe")
-				.withExposedPorts(5432)
-				.waitingFor(Wait.forListeningPort());
+			var postgres = new GenericContainer<>(imageProperties.getProperty("image.postgresql"))
+					.withEnv("POSTGRES_DB", "inoa")
+					.withEnv("POSTGRES_USER", "inoa").withEnv("POSTGRES_PASSWORD", "changeMe")
+					.withExposedPorts(5432)
+					.waitingFor(Wait.forListeningPort());
 
-		Stream.of(postgres, influxContainer).parallel().forEach(GenericContainer::start);
+			Stream.of(postgres, influxContainer).parallel().forEach(GenericContainer::start);
 
-		return Map.of(
-				// use fixed ports for all tests, this avoids port conflicts
-				"inoa.fleet.mqtt.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
-				"inoa.fleet.mqtt.tls.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
-				"influxdb.url", "http://" + influxContainer.getHost() + ":" + influxContainer.getMappedPort(8086),
-				"influxdb.token", influxToken,
-				"influxdb.organisation", influxOrganisation,
-				"influxdb.bucket", influxBucket,
-				"datasources.default.host", postgres.getHost(),
-				"datasources.default.port", String.valueOf(postgres.getMappedPort(5432)));
+			testProperties = Map.of(
+					// use fixed ports for all tests, this avoids port conflicts
+					"inoa.fleet.mqtt.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
+					"inoa.fleet.mqtt.tls.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
+					"influxdb.url", "http://" + influxContainer.getHost() + ":" + influxContainer.getMappedPort(8086),
+					"influxdb.token", influxToken,
+					"influxdb.organisation", influxOrganisation,
+					"influxdb.bucket", influxBucket,
+					"datasources.default.host", postgres.getHost(),
+					"datasources.default.port", String.valueOf(postgres.getMappedPort(5432)));
+		}
+		return testProperties;
 	}
 
 	// auth

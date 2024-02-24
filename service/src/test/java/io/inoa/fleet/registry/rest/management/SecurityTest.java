@@ -10,7 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
+import io.inoa.test.AbstractUnitTest;
 import io.micronaut.http.HttpAttributes;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpRequest;
@@ -30,8 +30,7 @@ import jakarta.inject.Inject;
 @DisplayName("management: security")
 public class SecurityTest extends AbstractUnitTest {
 
-	@Inject
-	Security security;
+	@Inject Security security;
 
 	@DisplayName("getTenantId(): success with tenant id from authentication")
 	@Test

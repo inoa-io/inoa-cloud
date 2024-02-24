@@ -10,14 +10,14 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.rest.TelemetryVO;
+import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
 
 public class TranslateListenerTest extends AbstractUnitTest {
 
-	private @Inject TranslateListener listener;
-	private @Inject TranslateMetrics metrics;
+	@Inject TranslateListener listener;
+	@Inject TranslateMetrics metrics;
 
 	@DisplayName("send message to translate")
 	@Test

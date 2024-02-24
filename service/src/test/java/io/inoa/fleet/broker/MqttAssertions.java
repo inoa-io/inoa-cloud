@@ -7,8 +7,8 @@ import java.util.stream.StreamSupport;
 
 import org.apache.kafka.clients.producer.ProducerRecord;
 
-import io.inoa.KafkaSink;
 import io.inoa.fleet.registry.KafkaHeader;
+import io.inoa.test.KafkaSink;
 
 /**
  * Assertions for mqtt communication.

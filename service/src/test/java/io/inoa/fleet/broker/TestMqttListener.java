@@ -10,7 +10,7 @@ import java.util.Map;
 import org.eclipse.paho.client.mqttv3.IMqttMessageListener;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import io.inoa.Await;
+import io.inoa.test.Await;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 

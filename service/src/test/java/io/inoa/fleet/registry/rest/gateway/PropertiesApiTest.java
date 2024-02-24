@@ -1,9 +1,9 @@
 package io.inoa.fleet.registry.rest.gateway;
 
-import static io.inoa.HttpAssertions.assert200;
-import static io.inoa.HttpAssertions.assert204;
-import static io.inoa.HttpAssertions.assert401;
-import static io.inoa.HttpAssertions.assert404;
+import static io.inoa.test.HttpAssertions.assert200;
+import static io.inoa.test.HttpAssertions.assert204;
+import static io.inoa.test.HttpAssertions.assert401;
+import static io.inoa.test.HttpAssertions.assert404;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Map;
@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.fleet.registry.auth.GatewayTokenHelper;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayProperty;
 import io.inoa.rest.PropertiesApiTestClient;
 import io.inoa.rest.PropertiesApiTestSpec;
+import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
 
 /**
@@ -28,10 +28,8 @@ import jakarta.inject.Inject;
 @DisplayName("gateway: properties")
 public class PropertiesApiTest extends AbstractUnitTest implements PropertiesApiTestSpec {
 
-	@Inject
-	PropertiesApiTestClient client;
-	@Inject
-	GatewayTokenHelper gatewayToken;
+	@Inject PropertiesApiTestClient client;
+	@Inject GatewayTokenHelper gatewayToken;
 
 	@DisplayName("getProperties(200): with properties")
 	@Test

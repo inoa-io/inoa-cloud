@@ -1,12 +1,12 @@
 package io.inoa.fleet.registry.rest.management;
 
-import static io.inoa.HttpAssertions.assert200;
-import static io.inoa.HttpAssertions.assert201;
-import static io.inoa.HttpAssertions.assert204;
-import static io.inoa.HttpAssertions.assert400;
-import static io.inoa.HttpAssertions.assert401;
-import static io.inoa.HttpAssertions.assert404;
-import static io.inoa.HttpAssertions.assert409;
+import static io.inoa.test.HttpAssertions.assert200;
+import static io.inoa.test.HttpAssertions.assert201;
+import static io.inoa.test.HttpAssertions.assert204;
+import static io.inoa.test.HttpAssertions.assert400;
+import static io.inoa.test.HttpAssertions.assert401;
+import static io.inoa.test.HttpAssertions.assert404;
+import static io.inoa.test.HttpAssertions.assert409;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -18,12 +18,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.rest.CredentialCreateVO;
 import io.inoa.rest.CredentialTypeVO;
 import io.inoa.rest.CredentialUpdateVO;
 import io.inoa.rest.CredentialsApiTestClient;
 import io.inoa.rest.CredentialsApiTestSpec;
+import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
 
 /**
@@ -34,8 +34,7 @@ import jakarta.inject.Inject;
 @DisplayName("management: credentials")
 public class CredentialsApiTest extends AbstractUnitTest implements CredentialsApiTestSpec {
 
-	@Inject
-	CredentialsApiTestClient client;
+	@Inject CredentialsApiTestClient client;
 
 	@DisplayName("findCredentials(200): success")
 	@Test

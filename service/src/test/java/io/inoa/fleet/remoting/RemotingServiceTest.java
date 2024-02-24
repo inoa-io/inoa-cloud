@@ -1,18 +1,17 @@
 package io.inoa.fleet.remoting;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.AbstractUnitTest;
-import io.inoa.Await;
 import io.inoa.fleet.broker.MqttProperties;
 import io.inoa.fleet.broker.MqttServiceClient;
 import io.inoa.fleet.broker.TestMqttListener;
@@ -20,28 +19,28 @@ import io.inoa.fleet.remoting.service.RemotingHandler;
 import io.inoa.fleet.remoting.service.RemotingService;
 import io.inoa.rest.RpcCommandVO;
 import io.inoa.rest.RpcResponseVO;
+import io.inoa.test.AbstractUnitTest;
+import io.inoa.test.Await;
 import jakarta.inject.Inject;
 
-class RemotingServiceTest extends AbstractUnitTest {
+public class RemotingServiceTest extends AbstractUnitTest {
 
 	@Inject
 	MqttProperties properties;
-
 	@Inject
 	RemotingService remotingService;
-
 	@Inject
 	RemotingHandler remotingHandler;
 
 	@DisplayName("Successful RPC command")
 	@Test
-	void rpcCommand(TestMqttListener mqttListener) throws MqttException, JsonProcessingException {
+	void rpcCommand(TestMqttListener mqttListener) throws MqttException, IOException {
 
 		// Test constants
-		final var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
-		final var tenantId = "inoa";
-		final var gatewayId = "GW-0001";
-		final var psk = UUID.randomUUID().toString().getBytes();
+		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
+		var tenantId = "inoa";
+		var gatewayId = "GW-0001";
+		var psk = UUID.randomUUID().toString().getBytes();
 
 		// Create client to act as gateway
 		var fakeGatewayClient = new MqttServiceClient(url, tenantId, gatewayId, psk);
@@ -57,7 +56,7 @@ class RemotingServiceTest extends AbstractUnitTest {
 
 		// Wait until our fake gateway "sees" the command
 		var record = mqttListener.await();
-		var command = new ObjectMapper().readValue(new String(record.getPayload()), RpcCommandVO.class);
+		var command = mapper.readValue(record.getPayload(), RpcCommandVO.class);
 
 		// Send the command response from our fake gateway
 		fakeGatewayClient.publish("command/inoa/GW-0001/res/" + command.getId() + "/200",
@@ -71,8 +70,8 @@ class RemotingServiceTest extends AbstractUnitTest {
 
 		// Check if the ID and result is as expected
 		var response = remotingHandler.getCommandResponse(command.getId()).get();
-		Assertions.assertEquals(command.getId(), response.getId());
-		Assertions.assertEquals("[dp.get]", response.getResult().toString());
+		assertEquals(command.getId(), response.getId());
+		assertEquals("[dp.get]", response.getResult().toString());
 
 		fakeGatewayClient.disconnect();
 	}

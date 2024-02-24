@@ -1,6 +1,6 @@
 package io.inoa.test.client;
 
-import static io.inoa.HttpAssertions.assert200;
+import static io.inoa.test.HttpAssertions.assert200;
 
 import io.inoa.rest.GatewayDetailVO;
 import io.inoa.rest.GatewayUpdateVO;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 public class RegistryClient {
 
 	private final KeycloakClient keycloak;
-
 	private final GatewaysApiTestClient gatewaysClient;
 
 	public GatewayDetailVO findGateway(String gatewayId) {

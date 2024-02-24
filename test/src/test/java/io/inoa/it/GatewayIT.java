@@ -1,6 +1,6 @@
-package io.inoa.test;
+package io.inoa.it;
 
-import static io.inoa.HttpAssertions.assert204;
+import static io.inoa.test.HttpAssertions.assert204;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,9 +23,9 @@ import io.inoa.rest.GatewayApiTestClient;
 import io.inoa.rest.GatewayUpdateVO;
 import io.inoa.rest.RegisterVO;
 import io.inoa.rest.TelemetryRawVO;
-import io.inoa.test.junit.AbstractTest;
+import io.inoa.test.AbstractIntegrationTest;
 
-public class GatewayIT extends AbstractTest {
+public class GatewayIT extends AbstractIntegrationTest {
 
 	private static final String gatewayId = gatewayId();
 	private static final byte[] preSharedKey = UUID.randomUUID().toString().getBytes();

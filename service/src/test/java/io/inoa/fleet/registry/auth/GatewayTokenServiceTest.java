@@ -26,8 +26,8 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import io.inoa.AbstractUnitTest;
 import io.inoa.fleet.registry.domain.Gateway;
+import io.inoa.test.AbstractUnitTest;
 import io.micronaut.context.annotation.Primary;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.exceptions.HttpStatusException;
@@ -42,10 +42,9 @@ import jakarta.inject.Singleton;
 public class GatewayTokenServiceTest extends AbstractUnitTest {
 
 	private final Instant now = OffsetDateTime.of(2000, 1, 1, 0, 0, 0, 0, ZoneOffset.UTC).toInstant();
-	@Inject
-	GatewayTokenService service;
-	@Inject
-	GatewayTokenHelper gatewayToken;
+
+	@Inject GatewayTokenService service;
+	@Inject GatewayTokenHelper gatewayToken;
 
 	@DisplayName("error: token not parseable")
 	@Test
