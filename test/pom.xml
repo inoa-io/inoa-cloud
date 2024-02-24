@@ -66,13 +66,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- library -->
-		<dependency>
-			<groupId>org.yaml</groupId>
-			<artifactId>snakeyaml</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
 		<!-- test -->
 		<dependency>
 			<groupId>com.influxdb</groupId>
