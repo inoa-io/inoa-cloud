@@ -20,7 +20,7 @@ public interface GatewaysApi {
 			GatewayCreateVO gatewayCreateVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Delete(PATH_DELETE_GATEWAY)
 	io.micronaut.http.HttpResponse<Object> deleteGateway(
@@ -31,7 +31,7 @@ public interface GatewaysApi {
 			java.lang.String gatewayId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_GATEWAY)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
@@ -43,23 +43,23 @@ public interface GatewaysApi {
 			java.lang.String gatewayId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_GATEWAYS)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
 	io.micronaut.http.HttpResponse<GatewayPageVO> findGateways(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "page")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(0)Integer> page,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(0) Integer> page,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "size")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(1)@jakarta.validation.constraints.Max(100)Integer> size,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(1) @jakarta.validation.constraints.Max(100) Integer> size,
 			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue
+			@io.micronaut.http.annotation.QueryValue(value = "sort")
 			java.util.Optional<java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?$") String>> sort,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "filter")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100)String> filter);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100) String> filter);
 
 	@io.micronaut.http.annotation.Patch(PATH_MOVE_GATEWAY)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
@@ -84,5 +84,5 @@ public interface GatewaysApi {
 			GatewayUpdateVO gatewayUpdateVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 }

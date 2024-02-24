@@ -38,19 +38,19 @@ public interface ThingTypesApi {
 	io.micronaut.http.HttpResponse<ThingTypePageVO> findThingTypes(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "page")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(0)Integer> page,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(0) Integer> page,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "size")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(1)@jakarta.validation.constraints.Max(100)Integer> size,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(1) @jakarta.validation.constraints.Max(100) Integer> size,
 			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue
+			@io.micronaut.http.annotation.QueryValue(value = "sort")
 			java.util.Optional<java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?$") String>> sort,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "name_filter")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100)String> nameFilter,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100) String> nameFilter,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "reference_filter")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100)String> referenceFilter);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100) String> referenceFilter);
 
 	@io.micronaut.http.annotation.Post(PATH_UPDATE_THING_TYPE)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })

@@ -104,10 +104,10 @@ export class CredentialsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
-    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Credential>;
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Credential>>;
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Credential>>;
+    public createCredential(gatewayId: string, credentialCreate: CredentialCreate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling createCredential.');
         }
@@ -152,6 +152,11 @@ export class CredentialsService {
             localVarHttpContext = new HttpContext();
         }
 
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
 
         // to determine the Content-Type header
         const consumes: string[] = [
@@ -183,6 +188,7 @@ export class CredentialsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
+                transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -197,10 +203,10 @@ export class CredentialsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any>;
-    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpResponse<any>>;
-    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<HttpEvent<any>>;
-    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext}): Observable<any> {
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any>;
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<any>>;
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<any>>;
+    public deleteCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: undefined, context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling deleteCredential.');
         }
@@ -244,6 +250,11 @@ export class CredentialsService {
             localVarHttpContext = new HttpContext();
         }
 
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
         if (localVarHttpHeaderAcceptSelected) {
@@ -265,6 +276,7 @@ export class CredentialsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
+                transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -279,10 +291,10 @@ export class CredentialsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
-    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
-    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
-    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Credential>;
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Credential>>;
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Credential>>;
+    public findCredential(gatewayId: string, credentialId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling findCredential.');
         }
@@ -327,6 +339,11 @@ export class CredentialsService {
             localVarHttpContext = new HttpContext();
         }
 
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
         if (localVarHttpHeaderAcceptSelected) {
@@ -348,6 +365,7 @@ export class CredentialsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
+                transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -361,10 +379,10 @@ export class CredentialsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Credential>>;
-    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Credential>>>;
-    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Credential>>>;
-    public findCredentials(gatewayId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Array<Credential>>;
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Array<Credential>>>;
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Array<Credential>>>;
+    public findCredentials(gatewayId: string, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling findCredentials.');
         }
@@ -406,6 +424,11 @@ export class CredentialsService {
             localVarHttpContext = new HttpContext();
         }
 
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
 
         let responseType_: 'text' | 'json' | 'blob' = 'json';
         if (localVarHttpHeaderAcceptSelected) {
@@ -427,6 +450,7 @@ export class CredentialsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
+                transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );
@@ -442,10 +466,10 @@ export class CredentialsService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Credential>;
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Credential>>;
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Credential>>;
-    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<Credential>;
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<Credential>>;
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<Credential>>;
+    public updateCredential(gatewayId: string, credentialId: string, credentialUpdate: CredentialUpdate, tenantSpecification?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling updateCredential.');
         }
@@ -493,6 +517,11 @@ export class CredentialsService {
             localVarHttpContext = new HttpContext();
         }
 
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
 
         // to determine the Content-Type header
         const consumes: string[] = [
@@ -524,6 +553,7 @@ export class CredentialsService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
+                transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );

@@ -101,10 +101,10 @@ export class RemoteService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<RpcResponse>;
-    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<RpcResponse>>;
-    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<RpcResponse>>;
-    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<RpcResponse>;
+    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpResponse<RpcResponse>>;
+    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<HttpEvent<RpcResponse>>;
+    public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommand, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext, transferCache?: boolean}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling sendRpcCommand.');
         }
@@ -143,6 +143,11 @@ export class RemoteService {
             localVarHttpContext = new HttpContext();
         }
 
+        let localVarTransferCache: boolean | undefined = options && options.transferCache;
+        if (localVarTransferCache === undefined) {
+            localVarTransferCache = true;
+        }
+
 
         // to determine the Content-Type header
         const consumes: string[] = [
@@ -173,6 +178,7 @@ export class RemoteService {
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,
                 observe: observe,
+                transferCache: localVarTransferCache,
                 reportProgress: reportProgress
             }
         );

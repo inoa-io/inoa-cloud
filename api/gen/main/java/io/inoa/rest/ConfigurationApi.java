@@ -31,7 +31,7 @@ public interface ConfigurationApi {
 			ConfigurationDefinitionVO configurationDefinitionVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Delete(PATH_DELETE_CONFIGURATION_DEFINITION)
 	io.micronaut.http.HttpResponse<Object> deleteConfigurationDefinition(
@@ -42,7 +42,7 @@ public interface ConfigurationApi {
 			java.lang.String configurationKey,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_CONFIGURATION_DEFINITIONS)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
@@ -69,7 +69,7 @@ public interface ConfigurationApi {
 			java.util.UUID groupId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Delete(PATH_RESET_CONFIGURATION)
 	io.micronaut.http.HttpResponse<Object> resetConfiguration(
@@ -80,7 +80,7 @@ public interface ConfigurationApi {
 			java.lang.String configurationKey,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Delete(PATH_RESET_CONFIGURATION_BY_GATEWAY)
 	io.micronaut.http.HttpResponse<Object> resetConfigurationByGateway(
@@ -107,7 +107,7 @@ public interface ConfigurationApi {
 			java.lang.String configurationKey,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Put(PATH_SET_CONFIGURATION)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
@@ -123,7 +123,7 @@ public interface ConfigurationApi {
 			ConfigurationSetVO configurationSetVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Put(PATH_SET_CONFIGURATION_BY_GATEWAY)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
@@ -144,7 +144,7 @@ public interface ConfigurationApi {
 			ConfigurationSetVO configurationSetVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Put(PATH_SET_CONFIGURATION_BY_GROUP)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
@@ -163,5 +163,5 @@ public interface ConfigurationApi {
 			ConfigurationSetVO configurationSetVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 }

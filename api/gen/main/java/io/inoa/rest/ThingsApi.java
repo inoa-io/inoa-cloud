@@ -59,20 +59,16 @@ public interface ThingsApi {
 	io.micronaut.http.HttpResponse<ThingPageVO> findThings(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "page")
-			@jakarta.validation.constraints.Min(0)
-			java.util.Optional<java.lang.Integer> page,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(0) Integer> page,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "size")
-			@jakarta.validation.constraints.Min(1)
-			@jakarta.validation.constraints.Max(100)
-			java.util.Optional<java.lang.Integer> size,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(1) @jakarta.validation.constraints.Max(100) Integer> size,
 			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue
+			@io.micronaut.http.annotation.QueryValue(value = "sort")
 			java.util.Optional<java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?$") String>> sort,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "filter")
-			@jakarta.validation.constraints.Size(max = 10)
-			java.util.Optional<java.lang.String> filter);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 10) String> filter);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_THINGS_BY_GATEWAY_ID)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
@@ -84,24 +80,19 @@ public interface ThingsApi {
 			java.lang.String gatewayId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "page")
-			@jakarta.validation.constraints.Min(0)
-			java.util.Optional<java.lang.Integer> page,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(0) Integer> page,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "size")
-			@jakarta.validation.constraints.Min(1)
-			@jakarta.validation.constraints.Max(100)
-			java.util.Optional<java.lang.Integer> size,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(1) @jakarta.validation.constraints.Max(100) Integer> size,
 			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue
+			@io.micronaut.http.annotation.QueryValue(value = "sort")
 			java.util.Optional<java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?$") String>> sort,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "name_filter")
-			@jakarta.validation.constraints.Size(max = 100)
-			java.util.Optional<java.lang.String> nameFilter,
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100) String> nameFilter,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "reference_filter")
-			@jakarta.validation.constraints.Size(max = 100)
-			java.util.Optional<java.lang.String> referenceFilter);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100) String> referenceFilter);
 
 	@io.micronaut.http.annotation.Get(PATH_SYNC_CONFIG_TO_GATEWAY)
 	io.micronaut.http.HttpResponse<Object> syncConfigToGateway(

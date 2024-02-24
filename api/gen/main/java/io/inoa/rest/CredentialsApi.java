@@ -24,7 +24,7 @@ public interface CredentialsApi {
 			CredentialCreateVO credentialCreateVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Delete(PATH_DELETE_CREDENTIAL)
 	io.micronaut.http.HttpResponse<Object> deleteCredential(
@@ -38,7 +38,7 @@ public interface CredentialsApi {
 			java.util.UUID credentialId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_CREDENTIAL)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
@@ -53,7 +53,7 @@ public interface CredentialsApi {
 			java.util.UUID credentialId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_CREDENTIALS)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
@@ -65,7 +65,7 @@ public interface CredentialsApi {
 			java.lang.String gatewayId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Patch(PATH_UPDATE_CREDENTIAL)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
@@ -85,5 +85,5 @@ public interface CredentialsApi {
 			CredentialUpdateVO credentialUpdateVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 }

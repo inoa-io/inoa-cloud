@@ -19,7 +19,7 @@ public interface GroupsApi {
 			GroupCreateVO groupCreateVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang. @jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Delete(PATH_DELETE_GROUP)
 	io.micronaut.http.HttpResponse<Object> deleteGroup(
@@ -28,7 +28,7 @@ public interface GroupsApi {
 			java.util.UUID groupId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang. @jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_GROUP)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
@@ -38,7 +38,7 @@ public interface GroupsApi {
 			java.util.UUID groupId,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_GROUPS)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
@@ -57,5 +57,5 @@ public interface GroupsApi {
 			GroupUpdateVO groupUpdateVO,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "tenant_specification")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30)String> tenantSpecification);
+			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(min = 1, max = 30) String> tenantSpecification);
 }
