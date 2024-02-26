@@ -2,17 +2,15 @@ when:
   - event: pull_request
   - event: manual
     branch:
-      exclude: [mains]
+      exclude: [main]
 
 variables:
   - &when-path
     path: [api/**, app/**, service/**, image/**, test/**, pom.xml, lombok.config]
-  - &defaults
+  - &maven
     image: ghcr.io/grayc-de/plugins/maven
     depends_on: []
-    environment:
-      - DOCKER_HOST=tcp://inoa-dockerd-verify:2375
-      - TESTCONTAINERS_RYUK_DISABLED=true
+    environment: [DOCKER_HOST=tcp://inoa-dockerd-verify:2375]
     pull: false
     when:
       <<: *when-path
@@ -32,7 +30,7 @@ steps:
 
   # speed up later steps by preloading used images
   preload-images:
-    <<: *defaults
+    <<: *maven
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
       # docker build
@@ -48,44 +46,45 @@ steps:
     secrets: [DOCKER_CONFIG_JSON]
 
   build-api:
-    <<: *defaults
+    <<: *maven
     commands: [mvn -Dcheck.skip install -pl api -am]
   build-service:
-    <<: *defaults
+    <<: *maven
     depends_on: [build-api]
+    environment: [TESTCONTAINERS_RYUK_DISABLED=true]
     commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl service]
   build-app:
-    <<: *defaults
+    <<: *maven
     commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl app]
 
   test-service:
-    <<: *defaults
+    <<: *maven
     depends_on: [build-service]
     commands:
       - DOCKER_HOST=tcp://$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42):2375
       - mvn -Dcheck.skip test -pl service -Dsurefire.rerunFailingTestsCount=2
     when: [path: [pom.xml, api/**, service/**]]
   test-app:
-    <<: *defaults
+    <<: *maven
     depends_on: [build-app]
     commands: [mvn -Dcheck.skip test -pl app]
     when: [path: [app/**]]
 
   image:
-    <<: *defaults
+    <<: *maven
     depends_on: [build-service, build-app]
     commands: [mvn -Dcheck.skip install -pl image]
 
   integration-prepare:
-    <<: *defaults
+    <<: *maven
     depends_on: [build-api]
     commands: [mvn -Dcheck.skip -pl test pre-integration-test -Dk3s.dockerImages= -Dk3s.skipApply]
   integration-test:
-    <<: *defaults
+    <<: *maven
     depends_on: [image, integration-prepare]
     commands: [mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dk3s.ip=$INOA_DOCKERD_VERIFY_SERVICE_HOST]
   integration-errors:
-    <<: *defaults
+    <<: *maven
     depends_on: [integration-test]
     commands:
       - docker ps -a

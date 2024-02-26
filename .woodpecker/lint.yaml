@@ -8,7 +8,7 @@ steps:
   backstage:
     image: ghcr.io/grayc-de/plugins/backstage-entity-validator
     depends_on: []
-    when: [path: {include: [catalog-info.yaml]}]
+    when: [path: [catalog-info.yaml]]
 
   kustomize:
     image: ghcr.io/grayc-de/plugins/kubectl
@@ -16,25 +16,25 @@ steps:
     commands:
       - kubectl kustomize ./fluxcd/live/dev
       - kubectl kustomize ./fluxcd/live/prod
-    when: [path: {include: [fluxcd/**]}]
+    when: [path: [fluxcd/**]]
 
   maven:
     image: ghcr.io/grayc-de/plugins/maven
     depends_on: []
     commands: [mvn validate]
-    when: [path: {include: ["**/pom.xml", "**/*.java"]}]
+    when: [path: ["**/*.java", "**/pom.xml"]]
 
   markdown:
     image: ghcr.io/grayc-de/plugins/markdownlint
     depends_on: []
-    when: [path: {include: [.markdownlint.yaml, "**/*.md"]}]
+    when: [path: ["**/*.md", .markdownlint.yaml]]
 
   shell:
     image: ghcr.io/grayc-de/plugins/shellcheck
     depends_on: []
-    when: [path: {include: ["**/*.sh"]}]
+    when: [path: ["**/*.sh"]]
 
   yaml:
     image: ghcr.io/grayc-de/plugins/yamllint
     depends_on: []
-    when: [path: {include: [.yamllint.yaml, "**/*.yaml"]}]
+    when: [path: ["**/*.yaml", .yamllint.yaml]]
