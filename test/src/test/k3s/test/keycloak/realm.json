@@ -184,9 +184,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://swaggerui.${k3s.ip}.nip.io:8080/",
+			"baseUrl": "http://swagger.${k3s.ip}.nip.io:8080/",
 			"redirectUris": [
-				"http://swaggerui.${k3s.ip}.nip.io:8080/oauth2-redirect.html"
+				"http://swagger.${k3s.ip}.nip.io:8080/oauth2-redirect.html"
 			],
 			"webOrigins": [ "*" ],
 			"defaultClientScopes": [ "profile", "email" ],
