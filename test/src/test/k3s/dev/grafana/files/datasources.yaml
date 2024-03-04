@@ -17,7 +17,7 @@ datasources:
     editable: false
   - name: InfluxDB
     type: influxdb
-    url: http://influxdb.infrastructure:80
+    url: http://influxdb
     jsonData:
       defaultBucket: default
       organization: inoa
@@ -28,4 +28,18 @@ datasources:
       token: true
     readOnly: false
     isDefault: true
+    editable: true
+  - name: Postgres
+    type: grafana-postgresql-datasource
+    url: postgres:5432
+    user: inoa
+    jsonData:
+      database: inoa
+      sslmode: disable
+    secureJsonData:
+      password: changeMe
+    secureJsonFields:
+      password: true
+    readOnly: false
+    isDefault: false
     editable: true

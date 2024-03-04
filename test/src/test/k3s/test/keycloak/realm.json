@@ -120,6 +120,15 @@
 						"id.token.claim": "true",
 						"access.token.claim": "true"
 					}
+				},{
+					"name": "tenants",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-hardcoded-claim-mapper",
+					"config": {
+						"access.token.claim": "true",
+						"claim.name": "tenants",
+						"claim.value": "inoa"
+					}
 				}
 			],
 			"baseUrl": null,
