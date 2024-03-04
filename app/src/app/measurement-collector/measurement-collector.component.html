@@ -1,0 +1,391 @@
+<div class="collect-measurements-container" tabindex="0">
+
+  <mat-card class="card-collect-measurements">
+
+    <mat-card-header>
+      <div mat-card-avatar style="background-image: url('assets/inoa/measurement-color.png'); background-size: cover;"></div>
+      <mat-card-title>Collect Measurements</mat-card-title>
+      <mat-card-subtitle>Create new measurements in three simple steps.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class = "collect-measurements-card-content">
+
+      <!-- dynamic satellite animation -->
+      <div class = "collect-measurements-svg-container">
+        <div class = "collect-measurements-svg">
+
+          <svg viewBox="0 0 650 265" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+            <!-- INOA Ground Control -->
+            <g id="ground-control" transform="translate(0, 105)">
+              <title>INOA Ground Control</title>
+              <path
+                d="M 8.65 16 C 40.49 25.83 65.44 50.07 75.56 81 C 56.44 88.43 34.6 84.08 20.04 69.94 C 5.48 55.79 1 34.57 8.65 16 Z M 3.5 101 L 6.59 56 C 11.81 68.22 21.81 77.93 34.38 83 L 39.53 101 Z M 60.12 16 C 64.21 16 68.14 17.58 71.04 20.39 C 73.93 23.21 75.56 27.02 75.56 31 L 73.5 31 C 73.5 27.55 72.09 24.25 69.58 21.81 C 67.07 19.37 63.67 18 60.12 18 Z M 60.12 8 C 66.4 8 72.42 10.42 76.86 14.74 C 81.3 19.05 83.79 24.9 83.79 31 L 81.74 31 C 81.74 19.4 72.06 10 60.12 10 Z M 60.12 1 C 68.31 1 76.16 4.16 81.95 9.79 C 87.75 15.41 91 23.04 91 31 L 88.94 31 C 88.94 15.54 76.04 3 60.12 3 Z"
+                fill="#bbdefb" pointer-events="all" stroke="#2196f3" stroke-miterlimit="10" stroke-width="2"/>
+              <path d="M 8.65 16 C 18.69 47.04 43.65 71.4 75.56 81.29" fill="none" pointer-events="all" stroke="#2196f3"
+                    stroke-miterlimit="10" stroke-width="2"/>
+              <path d="M 30.78 52.5 L 60.12 31 L 37.99 59.5 Z" fill="#bbdefb" pointer-events="all" stroke="#2196f3"
+                    stroke-linejoin="round" stroke-miterlimit="10" stroke-width="3"/>
+              <ellipse cx="60.12" cy="31" fill="#bbdefb" pointer-events="all" rx="3.08818483358115" ry="3"
+                      stroke="#2196f3" stroke-width="3"/>
+            </g>
+
+            <!-- Cloud -->
+            <g id="cloud" transform="translate(190, 22)">
+              <title>INOA Cloud</title>
+              <path
+                d="M 79.45 51 C 86.2 50.15 91.01 43.69 90.2 36.57 C 89.39 29.45 83.26 24.38 76.52 25.23 C 76.44 14.6 69.38 5.46 59.52 3.23 C 49.67 1 39.67 6.29 35.48 15.96 C 32.36 12.2 27.42 10.79 22.94 12.36 C 18.46 13.94 15.31 18.2 14.95 23.17 C 7.67 22.89 1.54 28.89 1.27 36.57 C 1 44.25 6.69 50.72 13.98 51 Z"
+                fill="#bbdefb" stroke="#2196f3" stroke-width="1.95" stroke-miterlimit="10" pointer-events="all"/>
+            </g>
+
+            <!-- Satellite -->
+            <g id="satellite" transform="translate(450, 5)">
+              <title>{{getSatelliteTitle()}}</title>
+              <path
+                d="M 29 61 L 59 31 C 62.36 30.22 65.89 31.23 68.33 33.67 C 70.77 36.11 71.78 39.64 71 43 L 41 73 C 42.45 77.21 42.45 81.79 41 86 C 28.12 83.98 18.02 73.88 16 61 C 20.21 59.55 24.79 59.55 29 61 Z M 16 1 L 46 31 L 31 46 L 1 16 Z M 71 56 L 101 86 L 86 101 L 56 71 Z M 93.5 78.12 L 78.25 93.88 M 86 71 L 71 86 M 78.5 63.5 L 63.5 78.5 M 23.5 8.5 L 8.5 23.5 M 31 16 L 16 31 M 38.5 23.5 L 23.5 38.5"
+                [attr.fill]="getSatelliteFillColor()" [attr.stroke]="getSatelliteStrokeColor()" stroke-width="2"
+                stroke-miterlimit="10" pointer-events="all"/>
+              <path d="M 17.7 67 L 20.5 81.5 L 39.5 81 M 8.5 8.5 L 38.5 38.5 M 63.5 63.5 L 93.5 93.5" fill="none"
+                    [attr.stroke]="getSatelliteStrokeColor()"
+                    stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+              <rect x="1" y="1" width="0" height="0" fill="none" [attr.stroke]="getSatelliteStrokeColor()"
+                    stroke-width="2"
+                    pointer-events="all"/>
+              <path
+                d="M 40.5 36.5 L 47 43 L 43 47 L 36.5 40.5 Z M 57 53 L 65.5 61.5 L 61.5 65.5 L 53 57 C 53 54.79 54.79 53 57 53 Z"
+                [attr.fill]="getSatelliteFillColor()" [attr.stroke]="getSatelliteStrokeColor()"
+                stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+              <path
+                d="M 52 38 C 58.1 39.14 62.86 43.9 64 50 M 39 51 C 45.1 52.14 49.86 56.9 51 63 M 37 53 C 43.1 54.14 47.86 58.9 49 65 M 29 61 C 34.58 63.02 38.98 67.42 41 73 M 16 61 C 28.88 63.02 38.98 73.12 41 86"
+                fill="none" [attr.stroke]="getSatelliteStrokeColor()"
+                stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+              <path d="M 55 39 L 42 52 M 57.5 40.5 L 44.5 53.5"
+                    fill="none" [attr.stroke]="getSatelliteStrokeColor()"
+                    stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+              <ellipse cx="20" cy="82" rx="2" ry="2"
+                      [attr.fill]="getSatelliteFillColor()" [attr.stroke]="getSatelliteStrokeColor()"
+                      stroke-width="2" pointer-events="all"/>
+              <path
+                d="M 15 82 C 15 84.76 17.24 87 20 87 L 20 89 C 16.13 89 13 85.87 13 82 Z M 10 82 C 10 87.52 14.48 92 20 92 L 20 94 C 13.37 94 8 88.63 8 82 Z M 5 82 C 5 90.28 11.72 97 20 97 L 20 99 C 10.61 99 3 91.39 3 82 Z"
+                [attr.fill]="getSatelliteFillColor()" [attr.stroke]="getSatelliteStrokeColor()"
+                stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+            </g>
+
+            <!-- Flow Ground Control to Cloud -->
+            <g id="flow-gc-cloud">
+              <title>Ground Control is connected with INOA Cloud</title>
+              <path opacity="0.7" d="M85,110 l40,-40 c5.5,-5 12.7,-7 20,-7 l 40,0" stroke="#2196f3" stroke-width="10"/>
+              <path [attr.display]="getMainFlowDisplay()" class="flow-down" opacity="1"
+                    d="M85,110 l40,-40 c5.5,-5 12.7,-7 20,-7 l 40,0" stroke="#2196f3"
+                    stroke-width="10"/>
+            </g>
+
+            <!-- Flow Cloud to Satellite -->
+            <g id="flow-cloud-satellite">
+              <title>{{getFlowTitleCloudSatellite()}}</title>
+              <path opacity="0.7" d="M285,62 l175,0" [attr.stroke]="getFlowColorCloudSatellite()" stroke-width="10"/>
+              <path [attr.display]="getMainFlowDisplay()" class="flow-down" opacity="1" d="M285,62 l175,0"
+                    stroke="#2196f3" stroke-width="10"/>
+            </g>
+
+            <!-- Connected Energy Meter -->
+            <image id="electric-meter" x="320" y="200" width="50px" height="50px" opacity="0.5" href="assets/thing-categories/electric-meter.png">
+              <title>Energy Meter</title>
+            </image>
+
+            <!-- Flow Energy Meter to Satellite -->
+            <g id="flow-satellite-energymeter">
+              <path opacity="0.7" d="M345,190 l0,-15 c-1,-5 -1,-5 8,-10 l100,-65" stroke="#2196f3" stroke-width="10"/>
+              <path class="flow-up" opacity="1" d="M345,190 l0,-15 c-1,-5 -1,-5 8,-10 l100,-65" stroke="#2196f3"
+                    stroke-width="10"/>
+            </g>
+
+            <!-- Connected Plug -->
+            <image id="plug" x="380" y="200" width="50px" height="50px" opacity="0.5" href="assets/thing-categories/smart_plug.png">
+              <title>Plug</title>
+            </image>
+
+            <!-- Flow Plug to Satellite -->
+            <g id="flow-satellite-plug">
+              <path opacity="0.7" d="M405,190 l0,-15 c-1,-5 -1,-5 8,-10 l45,-30 c8,-7 8,-7 7,-16 l0,-10" stroke="#2196f3"
+                    stroke-width="10"/>
+              <path class="flow-up" opacity="1" d="M405,190 l0,-15 c0,-5 0,-5 8,-10 l45,-30 c8,-7 8,-7 7,-16 l0,-10"
+                    stroke="#2196f3" stroke-width="10"/>
+            </g>
+
+            <!-- Connected Battery -->
+            <image id="battery" x="440" y="200" width="50px" height="50px" opacity="0.5" href="assets/thing-categories/battery.png">
+              <title>Battery</title>
+            </image>
+
+            <!-- Flow Battery to Satellite -->
+            <g id="flow-satellite-battery">
+              <path opacity="0.7" d="M465,190 l0,-80" stroke="#2196f3" stroke-width="10"/>
+              <path class="flow-up" opacity="1" d="M465,190 l0,-80" stroke="#2196f3" stroke-width="10"/>
+            </g>
+
+            <!-- Connected PV Plant -->
+            <image id="solar-panel" x="500" y="200" width="50px" height="50px" opacity="0.5" href="assets/thing-categories/pv_plant.png">
+              <title>Solar Panel</title>
+            </image>
+
+            <!-- Flow PV Plant to Satellite -->
+            <g id="flow-satellite-solar-panel">
+              <path opacity="0.7" d="M525,190 l0,-10 c0,-9 0,-9 -5,-15 l-50,-30 c-5,-5 -5,-5 -5,-13 l0,-10"
+                    stroke="#2196f3" stroke-width="10"/>
+              <path class="flow-up" opacity="1" d="M525,190 l0,-10 c0,-9 0,-9 -5,-15 l-50,-30 c-5,-5 -5,-5 -5,-13 l0,-10"
+                    stroke="#2196f3" stroke-width="10"/>
+            </g>
+
+            <!-- Connected Charger -->
+            <image id="charger" x="560" y="200" width="50px" height="50px" opacity="0.5" href="assets/thing-categories/wallbox.png">
+              <title>Charger</title>
+            </image>
+
+            <!-- Flow Charger to Satellite -->
+            <g id="flow-satellite-charger">
+              <path opacity="0.7" d="M585,190 l0,-10 c0,-9 0,-9 -5,-15 l-105,-65" stroke="#2196f3" stroke-width="10"/>
+              <path class="flow-up" opacity="1" d="M585,190 l0,-10 c0,-9 0,-9 -5,-15 l-105,-65" stroke="#2196f3"
+                    stroke-width="10"/>
+            </g>
+
+            <!-- Focus Step Select Satellite -->
+            <g id="focus-step-1" transform="translate(490, 62)" [attr.display]="getFocusStepOneDisplay()">
+              <ellipse rx="100" ry="58" stroke="red" stroke-width="4" stroke-dasharray="10 10"/>
+            </g>
+
+            <!-- Focus Step Connection Satellite - Cloud -->
+            <g id="focus-step-1-2" transform="translate(370, 62)" [attr.display]="getFocusStepOneTwoDisplay()">
+              <ellipse rx="100" ry="60" stroke="red" stroke-width="4" stroke-dasharray="10 10"></ellipse>
+            </g>
+
+          </svg>
+
+        </div>
+      </div>
+      
+      <!-- collect measurements wizard -->
+      <div class = "collect-measurements-wizard-container">
+
+        <mat-stepper class = "collect-measurements-wizard" [linear] = "true" #stepper (selectionChange) = "onSelectionChange($event)">
+
+          <mat-step [stepControl]="satelliteFormGroup" class = "collect-measurements-wizard-step">
+
+            <form [formGroup]="satelliteFormGroup">
+
+              <ng-template matStepLabel>Choose Satellite</ng-template>
+
+              <div class = "satellite-selector-sub-step-container">
+
+                <!-- first sub step: select the satellite -->
+                <div>
+
+                  <!-- checkmark to show that a satellite has been chosen -->
+                  <div style = "height: 40px;"><mat-icon style="color: green" *ngIf="satelliteFormGroup.valid">check</mat-icon></div>
+
+                  <p>1. Select the Satellite that is connected to the needed things:</p>
+
+                  <mat-form-field style="width: 320pt;">
+
+                    <mat-label>Satellite</mat-label>
+
+                    <input type="text"
+                            placeholder="Satellite connected to sensors"
+                            aria-label="Satellite"
+                            matInput
+                            [formControl]="satelliteControl"
+                            required
+                            [matAutocomplete]="auto">
+
+                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displaySatelliteFn">
+                      <mat-option *ngFor="let satellite of filteredGateways | async" [value]="satellite">
+                        <mat-icon [color]="getLinkColor(satellite)">{{getLinkIcon(satellite)}}</mat-icon>
+                        <span>{{satellite.gateway_id}}</span>
+                      </mat-option>
+                    </mat-autocomplete>
+
+                    <mat-error *ngFor="let validation of validation_msgs.satelliteControl">
+                      <div *ngIf="satelliteControl.hasError(validation.type)">
+                        {{validation.message}}
+                      </div>
+                    </mat-error>
+
+                  </mat-form-field>
+
+                </div>
+
+                <!-- second sub step: connecting to the satellite -->
+                <div *ngIf="selectedGateway && !isOnline(selectedGateway)">
+
+                  <!-- checkmark to show that the satellite is now online -->
+                  <div style = "height: 40px;"><mat-icon style="color: green" *ngIf="isOnline(selectedGateway)">check</mat-icon></div>
+
+                  <p>2. Connect Satellite with INOA via:</p>
+
+                  <mat-button-toggle-group name="networkInterface" aria-label="Network Interface" [formControl]="connectionControl">
+
+                    <mat-button-toggle (click)="showInfoCard()" value = "wifi" *ngIf = "supportsWifi(selectedGateway)">
+                      <mat-icon>wifi</mat-icon>
+                      <span style = "margin-left: 15px;">WiFi</span>
+                    </mat-button-toggle>
+
+                    <mat-button-toggle (click)="showInfoCard()" value = "lan" *ngIf = "supportsLAN(selectedGateway)">
+                      <mat-icon>lan</mat-icon>
+                      <span style = "margin-left: 15px;">LAN</span>
+                    </mat-button-toggle>
+
+                  </mat-button-toggle-group>
+
+                </div>
+
+              </div>
+
+            </form>
+
+            <div class="navigation" *ngIf="!isAnimationRunning">
+              <button class = "navigation-button" mat-raised-button color = "primary" matStepperNext [disabled]="satelliteFormGroup.invalid" (click)="refreshThingsList()">
+                <mat-icon>navigate_next</mat-icon>
+                <span>Next</span>
+              </button>
+            </div>
+
+          </mat-step>
+
+          <mat-step [stepControl]="measurementFormGroup" label="Configure Measurements" class = "collect-measurements-wizard-step">
+
+            <form [formGroup]="measurementFormGroup">
+
+              <div>
+
+                <!-- checkmark to show that this step is valid -->
+                <div style = "height: 40px;"><mat-icon style="color: green" *ngIf="measurementFormGroup.valid">check</mat-icon></div>
+
+                <div fxFlex="80">
+                  <p>1. Select the Thing you want to collect measurements from:</p>
+
+                  <mat-form-field appearance="fill" style="width: 300pt;">
+
+                    <mat-label>Connected things:</mat-label>
+                    <mat-select [(value)]="selectedThing" [formControl]="thingControl">
+
+                      <mat-option *ngFor="let thing of thingsList" [value]="thing">
+                        <img style="vertical-align: middle;" width="24" src="{{getThingImage(thing.thing_type_id)}}" alt="{{thing.name}}"/>
+                        <span style="padding-left: 10pt">{{thing.name}}</span>
+                      </mat-option>
+
+                    </mat-select>
+
+                  </mat-form-field>
+
+                </div>
+                <div fxFlex="10">
+                  <button mat-mini-fab color="primary" aria-label="Add a new thing..." (click)="createThingDialog()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+            </form>
+
+            <div class="navigation" *ngIf="!isAnimationRunning">
+              <button class = "navigation-button" mat-raised-button color = "primary" matStepperPrevious>
+                <mat-icon>navigate_before</mat-icon>
+                <span>Back</span>
+              </button>
+              <button class = "navigation-button" mat-raised-button color = "primary" matStepperNext [disabled]="measurementFormGroup.invalid">
+                <mat-icon>navigate_next</mat-icon>
+                <span>Next</span>
+              </button>
+            </div>
+
+          </mat-step>
+
+          <mat-step class = "collect-measurements-wizard-step">
+            <ng-template matStepLabel>Verify Measurements</ng-template>
+            <p>You are now done.</p>
+
+            <div class = "navigation" *ngIf="!isAnimationRunning">
+              <button class = "navigation-button" mat-raised-button color = "primary" matStepperPrevious>
+                <mat-icon>navigate_before</mat-icon>
+                <span>Back</span>
+              </button>
+              <button class = "navigation-button" mat-raised-button color = "primary" (click)="stepper.reset(); resetAll();">
+                <mat-icon>restart_alt</mat-icon>
+                <span>Reset</span>
+              </button>
+            </div>
+
+          </mat-step>
+
+        </mat-stepper>
+      </div>
+
+    </mat-card-content>
+
+  </mat-card>
+
+  <!-- lan info card -->
+  <mat-card class = "card-info" *ngIf="satelliteFormGroup.valid && connectionControl.value === 'lan' && isInfoCardOpen">
+
+    <mat-card-header>
+      <div mat-card-avatar><mat-icon class = "info-header-icon">lan
+      </mat-icon></div>
+      <mat-card-title>Connect Satellite via LAN</mat-card-title>
+      <mat-card-subtitle>with these easy steps</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class = "collect-measurements-card-content">
+
+      <mat-list class = "info-list">
+        <mat-list-item><a target="_blank" href="">1. Connect LAN cable to Satellite</a></mat-list-item>
+        <mat-list-item><a target="_blank" href="http://this.selectedGateway.hostname">2. Verify INOA Endpoint in local satellite UI</a></mat-list-item>
+        <mat-list-item><a target="_blank" href="https://docs.inoa.io/inoa-satellite/user/installation/#status-led">3. Verify Status LED</a></mat-list-item>
+      </mat-list>
+
+    </mat-card-content>
+
+    <mat-card-actions class="card-actions" align="end">
+
+      <!-- close button -->
+      <button mat-raised-button color="primary" class="info-action-button" (click)="hideInfoCard()">
+        <mat-icon>close</mat-icon>
+        <span>Close</span>
+      </button>
+
+    </mat-card-actions>
+
+  </mat-card>
+  
+  <!-- wifi info card -->
+  <mat-card class = "card-info" *ngIf="connectionControl.value === 'wifi' && isInfoCardOpen">
+
+    <mat-card-header>
+      <div mat-card-avatar><mat-icon class = "info-header-icon">wifi</mat-icon></div>
+      <mat-card-title>Connect Satellite via WiFi</mat-card-title>
+      <mat-card-subtitle>with these easy steps</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class = "collect-measurements-card-content">
+
+      <mat-list class = "info-list">
+        <mat-list-item><a target="_blank" href="">1. Configure WiFi connection in local UI</a></mat-list-item>
+        <mat-list-item><a target="_blank" href="">2. Verify Status LED</a></mat-list-item>
+      </mat-list>
+
+      <iframe src="https://docs.inoa.io/getting-started/#connect-with-your-wi-fi" class = "wifi-iframe"></iframe>
+
+    </mat-card-content>
+
+    <mat-card-actions class="card-actions" align="end">
+
+      <!-- close button -->
+      <button mat-raised-button color="primary" class="info-action-button" (click)="hideInfoCard()">
+        <mat-icon>close</mat-icon>
+        <span>Close</span>
+      </button>
+
+    </mat-card-actions>
+
+  </mat-card>
+
+</div>

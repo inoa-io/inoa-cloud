@@ -191,7 +191,7 @@
 								<configuration>
 									<filesets>
 										<fileset><directory>${project.basedir}/gen</directory></fileset>
-										<fileset><directory>${project.basedir}/../inoa-groundcontrol/ui/src/gen</directory></fileset>
+										<fileset><directory>${project.basedir}/../app/src/openapi</directory></fileset>
 									</filesets>
 								</configuration>
 							</execution>
@@ -203,7 +203,7 @@
 									<excludeDefaultDirectories>true</excludeDefaultDirectories>
 									<filesets>
 										<fileset><directory>${project.basedir}/gen/.openapi-generator</directory></fileset>
-										<fileset><directory>${project.basedir}/../inoa-groundcontrol/ui/src/gen/.openapi-generator</directory></fileset>
+										<fileset><directory>${project.basedir}/../app/src/openapi/.openapi-generator</directory></fileset>
 									</filesets>
 								</configuration>
 							</execution>
@@ -262,8 +262,11 @@
 								</goals>
 								<configuration>
 									<generatorName>typescript-angular</generatorName>
-									<generateSupportingFiles>false</generateSupportingFiles>
-									<output>${project.basedir}/../inoa-groundcontrol/ui/src/gen</output>
+									<modelNameSuffix>VO</modelNameSuffix>
+									<output>${project.basedir}/../app/src/openapi</output>
+									<configOptions>
+										<ngVersion>16</ngVersion>
+									</configOptions>
 								</configuration>
 							</execution>
 						</executions>

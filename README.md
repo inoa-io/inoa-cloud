@@ -28,7 +28,7 @@ Afterwards, you may browse to [http://help.127.0.0.1.nip.io:8080/](http://help.1
 
 ### Connect INOA Satellite
 
-To bind a local Satellite Gateway, go to the [Debug Console](https://inoa-io.github.io/inoa-os-esp32/user-guide/debug-console/) and type `setup-mqtt mqtt://YOUR_COMPUTERS_IP_IN_YOUR_NETWORK:1883`.
+To bind a local Satellite Gateway, go to the [Debug Console](https://inoa-io.github.io/inoa-os-esp32/user-guide/debug-console/) and type `setup-mqtt mqtt://YOUR_COMPUTERS_IP_IN_YOUR_NETWORK 1883`.
 
 ## INOA Modules
 
@@ -44,7 +44,7 @@ are collected by IoT devices and provide it with help of APIs and UIs.
 
 ### INOA Groundcontrol
 
-TODO
+see [Ground-Control README](inoa-groundcontrol/README.md)
 
 ### INOA OS
 

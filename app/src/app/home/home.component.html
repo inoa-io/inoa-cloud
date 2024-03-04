@@ -1,0 +1,43 @@
+<div class="home-container" tabindex="0">
+
+	<mat-card class="wizard-card" (click)="navigate('satellite-manager')">
+		<mat-card-header>
+			<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
+			<mat-card-title>Manage Satellites</mat-card-title>
+		</mat-card-header>
+		<mat-card-content routerLink="satellite-manager">
+			<p>Control and maintain your satellites.</p>
+		</mat-card-content>
+	</mat-card>
+
+	<mat-card class="wizard-card" (click)="navigate('measurement-collector')">
+		<mat-card-header>
+			<div mat-card-avatar style="background-image: url('assets/inoa/measurement-color.png'); background-size: cover;"></div>
+			<mat-card-title>Collect Measurements</mat-card-title>
+		</mat-card-header>
+		<mat-card-content routerLink="measurement-collector">
+			<p>Start now to connect new devices and measure data from it.</p>
+		</mat-card-content>
+	</mat-card>
+
+	<mat-card class="wizard-card" (click)="navigate('setup-configurator')">
+		<mat-card-header>
+			<div mat-card-avatar style="background-image: url('assets/inoa/groundcontrol-color.png'); background-size: cover;"></div>
+			<mat-card-title>Configure Setups</mat-card-title>
+		</mat-card-header>
+		<mat-card-content routerLink="setup-configurator">
+			<p>Preconfigure setups for easier installations.</p>
+		</mat-card-content>
+	</mat-card>
+
+	<mat-card class="wizard-card" (click)="navigate('installation-monitor')">
+		<mat-card-header>
+			<div mat-card-avatar style="background-image: url('assets/inoa/fleet-color.png'); background-size: cover;"></div>
+			<mat-card-title>Monitor Installations</mat-card-title>
+		</mat-card-header>
+		<mat-card-content routerLink="installation-monitor">
+			<p>View the data measured by your fleet.</p>
+		</mat-card-content>
+	</mat-card>
+
+</div>

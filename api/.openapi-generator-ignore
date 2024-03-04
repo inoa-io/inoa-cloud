@@ -1,6 +1,7 @@
 **/.openapi-generator-ignore
-**/.gitignore
-**/git_push.sh
-**/README.md
+
+**/app/src/openapi/.gitignore
+**/app/src/openapi/*.sh
+**/app/src/openapi/*.md
+
 **/HttpResponseAssertions.java
-**/TimeTypeConverterRegistrar.java

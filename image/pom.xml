@@ -65,12 +65,14 @@
 						<version>${project.version}</version>
 						<type>pom</type>
 					</dependency>
+<!--
 					<dependency>
 						<groupId>io.inoa</groupId>
 						<artifactId>inoa-app</artifactId>
 						<version>${project.version}</version>
 						<type>pom</type>
 					</dependency>
+-->
 				</dependencies>
 			</plugin>
 

@@ -1,0 +1,159 @@
+{
+	"$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+	"version": 1,
+	"newProjectRoot": "projects",
+	"projects": {
+		"groundcontrol": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "sass"
+				}
+			},
+			"root": "",
+			"sourceRoot": "src",
+			"i18n": {
+				"sourceLocale": "de"
+			},
+			"architect": {
+				"build": {
+					"builder": "@angular-devkit/build-angular:browser",
+					"options": {
+						"outputPath": "dist",
+						"index": "src/index.html",
+						"main": "src/main.ts",
+						"polyfills": [
+							"zone.js"
+						],
+						"tsConfig": "tsconfig.app.json",
+						"inlineStyleLanguage": "sass",
+						"assets": [
+							"src/favicon.ico",
+							"src/assets",
+							{
+								"glob": "**/*",
+								"input": "node_modules/monaco-editor",
+								"output": "/assets/monaco-editor"
+							}
+						],
+						"styles": [
+							"src/custom-theme.scss",
+							"src/styles.sass"
+						],
+						"scripts": [],
+						"extractLicenses": false
+					},
+					"configurations": {
+						"production": {
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "4mb",
+									"maximumError": "5mb"
+								},
+								{
+									"type": "all",
+									"maximumWarning": "9mb",
+									"maximumError": "10mb"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "2kb",
+									"maximumError": "4kb"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"fileReplacements": [
+								{
+									"replace": "src/environments/environment.production.ts",
+									"with": "src/environments/environment.development.ts"
+								}
+							],
+							"buildOptimizer": false,
+							"optimization": false,
+							"vendorChunk": true,
+							"sourceMap": true,
+							"namedChunks": true
+						},
+            "mockserver": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.production.ts",
+                  "with": "src/environments/environment.mockserver.ts"
+                }
+              ],
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular-devkit/build-angular:dev-server",
+					"options": {
+						"proxyConfig": "src/proxy.conf.json"
+					},
+					"configurations": {
+						"production": {
+							"browserTarget": "groundcontrol:build:production"
+						},
+						"development": {
+							"browserTarget": "groundcontrol:build:development"
+						},
+            "mockserver": {
+              "browserTarget": "groundcontrol:build:mockserver"
+            }
+					},
+					"defaultConfiguration": "development"
+				},
+				"extract-i18n": {
+					"builder": "@angular-devkit/build-angular:extract-i18n",
+					"options": {
+						"browserTarget": "groundcontrol:build"
+					}
+				},
+				"test": {
+					"builder": "@angular-devkit/build-angular:karma",
+					"options": {
+						"polyfills": [
+							"zone.js",
+							"zone.js/testing"
+						],
+						"tsConfig": "tsconfig.spec.json",
+						"inlineStyleLanguage": "sass",
+						"assets": [
+							"src/favicon.ico",
+							"src/assets"
+						],
+						"styles": [
+							"src/custom-theme.scss",
+							"src/styles.sass"
+						],
+						"scripts": []
+					}
+				},
+				"lint": {
+					"builder": "@angular-eslint/builder:lint",
+					"options": {
+						"lintFilePatterns": [
+							"src/**/*.ts",
+							"src/**/*.html"
+						]
+					}
+				}
+			}
+		}
+	},
+	"cli": {
+		"schematicCollections": [
+			"@angular-eslint/schematics"
+		],
+		"analytics": false
+	}
+}
+

@@ -1,0 +1,23 @@
+{
+  "category": "smart_plug",
+  "schema": {
+    "title": "Shelly Plus PM2",
+    "description": "a smart plug made by Shelly.",
+    "type": "object",
+    "required": [
+      "name",
+      "host"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "default": "My new Shelly Plus PM2",
+        "title": "Name your thing..."
+      },
+      "host": {
+        "type": "string",
+        "title": "Host"
+      }
+    }
+  }
+}

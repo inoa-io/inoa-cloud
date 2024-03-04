@@ -1,0 +1,58 @@
+<div class = "uber-container">
+
+	<!-- top toolbar -->
+	<div class = "groundcontrol-top-bar">
+		<mat-toolbar color = "primary" class = "mat-elevation-z10">
+
+			<!-- side nav toggle -->
+			<button mat-icon-button class = "sidenav-toggle-button" (click) = "toggleSideBar()"><mat-icon style = "margin: 0;">menu</mat-icon></button>
+
+			<!-- Site title -->
+			<a href="/"><button class="groundcontrol-logo-home-button"><img src="assets/inoa/groundcontrol-text.svg" height="52" alt="Ground Control Logo"></button></a>
+
+			<!-- spacer -->
+			<span style = "flex: 1 1 auto"></span>
+
+			<!-- TODO: put whoami box here once that works -->
+
+		</mat-toolbar>
+	</div>
+
+	<mat-sidenav-container style="background-color: gray;">
+
+		<mat-sidenav mode = "side" [(opened)] = "sideNavOpen" class = "sidenav-bar mat-elevation-z10">
+
+			<mat-button-toggle-group style = "display: flex; flex-direction: column; border-width: 0;" [(ngModel)] = "intercomService.pageSelect">
+
+				<!-- Header -->
+				<div class = "sideNavHeaderContainer">
+					<div mat-card-avatar class = "sideNavHeaderIcon" style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
+					<span class = "sideNavHeader">Ground Control:</span>
+				</div>
+
+				<mat-divider style = "margin-top: 15px;"></mat-divider>
+
+				<!-- side nav buttons -->
+				<mat-button-toggle
+					value = "{{route.path}}"
+					*ngFor="let route of routes let i = index"
+					[hidden]="i===0"
+					(click)="navbarClick(i)">
+					<div class = "sideNavSelectorContainer">
+						<mat-icon class = "sideNavTickIcon">arrow_right</mat-icon>
+						<span class = "sideNavSelector">{{route.label}}</span>
+					</div>
+				</mat-button-toggle>
+
+			</mat-button-toggle-group>
+
+		</mat-sidenav>
+
+		<mat-sidenav-content>
+			<div>
+				<router-outlet></router-outlet>
+			</div>
+		</mat-sidenav-content>
+
+	</mat-sidenav-container>
+</div>

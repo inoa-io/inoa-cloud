@@ -1251,7 +1251,7 @@ components:
       description: Flag if enabled or not.
       type: boolean
       default: true
-      example: false
+      example: true
 
     ###
     ### Group
@@ -1428,10 +1428,195 @@ components:
           description: Total available entries.
           type: integer
           format: int32
-          example: 0
+          example: 1
       required:
         - content
         - total_size
+
+      example:
+        content:
+          - gateway_id: GW01-E0E2E6BCBAE1
+            name: Gateway One
+            enabled: true
+            created: 2021-01-01T12:00:00Z
+            updated: 2021-01-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2021-01-02T12:00:00Z
+          - gateway_id: GW02-E0E2E6BCBAE2
+            name: Gateway Two
+            enabled: true
+            created: 2021-02-01T12:00:00Z
+            updated: 2021-02-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2021-02-02T12:00:00Z
+          - gateway_id: GW03-E0E2E6BCBAE3
+            name: Gateway Three
+            enabled: false
+            created: 2021-03-01T12:00:00Z
+            updated: 2021-03-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2021-03-02T12:00:00Z
+          - gateway_id: GW04-E0E2E6BCBAE4
+            name: Gateway Four
+            enabled: true
+            created: 2021-04-01T12:00:00Z
+            updated: 2021-04-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2021-04-02T12:00:00Z
+          - gateway_id: GW05-E0E2E6BCBAE5
+            name: Gateway Five
+            enabled: true
+            created: 2021-05-01T12:00:00Z
+            updated: 2021-05-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2021-05-02T12:00:00Z
+          - gateway_id: GW06-E0E2E6BCBAE6
+            name: Gateway Six
+            enabled: false
+            created: 2021-06-01T12:00:00Z
+            updated: 2021-06-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2021-06-02T12:00:00Z
+          - gateway_id: GW07-E0E2E6BCBAE7
+            name: Gateway Seven
+            enabled: true
+            created: 2021-07-01T12:00:00Z
+            updated: 2021-07-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2021-07-02T12:00:00Z
+          - gateway_id: GW08-E0E2E6BCBAE8
+            name: Gateway Eight
+            enabled: true
+            created: 2021-08-01T12:00:00Z
+            updated: 2021-08-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2021-08-02T12:00:00Z
+          - gateway_id: GW09-E0E2E6BCBAE9
+            name: Gateway Nine
+            enabled: false
+            created: 2021-09-01T12:00:00Z
+            updated: 2021-09-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2021-09-02T12:00:00Z
+          - gateway_id: GW10-E0E2E6BCBAEA
+            name: Gateway Ten
+            enabled: true
+            created: 2021-10-01T12:00:00Z
+            updated: 2021-10-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2021-10-02T12:00:00Z
+          - gateway_id: GW11-E0E2E6BCBAEB
+            name: Gateway Eleven
+            enabled: true
+            created: 2021-11-01T12:00:00Z
+            updated: 2021-11-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2021-11-02T12:00:00Z
+          - gateway_id: GW12-E0E2E6BCBAEC
+            name: Gateway Twelve
+            enabled: false
+            created: 2021-12-01T12:00:00Z
+            updated: 2021-12-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2021-12-02T12:00:00Z
+          - gateway_id: GW13-E0E2E6BCBAED
+            name: Gateway Thirteen
+            enabled: true
+            created: 2022-01-01T12:00:00Z
+            updated: 2022-01-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2022-01-02T12:00:00Z
+          - gateway_id: GW14-E0E2E6BCBAEE
+            name: Gateway Fourteen
+            enabled: false
+            created: 2022-02-01T12:00:00Z
+            updated: 2022-02-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2022-02-02T12:00:00Z
+          - gateway_id: GW15-E0E2E6BCBAEF
+            name: Gateway Fifteen
+            enabled: true
+            created: 2022-03-01T12:00:00Z
+            updated: 2022-03-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2022-03-02T12:00:00Z
+          - gateway_id: GW16-E0E2E6BCBAF0
+            name: Gateway Sixteen
+            enabled: true
+            created: 2022-04-01T12:00:00Z
+            updated: 2022-04-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2022-04-02T12:00:00Z
+          - gateway_id: GW17-E0E2E6BCBAF1
+            name: Gateway Seventeen
+            enabled: false
+            created: 2022-05-01T12:00:00Z
+            updated: 2022-05-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2022-05-02T12:00:00Z
+          - gateway_id: GW18-E0E2E6BCBAF2
+            name: Gateway Eighteen
+            enabled: true
+            created: 2022-06-01T12:00:00Z
+            updated: 2022-06-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2022-06-02T12:00:00Z
+          - gateway_id: GW19-E0E2E6BCBAF3
+            name: Gateway Nineteen
+            enabled: false
+            created: 2022-07-01T12:00:00Z
+            updated: 2022-07-02T12:00:00Z
+            status:
+              mqtt:
+                connected: false
+                timestamp: 2022-07-02T12:00:00Z
+          - gateway_id: GW20-E0E2E6BCBAF4
+            name: Gateway Twenty
+            enabled: true
+            created: 2022-08-01T12:00:00Z
+            updated: 2022-08-02T12:00:00Z
+            status:
+              mqtt:
+                connected: true
+                timestamp: 2022-08-02T12:00:00Z
+        total_size: 20
+
     GatewayDetail:
       description: Gateway with detailed fields.
       properties:
@@ -1498,6 +1683,7 @@ components:
         connected:
           description: connection status
           type: boolean
+          example: true
         timestamp:
           $ref: "#/components/schemas/Timestamp"
 

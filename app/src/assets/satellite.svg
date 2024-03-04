@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="102px"
+     height="102px" viewBox="-0.5 -0.5 102 102">
+  <defs/>
+  <g>
+    <path
+      d="M 29 61 L 59 31 C 62.36 30.22 65.89 31.23 68.33 33.67 C 70.77 36.11 71.78 39.64 71 43 L 41 73 C 42.45 77.21 42.45 81.79 41 86 C 28.12 83.98 18.02 73.88 16 61 C 20.21 59.55 24.79 59.55 29 61 Z M 16 1 L 46 31 L 31 46 L 1 16 Z M 71 56 L 101 86 L 86 101 L 56 71 Z M 93.5 78.12 L 78.25 93.88 M 86 71 L 71 86 M 78.5 63.5 L 63.5 78.5 M 23.5 8.5 L 8.5 23.5 M 31 16 L 16 31 M 38.5 23.5 L 23.5 38.5"
+      fill="#cccccc" stroke="#6881b3" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+    <path d="M 17.7 67 L 20.5 81.5 L 39.5 81 M 8.5 8.5 L 38.5 38.5 M 63.5 63.5 L 93.5 93.5" fill="none" stroke="#6881b3"
+          stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+    <rect x="1" y="1" width="0" height="0" fill="none" stroke="#6881b3" stroke-width="2" pointer-events="all"/>
+    <path
+      d="M 40.5 36.5 L 47 43 L 43 47 L 36.5 40.5 Z M 57 53 L 65.5 61.5 L 61.5 65.5 L 53 57 C 53 54.79 54.79 53 57 53 Z"
+      fill="#cccccc" stroke="#6881b3" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+    <path
+      d="M 52 38 C 58.1 39.14 62.86 43.9 64 50 M 39 51 C 45.1 52.14 49.86 56.9 51 63 M 37 53 C 43.1 54.14 47.86 58.9 49 65 M 29 61 C 34.58 63.02 38.98 67.42 41 73 M 16 61 C 28.88 63.02 38.98 73.12 41 86"
+      fill="none" stroke="#6881b3" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+    <path d="M 55 39 L 42 52 M 57.5 40.5 L 44.5 53.5" fill="none" stroke="#6881b3" stroke-width="2"
+          stroke-miterlimit="10" pointer-events="all"/>
+    <ellipse cx="20" cy="82" rx="2" ry="2" fill="#cccccc" stroke="#6881b3" stroke-width="2" pointer-events="all"/>
+    <path
+      d="M 15 82 C 15 84.76 17.24 87 20 87 L 20 89 C 16.13 89 13 85.87 13 82 Z M 10 82 C 10 87.52 14.48 92 20 92 L 20 94 C 13.37 94 8 88.63 8 82 Z M 5 82 C 5 90.28 11.72 97 20 97 L 20 99 C 10.61 99 3 91.39 3 82 Z"
+      fill="#cccccc" stroke="#6881b3" stroke-width="2" stroke-miterlimit="10" pointer-events="all"/>
+  </g>
+</svg>

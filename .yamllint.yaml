@@ -18,4 +18,6 @@ rules:
   truthy:
     check-keys: false
 
-ignore: target
+ignore: |
+  target
+  app/node_modules

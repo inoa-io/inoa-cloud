@@ -1,0 +1,51 @@
+{
+  "category": "energy_meter",
+  "schema": {
+    "title": "DZG - DVH 4013 Power Meter",
+    "description": "a bi-directional power meter",
+    "type": "object",
+    "required": [
+      "name",
+      "serial",
+      "modbus_interface"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "default": "My new DVH4013",
+        "title": "Name your thing..."
+      },
+      "serial": {
+        "type": "string",
+        "title": "The serial number of the energy meter"
+      },
+      "modbus_interface": {
+        "title": "RS485 interface where the power meter is connected.",
+        "type": "number",
+        "default": 0,
+        "widget": {
+          "formlyConfig": {
+            "type": "enum",
+            "props": {
+              "options": [
+                {
+                  "value": 0,
+                  "label": "RS485 - Port 1"
+                },
+                {
+                  "value": 1,
+                  "label": "RS485 - Port 2"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  },
+  "model": {
+    "name": "DVH 4013 - Müller",
+    "serial": "349118",
+    "modbus_interface": 0
+  }
+}

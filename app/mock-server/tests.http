@@ -1,0 +1,9 @@
+
+### Test Gateways
+GET localhost:1080/gateways
+Authorization: Basic {{username}} {{password}}
+
+
+### Thing Types available
+GET localhost:1080/thing-types
+Authorization: Basic {{username}} {{password}}

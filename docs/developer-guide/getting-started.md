@@ -28,7 +28,7 @@ mvn clean install -DskipTests
 ### Local Start
 
 ```bash
-mvn k3s:rm -Dk3s.includeCache=false && mvn pre-integration-test -Dk3s.failIfExists=false -pl ./inoa-test/
+mvn k3s:rm -Dk3s.includeCache=false && mvn pre-integration-test -Dk3s.failIfExists=false -pl ./test/
 ```
 
 Browse to [http://help.127.0.0.1.nip.io:8080/](http://help.127.0.0.1.nip.io:8080/).

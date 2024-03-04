@@ -1,0 +1,326 @@
+<mat-tab-group class="gateway-table-tab-group" [(selectedIndex)]="selectedTabIndex" headerPosition="below" color="primary" backgroundColor="primary">
+
+	<mat-tab label="Table">
+
+		<div class="gateway-table-container" tabindex="0">
+
+			<mat-card class="cardGatewayTable">
+
+				<mat-card-header>
+					<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
+					<mat-card-title>Satellite Management</mat-card-title>
+					<mat-card-subtitle>Check and maintain your INOA Satellites.</mat-card-subtitle>
+				</mat-card-header>
+
+				<mat-card-content class="mat-card-content-gateway-table">
+
+					<div class="gateway-table-sub-container">
+
+						<table mat-table [dataSource]="dataSourceGateways" matSort #sortRef="matSort" #tableRef class="gateway-table">
+							
+							<!-- Gateway ID Column -->
+							<ng-container matColumnDef="gateway_id">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Satellite ID</th>
+								<td mat-cell *matCellDef="let element">{{element.gateway_id}}</td>
+							</ng-container>
+
+							<!-- Gateway Name Column -->
+							<ng-container matColumnDef="name">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+								<td mat-cell *matCellDef="let element">{{element.name}}</td>
+							</ng-container>
+
+							<!-- Created Column -->
+							<ng-container matColumnDef="created">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
+								<td mat-cell *matCellDef="let element">{{element.created | date}}</td>
+							</ng-container>
+
+							<!-- Updated Column -->
+							<ng-container matColumnDef="updated">
+								<th mat-header-cell *matHeaderCellDef mat-sort-header>Updated</th>
+								<td mat-cell *matCellDef="let element">{{element.updated | date}}</td>
+							</ng-container>
+
+							<!-- Enabled Column -->
+							<ng-container matColumnDef="enabled">
+								<th mat-header-cell *matHeaderCellDef>Enabled</th>
+								<td mat-cell *matCellDef="let element" class="mat-cell-center">
+									<mat-icon *ngIf="element.enabled" aria-hidden="false" aria-label="Toggle On" fontIcon="toggle_on"></mat-icon>
+									<mat-icon *ngIf="!element.enabled" aria-hidden="false" aria-label="Toggle Off" fontIcon="toggle_off"></mat-icon>
+								</td>
+							</ng-container>
+
+							<!-- Connection Status Column -->
+							<ng-container matColumnDef="status">
+								<th mat-header-cell *matHeaderCellDef>Connected</th>
+								<td mat-cell *matCellDef="let element" class="mat-cell-center" >
+									<mat-icon *ngIf="element.status.mqtt.connected" aria-hidden="false" aria-label="Link" fontIcon="link" style="color: green"></mat-icon>
+									<mat-icon *ngIf="!element.status.mqtt.connected" aria-hidden="false" aria-label="Link Off" fontIcon="link_off" color="warn"></mat-icon>
+								</td>
+							</ng-container>
+
+							<!-- Actions Column -->
+							<ng-container matColumnDef = "actions">
+								<th mat-header-cell *matHeaderCellDef style = "text-align: center;"></th>
+								<td mat-cell *matCellDef = "let element; let rowIndex = index" style = "width: 50px">
+									<div style = "display: flex;">
+
+										<button mat-icon-button (click) = "openConsoleClick(rowIndex, $event)" [disabled]="!element.enabled || !element.status.mqtt.connected">
+											<mat-icon aria-hidden="false" aria-label="Terminal" fontIcon="terminal"></mat-icon>
+										</button>
+
+										<button mat-icon-button (click) = "restartClick(rowIndex, $event)" [disabled]="!element.enabled || !element.status.mqtt.connected">
+											<mat-icon aria-hidden="false" aria-label="Restart" fontIcon="restart_alt"></mat-icon>
+										</button>
+
+									</div>
+								</td>
+							</ng-container>
+
+							<tr mat-header-row *matHeaderRowDef = "displayedColumnsGatewayTable; sticky: true"></tr>
+							<tr
+								mat-row
+								*matRowDef = "let dataRow;
+								columns: displayedColumnsGatewayTable;"
+								(click) = "rowClicked(dataRow)"
+								class="element-row"
+								[ngClass] =	"{ 'element-row-selected': isRowSelected(dataRow) }">
+							</tr>
+						</table>
+
+					</div>
+
+					<!-- page indicator Bottom -->
+					<mat-paginator
+						#paginatorRef
+						[length] = "20"
+						[pageSizeOptions] = "intercomService.pageSizes"
+						[pageSize] = "intercomService.pageSize"
+						[pageIndex] = "intercomService.pageNumber"
+						showFirstLastButtons
+						class = "gateway-table-paginator">
+					</mat-paginator>
+
+				</mat-card-content>
+
+			</mat-card>
+
+		</div>
+
+	</mat-tab>
+
+	<mat-tab label="Details" *ngIf="selectedSatellite">
+
+		<div class="gateway-detail-container">
+
+			<div class="gateway-detail-sub-container">
+
+				<mat-card class = "cardGatewayThings">
+
+					<mat-card-header>
+						<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
+						<mat-card-title>Things connected to</mat-card-title>
+						<mat-card-subtitle>{{selectedSatellite.name}} ({{selectedSatellite.gateway_id}})</mat-card-subtitle>
+					</mat-card-header>
+
+					<mat-card-content class="mat-card-content-gateway-things">
+
+						<div class="things-table" tabindex="0">
+							
+							<table mat-table [dataSource]="dataSourceThings">
+								
+								<!-- ID Column -->
+								<ng-container matColumnDef="id">
+									<th mat-header-cell *matHeaderCellDef>ID</th>
+									<td mat-cell *matCellDef="let element">{{element.id}}</td>
+								</ng-container>
+
+								<!-- Name Column -->
+								<ng-container matColumnDef="name">
+									<th mat-header-cell *matHeaderCellDef>Name</th>
+									<td mat-cell *matCellDef="let element">{{element.name}}</td>
+								</ng-container>
+
+								<!-- Gateway ID Column -->
+								<ng-container matColumnDef="gateway_id">
+									<th mat-header-cell *matHeaderCellDef>Gateway ID</th>
+									<td mat-cell *matCellDef="let element">{{element.gateway_id}}</td>
+								</ng-container>
+
+								<!-- Thing ID Column -->
+								<ng-container matColumnDef="thing_type_id">
+									<th mat-header-cell *matHeaderCellDef>Thing ID</th>
+									<td mat-cell *matCellDef="let element">{{element.thing_type_id}}</td>
+								</ng-container>
+
+								<!-- Config Column -->
+								<ng-container matColumnDef="config">
+									<th mat-header-cell *matHeaderCellDef>Config</th>
+									<td mat-cell *matCellDef="let element">{{element.config}}</td>
+								</ng-container>
+
+								<!-- Created Column -->
+								<ng-container matColumnDef="created">
+									<th mat-header-cell *matHeaderCellDef> Created </th>
+									<td mat-cell *matCellDef="let element">{{element.created | date}}</td>
+								</ng-container>
+
+								<!-- Updated Column -->
+								<ng-container matColumnDef="updated">
+									<th mat-header-cell *matHeaderCellDef> Updated </th>
+									<td mat-cell *matCellDef="let element">{{element.updated | date}}</td>
+								</ng-container>
+
+								<tr mat-header-row *matHeaderRowDef="displayedColumnsThingsTable; sticky: true"></tr>
+								<tr mat-row *matRowDef="let row; columns: displayedColumnsThingsTable;" (click)="cellClickThings(row)" class="element-row"></tr>
+							</table>
+						</div>
+
+					</mat-card-content>
+
+					<mat-card-actions class="card-actions" align="end">
+
+						<!-- add button -->
+						<button mat-raised-button color="primary" class="gateway-detail-action-button" (click)="createThingDialog()">
+							<mat-icon>add</mat-icon>
+							<span>Add</span>
+						</button>
+
+					</mat-card-actions>
+
+				</mat-card>
+
+				<mat-card class="cardGatewayMeasurements" *ngIf="selectedThing">
+
+					<mat-card-header>
+						<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
+						<mat-card-title>Measurements for</mat-card-title>
+						<mat-card-subtitle>{{selectedThing.thing_type_id}}</mat-card-subtitle>
+					</mat-card-header>
+
+					<mat-card-content class="mat-card-content-gateway-measurements">
+
+						<div class="measurements" [formGroup]="measurements">
+							<mat-checkbox formControlName="water">Water</mat-checkbox>
+							<mat-checkbox formControlName="heat">Heat</mat-checkbox>
+							<mat-checkbox formControlName="power">Power</mat-checkbox>
+						</div>
+
+					</mat-card-content>
+
+					<mat-card-actions class="card-actions" align="end">
+
+						<!-- button to close the measurement -->
+						<button mat-raised-button color="primary" class="gateway-detail-action-button" (click) = "closeMeasurementView()">
+							<mat-icon>close</mat-icon>
+							<span>Close</span>
+						</button>
+
+					</mat-card-actions>
+
+				</mat-card>
+
+			</div>
+
+			<mat-card class = "cardGatewayDetail">
+
+				<!-- header -->
+				<mat-card-header>
+					<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
+					<mat-card-title>Satellite</mat-card-title>
+					<mat-card-subtitle>{{selectedSatellite.name}}</mat-card-subtitle>
+				</mat-card-header>
+
+				<mat-card-content class="mat-card-content-gateway-detail">
+
+					<!-- details -->
+					<mat-list>
+						<div mat-subheader style="font-weight: 500;">Details:</div>
+
+						<!-- enabled section -->
+						<mat-list-item>
+							<mat-icon matListItemIcon>noise_control_off</mat-icon>
+							<div matListItemTitle>Enabled:</div>
+							<div [style.color]="selectedSatellite.enabled ? 'green' : 'red'" matListItemLine>{{selectedSatellite.enabled}}</div>
+						</mat-list-item>
+
+						<!-- connection status section -->
+						<mat-list-item>
+							<mat-icon matListItemIcon>noise_control_off</mat-icon>
+							<div matListItemTitle>Connected:</div>
+							<div [style.color]="selectedSatellite.status?.mqtt?.connected ? 'green' : 'red'" matListItemLine>{{selectedSatellite.status?.mqtt?.connected}}</div>
+						</mat-list-item>
+
+						<!-- created section -->
+						<mat-list-item>
+							<mat-icon matListItemIcon>noise_control_off</mat-icon>
+							<div matListItemTitle>Created:</div>
+							<div matListItemLine>{{selectedSatellite.created | date}}</div>
+						</mat-list-item>
+
+						<!-- updated section -->
+						<mat-list-item>
+							<mat-icon matListItemIcon>noise_control_off</mat-icon>
+							<div matListItemTitle>Updated:</div>
+							<div matListItemLine>{{selectedSatellite.updated | date}}</div>
+						</mat-list-item>
+
+					</mat-list>
+
+				</mat-card-content>
+
+				<mat-card-actions class="card-actions" align = "end">
+
+					<!-- restart button -->
+					<button (click) = "restartClick(selectedSatellite, $event)" mat-raised-button color = "warn" class = "gateway-detail-action-button">
+						<mat-icon>restart_alt</mat-icon>
+						<span>Restart</span>
+					</button>
+
+				</mat-card-actions>
+
+			</mat-card>
+
+		</div>
+
+	</mat-tab>
+
+	<mat-tab label="Console" *ngIf="selectedSatellite">
+
+		<div class="console-container">
+
+			<mat-card class = "cardConsole">
+
+				<mat-card-header>
+					<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
+					<mat-card-title>Console for</mat-card-title>
+					<mat-card-subtitle>{{selectedSatellite.name}} ({{selectedSatellite.gateway_id}})</mat-card-subtitle>
+				</mat-card-header>
+
+				<mat-card-content class = "mat-card-content-console">
+
+					<div class = "monaco-editor-container">
+						<ngx-monaco-editor class = "monaco-editor" [options] = "monacoOptions" [(ngModel)] = "jsonCode"></ngx-monaco-editor>
+					</div>
+
+				</mat-card-content>
+
+				<mat-card-actions class="card-actions" align="end">
+
+					<!-- send button -->
+					<button mat-raised-button color="warn" class="console-action-button" (click) = "sendRPC()">
+						<mat-icon>upload</mat-icon>
+						<span>Send</span>
+					</button>
+
+				</mat-card-actions>
+
+			</mat-card>
+
+		</div>
+
+	</mat-tab>
+
+</mat-tab-group>
+

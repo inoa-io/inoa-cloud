@@ -1,0 +1,57 @@
+[
+  {
+    "key": "energy_meter",
+    "image": "assets/thing-categories/energy_meter.png",
+    "title": "Energy Meter"
+  },
+  {
+    "key": "battery",
+    "image": "assets/thing-categories/battery.png",
+    "title": "Battery"
+  },
+  {
+    "key": "pv_plant",
+    "image": "assets/thing-categories/pv_plant.png",
+    "title": "PV Plant"
+  },
+  {
+    "key": "smart_plug",
+    "image": "assets/thing-categories/smart_plug.png",
+    "title": "Smart Plug"
+  },
+  {
+    "key": "wallbox",
+    "image": "assets/thing-categories/wallbox.png",
+    "title": "Wallbox"
+  },
+  {
+    "key": "inverter",
+    "image": "assets/thing-categories/energy_meter.png",
+    "title": "Inverter"
+  },
+  {
+    "key": "smoke_detector",
+    "image": "assets/thing-categories/smoke_detector.png",
+    "title": "Smoke Detector"
+  },
+  {
+    "key": "electricity_pole",
+    "image": "assets/thing-categories/electricity_pole.png",
+    "title": "Electricity pole"
+  },
+  {
+    "key": "power_switch",
+    "image": "assets/thing-categories/power_switch.png",
+    "title": "Power Switch"
+  },
+  {
+    "key": "electric_vehicle",
+    "image": "assets/thing-categories/electric_vehicle.png",
+    "title": "Electric vehicle"
+  },
+  {
+    "key": "unknown",
+    "image": "assets/thing-categories/energy_meter.png",
+    "title": "Some Thing"
+  }
+]

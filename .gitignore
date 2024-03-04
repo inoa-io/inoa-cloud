@@ -1,33 +1,4 @@
-HELP.md
-target/
-site/
-!.mvn/wrapper/maven-wrapper.jar
-
-### Moquette ###
-.moquette_uuid
-
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-
-### VS Code ###
-.vscode/
+target
+dist
+node_modules
+.angular

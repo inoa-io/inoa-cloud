@@ -21,7 +21,6 @@
 		<plugins>
 
 			<!-- yarn calls -->
-<!--
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
@@ -33,11 +32,12 @@
 						<configuration>
 							<arguments>
 								<argument>install</argument>
-								<argument>- -frozen-lockfile</argument>
-								<argument>- -non-interactive</argument>
+								<argument>--frozen-lockfile</argument>
+								<argument>--non-interactive</argument>
 							</arguments>
 						</configuration>
 					</execution>
+<!--
 					<execution>
 						<id>yarn-test</id>
 						<phase>test</phase>
@@ -51,29 +51,16 @@
 							<skip>true</skip>
 						</configuration>
 					</execution>
+-->
 					<execution>
-						<id>yarn-build-landlord-app</id>
+						<id>yarn-build</id>
 						<phase>package</phase>
 						<goals><goal>exec</goal></goals>
 						<configuration>
 							<arguments>
 								<argument>build</argument>
-								<argument>- -no-progress</argument>
-								<argument>- -configuration=${angular.configuration}</argument>
-								<argument>landlord-app</argument>
-							</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>yarn-build-tenant-app</id>
-						<phase>package</phase>
-						<goals><goal>exec</goal></goals>
-						<configuration>
-							<arguments>
-								<argument>build</argument>
-								<argument>- -no-progress</argument>
-								<argument>- -configuration=${angular.configuration}</argument>
-								<argument>tenant-app</argument>
+								<argument>--no-progress</argument>
+								<argument>--configuration=${angular.configuration}</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -82,7 +69,6 @@
 					<executable>yarn</executable>
 				</configuration>
 			</plugin>
--->
 
 			<!-- remove default invocations -->
 			<plugin>
@@ -97,7 +83,6 @@
 	</build>
 
 	<profiles>
-<!--
 		<profile>
 			<id>check</id>
 			<activation>
@@ -126,7 +111,6 @@
 				</plugins>
 			</build>
 		</profile>
--->
 		<profile>
 			<id>dev</id>
 			<activation><property><name>!env.CI</name></property></activation>

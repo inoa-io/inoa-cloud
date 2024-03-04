@@ -54,7 +54,8 @@ steps:
     commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl service]
   build-app:
     <<: *maven
-    commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl app]
+    commands: [mvn -Dcheck.skip -Dmaven.test.skip clean -pl app]
+    # commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl app]
 
   test-service:
     <<: *maven
@@ -66,7 +67,8 @@ steps:
   test-app:
     <<: *maven
     depends_on: [build-app]
-    commands: [mvn -Dcheck.skip test -pl app]
+    commands: [mvn -Dcheck.skip clean -pl app]
+    # commands: [mvn -Dcheck.skip test -pl app]
     when: [path: [app/**]]
 
   image:
