@@ -33,6 +33,8 @@
 			"id": "inoa-admin",
 			"enabled": true,
 			"username": "admin",
+			"firstName": "admin",
+			"lastName": "admin",
 			"email": "admin@example.org",
 			"emailVerified": true,
 			"credentials": [ { "type": "password", "value": "password" } ],

@@ -89,15 +89,15 @@
 		<version.io.kokuwa.maven.k3s>1.3.0</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>4.2.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut.core>4.3.8</version.io.micronaut.core>
-		<version.io.micronaut.platform>4.3.3</version.io.micronaut.platform>
+		<version.io.micronaut.core>4.3.9</version.io.micronaut.core>
+		<version.io.micronaut.platform>4.3.4</version.io.micronaut.platform>
 		<version.io.micronaut.data>4.6.2</version.io.micronaut.data>
-		<version.io.micronaut.validation>4.4.0</version.io.micronaut.validation>
+		<version.io.micronaut.validation>4.4.3</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.77</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
-		<version.org.keycloak>23.0.7</version.org.keycloak>
+		<version.org.keycloak>24.0.1</version.org.keycloak>
 		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
 		<version.org.projectlombok>1.18.30</version.org.projectlombok>
 
