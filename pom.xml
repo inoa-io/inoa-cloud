@@ -72,6 +72,7 @@
 		<image.registry>ghcr.io/inoa-io</image.registry>
 		<image.inoa.tag>snapshot</image.inoa.tag>
 		<image.inoa>${image.registry}/inoa:${image.inoa.tag}</image.inoa>
+		<image.mcnoize>${image.registry}/mcnoize:0.0.1</image.mcnoize>
 		<image.postgresql>docker.io/library/postgres:14.11</image.postgresql>
 		<image.influxdb>docker.io/library/influxdb:2.7.5</image.influxdb>
 		<image.traefik>docker.io/library/traefik:v2.11.0</image.traefik>

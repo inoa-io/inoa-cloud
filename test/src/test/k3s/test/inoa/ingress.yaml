@@ -11,6 +11,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: inoa-http
+                name: inoa
                 port:
                   name: http

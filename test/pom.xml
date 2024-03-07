@@ -237,6 +237,19 @@
 					<type>pom</type>
 				</dependency>
 			</dependencies>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.kokuwa.maven</groupId>
+						<artifactId>k3s-maven-plugin</artifactId>
+						<configuration>
+							<dockerImages combine.children="append">
+								<dockerImage>${image.mcnoize}</dockerImage>
+							</dockerImages>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 </project>

@@ -1,0 +1,18 @@
+commonLabels:
+  app.kubernetes.io/part-of: inoa
+  app.kubernetes.io/name: mcnoize
+
+resources:
+  - statefulset.yaml
+
+configMapGenerator:
+  - name: mcnoize-env
+    literals:
+      - MCNOIZE_DEBUG=true
+      - MCNOIZE_KEYCLOAK_TOKEN_URL=http://keycloak/realms/inoa/protocol/openid-connect/token
+      - MCNOIZE_KEYCLOAK_CLIENT_ID=inoa-mcnoize
+      - MCNOIZE_KEYCLOAK_CLIENT_SECRET=changeMe
+      - MCNOIZE_INOA_URL=http://inoa
+      - MCNOIZE_MQTT_URL=ssl://inoa:8883
+      - MCNOIZE_SLEEP_DURATION=PT1m
+      - MCNOIZE_PAST_DURATION=PT24h

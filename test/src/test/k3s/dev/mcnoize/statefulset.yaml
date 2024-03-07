@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mcnoize
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mcnoize
+  podManagementPolicy: Parallel
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 10
+  template:
+    metadata:
+      annotations:
+        fluentbit.io/exclude: "true"
+      labels:
+        app.kubernetes.io/name: mcnoize
+    spec:
+      initContainers:
+        - name: wait-for-inoa
+          image: ${image.traefik}
+          imagePullPolicy: Never
+          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://inoa/endpoints/health --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+        - name: wait-for-hawkbit
+          image: ${image.traefik}
+          imagePullPolicy: Never
+          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://hawkbit/UI/login --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      containers:
+        - name: mcnoize
+          image: ${image.mcnoize}
+          imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: mcnoize-env
+          env:
+            - name: MCNOIZE_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      terminationGracePeriodSeconds: 1

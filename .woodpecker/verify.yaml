@@ -47,6 +47,7 @@ steps:
       # integration tests
       - docker pull --quiet docker.io/rancher/k3s:v1.28.6-k3s2 &
       - docker pull --quiet ghcr.io/grayc-de/kafka:3.6.1 &
+      - docker pull --quiet ghcr.io/inoa-io/mcnoize:0.0.1 &
       - wait
     secrets: [DOCKER_CONFIG_JSON]
   preload-yarn:

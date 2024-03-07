@@ -1,20 +1,6 @@
 apiVersion: 1
 
 datasources:
-  - name: Prometheus
-    type: prometheus
-    url: http://prometheus.observeablilty:9090
-    readOnly: true
-    isDefault: false
-    editable: false
-  - name: Loki
-    type: loki
-    url: http://loki.observeablilty:80
-    jsonData:
-      manageAlerts: false
-    readOnly: true
-    isDefault: false
-    editable: false
   - name: InfluxDB
     type: influxdb
     url: http://influxdb
