@@ -1,0 +1,26 @@
+{
+	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
+	"dependencyDashboard": true,
+	"dependencyDashboardApproval": true,
+	"dependencyDashboardAutoclose": true,
+	"dependencyDashboardOSVVulnerabilitySummary": "all",
+	"kubernetes": { "fileMatch": ["kustomization\\.yaml"] },
+	"separateMajorMinor": true,
+	"separateMinorPatch": true,
+	"separateMultipleMajor": true,
+	"packageRules": [
+		{
+			"matchUpdateTypes": ["patch"],
+			"dependencyDashboardApproval": false
+		},{
+			"matchPackageNames": [
+				"org.apache.kafka:kafka-clients",
+				"ghcr.io/grayc-de/kafka"
+			],
+			"enabled": false
+		},{
+			"matchPackagePatterns": ["woodpecker"],
+			"enabled": false
+		}
+	]
+}
