@@ -14,6 +14,8 @@ steps:
     image: ghcr.io/grayc-de/plugins/kubectl
     depends_on: []
     commands:
+      - kubectl kustomize ./fluxcd/kiste/dev
+      - kubectl kustomize ./fluxcd/kiste/prod
       - kubectl kustomize ./fluxcd/live/dev
       - kubectl kustomize ./fluxcd/live/prod
     when: [path: [fluxcd/**]]
@@ -38,3 +40,14 @@ steps:
     image: ghcr.io/grayc-de/plugins/yamllint
     depends_on: []
     when: [path: ["**/*.yaml", .yamllint.yaml]]
+
+  yarn:
+    image: ghcr.io/grayc-de/plugins/yarn:node18
+    depends_on: []
+    directory: app
+    commands:
+      - sed -i 's_https://registry.yarnpkg.com_http://nexus.development.svc.cluster.local/repository/npmjs.org_g' yarn.lock
+      - yarn install --no-progress --frozen-lockfile --non-interactive --ignore-optional --ignore-platform --ignore-engines
+      - yarn lint
+    failure: ignore  # TODO linting fails :'(
+    when: [path: [app/**]]
