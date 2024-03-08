@@ -12,7 +12,7 @@ images:
   - name: docker.io/provectuslabs/kafka-ui
     newTag: v0.7.1
   - name: docker.io/redpandadata/console
-    newTag: v2.4.3
+    newTag: v2.4.5
   - name: docker.io/hawkbit/hawkbit-update-server
     newTag: 0.3.0M8
   - name: ghcr.io/grayc-de/kafka
