@@ -15,7 +15,9 @@
 		},{
 			"matchPackageNames": [
 				"org.apache.kafka:kafka-clients",
-				"ghcr.io/grayc-de/kafka"
+				"ghcr.io/grayc-de/kafka",
+				"docker.io/eclipse-temurin",
+				"docker.io/hawkbit/hawkbit-update-server"
 			],
 			"enabled": false
 		},{
