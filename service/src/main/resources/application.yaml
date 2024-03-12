@@ -63,17 +63,6 @@ micronaut:
       max-page-size: 1000
       default-page-size: 25
 
-
-## see https://docs.micronaut.io/latest/guide/index.html#providedEndpoints
-endpoints:
-  all:
-    path: /endpoints
-    sensitive: false
-  health:
-    details-visible: ANONYMOUS
-  loggers:
-    write-sensitive: false
-
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
   bean-introspection-module: true
