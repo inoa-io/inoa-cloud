@@ -32,7 +32,6 @@
 	<modules>
 		<module>api</module>
 		<module>service</module>
-		<module>app</module>
 		<module>image</module>
 		<module>test</module>
 	</modules>

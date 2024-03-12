@@ -33,8 +33,6 @@
 								<argument>${project.basedir}/..</argument>
 								<argument>--file=${project.basedir}/src/docker/Dockerfile</argument>
 								<argument>--tag=${image.inoa}</argument>
-								<argument>--cache-from=${image.inoa}</argument>
-								<argument>--build-arg=BUILDKIT_INLINE_CACHE=1</argument>
 							</arguments>
 						</configuration>
 					</execution>
@@ -53,9 +51,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<environmentVariables>
-						<DOCKER_BUILDKIT>1</DOCKER_BUILDKIT>
-					</environmentVariables>
 					<executable>docker</executable>
 				</configuration>
 				<dependencies>
@@ -65,14 +60,6 @@
 						<version>${project.version}</version>
 						<type>pom</type>
 					</dependency>
-<!--
-					<dependency>
-						<groupId>io.inoa</groupId>
-						<artifactId>inoa-app</artifactId>
-						<version>${project.version}</version>
-						<type>pom</type>
-					</dependency>
--->
 				</dependencies>
 			</plugin>
 

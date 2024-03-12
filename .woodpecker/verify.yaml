@@ -39,6 +39,7 @@ steps:
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
       # docker build
+      - docker pull --quiet ghcr.io/grayc-de/node:20 &
       - docker pull --quiet docker.io/library/debian:stable-slim &
       - docker pull --quiet docker.io/eclipse-temurin:17-jre &
       # test containers
@@ -53,6 +54,7 @@ steps:
   preload-yarn:
     <<: *node
     commands: [yarn config --no-defaults, yarn install --immutable]
+    when: [path: [app/**]]
 
   build-api:
     <<: *maven
@@ -62,9 +64,9 @@ steps:
     depends_on: [build-api]
     commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl service]
   build-app:
-    <<: *node
-    depends_on: [preload-yarn]
-    commands: [yarn build --no-progress --configuration=production]
+    <<: *maven
+    depends_on: [preload-images]
+    commands: [docker build . --file image/src/docker/Dockerfile --target=app]
 
   test-service:
     <<: *maven

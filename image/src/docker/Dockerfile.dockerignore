@@ -1,5 +1,11 @@
 *
 
-!/service/target/libs/*.jar
-!/service/target/inoa-service-*.jar
-!/app/dist/*
+!service/target/libs/*.jar
+!service/target/inoa-service-*.jar
+!app/src
+!app/.yarnrc.yml
+!app/yarn.lock
+!app/angular.json
+!app/package.json
+!app/tsconfig.json
+!app/tsconfig.app.json
