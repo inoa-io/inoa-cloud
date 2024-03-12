@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { MatCardModule } from "@angular/material/card";
 
 import { InstallationMonitorComponent } from "./installation-monitor.component";
 
@@ -8,6 +9,9 @@ describe("InstallationMonitorComponent", () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [
+        MatCardModule
+      ],
       declarations: [ InstallationMonitorComponent ]
     })
     .compileComponents();

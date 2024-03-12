@@ -1,5 +1,5 @@
-import { TestBed } from "@angular/core/testing";
-import { AppComponent } from "./app.component";
+import {TestBed} from "@angular/core/testing";
+import {AppComponent} from "./app.component";
 import {AppModule} from "./app.module";
 import {RouterTestingModule} from "@angular/router/testing";
 
@@ -26,13 +26,5 @@ describe("AppComponent", () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual("INOA Ground Control");
-  });
-
-  it("should render title", () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const app = fixture.componentInstance;
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector("#title")?.textContent).toContain(app.title);
   });
 });

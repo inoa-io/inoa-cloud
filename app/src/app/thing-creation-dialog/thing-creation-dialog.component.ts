@@ -52,6 +52,15 @@ export class ThingCreationDialogComponent implements OnDestroy
   {
     this.form = new FormGroup({});
 
+    // Ensure that data.thingTypes is defined before accessing its elements
+    if (this.data && this.data.thingTypes && this.data.thingTypes.length > 0) {
+      // Load the first type into the form
+      this.loadThingTypes(this.data.thingTypes[0]);
+      this.selectedThingType = this.data.thingTypes[0];
+      this.thingTypes = this.data.thingTypes;
+    }
+    else { console.error("ThingTypes data is undefined or null"); }
+
     //load first type into the form
     // this.loadThingTypes(data.thingTypes[0]); //TODO: switch to real data, not static
     this.loadThingTypes(staticThingTypes[0]);

@@ -1,6 +1,8 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
-
-import { MeasurementCollectorComponent } from "./measurement-collector.component";
+import {HttpClientModule} from "@angular/common/http";
+import {ComponentFixture, TestBed} from "@angular/core/testing";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatSelectModule} from "@angular/material/select";
+import {MeasurementCollectorComponent} from "./measurement-collector.component";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatIconModule} from "@angular/material/icon";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
@@ -25,7 +27,10 @@ describe("MeasurementCollectorComponent", () => {
         MatCardModule,
         MatStepperModule,
         MatAutocompleteModule,
+        MatDialogModule,
+        MatSelectModule,
         BrowserAnimationsModule,
+        HttpClientModule
       ],
       declarations: [ MeasurementCollectorComponent ]
     })
