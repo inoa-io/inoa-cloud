@@ -13,7 +13,7 @@ export interface ThingCategory {
 })
 export class ThingCategoryService implements OnDestroy {
 
-  private destroy$: Subject<any> = new Subject<any>();
+  private destroy$: Subject<boolean> = new Subject<boolean>();
   private categories = new Map<string, ThingCategory>();
 
   constructor(private http: HttpClient) {

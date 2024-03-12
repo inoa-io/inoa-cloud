@@ -49,5 +49,4 @@ steps:
       - sed -i 's_https://registry.yarnpkg.com_http://nexus.development.svc.cluster.local/repository/npmjs.org_g' yarn.lock
       - yarn install --no-progress --frozen-lockfile --non-interactive --ignore-optional --ignore-platform --ignore-engines
       - yarn lint
-    failure: ignore  # TODO linting fails :'(
     when: [path: [app/**]]

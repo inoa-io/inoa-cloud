@@ -9,11 +9,11 @@ import {Subject, takeUntil, tap} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {ThingCategoryService, ThingCategory} from "../thing-category.service";
 
-enum ConnectionStatus {
+/*enum ConnectionStatus {
   Created,
   Connected,
   Disabled
-}
+}*/
 
 const staticThingTypes: ThingTypeVO[] =
 [
@@ -85,22 +85,16 @@ export class ThingCreationDialogComponent implements OnDestroy
   {
     if (this.form.valid && this.selectedThingType)
     {
-      this.data.thing =
+      if(this.data.thing)
       {
-        created: this.data.thing!.created,
-        gateway_id: this.data.thing!.gateway_id,
-        updated: this.data.thing!.updated,
-        // category: this.thingCategoryService.getCategory("energy_meter"),
-        config: this.data.thing!,
-        id: this.data.thing!.id,
-        name: this.data.thing!.name,
-        // status: ConnectionStatus.Created,
-        thing_type_id: this.selectedThingType.id
+        // this.data.thing.category = this.thingCategoryService.getCategory("energy_meter")
+        // this.data.thing.status = ConnectionStatus.Created;
+        this.data.thing.thing_type_id = this.selectedThingType.id;
       }
     }
   }
 
-  getThingImage(type: ThingTypeVO) { return this.thingCategoryService.getCategory("unknown").image; }
+  getThingImage(type: ThingTypeVO) { console.log("Type is: " + type); return this.thingCategoryService.getCategory("unknown").image; }
 
   onSubmit(model: {email: string}) { console.log("Submitted for: " + model.email); }
 

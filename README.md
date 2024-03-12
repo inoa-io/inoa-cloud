@@ -21,7 +21,7 @@ controlled devices.
 ```shell
 mvn k3s:rm
 mvn clean install
-mvn clean pre-integration-test -Dk3s.failIfExists=false -pl ./inoa-test/
+mvn clean pre-integration-test -Dk3s.failIfExists=false -pl ./test/
 ```
 
 Afterwards, you may browse to [http://help.127.0.0.1.nip.io:8080/](http://help.127.0.0.1.nip.io:8080/).

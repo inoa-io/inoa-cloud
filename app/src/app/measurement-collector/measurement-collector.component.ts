@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AbstractControl, FormBuilder, FormControl, ValidatorFn, Validators } from "@angular/forms";
+import {AbstractControl, FormBuilder, FormControl, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
 import { GatewaysService, ThingTypesService, ThingsService } from "@inoa/api";
@@ -9,30 +9,22 @@ import { ThingCreationDialogComponent, ThingCreationDialogData } from "../thing-
 import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { ThingCategory, ThingCategoryService } from "../thing-category.service";
 
-function autocompleteObjectValidator(): ValidatorFn
-{
-  return (control: AbstractControl): { [key: string]: any } | null =>
-  {
-    if (typeof control.value === "string")
-    {
+function autocompleteObjectValidator(): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    if (typeof control.value === "string") {
       if (control.value === "") { return null; }
-
-      return {"invalidAutocompleteObject": {value: control.value}};
+      return { "invalidAutocompleteObject": { value: control.value } };
     }
-
     return null;
   }
 }
 
-function requiredIfValidator(predicate: () => any): ValidatorFn
-{
-  return (formControl =>
-  {
+function requiredIfValidator(predicate: () => boolean): ValidatorFn {
+  return (formControl) => {
     if (!formControl.parent) { return null; }
     if (predicate()) { return Validators.required(formControl); }
-
     return null;
-  })
+  };
 }
 
 export type ConnectionStatus = "created" | "connected" | "measuring" | "offline" | "deactivated";
@@ -76,7 +68,7 @@ export class MeasurementCollectorComponent implements OnInit
   public filteredGateways: Observable<GatewayVO[]> | undefined;
 
   public satelliteControl = new FormControl("", { validators: [Validators.required, autocompleteObjectValidator()] });
-  public connectionControl = new FormControl("", { validators: [requiredIfValidator(() => this.selectedGateway && !this.isOnline(this.selectedGateway))] });
+  public connectionControl = new FormControl("", { validators: [requiredIfValidator(() => this.selectedGateway !== undefined && !this.isOnline(this.selectedGateway))] });
   public thingControl = new FormControl("", { validators: [Validators.required] });
 
   public selectedGateway: GatewayVO | undefined;
@@ -173,6 +165,7 @@ export class MeasurementCollectorComponent implements OnInit
 
   supportsWifi(gatewayVO: GatewayVO)
   {
+    console.log(gatewayVO);
     return true;
     // TODO Get out the interfaces availabale at the connected gateway.
     // return gatewayVO.network_interfaces?.includes(NetworkInterface.Wifi);
@@ -180,6 +173,7 @@ export class MeasurementCollectorComponent implements OnInit
 
   supportsLAN(gatewayVO: GatewayVO)
   {
+    console.log(gatewayVO);
     return true;
     // TODO Get out the interfaces availabale at the connected gateway.
     // return gatewayVO.network_interfaces?.includes(NetworkInterface.Lan);
@@ -211,6 +205,7 @@ export class MeasurementCollectorComponent implements OnInit
 
   getFlowColorSatelliteThing(category: ThingCategory)
   {
+    console.log(category);
     /* TODO Find category of thing
     return this.selectedThing && this.selectedThing.category == category ? "#2196f3" : "#999";
 
@@ -219,6 +214,7 @@ export class MeasurementCollectorComponent implements OnInit
   }
   getFlowDisplaySatelliteThing(category: ThingCategory)
   {
+    console.log(category);
     /* TODO Find Category and thing status.
     if(this.selectedThing
         && this.selectedThing.category == category
@@ -250,6 +246,7 @@ export class MeasurementCollectorComponent implements OnInit
 
   isThingCategoryConnected(category: ThingCategory): boolean
   {
+    console.log(category);
     if (!this.selectedGateway) return false;
     /*
      ** TODO Get connected Things from Gateway.
@@ -335,6 +332,7 @@ export class MeasurementCollectorComponent implements OnInit
   getThingCategory(thingTypeId: string): ThingCategory
   {
     //TODO: should probably use thingTypeId later
+    console.log(thingTypeId);
     return this.thingCategoryService.getCategory("energy_meter");
   }
 

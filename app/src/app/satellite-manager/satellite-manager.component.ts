@@ -74,8 +74,6 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
 
   selectedTabIndex = 0;
 
-  httpResult: any;
-
   functions = [];
   function = "";
 
