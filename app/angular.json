@@ -124,6 +124,7 @@
 							"zone.js",
 							"zone.js/testing"
 						],
+						"karmaConfig": "karma.conf.ts",
 						"tsConfig": "tsconfig.spec.json",
 						"inlineStyleLanguage": "sass",
 						"assets": [

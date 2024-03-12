@@ -14,7 +14,7 @@ variables:
     when:
       <<: *when-path
   - &node
-    image: ghcr.io/grayc-de/plugins/node:20
+    image: ghcr.io/grayc-de/plugins/node:20-chrome
     depends_on: []
     directory: app
     when:
@@ -80,7 +80,6 @@ steps:
     depends_on: [preload-yarn]
     commands: [yarn test --no-progress --no-watch]
     when: [path: [app/**]]
-    failure: ignore  # TODO testing fails :'(
 
   image:
     <<: *maven
