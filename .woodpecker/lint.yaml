@@ -42,11 +42,8 @@ steps:
     when: [path: ["**/*.yaml", .yamllint.yaml]]
 
   yarn:
-    image: ghcr.io/grayc-de/plugins/yarn:node18
+    image: ghcr.io/grayc-de/plugins/node:20
     depends_on: []
     directory: app
-    commands:
-      - sed -i 's_https://registry.yarnpkg.com_http://nexus.development.svc.cluster.local/repository/npmjs.org_g' yarn.lock
-      - yarn install --no-progress --frozen-lockfile --non-interactive --ignore-optional --ignore-platform --ignore-engines
-      - yarn lint
+    commands: [yarn config --no-defaults, yarn install --immutable, yarn lint]
     when: [path: [app/**]]

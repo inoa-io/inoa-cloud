@@ -1,4 +1,6 @@
 target
-dist
-node_modules
-.angular
+
+app/.angular
+app/.yarn
+app/dist
+app/node_modules
