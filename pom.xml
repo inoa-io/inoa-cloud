@@ -93,7 +93,7 @@
 		<version.io.micronaut.core>4.3.10</version.io.micronaut.core>
 		<version.io.micronaut.platform>4.3.5</version.io.micronaut.platform>
 		<version.io.micronaut.data>4.6.2</version.io.micronaut.data>
-		<version.io.micronaut.validation>4.4.3</version.io.micronaut.validation>
+		<version.io.micronaut.validation>4.4.4</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.77</version.org.bouncycastle>
