@@ -120,6 +120,7 @@
 								</resource>
 							</resources>
 							<outputDirectory>${project.build.directory}/k3s</outputDirectory>
+							<skip>${k3s.skip}</skip>
 						</configuration>
 					</execution>
 				</executions>

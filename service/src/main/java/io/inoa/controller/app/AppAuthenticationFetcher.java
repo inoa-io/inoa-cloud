@@ -1,4 +1,4 @@
-package io.inoa.controller.ui;
+package io.inoa.controller.app;
 
 import java.time.Instant;
 import java.util.Date;
@@ -27,9 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 @Requires(property = "micronaut.application.name", value = "inoa-k3s")
 @Singleton
 @Slf4j
-public class AngularAuthenticationFetcher implements AuthenticationFetcher<HttpRequest<?>> {
+public class AppAuthenticationFetcher implements AuthenticationFetcher<HttpRequest<?>> {
 
-	AngularAuthenticationFetcher() {
+	AppAuthenticationFetcher() {
 		log.error("Angular authentication fetcher is enabled, this should not happen in production.");
 	}
 

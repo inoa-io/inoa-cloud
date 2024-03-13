@@ -3,13 +3,6 @@ micronaut:
     name: ${project.artifactId}
     version: ${project.version}
 
-  ## https://docs.micronaut.io/latest/guide/#staticResources
-  router:
-    static-resources:
-      ui:
-        mapping: /**
-        paths: file:/static
-
   server:
     # https://docs.micronaut.io/snapshot/guide/index.html#atBlocking
     thread-selection: AUTO
