@@ -38,6 +38,7 @@ public class MqttFactory {
 		config.setProperty(IConfig.PERSISTENCE_ENABLED_PROPERTY_NAME, String.valueOf(false));
 		// Immediate flush to avoid timing issues in tests or dependant clients
 		config.setProperty(IConfig.BUFFER_FLUSH_MS_PROPERTY_NAME, String.valueOf(0));
+		config.setProperty(IConfig.ENABLE_TELEMETRY_NAME, "false");
 		return config;
 	}
 
