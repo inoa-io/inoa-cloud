@@ -7,10 +7,6 @@ commonLabels:
 images:
   - name: docker.io/library/influxdb
     newTag: 2.7.5
-  - name: docker.io/obsidiandynamics/kafdrop
-    newTag: 4.0.1
-  - name: docker.io/provectuslabs/kafka-ui
-    newTag: v0.7.1
   - name: docker.io/redpandadata/console
     newTag: v2.4.5
   - name: docker.io/hawkbit/hawkbit-update-server
@@ -28,8 +24,6 @@ resources:
   - influxdb
   - kafka
   - kafka-console
-  - kafka-ui
-  - kafdrop
   - inoa
 
 # scale prod down to 0 to avoid costs
