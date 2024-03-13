@@ -11,8 +11,9 @@ configMapGenerator:
       - MCNOIZE_DEBUG=false
       - MCNOIZE_KEYCLOAK_TOKEN_URL=https://oidc.inoa.io/realms/inoa/protocol/openid-connect/token
       - MCNOIZE_KEYCLOAK_CLIENT_ID=inoa-mcnoize
+      - MCNOIZE_INOA_URL=https://api.dev.inoa.io
       - MCNOIZE_MQTT_URL=ssl://mqtt.dev.inoa.io:443
-      - MCNOIZE_INOA_URL=http://api.dev.inoa.io
+      - MCNOIZE_MQTT_INSECURE=false
       - MCNOIZE_SLEEP=1000
 
 secretGenerator:

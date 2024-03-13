@@ -4,5 +4,9 @@ commonLabels:
   app.kubernetes.io/part-of: inoa
   app.kubernetes.io/env: dev
 
+images:
+  - name: ghcr.io/inoa-io/mcnoize
+    newTag: 0.0.3
+
 resources:
   - mcnoize

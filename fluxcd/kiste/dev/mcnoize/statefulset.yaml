@@ -3,15 +3,11 @@ kind: StatefulSet
 metadata:
   name: mcnoize
 spec:
-  replicas: 3
+  replicas: 10
   selector:
     matchLabels:
       app.kubernetes.io/name: mcnoize
   podManagementPolicy: Parallel
-  updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 10
   template:
     metadata:
       annotations:
@@ -23,10 +19,12 @@ spec:
         - name: dockerconfigjson-ghcr-io
       containers:
         - name: mcnoize
-          image: ghcr.io/inoa-io/mcnoize:0.0.2
+          image: ghcr.io/inoa-io/mcnoize
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
+                name: mcnoize-env
+            - secretRef:
                 name: mcnoize-env
           env:
             - name: MCNOIZE_POD_NAME
@@ -35,9 +33,10 @@ spec:
                   fieldPath: metadata.name
           resources:
             limits:
-              memory: 5Mi
+              cpu: 10m
+              memory: 10Mi
             requests:
-              cpu: 1m
+              cpu: 5m
               memory: 5Mi
           securityContext:
             runAsUser: 1000
