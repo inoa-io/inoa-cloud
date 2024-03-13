@@ -3,15 +3,11 @@ kind: StatefulSet
 metadata:
   name: mcnoize
 spec:
-  replicas: 1
+  replicas: 10
   selector:
     matchLabels:
       app.kubernetes.io/name: mcnoize
   podManagementPolicy: Parallel
-  updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 10
   template:
     metadata:
       annotations:
@@ -36,7 +32,7 @@ spec:
         - name: wait-for-hawkbit
           image: ${image.traefik}
           imagePullPolicy: Never
-          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://hawkbit/UI/login --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done]
+          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://hawkbit/UI/login --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done && sleep 2]
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000

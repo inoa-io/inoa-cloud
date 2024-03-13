@@ -14,5 +14,5 @@ configMapGenerator:
       - MCNOIZE_KEYCLOAK_CLIENT_SECRET=changeMe
       - MCNOIZE_INOA_URL=http://inoa
       - MCNOIZE_MQTT_URL=ssl://inoa:8883
-      - MCNOIZE_SLEEP_DURATION=PT1m
+      - MCNOIZE_SLEEP_DURATION=PT10s
       - MCNOIZE_PAST_DURATION=PT24h
