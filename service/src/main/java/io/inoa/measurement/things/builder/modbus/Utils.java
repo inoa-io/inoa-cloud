@@ -2,11 +2,9 @@ package io.inoa.measurement.things.builder.modbus;
 
 import java.util.Base64;
 
-import io.inoa.controller.translator.modbus.CRC16;
+import io.inoa.util.Modbus;
 
 public class Utils {
-	private Utils() {
-	}
 
 	public static byte[] buildFrame(byte slaveId, byte functionCode, short registerOffset, short numberOfRegisters) {
 		byte[] bytes = new byte[6];
@@ -23,7 +21,7 @@ public class Utils {
 		target[3] = bytes[3];
 		target[4] = bytes[4];
 		target[5] = bytes[5];
-		byte[] crc = CRC16.getCRC(bytes);
+		byte[] crc = Modbus.getCRC(bytes);
 		target[6] = crc[0];
 		target[7] = crc[1];
 		return target;

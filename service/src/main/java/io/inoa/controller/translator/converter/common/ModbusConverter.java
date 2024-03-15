@@ -5,9 +5,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import io.inoa.controller.translator.TranslatorProperties;
-import io.inoa.controller.translator.modbus.CRC16;
 import io.inoa.rest.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
+import io.inoa.util.Modbus;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Singleton;
 
@@ -54,7 +54,7 @@ public class ModbusConverter extends CommonConverter {
 
 		// check crc
 
-		if (!CRC16.isValid(raw.getValue())) {
+		if (!Modbus.isValid(raw.getValue())) {
 			log.info("Retrieved invalid modbus message (crc16): {}", hexString);
 			increment(type, COUNTER_FAIL_CRC);
 			return Stream.empty();
