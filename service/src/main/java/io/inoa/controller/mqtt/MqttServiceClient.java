@@ -17,7 +17,7 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.netty.handler.codec.mqtt.MqttPublishMessage;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

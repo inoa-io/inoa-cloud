@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.messaging.KafkaHeader;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;

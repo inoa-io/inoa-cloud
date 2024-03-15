@@ -31,7 +31,6 @@ export * from './register';
 export * from './rpcCommand';
 export * from './rpcResponseError';
 export * from './rpcResponse';
-export * from './telemetryRaw';
 export * from './telemetry';
 export * from './tenantCreate';
 export * from './tenantUpdate';

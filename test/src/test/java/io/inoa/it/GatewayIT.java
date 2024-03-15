@@ -19,10 +19,10 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.GatewayApiTestClient;
 import io.inoa.rest.GatewayUpdateVO;
 import io.inoa.rest.RegisterVO;
-import io.inoa.rest.TelemetryRawVO;
 import io.inoa.test.AbstractIntegrationTest;
 
 public class GatewayIT extends AbstractIntegrationTest {
@@ -81,8 +81,8 @@ public class GatewayIT extends AbstractIntegrationTest {
 		var timestamp = Instant.now().truncatedTo(ChronoUnit.MILLIS);
 		var value = 4_000_000D;
 		var urn = "urn:satellite:" + gatewayId + ":memory_heap";
-		var payload = new ObjectMapper().writeValueAsBytes(new TelemetryRawVO().urn(urn)
-				.timestamp(timestamp.toEpochMilli()).value(String.valueOf(value).getBytes()));
+		var payload = new ObjectMapper().findAndRegisterModules().writeValueAsBytes(
+				new TelemetryRawVO(urn, timestamp, String.valueOf(value).getBytes(), null));
 		assertDoesNotThrow(() -> gatewayClient.mqtt().trustAllCertificates().connect(), "mqtt connect failed");
 		assertDoesNotThrow(() -> gatewayClient.mqtt().publishTelemetry(payload), "mqtt publish failed");
 		assertDoesNotThrow(() -> gatewayClient.mqtt().disconnect(), "mqtt disconnect failed");

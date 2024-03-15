@@ -2,19 +2,16 @@ package io.inoa.controller.translator.converter.common;
 
 import static io.inoa.controller.translator.converter.LogSink.assertMessage;
 
-import java.time.Instant;
+import java.util.HexFormat;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import com.github.dockerjava.zerodep.shaded.org.apache.commons.codec.binary.Hex;
-
 import io.inoa.controller.translator.AbstractTranslatorTest;
 import io.inoa.controller.translator.converter.LogSink;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import jakarta.inject.Inject;
-import lombok.SneakyThrows;
 
 /**
  * Test for {@link ModbusConverter}.
@@ -34,15 +31,16 @@ public class ModbusConverterTest extends AbstractTranslatorTest {
 	@DisplayName("success: without modifier")
 	@Test
 	void successWithoutModifier() {
-		var telemetry = telemetry("08030240C85413");
-		assertSingleValue(16584D, converter, telemetry, "example", "modbus");
+		var hex = "08030240C85413";
+		assertSingleValue(16584D, converter, telementry("urn:example:0815:modbus", hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Modbus with slaveId 08, functionCode 03 has value: 16584");
 	}
 
 	@DisplayName("success: with modifier")
 	@Test
 	void successWithModifier() {
-		var telemetry = telemetry("08030240C85413").urn("urn:example:0815:modbus-with-modifier");
+		var hex = "08030240C85413";
+		var telemetry = telementry("urn:example:0815:modbus-with-modifier", hex);
 		assertSingleValue(165840D, converter, telemetry, "example", "modbus-with-modifier");
 		assertMessage(ModbusConverter.class, "Modbus with slaveId 08, functionCode 03 has value: 16584");
 	}
@@ -51,7 +49,7 @@ public class ModbusConverterTest extends AbstractTranslatorTest {
 	@Test
 	void failPayloadCrcInvalid() {
 		var hex = "010301105044";
-		assertEmpty(converter, telemetry(hex), "example", "modbus");
+		assertEmpty(converter, telementry("urn:example:0815:modbus", hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (crc16): " + hex);
 	}
 
@@ -59,7 +57,7 @@ public class ModbusConverterTest extends AbstractTranslatorTest {
 	@Test
 	void failPayloadToShort() {
 		var hex = "fc";
-		assertEmpty(converter, telemetry(hex), "example", "modbus");
+		assertEmpty(converter, telementry("urn:example:0815:modbus", hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (too short): " + hex);
 	}
 
@@ -67,7 +65,7 @@ public class ModbusConverterTest extends AbstractTranslatorTest {
 	@Test
 	void failFunctionCodeInvalid() {
 		var hex = "010101105044";
-		assertEmpty(converter, telemetry(hex), "example", "modbus");
+		assertEmpty(converter, telementry("urn:example:0815:modbus", hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (functionCode 01): " + hex);
 	}
 
@@ -75,7 +73,7 @@ public class ModbusConverterTest extends AbstractTranslatorTest {
 	@Test
 	void failExceptionCode() {
 		var hex = "0A8102B053";
-		assertEmpty(converter, telemetry(hex), "example", "modbus");
+		assertEmpty(converter, telementry("urn:example:0815:modbus", hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved modbus error message (functionCode 81) with error 2");
 	}
 
@@ -83,7 +81,7 @@ public class ModbusConverterTest extends AbstractTranslatorTest {
 	@Test
 	void failByteCountInvalid() {
 		var hex = "01030210f174";
-		assertEmpty(converter, telemetry(hex), "example", "modbus");
+		assertEmpty(converter, telementry("urn:example:0815:modbus", hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (data.length 1 < byteCount 2): " + hex);
 	}
 
@@ -91,15 +89,11 @@ public class ModbusConverterTest extends AbstractTranslatorTest {
 	@Test
 	void failByteCountEmpty() {
 		var hex = "01030020f0";
-		assertEmpty(converter, telemetry(hex), "example", "modbus");
+		assertEmpty(converter, telementry("urn:example:0815:modbus", hex), "example", "modbus");
 		assertMessage(ModbusConverter.class, "Retrieved invalid modbus message (byteCount == 0): " + hex);
 	}
 
-	@SneakyThrows
-	private TelemetryRawVO telemetry(String hex) {
-		return new TelemetryRawVO()
-				.urn("urn:example:0815:modbus")
-				.timestamp(Instant.now().toEpochMilli())
-				.value(Hex.decodeHex(hex));
+	private TelemetryRawVO telementry(String urn, String hex) {
+		return TelemetryRawVO.of(urn, HexFormat.of().parseHex(hex));
 	}
 }

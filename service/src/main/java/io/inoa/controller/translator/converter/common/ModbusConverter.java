@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import io.inoa.controller.translator.TranslatorProperties;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.inoa.util.Modbus;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -45,8 +45,8 @@ public class ModbusConverter extends CommonConverter {
 
 		// parse to hex
 
-		var hexString = HexFormat.of().formatHex(raw.getValue());
-		if (raw.getValue().length < MESSAGE_MIN_LENGTH) {
+		var hexString = HexFormat.of().formatHex(raw.value());
+		if (raw.value().length < MESSAGE_MIN_LENGTH) {
 			log.warn("Retrieved invalid modbus message (too short): {}", hexString);
 			increment(type, COUNTER_FAIL_SHORT);
 			return Stream.empty();
@@ -54,7 +54,7 @@ public class ModbusConverter extends CommonConverter {
 
 		// check crc
 
-		if (!Modbus.isValid(raw.getValue())) {
+		if (!Modbus.isValid(raw.value())) {
 			log.info("Retrieved invalid modbus message (crc16): {}", hexString);
 			increment(type, COUNTER_FAIL_CRC);
 			return Stream.empty();

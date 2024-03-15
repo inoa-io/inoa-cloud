@@ -2,18 +2,14 @@ package io.inoa.controller.translator.converter.common;
 
 import static io.inoa.controller.translator.converter.LogSink.assertMessage;
 
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.controller.translator.AbstractTranslatorTest;
 import io.inoa.controller.translator.converter.LogSink;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import jakarta.inject.Inject;
-import lombok.SneakyThrows;
 
 /**
  * Test for {@link S0Converter}.
@@ -33,7 +29,7 @@ public class S0ConverterTest extends AbstractTranslatorTest {
 	@DisplayName("success: with modifier")
 	@Test
 	void successWithModifier() {
-		var telemetry = telemetry("1234567");
+		var telemetry = TelemetryRawVO.of("urn:s0:0:gas", "1234567");
 		assertSingleValue(1234.567, converter, telemetry, "s0", "gas");
 		assertMessage(S0Converter.class, "S0 count has value: 1234567");
 	}
@@ -41,29 +37,21 @@ public class S0ConverterTest extends AbstractTranslatorTest {
 	@DisplayName("fail: count empty")
 	@Test
 	void failByteCountEmpty() {
-		assertEmpty(converter, telemetry(""), "s0", "gas");
+		assertEmpty(converter, TelemetryRawVO.of("urn:s0:0:gas", ""), "s0", "gas");
 		assertMessage(S0Converter.class, "Retrieved invalid S0 message (empty)");
 	}
 
 	@DisplayName("fail: count NaN")
 	@Test
 	void failByteCountNaN() {
-		assertEmpty(converter, telemetry("DreiZehnKommaZweiEins"), "s0", "gas");
+		assertEmpty(converter, TelemetryRawVO.of("urn:s0:0:gas", "DreiZehnKommaZweiEins"), "s0", "gas");
 		assertMessage(S0Converter.class, "Retrieved invalid S0 message (not a number)");
 	}
 
 	@DisplayName("fail: count negative")
 	@Test
 	void failByteCountNegative() {
-		assertEmpty(converter, telemetry("-42"), "s0", "gas");
+		assertEmpty(converter, TelemetryRawVO.of("urn:s0:0:gas", -42), "s0", "gas");
 		assertMessage(S0Converter.class, "Retrieved invalid S0 message (negative value)");
-	}
-
-	@SneakyThrows
-	private TelemetryRawVO telemetry(String value) {
-		return new TelemetryRawVO()
-				.urn("urn:s0:0:gas")
-				.timestamp(Instant.now().toEpochMilli())
-				.value(value.getBytes(StandardCharsets.UTF_8));
 	}
 }

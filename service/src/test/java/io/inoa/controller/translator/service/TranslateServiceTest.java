@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.controller.translator.AbstractTranslatorTest;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.micronaut.cache.CacheManager;
 import jakarta.inject.Inject;
@@ -50,10 +50,8 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 				.timestamp(now.plusSeconds(60))
 				.value(100D)
 				.ext(Map.of("unit", "watthour"));
-		assertEquals(List.of(init), service.translate(tenantId, gatewayId, new TelemetryRawVO()
-				.urn(urn)
-				.timestamp(now.plusSeconds(60).toEpochMilli())
-				.value("100".getBytes())), "init inoa vo");
+		var raw = TelemetryRawVO.of(urn, now.plusSeconds(60), 100);
+		assertEquals(List.of(init), service.translate(tenantId, gatewayId, raw), "init inoa vo");
 		assertEquals(init, cache.get(urn, TelemetryVO.class).orElse(null), "init cache vo");
 
 		// with filled cache and valid value
@@ -68,34 +66,26 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 				.timestamp(now.plusSeconds(120))
 				.value(200D)
 				.ext(Map.of("unit", "watthour"));
-		assertEquals(List.of(valid), service.translate(tenantId, gatewayId, new TelemetryRawVO()
-				.urn(urn)
-				.timestamp(now.plusSeconds(120).toEpochMilli())
-				.value("200".getBytes())), "valid inoa vo");
+		raw = TelemetryRawVO.of(urn, now.plusSeconds(120), 200);
+		assertEquals(List.of(valid), service.translate(tenantId, gatewayId, raw), "valid inoa vo");
 		assertEquals(valid, cache.get(urn, TelemetryVO.class).orElse(null), "valid cache vo");
 
 		// with filled cache and outdated value
 
-		assertEquals(List.of(), service.translate(tenantId, gatewayId, new TelemetryRawVO()
-				.urn(urn)
-				.timestamp(now.plusSeconds(110).toEpochMilli())
-				.value("190".getBytes())), "outdated inoa vo");
+		raw = TelemetryRawVO.of(urn, now.plusSeconds(110), 190);
+		assertEquals(List.of(), service.translate(tenantId, gatewayId, raw), "outdated inoa vo");
 		assertEquals(valid, cache.get(urn, TelemetryVO.class).orElse(null), "outdated cache vo");
 
 		// with filled cache and outdated value
 
-		assertEquals(List.of(), service.translate(tenantId, gatewayId, new TelemetryRawVO()
-				.urn(urn)
-				.timestamp(now.plusSeconds(130).toEpochMilli())
-				.value("190".getBytes())), "negative inoa vo");
+		raw = TelemetryRawVO.of(urn, now.plusSeconds(130), 190);
+		assertEquals(List.of(), service.translate(tenantId, gatewayId, raw), "negative inoa vo");
 		assertEquals(valid, cache.get(urn, TelemetryVO.class).orElse(null), "negative cache vo");
 
 		// with filled cache and very large plus value
 
-		assertEquals(List.of(), service.translate(tenantId, gatewayId, new TelemetryRawVO()
-				.urn(urn)
-				.timestamp(now.plusSeconds(3720).toEpochMilli())
-				.value("100201".getBytes())), "threshold inoa vo");
+		raw = TelemetryRawVO.of(urn, now.plusSeconds(3720), 100201);
+		assertEquals(List.of(), service.translate(tenantId, gatewayId, raw), "threshold inoa vo");
 		assertEquals(valid, cache.get(urn, TelemetryVO.class).orElse(null), "threshold cache vo");
 
 		// with filled cache and valid value again
@@ -110,10 +100,9 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 				.timestamp(now.plusSeconds(180))
 				.value(300D)
 				.ext(Map.of("unit", "watthour"));
-		assertEquals(List.of(valid1), service.translate(tenantId, gatewayId, new TelemetryRawVO()
-				.urn(urn)
-				.timestamp(now.plusSeconds(180).toEpochMilli())
-				.value("300".getBytes())), "valid inoa vo");
+		assertEquals(List.of(valid1),
+				service.translate(tenantId, gatewayId, TelemetryRawVO.of(urn, now.plusSeconds(180), 300)),
+				"valid inoa vo");
 		assertEquals(valid1, cache.get(urn, TelemetryVO.class).orElse(null), "valid cache vo");
 	}
 
@@ -122,19 +111,16 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 	void typeExampleSingleValue() {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:number")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("1234".getBytes());
+		var raw = TelemetryRawVO.of("urn:example:0815:number", "1234");
 		var actual = service.translate(tenantId, gatewayId, raw);
 		var expected = List.of(new TelemetryVO()
 				.tenantId(tenantId)
 				.gatewayId(gatewayId)
-				.urn(raw.getUrn())
+				.urn(raw.urn())
 				.deviceType("example")
 				.deviceId("0815")
 				.sensor("number")
-				.timestamp(Instant.ofEpochMilli(raw.getTimestamp()))
+				.timestamp(raw.timestamp())
 				.value(1234D));
 		assertEquals(expected, actual, "inoa message");
 	}
@@ -144,29 +130,28 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 	void typeExampleMultipleValues() {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:json")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("{\"string\":\"sdf\",\"int\":4,\"double\":34.01,\"bool\":true,\"obj\":{}}".getBytes());
+		var raw = TelemetryRawVO
+				.of("urn:example:0815:json",
+						"{\"string\":\"sdf\",\"int\":4,\"double\":34.01,\"bool\":true,\"obj\":{}}");
 		var actual = service.translate(tenantId, gatewayId, raw);
 		var expected = List.of(
 				new TelemetryVO()
 						.tenantId(tenantId)
 						.gatewayId(gatewayId)
-						.urn(raw.getUrn() + ".int")
+						.urn(raw.urn() + ".int")
 						.deviceType("example")
 						.deviceId("0815")
 						.sensor("json.int")
-						.timestamp(Instant.ofEpochMilli(raw.getTimestamp()))
+						.timestamp(raw.timestamp())
 						.value(4D),
 				new TelemetryVO()
 						.tenantId(tenantId)
 						.gatewayId(gatewayId)
-						.urn(raw.getUrn() + ".double")
+						.urn(raw.urn() + ".double")
 						.deviceType("example")
 						.deviceId("0815")
 						.sensor("json.double")
-						.timestamp(Instant.ofEpochMilli(raw.getTimestamp()))
+						.timestamp(raw.timestamp())
 						.value(34.01D));
 		assertEquals(expected, actual, "inoa message");
 	}
@@ -176,10 +161,7 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 	void failNoConvertable() {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:number")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("NAN".getBytes());
+		var raw = TelemetryRawVO.of("urn:example:0815:number", "NAN");
 		assertTrue(service.translate(tenantId, gatewayId, raw).isEmpty(), "inoa");
 	}
 
@@ -188,10 +170,7 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 	void failNoConverter() {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:nope")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("1234".getBytes());
+		var raw = TelemetryRawVO.of("urn:example:0815:nope", "1234");
 		assertTrue(service.translate(tenantId, gatewayId, raw).isEmpty(), "inoa");
 	}
 
@@ -200,10 +179,7 @@ public class TranslateServiceTest extends AbstractTranslatorTest {
 	void failUnsupportedUrn() {
 		var tenantId = "inoa";
 		var gatewayId = "GW-0001";
-		var raw = new TelemetryRawVO()
-				.urn("NOPE")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("1234".getBytes());
+		var raw = TelemetryRawVO.of("NOPE", "1234");
 		assertTrue(service.translate(tenantId, gatewayId, raw).isEmpty(), "inoa");
 	}
 }

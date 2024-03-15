@@ -3,7 +3,7 @@ package io.inoa.controller.translator.converter.common;
 import java.util.stream.Stream;
 
 import io.inoa.controller.translator.TranslatorProperties;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Singleton;
@@ -20,6 +20,6 @@ public class NumberConverter extends CommonConverter {
 
 	@Override
 	public Stream<TelemetryVO> convert(TelemetryRawVO raw, String type, String sensor) {
-		return toDouble(raw.getValue()).stream().map(value -> convert(type, sensor, value));
+		return toDouble(raw.value()).stream().map(value -> convert(type, sensor, value));
 	}
 }

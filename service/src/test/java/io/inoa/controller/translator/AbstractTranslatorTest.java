@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 
 import io.inoa.controller.translator.converter.Converter;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.inoa.test.AbstractUnitTest;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;

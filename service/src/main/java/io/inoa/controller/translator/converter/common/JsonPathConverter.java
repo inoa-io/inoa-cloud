@@ -10,7 +10,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.JsonPathException;
 
 import io.inoa.controller.translator.TranslatorProperties;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.inject.Singleton;
@@ -43,7 +43,7 @@ public class JsonPathConverter extends CommonConverter {
 			return Stream.empty();
 		}
 
-		var jsonInput = new String(raw.getValue());
+		var jsonInput = new String(raw.value());
 		DocumentContext jsonContext;
 
 		// Parse input JSON
@@ -71,12 +71,12 @@ public class JsonPathConverter extends CommonConverter {
 			} catch (ClassCastException | JsonPathException | NoSuchElementException e) {
 				increment(type, COUNTER_FAIL_PATH);
 				log.debug("Exception while applying JSON path '{}' to JSON '{}': {}",
-						properties.get().getConfig().get(datapoint).toString(), new String(raw.getValue()),
+						properties.get().getConfig().get(datapoint).toString(), new String(raw.value()),
 						e.getMessage());
 			} catch (NumberFormatException e) {
 				increment(type, COUNTER_FAIL_NAN);
 				log.debug("JSON path '{}' on JSON '{}' is not a number: {}",
-						properties.get().getConfig().get(datapoint).toString(), new String(raw.getValue()),
+						properties.get().getConfig().get(datapoint).toString(), new String(raw.value()),
 						e.getMessage());
 			}
 			increment(type, COUNTER_SUCCESS);

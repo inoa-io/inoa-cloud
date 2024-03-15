@@ -1,12 +1,10 @@
 package io.inoa.controller.translator.converter.common;
 
-import java.time.Instant;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.controller.translator.AbstractTranslatorTest;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import jakarta.inject.Inject;
 
 /**
@@ -22,40 +20,28 @@ public class NumberConverterTest extends AbstractTranslatorTest {
 	@DisplayName("success: long as number")
 	@Test
 	void successLong() {
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:number")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("1234".getBytes());
+		var raw = TelemetryRawVO.of("urn:example:0815:number", "1234");
 		assertSingleValue(1234D, converter, raw, "example", "number");
 	}
 
 	@DisplayName("success: negatice double as number")
 	@Test
 	void successDouble() {
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:number")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("-123.456".getBytes());
+		var raw = TelemetryRawVO.of("urn:example:0815:number", "-123.456");
 		assertSingleValue(-123.456D, converter, raw, "example", "number");
 	}
 
 	@DisplayName("success: with modifier")
 	@Test
 	void successModifier() {
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:number-with-modifier")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("9876".getBytes());
+		var raw = TelemetryRawVO.of("urn:example:0815:number-with-modifier", 9876);
 		assertSingleValue(98760D, converter, raw, "example", "number-with-modifier");
 	}
 
 	@DisplayName("fail: value not convertable")
 	@Test
 	void failNoConvertable() {
-		var raw = new TelemetryRawVO()
-				.urn("urn:example:0815:number")
-				.timestamp(Instant.now().toEpochMilli())
-				.value("NAN".getBytes());
+		var raw = TelemetryRawVO.of("urn:example:0815:number", "NAN");
 		assertEmpty(converter, raw, "example", "number");
 	}
 }

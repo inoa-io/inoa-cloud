@@ -2,7 +2,7 @@ package io.inoa.controller.translator.converter;
 
 import java.util.stream.Stream;
 
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.micronaut.core.annotation.Indexed;
 import io.micronaut.core.order.Ordered;

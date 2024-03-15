@@ -1,19 +1,17 @@
 package io.inoa.controller.translator.service;
 
 import java.time.Duration;
-import java.time.Instant;
 import java.util.Base64;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.slf4j.MDC;
 
 import io.inoa.controller.translator.converter.Converter;
-import io.inoa.rest.TelemetryRawVO;
+import io.inoa.messaging.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.micronaut.cache.CacheManager;
 import io.micronaut.cache.SyncCache;
@@ -28,11 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 @Singleton
 @Slf4j
 public class TranslateService {
-
-	private static Pattern URN_PATTERN = Pattern.compile("urn"
-			+ ":(?<deviceType>[a-zA-Z0-9\\-]{2,32})"
-			+ ":(?<deviceId>[a-zA-Z0-9\\-]{2,36})"
-			+ ":(?<sensor>[a-zA-Z0-9_\\-\\:\\*]{2,64})");
 
 	private final Set<Converter> converters;
 	private final TranslateMetrics metrics;
@@ -54,9 +47,9 @@ public class TranslateService {
 
 		// parse urn
 
-		var matcher = URN_PATTERN.matcher(raw.getUrn());
+		var matcher = TelemetryRawVO.URN_PATTERN.matcher(raw.urn());
 		if (!matcher.matches()) {
-			log.error("Unsupported urn {}.", raw.getUrn());
+			log.error("Unsupported urn {}.", raw.urn());
 			return List.of();
 		}
 		var deviceType = matcher.group("deviceType");
@@ -84,7 +77,7 @@ public class TranslateService {
 				.peek(target -> fillMessage(raw, target, tenantId, gatewayId, deviceType, deviceId, sensor))
 				.collect(Collectors.toList());
 		if (messages.isEmpty()) {
-			log.warn("Failed on value: {}", Base64.getEncoder().encode(raw.getValue()));
+			log.warn("Failed on value: {}", Base64.getEncoder().encode(raw.value()));
 			metrics.counterFailValue(tenantId, deviceType, sensor).increment();
 			return List.of();
 		}
@@ -107,7 +100,7 @@ public class TranslateService {
 		telemetry.setGatewayId(gatewayId);
 
 		if (telemetry.getUrn() == null) {
-			telemetry.setUrn(raw.getUrn());
+			telemetry.setUrn(raw.urn());
 		}
 		if (telemetry.getDeviceId() == null) {
 			telemetry.setDeviceId(deviceId);
@@ -119,14 +112,14 @@ public class TranslateService {
 			telemetry.setSensor(sensor);
 		}
 		if (telemetry.getTimestamp() == null) {
-			telemetry.setTimestamp(Instant.ofEpochMilli(raw.getTimestamp()));
+			telemetry.setTimestamp(raw.timestamp());
 		}
 
-		if (raw.getExt() != null) {
-			if (raw.getExt() != null) {
+		if (raw.ext() != null) {
+			if (raw.ext() != null) {
 				telemetry.setExt(new HashMap<>());
 			}
-			raw.getExt().forEach(telemetry.getExt()::putIfAbsent);
+			raw.ext().forEach(telemetry.getExt()::putIfAbsent);
 		}
 	}
 
