@@ -1,4 +1,4 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,11 +11,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 
-import io.inoa.test.AbstractUnitTest;
 import io.netty.handler.ssl.SslContext;
 import jakarta.inject.Inject;
 
-public class MqttFactoryTest extends AbstractUnitTest {
+/**
+ * Test for {@link MqttFactory}.
+ *
+ * @author stephan.schnabel@grayc.de
+ */
+@DisplayName("mqtt: factory")
+public class MqttFactoryTest extends AbstractMqttTest {
 
 	@Inject MqttFactory factory;
 

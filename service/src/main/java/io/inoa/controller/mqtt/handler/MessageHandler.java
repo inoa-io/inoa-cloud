@@ -1,12 +1,12 @@
-package io.inoa.fleet.broker.handler;
+package io.inoa.controller.mqtt.handler;
 
-import static io.inoa.fleet.broker.MqttBroker.COMMAND_RESPONSE_TOPIC_LONG_MATCHER;
-import static io.inoa.fleet.broker.MqttBroker.COMMAND_RESPONSE_TOPIC_SHORT_MATCHER;
-import static io.inoa.fleet.broker.MqttBroker.EVENT_TOPIC_LONG_NAME;
-import static io.inoa.fleet.broker.MqttBroker.EVENT_TOPIC_SHORT_NAME;
-import static io.inoa.fleet.broker.MqttBroker.TELEMETRY_TOPIC_LONG_NAME;
-import static io.inoa.fleet.broker.MqttBroker.TELEMETRY_TOPIC_SHORT_NAME;
-import static io.inoa.fleet.broker.MqttBroker.matchesTopic;
+import static io.inoa.controller.mqtt.MqttBroker.COMMAND_RESPONSE_TOPIC_LONG_MATCHER;
+import static io.inoa.controller.mqtt.MqttBroker.COMMAND_RESPONSE_TOPIC_SHORT_MATCHER;
+import static io.inoa.controller.mqtt.MqttBroker.EVENT_TOPIC_LONG_NAME;
+import static io.inoa.controller.mqtt.MqttBroker.EVENT_TOPIC_SHORT_NAME;
+import static io.inoa.controller.mqtt.MqttBroker.TELEMETRY_TOPIC_LONG_NAME;
+import static io.inoa.controller.mqtt.MqttBroker.TELEMETRY_TOPIC_SHORT_NAME;
+import static io.inoa.controller.mqtt.MqttBroker.matchesTopic;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -16,7 +16,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 
-import io.inoa.fleet.broker.MqttGatewayIdentifier;
+import io.inoa.controller.mqtt.MqttGatewayIdentifier;
 import io.inoa.fleet.registry.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.moquette.interception.AbstractInterceptHandler;

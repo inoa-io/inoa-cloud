@@ -1,4 +1,4 @@
-package io.inoa.fleet.broker;
+package io.inoa.fleet.remoting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

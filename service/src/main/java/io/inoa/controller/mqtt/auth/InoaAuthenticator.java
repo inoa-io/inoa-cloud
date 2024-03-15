@@ -1,6 +1,6 @@
-package io.inoa.fleet.broker.auth;
+package io.inoa.controller.mqtt.auth;
 
-import io.inoa.fleet.broker.MqttGatewayIdentifier;
+import io.inoa.controller.mqtt.MqttGatewayIdentifier;
 import io.moquette.broker.security.IAuthenticator;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;

@@ -44,11 +44,6 @@ inoa:
           description: URI of mqtt server.
           type: STRING
           pattern: (tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}
-    mqtt:
-      port: ${random.port}
-      tls:
-        port: ${random.port}
-        generate-key: true
   measurement:
     # allow audience test access to all tenants
     security:

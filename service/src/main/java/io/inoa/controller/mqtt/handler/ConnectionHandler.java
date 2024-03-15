@@ -1,4 +1,4 @@
-package io.inoa.fleet.broker.handler;
+package io.inoa.controller.mqtt.handler;
 
 import java.util.List;
 import java.util.Map;
@@ -11,7 +11,7 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.broker.MqttGatewayIdentifier;
+import io.inoa.controller.mqtt.MqttGatewayIdentifier;
 import io.inoa.fleet.registry.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.moquette.interception.AbstractInterceptHandler;

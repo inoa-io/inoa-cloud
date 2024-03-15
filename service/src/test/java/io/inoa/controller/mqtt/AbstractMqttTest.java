@@ -1,4 +1,4 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,14 +8,12 @@ import java.util.stream.StreamSupport;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
 import io.inoa.fleet.registry.KafkaHeader;
+import io.inoa.test.AbstractUnitTest;
 import io.inoa.test.KafkaSink;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 
-/**
- * Assertions for mqtt communication.
- *
- * @author stephan.schnabel@grayc.de
- */
-public final class MqttAssertions {
+@MicronautTest(environments = "mqtt")
+public abstract class AbstractMqttTest extends AbstractUnitTest {
 
 	public static void assertHeader(ProducerRecord<?, ?> record, String name, Object value) {
 		var headers = StreamSupport.stream(record.headers().headers(name).spliterator(), false).toList();

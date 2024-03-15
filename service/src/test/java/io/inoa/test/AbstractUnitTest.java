@@ -107,8 +107,9 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 
 			testProperties = Map.of(
 					// use fixed ports for all tests, this avoids port conflicts
-					"inoa.fleet.mqtt.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
-					"inoa.fleet.mqtt.tls.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
+					"inoa.mqtt.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
+					"inoa.mqtt.tls.port", String.valueOf(SocketUtils.findAvailableTcpPort()),
+					"inoa.mqtt.tls.generate-key", "true",
 					"influxdb.url", "http://" + influxContainer.getHost() + ":" + influxContainer.getMappedPort(8086),
 					"influxdb.token", influxToken,
 					"influxdb.organisation", influxOrganisation,

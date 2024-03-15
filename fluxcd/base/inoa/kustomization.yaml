@@ -22,10 +22,10 @@ configMapGenerator:
       - INFLUXDB_URL=http://influxdb:8086
       - INFLUXDB_ORGANISATION=inoa
       - INFLUXDB_BUCKET=default
-      - INOA_FLEET_MQTT_TLS_GENERATE_KEY=false
-      - INOA_FLEET_MQTT_TLS_KEY=/tls/tls.key
-      - INOA_FLEET_MQTT_TLS_CERT=/tls/tls.crt
-      - INOA_FLEET_MQTT_DATA_PATH=/moquette
+      - INOA_MQTT_TLS_GENERATE_KEY=false
+      - INOA_MQTT_TLS_KEY=/tls/tls.key
+      - INOA_MQTT_TLS_CERT=/tls/tls.crt
+      - INOA_MQTT_DATA_PATH=/moquette
       # TODO set as default in all deployments
       - ENDPOINTS_ALL_PORT=8090
       # custom log levels

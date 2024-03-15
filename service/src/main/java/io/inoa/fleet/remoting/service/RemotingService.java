@@ -1,12 +1,12 @@
 package io.inoa.fleet.remoting.service;
 
-import static io.inoa.fleet.broker.MqttBroker.COMMAND_TOPIC_LONG_NAME;
+import static io.inoa.controller.mqtt.MqttBroker.COMMAND_TOPIC_LONG_NAME;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.broker.MqttBroker;
+import io.inoa.controller.mqtt.MqttBroker;
 import io.inoa.rest.RpcCommandVO;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.mqtt.MqttMessageBuilders;

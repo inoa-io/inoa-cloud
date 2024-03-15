@@ -1,10 +1,13 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt;
 
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.util.Properties;
 
 import javax.net.ssl.SSLException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.micronaut.context.annotation.Factory;
 import io.moquette.broker.ISslContextCreator;
@@ -16,14 +19,20 @@ import io.netty.handler.ssl.SslProtocols;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+/**
+ * Factory for mqtt broker.
+ *
+ * @author stephan.schnabel@grayc.de
+ */
 @Factory
 public class MqttFactory {
 
+	private static final Logger log = LoggerFactory.getLogger(MqttFactory.class);
+
 	@PostConstruct
-	void bouncycastle() {
+	void log() {
+		log.info("Starting controller: {}", getClass().getPackage().getName());
 		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 	}
 

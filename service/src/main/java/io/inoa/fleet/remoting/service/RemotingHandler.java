@@ -1,8 +1,8 @@
 package io.inoa.fleet.remoting.service;
 
-import static io.inoa.fleet.broker.MqttBroker.COMMAND_RESPONSE_TOPIC_LONG_MATCHER;
-import static io.inoa.fleet.broker.MqttBroker.COMMAND_RESPONSE_TOPIC_SHORT_MATCHER;
-import static io.inoa.fleet.broker.MqttBroker.matchesTopic;
+import static io.inoa.controller.mqtt.MqttBroker.COMMAND_RESPONSE_TOPIC_LONG_MATCHER;
+import static io.inoa.controller.mqtt.MqttBroker.COMMAND_RESPONSE_TOPIC_SHORT_MATCHER;
+import static io.inoa.controller.mqtt.MqttBroker.matchesTopic;
 
 import java.util.HashMap;
 import java.util.Map;

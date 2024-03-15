@@ -1,6 +1,6 @@
-package io.inoa.fleet.broker.handler;
+package io.inoa.controller.mqtt.handler;
 
-import io.inoa.fleet.broker.MqttGatewayIdentifier;
+import io.inoa.controller.mqtt.MqttGatewayIdentifier;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptSubscribeMessage;
 import io.moquette.interception.messages.InterceptUnsubscribeMessage;

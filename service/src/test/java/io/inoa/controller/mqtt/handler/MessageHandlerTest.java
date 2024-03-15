@@ -1,7 +1,5 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt.handler;
 
-import static io.inoa.fleet.broker.MqttAssertions.assertConnectionEvent;
-import static io.inoa.fleet.broker.MqttAssertions.assertHeader;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,17 +11,22 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.inoa.controller.mqtt.AbstractMqttTest;
+import io.inoa.controller.mqtt.MqttProperties;
+import io.inoa.controller.mqtt.MqttServiceClient;
 import io.inoa.fleet.registry.KafkaHeader;
-import io.inoa.test.AbstractUnitTest;
-import jakarta.inject.Inject;
 
-public class TelemetryTest extends AbstractUnitTest {
-
-	@Inject MqttProperties properties;
+/**
+ * Test for {@link MessageHandler}.
+ *
+ * @author stephan.schnabel@grayc.de
+ */
+@DisplayName("mqtt: handler message")
+public class MessageHandlerTest extends AbstractMqttTest {
 
 	@DisplayName("telemetry message")
 	@Test
-	void telemetry() throws MqttException {
+	void telemetry(MqttProperties properties) throws MqttException {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";
@@ -49,7 +52,7 @@ public class TelemetryTest extends AbstractUnitTest {
 
 	@DisplayName("event message")
 	@Test
-	void event() throws MqttException {
+	void event(MqttProperties properties) throws MqttException {
 
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
 		var tenantId = "inoa";

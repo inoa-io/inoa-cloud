@@ -1,6 +1,5 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt.handler;
 
-import static io.inoa.fleet.broker.MqttAssertions.assertHeader;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Map;
@@ -10,17 +9,22 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.inoa.controller.mqtt.AbstractMqttTest;
+import io.inoa.controller.mqtt.MqttProperties;
+import io.inoa.controller.mqtt.MqttServiceClient;
 import io.inoa.fleet.registry.KafkaHeader;
-import io.inoa.test.AbstractUnitTest;
-import jakarta.inject.Inject;
 
-public class ConnectTest extends AbstractUnitTest {
-
-	@Inject MqttProperties properties;
+/**
+ * Test for {@link ConnectionHandler}.
+ *
+ * @author stephan.schnabel@grayc.de
+ */
+@DisplayName("mqtt: handler connection")
+public class ConnectionHandlerTest extends AbstractMqttTest {
 
 	@DisplayName("connect & disconnect graceful")
 	@Test
-	void graceful() throws MqttException {
+	void graceful(MqttProperties properties) throws MqttException {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";
@@ -50,7 +54,7 @@ public class ConnectTest extends AbstractUnitTest {
 
 	@DisplayName("connect & disconnect hard")
 	@Test
-	void hard() throws MqttException {
+	void hard(MqttProperties properties) throws MqttException {
 
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
 		var tenantId = "inoa";

@@ -17,10 +17,10 @@ configMapGenerator:
       - INFLUXDB_BUCKET=default
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
-      - INOA_FLEET_MQTT_TLS_GENERATE_KEY=false
-      - INOA_FLEET_MQTT_TLS_KEY=/tls/key.pem
-      - INOA_FLEET_MQTT_TLS_CERT=/tls/cert.pem
-      - INOA_FLEET_MQTT_DATA_PATH=/moquette
+      - INOA_MQTT_TLS_GENERATE_KEY=false
+      - INOA_MQTT_TLS_KEY=/tls/key.pem
+      - INOA_MQTT_TLS_CERT=/tls/cert.pem
+      - INOA_MQTT_DATA_PATH=/moquette
       # map endpoints to default port to expose them
       - ENDPOINTS_ALL_PORT=8080
       # import initial test data

@@ -1,4 +1,4 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;

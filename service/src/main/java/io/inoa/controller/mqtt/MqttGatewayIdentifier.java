@@ -1,4 +1,4 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;

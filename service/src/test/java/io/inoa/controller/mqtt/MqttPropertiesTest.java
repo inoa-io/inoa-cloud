@@ -1,4 +1,4 @@
-package io.inoa.fleet.broker;
+package io.inoa.controller.mqtt;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,9 +8,13 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import io.inoa.test.AbstractUnitTest;
-
-public class MqttPropertiesTest extends AbstractUnitTest {
+/**
+ * Test for {@link MqttProperties}.
+ *
+ * @author stephan.schnabel@grayc.de
+ */
+@DisplayName("mqtt: properties validation")
+public class MqttPropertiesTest extends AbstractMqttTest {
 
 	@DisplayName("tls with generate key")
 	@Test
