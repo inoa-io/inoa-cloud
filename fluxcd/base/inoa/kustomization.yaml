@@ -26,8 +26,6 @@ configMapGenerator:
       - INOA_MQTT_TLS_KEY=/tls/tls.key
       - INOA_MQTT_TLS_CERT=/tls/tls.crt
       - INOA_MQTT_DATA_PATH=/moquette
-      # TODO set as default in all deployments
-      - ENDPOINTS_ALL_PORT=8090
       # custom log levels
       - LOGGER_LEVELS_IO_INOA=TRACE
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=WARN

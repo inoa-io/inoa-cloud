@@ -24,7 +24,7 @@ configMapGenerator:
       # map endpoints to default port to expose them
       - ENDPOINTS_ALL_PORT=8080
       # import initial test data
-      - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:database,filesystem:/app/flyway
+      - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:db/migration,filesystem:/app/flyway
       # custom log levels
       - LOGBACK_APPENDER=CONSOLE
       - LOGGER_LEVELS_IO_INOA=INFO

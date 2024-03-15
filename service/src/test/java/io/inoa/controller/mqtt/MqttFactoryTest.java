@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.ThrowingSupplier;
 
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import io.netty.handler.ssl.SslContext;
 import jakarta.inject.Inject;
 
@@ -20,6 +21,7 @@ import jakarta.inject.Inject;
  * @author stephan.schnabel@grayc.de
  */
 @DisplayName("mqtt: factory")
+@MicronautTest(startApplication = false)
 public class MqttFactoryTest extends AbstractMqttTest {
 
 	@Inject MqttFactory factory;

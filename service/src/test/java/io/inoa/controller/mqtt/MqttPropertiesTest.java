@@ -8,12 +8,15 @@ import java.nio.file.Path;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+
 /**
  * Test for {@link MqttProperties}.
  *
  * @author stephan.schnabel@grayc.de
  */
 @DisplayName("mqtt: properties validation")
+@MicronautTest(startApplication = false)
 public class MqttPropertiesTest extends AbstractMqttTest {
 
 	@DisplayName("tls with generate key")
