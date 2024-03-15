@@ -12,7 +12,7 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.controller.mqtt.MqttGatewayIdentifier;
-import io.inoa.fleet.registry.KafkaHeader;
+import io.inoa.messaging.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptConnectMessage;

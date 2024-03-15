@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import io.inoa.controller.mqtt.AbstractMqttTest;
 import io.inoa.controller.mqtt.MqttProperties;
 import io.inoa.controller.mqtt.MqttServiceClient;
-import io.inoa.fleet.registry.KafkaHeader;
+import io.inoa.messaging.KafkaHeader;
 
 /**
  * Test for {@link MessageHandler}.

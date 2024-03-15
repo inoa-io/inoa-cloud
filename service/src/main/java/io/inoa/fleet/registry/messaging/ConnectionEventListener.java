@@ -8,8 +8,8 @@ import org.slf4j.MDC;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.inoa.fleet.registry.KafkaHeader;
 import io.inoa.fleet.registry.domain.GatewayRepository;
+import io.inoa.messaging.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
@@ -34,7 +34,8 @@ public class ConnectionEventListener {
 	private final ObjectMapper mapper;
 
 	@Topic(patterns = "hono\\.event\\..*")
-	void handle(@MessageHeader(KafkaHeader.TENANT_ID) String tenantId,
+	void handle(
+			@MessageHeader(KafkaHeader.TENANT_ID) String tenantId,
 			@MessageHeader(KafkaHeader.DEVICE_ID) String gatewayId,
 			@MessageHeader(KafkaHeader.CONTENT_TYPE) String contentType,
 			@MessageHeader(KafkaHeader.CONTENT_TTD) @Nullable Integer ttd,

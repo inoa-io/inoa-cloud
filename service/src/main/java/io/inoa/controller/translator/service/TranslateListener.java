@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.header.Header;
 import org.slf4j.MDC;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,6 +14,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.inoa.messaging.KafkaHeader;
 import io.inoa.rest.TelemetryRawVO;
 import io.inoa.rest.TelemetryVO;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
@@ -39,8 +39,8 @@ public class TranslateListener {
 	void receive(ConsumerRecord<String, String> record) {
 
 		String tenantId = null;
-		if (record.headers().lastHeader("tenant_id") != null) {
-			Header deviceId = record.headers().lastHeader("tenant_id");
+		if (record.headers().lastHeader(KafkaHeader.TENANT_ID) != null) {
+			var deviceId = record.headers().lastHeader(KafkaHeader.TENANT_ID);
 			tenantId = new String(deviceId.value());
 		} else {
 			// fallback but the header should always exist
@@ -50,10 +50,10 @@ public class TranslateListener {
 		String gatewayId = null;
 
 		if (record.headers().lastHeader("gatewayName") != null) {
-			Header deviceId = record.headers().lastHeader("gatewayName");
+			var deviceId = record.headers().lastHeader("gatewayName");
 			gatewayId = new String(deviceId.value());
-		} else if (record.headers().lastHeader("device_id") != null) {
-			Header deviceId = record.headers().lastHeader("device_id");
+		} else if (record.headers().lastHeader(KafkaHeader.DEVICE_ID) != null) {
+			var deviceId = record.headers().lastHeader(KafkaHeader.DEVICE_ID);
 			gatewayId = new String(deviceId.value());
 		} else {
 			// fallback but the header should always exist
@@ -68,10 +68,10 @@ public class TranslateListener {
 
 			// parse payload, convert and publish
 
-			String finalTenantId = tenantId;
-			String finalGatewayId = gatewayId;
+			var finalTenantId = tenantId;
+			var finalGatewayId = gatewayId;
 			var telemetryOptional = toRaw(tenantId, payload).stream()
-					.map(raw -> service.translate(finalTenantId, finalGatewayId, raw)).flatMap(i -> i.stream())
+					.map(raw -> service.translate(finalTenantId, finalGatewayId, raw)).flatMap(List::stream)
 					.collect(Collectors.toList());
 			if (telemetryOptional.isEmpty()) {
 				metrics.counterIgnore(tenantId).increment();
@@ -91,12 +91,9 @@ public class TranslateListener {
 
 		List<TelemetryRawVO> messages = new ArrayList<>();
 		try {
-			JsonNode node = mapper.readValue(payload, JsonNode.class);
+			var node = mapper.readValue(payload, JsonNode.class);
 			if (node.isArray()) {
-				messages = mapper.readValue(payload, new TypeReference<>() {
-					{
-					}
-				});
+				messages = mapper.readValue(payload, new TypeReference<>() {});
 			} else {
 				messages = new ArrayList<>();
 				messages.add(mapper.readValue(payload, TelemetryRawVO.class));

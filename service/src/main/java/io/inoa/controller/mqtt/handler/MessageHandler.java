@@ -17,7 +17,7 @@ import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 
 import io.inoa.controller.mqtt.MqttGatewayIdentifier;
-import io.inoa.fleet.registry.KafkaHeader;
+import io.inoa.messaging.KafkaHeader;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptPublishMessage;
