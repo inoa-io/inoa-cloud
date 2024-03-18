@@ -1,4 +1,4 @@
-package io.inoa.fleet.remoting;
+package io.inoa.controller.mqtt.remoting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

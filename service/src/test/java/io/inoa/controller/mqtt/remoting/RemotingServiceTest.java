@@ -1,4 +1,4 @@
-package io.inoa.fleet.remoting;
+package io.inoa.controller.mqtt.remoting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,16 +14,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.inoa.controller.mqtt.MqttProperties;
 import io.inoa.controller.mqtt.MqttServiceClient;
-import io.inoa.fleet.remoting.service.RemotingHandler;
-import io.inoa.fleet.remoting.service.RemotingService;
 import io.inoa.rest.RpcCommandVO;
 import io.inoa.rest.RpcResponseVO;
 import io.inoa.test.AbstractUnitTest;
 import io.inoa.test.Await;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
-@MicronautTest(environments = "mqtt")
 public class RemotingServiceTest extends AbstractUnitTest {
 
 	@Inject

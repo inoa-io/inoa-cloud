@@ -1,4 +1,4 @@
-package io.inoa.fleet.remoting.service;
+package io.inoa.controller.mqtt.remoting;
 
 import static io.inoa.controller.mqtt.MqttBroker.COMMAND_TOPIC_LONG_NAME;
 import static java.nio.charset.StandardCharsets.UTF_8;

@@ -1,4 +1,4 @@
-package io.inoa.fleet.remoting.rest;
+package io.inoa.controller.mqtt.remoting;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -10,8 +10,6 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.MDC;
 
 import io.inoa.fleet.registry.domain.GatewayRepository;
-import io.inoa.fleet.remoting.service.RemotingHandler;
-import io.inoa.fleet.remoting.service.RemotingService;
 import io.inoa.rest.RemoteApi;
 import io.inoa.rest.RpcCommandVO;
 import io.inoa.rest.RpcResponseVO;

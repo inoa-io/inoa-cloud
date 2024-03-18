@@ -1,4 +1,4 @@
-package io.inoa.fleet.remoting.service;
+package io.inoa.controller.mqtt.remoting;
 
 import static io.inoa.controller.mqtt.MqttBroker.COMMAND_RESPONSE_TOPIC_LONG_MATCHER;
 import static io.inoa.controller.mqtt.MqttBroker.COMMAND_RESPONSE_TOPIC_SHORT_MATCHER;
@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 public class RemotingHandler extends AbstractInterceptHandler {
 
 	private final ObjectMapper mapper;
-
 	private final Map<String, RpcResponseVO> commandResponses = new HashMap<>();
 
 	@Override
