@@ -9,8 +9,8 @@ import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.InfluxDBClientOptions;
 
 import io.micronaut.context.annotation.Bean;
-import io.micronaut.context.annotation.Context;
 import io.micronaut.context.annotation.Factory;
+import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.annotation.Value;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
@@ -46,7 +46,8 @@ public class ExporterFactory {
 				.logLevel(logLevel).build();
 	}
 
-	@Context
+	@Requires(property = "influxdb.enabled", notEquals = "false")
+	@Singleton
 	@Bean(preDestroy = "close")
 	InfluxDBClient client(InfluxDBClientOptions options) {
 		return InfluxDBClientFactory.create(options);

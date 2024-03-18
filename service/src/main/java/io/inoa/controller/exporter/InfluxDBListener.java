@@ -15,12 +15,14 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
+import io.micronaut.context.annotation.Requires;
 
 /**
  * Listener to write messages to InfluxDB.
  *
  * @author sschnabe
  */
+@Requires(bean = InfluxDBClient.class)
 @KafkaListener(offsetReset = OffsetReset.EARLIEST, redelivery = true)
 public class InfluxDBListener {
 

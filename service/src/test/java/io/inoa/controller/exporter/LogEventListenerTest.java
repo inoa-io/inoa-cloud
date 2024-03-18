@@ -1,4 +1,4 @@
-package io.inoa.fleet.monitoring;
+package io.inoa.controller.exporter;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,8 +40,10 @@ public class LogEventListenerTest extends AbstractUnitTest {
 	private static List<ILoggingEvent> logsGateway = new ArrayList<>();
 	private static List<ILoggingEvent> logsListener = new ArrayList<>();
 
-	@Inject LogEventListener listener;
-	@Inject LogMetrics metrics;
+	@Inject
+	LogEventListener listener;
+	@Inject
+	LogMetrics metrics;
 
 	@BeforeAll
 	static void setUpListAppender() {

@@ -1,4 +1,4 @@
-package io.inoa.fleet.monitoring;
+package io.inoa.controller.exporter;
 
 import java.util.HashMap;
 import java.util.Map;
