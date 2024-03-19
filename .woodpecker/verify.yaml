@@ -10,7 +10,7 @@ variables:
   - &maven
     image: ghcr.io/grayc-de/plugins/maven
     depends_on: []
-    environment: [DOCKER_HOST=tcp://inoa-dockerd-verify:2375, TESTCONTAINERS_RYUK_DISABLED=true]
+    environment: [DOCKER_HOST=tcp://dockerd:2375, TESTCONTAINERS_RYUK_DISABLED=true]
     when:
       <<: *when-path
   - &node
@@ -21,7 +21,7 @@ variables:
       <<: *when-path
 
 services:
-  - name: inoa-dockerd-verify
+  - name: dockerd
     image: ghcr.io/grayc-de/plugins/dockerd
     privileged: true
     # 2375 docker rest api
@@ -93,11 +93,12 @@ steps:
   integration-test:
     <<: *maven
     depends_on: [image, integration-prepare]
-    commands: [mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dk3s.ip=$INOA_DOCKERD_VERIFY_SERVICE_HOST]
+    commands: [mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dk3s.ip=$DOCKERD_SERVICE_HOST]
   integration-errors:
     <<: *maven
     depends_on: [integration-test]
     commands:
+      - set
       - docker ps -a
       - docker logs k3s-maven-plugin
     when:

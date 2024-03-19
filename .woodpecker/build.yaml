@@ -11,7 +11,7 @@ when:
     - lombok.config
 
 services:
-  - name: inoa-dockerd-build
+  - name: dockerd
     image: ghcr.io/grayc-de/plugins/dockerd
     privileged: true
     ports: [2375]
@@ -20,7 +20,7 @@ steps:
 
   deploy:
     image: ghcr.io/grayc-de/plugins/maven
-    environment: [DOCKER_HOST=tcp://inoa-dockerd-build:2375]
+    environment: [DOCKER_HOST=tcp://dockerd:2375]
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
       - mvn deploy -pl image -am -Dcheck.skip -DskipTests -T1C
