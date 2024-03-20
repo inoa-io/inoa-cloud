@@ -100,7 +100,7 @@
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>24.0.1</version.org.keycloak>
 		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
-		<version.org.projectlombok>1.18.30</version.org.projectlombok>
+		<version.org.projectlombok>1.18.32</version.org.projectlombok>
 
 	</properties>
 
