@@ -13,8 +13,12 @@ when:
 services:
   - name: dockerd
     image: ghcr.io/grayc-de/plugins/dockerd
-    privileged: true
     ports: [2375]
+    privileged: true
+    backend_options:
+      kubernetes:
+        securityContext:
+          privileged: true
 
 steps:
 

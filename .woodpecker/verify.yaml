@@ -23,12 +23,16 @@ variables:
 services:
   - name: dockerd
     image: ghcr.io/grayc-de/plugins/dockerd
-    privileged: true
     # 2375 docker rest api
     # 6443 k3s controll plane
     # 8080 k3s http api
     # 8883 k3s mqtt api
     ports: [2375, 6443, 8080, 8883]
+    privileged: true
+    backend_options:
+      kubernetes:
+        securityContext:
+          privileged: true
     when: {<<: *when-path}
 
 steps:
@@ -93,7 +97,9 @@ steps:
   integration-test:
     <<: *maven
     depends_on: [image, integration-prepare]
-    commands: [mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dk3s.ip=$DOCKERD_SERVICE_HOST]
+    commands:
+      - DOCKER_IP=$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42)
+      - mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dk3s.ip=$DOCKER_IP
   integration-errors:
     <<: *maven
     depends_on: [integration-test]
