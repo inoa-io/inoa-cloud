@@ -91,7 +91,7 @@
 		<version.io.kokuwa.micronaut.codegen>4.2.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut.core>4.3.11</version.io.micronaut.core>
-		<version.io.micronaut.platform>4.3.6</version.io.micronaut.platform>
+		<version.io.micronaut.platform>4.3.7</version.io.micronaut.platform>
 		<version.io.micronaut.data>4.6.2</version.io.micronaut.data>
 		<version.io.micronaut.validation>4.4.4</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
