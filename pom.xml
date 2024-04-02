@@ -256,6 +256,36 @@
 					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>versions-maven-plugin</artifactId>
+					<configuration>
+						<ruleSet>
+							<rules>
+								<rule>
+									<groupId>io.cloudevents</groupId>
+									<artifactId>cloudevents-json-jackson</artifactId>
+									<ignoreVersions>
+										<ignoreVersion>
+											<type>regex</type>
+											<version>.*</version>
+										</ignoreVersion>
+									</ignoreVersions>
+								</rule>
+								<rule>
+									<groupId>io.cloudevents</groupId>
+									<artifactId>cloudevents-kafka</artifactId>
+									<ignoreVersions>
+										<ignoreVersion>
+											<type>regex</type>
+											<version>.*</version>
+										</ignoreVersion>
+									</ignoreVersions>
+								</rule>
+							</rules>
+						</ruleSet>
+					</configuration>
+				</plugin>
+				<plugin>
 					<groupId>org.openapitools</groupId>
 					<artifactId>openapi-generator-maven-plugin</artifactId>
 					<dependencies>

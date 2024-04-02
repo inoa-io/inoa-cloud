@@ -13,6 +13,8 @@
 			"dependencyDashboardApproval": false
 		},{
 			"matchPackageNames": [
+				"io.cloudevents:cloudevents-json-jackson",
+				"io.cloudevents:cloudevents-kafka",
 				"org.apache.kafka:kafka-clients",
 				"ghcr.io/grayc-de/kafka",
 				"docker.io/eclipse-temurin",
