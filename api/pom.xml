@@ -105,20 +105,8 @@
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-							<version>${version.org.projectlombok}</version>
-						</path>
-						<!-- TODO: prüfen ob die micronaut processors hier notwendig sind -->
-						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut.core}</version>
-						</path>
-						<path>
-							<groupId>io.micronaut.validation</groupId>
-							<artifactId>micronaut-validation-processor</artifactId>
-							<version>${version.io.micronaut.validation}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
