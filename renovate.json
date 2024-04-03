@@ -13,6 +13,7 @@
 			"dependencyDashboardApproval": false
 		},{
 			"matchPackageNames": [
+				"io.inoa:inoa-parent",
 				"io.cloudevents:cloudevents-json-jackson",
 				"io.cloudevents:cloudevents-kafka",
 				"org.apache.kafka:kafka-clients",
