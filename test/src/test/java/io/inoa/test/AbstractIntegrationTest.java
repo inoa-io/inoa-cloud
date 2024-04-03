@@ -7,6 +7,8 @@ import io.inoa.test.client.InfluxDBClient;
 import io.inoa.test.client.KeycloakClient;
 import io.inoa.test.client.RegistryClient;
 import io.micronaut.context.annotation.Value;
+import io.micronaut.http.client.HttpClient;
+import io.micronaut.http.client.annotation.Client;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
@@ -16,6 +18,7 @@ public abstract class AbstractIntegrationTest extends AbstractTest {
 	public static String DEFAULT_TENANT_ID = "iona";
 
 	public @Value("${mqtt.url}") String mqttUrl;
+	public @Inject @Client("inoa") HttpClient client;
 	public @Inject KeycloakClient keycloak;
 	public @Inject InfluxDBClient influxdb;
 	public @Inject RegistryClient registry;

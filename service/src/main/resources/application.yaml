@@ -43,6 +43,8 @@ micronaut:
 ## see https://docs.micronaut.io/latest/guide/index.html#jsonBinding
 jackson:
   always-serialize-errors-as-list: false
+  serialization:
+    writeDatesAsTimestamps: false
 
 ## see https://micronaut-projects.github.io/micronaut-sql/latest/guide/#jdbc
 datasources:
