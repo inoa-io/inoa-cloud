@@ -93,7 +93,7 @@
 		<version.io.micronaut>4.3.7</version.io.micronaut>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
-		<version.org.bouncycastle>1.77</version.org.bouncycastle>
+		<version.org.bouncycastle>1.78</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>24.0.2</version.org.keycloak>
 		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
