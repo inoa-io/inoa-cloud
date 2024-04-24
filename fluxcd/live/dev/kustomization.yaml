@@ -8,7 +8,7 @@ images:
   - name: docker.io/library/influxdb
     newTag: 2.7.6
   - name: docker.io/redpandadata/console
-    newTag: v2.4.6
+    newTag: v2.4.7
   - name: docker.io/hawkbit/hawkbit-update-server
     newTag: 0.3.0M8
   - name: ghcr.io/grayc-de/kafka
