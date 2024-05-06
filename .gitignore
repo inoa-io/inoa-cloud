@@ -4,3 +4,10 @@ app/.angular
 app/.yarn
 app/dist
 app/node_modules
+
+.moquette_uuid
+
+.idea
+*.iml
+
+.vscode
