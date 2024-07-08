@@ -54,6 +54,7 @@ indent_style = space
 indent_size = 2
 
 [*.xml]
+indent_style = tab
 ij_xml_space_inside_empty_tag = true
 ij_xml_text_wrap = off
 ij_xml_attribute_wrap = off

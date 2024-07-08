@@ -91,6 +91,9 @@
 		<version.io.kokuwa.micronaut.codegen>4.2.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>4.4.3</version.io.micronaut>
+		<version.io.micronaut.data>4.5.0</version.io.micronaut.data>
+		<version.io.micronaut.inject-java>4.5.3</version.io.micronaut.inject-java>
+		<version.io.micronaut.validation-processor>4.6.0</version.io.micronaut.validation-processor>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.78.1</version.org.bouncycastle>
