@@ -17,11 +17,12 @@ ij_any_space_within_empty_method_parentheses = false
 ij_any_spaces_within_braces = false
 
 [*.java]
+indent_style = tab
 max_line_length = 120
 ij_visual_guides = 80, 120
 ij_java_continuation_indent_size = 8
 ij_java_field_annotation_wrap = off
-ij_java_imports_layout = unset
+ij_java_imports_layout = $*,|,java.**,|,javax.**,|,org.**,|,*
 ij_java_class_count_to_use_import_on_demand = 100
 ij_java_names_count_to_use_import_on_demand = 100
 

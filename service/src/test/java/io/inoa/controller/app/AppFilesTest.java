@@ -6,8 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import io.inoa.test.AbstractUnitTest;
-import io.micronaut.context.annotation.Property;
 import io.micronaut.http.HttpHeaders;
+import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.client.annotation.Client;
@@ -21,7 +21,7 @@ import jakarta.inject.Inject;
  */
 @DisplayName("app: static files")
 @MicronautTest(environments = "app")
-@Property(name = "micronaut.router.static-resources.app.paths", value = "classpath:static")
+//@Property(name = "static.path", value = "classpath:static")
 public class AppFilesTest extends AbstractUnitTest {
 
 	@Inject @Client("/") HttpClient client;
@@ -69,7 +69,8 @@ public class AppFilesTest extends AbstractUnitTest {
 	}
 
 	private void call(String path, String body, String type) {
-		var response = client.toBlocking().exchange(path, String.class);
+		var request = HttpRequest.GET(path).header(HttpHeaders.AUTHORIZATION, auth());
+		var response = client.toBlocking().exchange(request, String.class);
 		assertEquals(HttpStatus.OK, response.getStatus());
 		assertEquals(body, response.body(), "body");
 		assertEquals(type, response.getHeaders().get(HttpHeaders.CONTENT_TYPE), "type");

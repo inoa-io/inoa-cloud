@@ -56,6 +56,10 @@
 			<artifactId>micronaut-security-jwt</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>io.micronaut.security</groupId>
+			<artifactId>micronaut-security-oauth2</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.micronaut.kafka</groupId>
 			<artifactId>micronaut-kafka</artifactId>
 		</dependency>

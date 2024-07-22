@@ -27,23 +27,23 @@ import lombok.extern.slf4j.Slf4j;
 @Requires(property = "micronaut.application.name", value = "inoa-k3s")
 @Singleton
 @Slf4j
-public class AppAuthenticationFetcher implements AuthenticationFetcher<HttpRequest<?>> {
+public class AngularAuthenticationFetcher implements AuthenticationFetcher<HttpRequest<?>> {
 
-	AppAuthenticationFetcher() {
+	AngularAuthenticationFetcher() {
 		log.error("Angular authentication fetcher is enabled, this should not happen in production.");
 	}
 
 	@Override
 	public Publisher<Authentication> fetchAuthentication(HttpRequest<?> request) {
 		return request.getHeaders().get(HttpHeaders.REFERER, String.class)
-				.filter(referer -> referer.startsWith("http://localhost:4200"))
-				.map(d -> new ServerAuthentication("admin", Set.of(), Map.of(
-						Claims.EXPIRATION_TIME, Date.from(Instant.now().plusSeconds(60)),
-						"tenants", List.of("inoa"),
-						"given_name", "Super",
-						"family_name", "Admin",
-						"email", "superadmin@example.org")))
-				.map(Authentication.class::cast)
-				.map(Publishers::just).orElseGet(Publishers::empty);
+						.filter(referer -> referer.startsWith("http://localhost:4200"))
+						.map(d -> new ServerAuthentication("admin", Set.of(), Map.of(
+										Claims.EXPIRATION_TIME, Date.from(Instant.now().plusSeconds(60)),
+										"tenants", List.of("inoa"),
+										"given_name", "Super",
+										"family_name", "Admin",
+										"email", "superadmin@example.org")))
+						.map(Authentication.class::cast)
+						.map(Publishers::just).orElseGet(Publishers::empty);
 	}
 }
