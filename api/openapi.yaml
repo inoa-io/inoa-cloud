@@ -11,12 +11,18 @@ info:
     url: https://github.com/inoa-io
 servers:
   - url: http://inoa.127.0.0.1.nip.io:8080
+  - url: http://inoa.{k3s.ip}.nip.io:8080
+    variables:
+      k3s.ip:
+        default: 127.0.0.1
+        description: Your local ip where INOA is running
+  - url: https://api.inoa.io
 security:
   - Keycloak: []
   - BearerAuth: []
 tags:
   - name: tenants
-    description: Tenants can be used to divide Inoa resources for different groups of interest
+    description: Tenants can be used to divide INOA resources for different groups of interest
   - name: groups
     description: Groups are a logical structure to arrange gateways and their configuration
   - name: gateways
@@ -1038,8 +1044,8 @@ paths:
     post:
       tags:
         - things
-      summary: Create thing type.
-      description: Creates a new thing.
+      summary: Create thing.
+      description: Creates a new thing where we collect data from.
       operationId: createThing
       requestBody:
         required: true
@@ -1976,6 +1982,9 @@ components:
     Name:
       description: Name.
       type: string
+    Category:
+      description: Category.
+      type: string
 
     ###
     ### Thing Type
@@ -1989,15 +1998,12 @@ components:
           $ref: "#/components/schemas/ThingTypeId"
         name:
           $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/Category"
         json_schema:
           description: json_schema
           type: object
           additionalProperties: {}
-        ui_layout:
-          description: ui_layout
-          type: array
-          items:
-            additionalProperties: {}
         properties:
           type: array
           items:
@@ -2038,20 +2044,14 @@ components:
       properties:
         name:
           $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/Category"
         thing_type_id:
-          description: External thing type Id
-          type: string
-          pattern: ^[a-zA-Z0-9\-\_]{1,64}$
-          example: dzg_dvh4013
+          $ref: "#/components/schemas/ThingTypeId"
         json_schema:
           description: json_schema
           type: object
           additionalProperties: {}
-        ui_layout:
-          description: ui_layout
-          type: array
-          items:
-            additionalProperties: {}
       required:
         - name
     ThingTypeUpdate:
@@ -2060,20 +2060,14 @@ components:
       properties:
         name:
           $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/Category"
         thing_type_id:
-          description: External thing type Id
-          type: string
-          pattern: ^[a-zA-Z0-9\-\_]{1,64}$
-          example: dzg_dvh4013
+          $ref: "#/components/schemas/ThingTypeId"
         json_schema:
           description: json_schema
           type: object
           additionalProperties: {}
-        ui_layout:
-          description: ui_layout
-          type: array
-          items:
-            additionalProperties: {}
       required:
         - name
     ThingTypeChannel:

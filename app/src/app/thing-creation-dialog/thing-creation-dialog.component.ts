@@ -1,27 +1,11 @@
 import {Component, Inject, OnDestroy} from "@angular/core";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {ThingTypesService, ThingsService} from "@inoa/api";
-import {GatewayVO, ThingVO, ThingTypeVO} from "@inoa/model";
+import {GatewayVO, ThingTypeVO, ThingCreateVO} from "@inoa/api";
 import {FormGroup} from "@angular/forms";
 import {FormlyFieldConfig, FormlyFormOptions} from "@ngx-formly/core";
 import {FormlyJsonschema} from "@ngx-formly/core/json-schema";
-import {Subject, takeUntil, tap} from "rxjs";
-import {HttpClient} from "@angular/common/http";
+import {Subject} from "rxjs";
 import {ThingCategoryService, ThingCategory} from "../thing-category.service";
-
-/*enum ConnectionStatus {
-  Created,
-  Connected,
-  Disabled
-}*/
-
-const staticThingTypes: ThingTypeVO[] =
-[
-  { id: "dzg_dvh4013", name: "DZG DVH 4013", created: "", updated: "" },
-  { id: "dzg_mdvh4006", name: "DZG MDVH 4006", created: "", updated: "" },
-  { id: "shelly_plug_s", name: "Shelly Plug S", created: "", updated: "" },
-  { id: "shelly_plus_pm2", name: "Shelly Plus PM2", created: "", updated: "" },
-];
 
 @Component({
   selector: "gc-thing-creation-dialog",
@@ -30,11 +14,13 @@ const staticThingTypes: ThingTypeVO[] =
 })
 export class ThingCreationDialogComponent implements OnDestroy
 {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private destroy$: Subject<any> = new Subject<any>();
 
   public thingTypes: ThingTypeVO[] = [];
 
   form!: FormGroup;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   model: any;
   options!: FormlyFormOptions;
   fields!: FormlyFieldConfig[];
@@ -44,48 +30,40 @@ export class ThingCreationDialogComponent implements OnDestroy
   constructor(
     public dialogRef: MatDialogRef<ThingCreationDialogComponent>,
     private formlyJsonschema: FormlyJsonschema,
-    private http: HttpClient,
     private thingCategoryService: ThingCategoryService,
-    private thingsService: ThingsService,
-    private thingsTypesService: ThingTypesService,
-    @Inject(MAT_DIALOG_DATA) public data: ThingCreationDialogData)
+    @Inject(MAT_DIALOG_DATA) public data: ThingCreationDialogData
+  )
   {
     this.form = new FormGroup({});
 
     // Ensure that data.thingTypes is defined before accessing its elements
-    if (this.data && this.data.thingTypes && this.data.thingTypes.length > 0) {
+    if (this.data && this.data.thingTypes && this.data.thingTypes.length > 0)
+    {
       // Load the first type into the form
-      this.loadThingTypes(this.data.thingTypes[0]);
+      this.loadThingType(this.data.thingTypes[0]);
       this.selectedThingType = this.data.thingTypes[0];
       this.thingTypes = this.data.thingTypes;
     }
     else { console.error("ThingTypes data is undefined or null"); }
-
-    //load first type into the form
-    // this.loadThingTypes(data.thingTypes[0]); //TODO: switch to real data, not static
-    this.loadThingTypes(staticThingTypes[0]);
-    this.selectedThingType = staticThingTypes[0];
-
-    // this.thingTypes = data.thingTypes; //TODO: switch to real data, not static
-    this.thingTypes = staticThingTypes;
   }
 
-  loadThingTypes(type: ThingTypeVO)
+  loadThingType(type: ThingTypeVO)
   {
-    this.http.get<any>(`assets/thing-types/${type.id}.json`)
-        .pipe(
-            tap(({ schema, category }) =>
-            {
-              this.selectedThingType = type;
-              this.form = new FormGroup({});
-              this.options = {};
-              this.fields = [this.formlyJsonschema.toFieldConfig(schema)];
-              this.category = this.thingCategoryService.getCategory(category);
-              this.model = {}; //model;
-            }),
-            takeUntil(this.destroy$),
-        )
-        .subscribe();
+    this.selectedThingType = type;
+    this.form = new FormGroup({});
+    this.options = {};
+    this.fields = type.json_schema ? [this.formlyJsonschema.toFieldConfig(type.json_schema)] : [];
+    this.category = type.category ? this.thingCategoryService.getCategory(type.category) : { key: "error", image: "", title: "none" };
+    this.model = {};
+
+    const thing: ThingCreateVO = {
+      name: type.name,
+      gateway_id: this.data.gateway.gateway_id,
+      thing_type_id: type.id,
+      config: {}
+    }
+
+    this.data.thing = thing;
   }
 
   onCancelClick(): void { this.dialogRef.close(); }
@@ -103,22 +81,31 @@ export class ThingCreationDialogComponent implements OnDestroy
     }
   }
 
-  getThingImage(type: ThingTypeVO) { console.log("Type is: " + type); return this.thingCategoryService.getCategory("unknown").image; }
+  getThingImage(type: ThingTypeVO) {
+    if (type.category) {
+      console.log("Getting image for " + type);
 
-  onSubmit(model: {email: string}) { console.log("Submitted for: " + model.email); }
+      return this.thingCategoryService.getCategory(type.category).image;
+    }
+    
+    return "";
+  }
+
+  onSubmit(model: { email: string })
+  {
+    console.log("Submitted for: " + model.email);
+  }
 
   public ngOnDestroy()
   {
     this.destroy$.next(true);
     this.destroy$.complete();
   }
-
-  protected readonly staticThingTypes = staticThingTypes;
 }
 
 export interface ThingCreationDialogData
 {
   gateway: GatewayVO;
-  thing: ThingVO | undefined;
+  thing: ThingCreateVO | undefined;
   thingTypes: ThingTypeVO[];
 }

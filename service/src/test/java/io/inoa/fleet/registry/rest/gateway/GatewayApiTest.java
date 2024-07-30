@@ -66,7 +66,7 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
 
 	@DisplayName("getConfiguration(200): with configuration")
 	@Test
-	public void getConfiguration200WithConfiguratiuon() {
+	public void getConfiguration200WithConfiguration() {
 
 		// create gateway
 

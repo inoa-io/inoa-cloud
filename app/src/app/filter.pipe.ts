@@ -6,6 +6,7 @@ import {Injectable, Pipe, PipeTransform} from "@angular/core";
 @Injectable()
 export class FilterPipe implements PipeTransform {
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   transform(items: any[], field : string, value : string): any[]
   {
     if (!items) return [];

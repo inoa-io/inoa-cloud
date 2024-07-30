@@ -28,7 +28,8 @@ import lombok.RequiredArgsConstructor;
 @DisplayName("api: validator")
 public class ConfigurationDefinitionValidatorTest {
 
-	private final ConstraintValidator<?, ConfigurationDefinitionVO> validator = new ConfigurationDefinitionValidator();
+	private final ConstraintValidator<ConfigurationDefinitionValid, ConfigurationDefinitionVO> validator =
+		new ConfigurationDefinitionValidator();
 
 	@DisplayName("valid: url")
 	@Test

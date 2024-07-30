@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>INOA Cloud - Help</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+  <a href="http://localhost:4200" target="_blank" role="button" class="btn btn-primary">INOA Ground Control (local)</a>
+  <div class="row gx-4">
+    <div class="card p-3 m-3">
+      <div class="card-body">
+        <h5 class="card-title">Bind Satellite</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">Connect an IoT Gateway</h6>
+        <p class="card-text">To connect a Satellite with this local INOA Cloud, connect the debug console and enter these commands:
+          <pre><code>
+            # Connect to Wifi (if not already done or connected via LAN)
+            setup-wifi &lt;SSID&gt; &lt;PASSWORD&gt;
+            # Configure the INOA registry URL for self registration
+            set-reg-url http://inoa.${k3s.ip}.nip.io:8080/gateway
+            # Configure the MQTT endpoint where to communicate with INOA Cloud and send measurements to.
+            setup-mqtt mqtt://inoa.${k3s.ip}.nip.io 1883
+            reboot
+          </code></pre>
+        </p>
+        <a class="card-link" href="https://inoa-io.github.io/inoa-os-esp32/user-guide/debug-console/">Connect Satellite via Debug Console</a>
+      </div>
+    </div>
+    <div class="card p-3 m-3">
+      <div class="card-body">
+        <h5 class="card-title">Generate API Token</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">Interact with the INOA API</h6>
+        <p class="card-text">
+          To execute API calls, e.g. via SwaggerUI you need to authenticate.<br/>
+          Use <b>Authorize</b> with <b>Keycloak (OAuth2, implicit) </b> and user credentials or use
+          <b>BearerAuth (http, Bearer)</b> with token:
+          <pre><code>
+          curl http://keycloak.${k3s.ip}.nip.io:8080/realms/inoa/protocol/openid-connect/token \
+            --silent \
+            --data client_id=inoa-swagger \
+            --data username=admin \
+            --data password=password \
+            --data grant_type=password \
+            | jq -r .access_token
+          </code></pre>
+        </p>
+        <a class="card-link" target=”_blank" href="http://swagger.${k3s.ip}.nip.io:8080">SwaggerUI</a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

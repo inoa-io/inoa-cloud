@@ -215,21 +215,21 @@
                 </div>
 
                 <!-- second sub step: connecting to the satellite -->
-                <div *ngIf="selectedGateway && !isOnline(selectedGateway)">
+                <div *ngIf="intercomService.selectedGateway && !isOnline(intercomService.selectedGateway)">
 
                   <!-- checkmark to show that the satellite is now online -->
-                  <div style = "height: 40px;"><mat-icon style="color: green" *ngIf="isOnline(selectedGateway)">check</mat-icon></div>
+                  <div style = "height: 40px;"><mat-icon style="color: green" *ngIf="isOnline(intercomService.selectedGateway)">check</mat-icon></div>
 
                   <p>2. Connect Satellite with INOA via:</p>
 
                   <mat-button-toggle-group name="networkInterface" aria-label="Network Interface" [formControl]="connectionControl">
 
-                    <mat-button-toggle (click)="showInfoCard()" value = "wifi" *ngIf = "supportsWifi(selectedGateway)">
+                    <mat-button-toggle (click)="showInfoCard()" value = "wifi" *ngIf = "supportsWifi(intercomService.selectedGateway)">
                       <mat-icon>wifi</mat-icon>
                       <span style = "margin-left: 15px;">WiFi</span>
                     </mat-button-toggle>
 
-                    <mat-button-toggle (click)="showInfoCard()" value = "lan" *ngIf = "supportsLAN(selectedGateway)">
+                    <mat-button-toggle (click)="showInfoCard()" value = "lan" *ngIf = "supportsLAN(intercomService.selectedGateway)">
                       <mat-icon>lan</mat-icon>
                       <span style = "margin-left: 15px;">LAN</span>
                     </mat-button-toggle>
@@ -266,9 +266,9 @@
                   <mat-form-field appearance="fill" style="width: 300pt;">
 
                     <mat-label>Connected things:</mat-label>
-                    <mat-select [(value)]="selectedThing" [formControl]="thingControl">
+                    <mat-select [(value)]="intercomService.selectedThing" [formControl]="thingControl">
 
-                      <mat-option *ngFor="let thing of thingsList" [value]="thing">
+                      <mat-option *ngFor="let thing of intercomService.thingsList" [value]="thing">
                         <img style="vertical-align: middle;" width="24" src="{{getThingImage(thing.thing_type_id)}}" alt="{{thing.name}}"/>
                         <span style="padding-left: 10pt">{{thing.name}}</span>
                       </mat-option>
@@ -279,7 +279,7 @@
 
                 </div>
                 <div fxFlex="10">
-                  <button mat-mini-fab color="primary" aria-label="Add a new thing..." (click)="createThingDialog()">
+                  <button mat-mini-fab color="primary" aria-label="Add a new thing..." (click)="openCreateThingDialog()">
                     <mat-icon>add</mat-icon>
                   </button>
                 </div>

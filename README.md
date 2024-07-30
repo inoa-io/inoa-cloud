@@ -32,20 +32,20 @@ controlled devices.
 
 1. Build INOA Cloud services and start the whole environment via k3s:
 
-  ```shell
-  mvn k3s:rm
-  mvn clean install
-  mvn clean pre-integration-test -Dk3s.failIfExists=false -pl ./test/
-  ```
+    ```shell
+    mvn k3s:rm
+    mvn clean install
+    mvn clean pre-integration-test -Dk3s.failIfExists=false -pl ./test/
+    ```
 
 1. Check the now running services via [http://help.127.0.0.1.nip.io:8080/](http://help.127.0.0.1.nip.io:8080/).
-1. Start a local instance of INOA Groundcontrol for UI development:
+1. Start a local instance of INOA Ground Control for UI development:
 
-  ```shell
-  cd app
-  yarn install
-  ng serve
-  ```
+    ```shell
+    cd app
+    yarn install
+    ng serve
+    ```
 
 ### Connect INOA Satellite
 
@@ -63,9 +63,9 @@ source tools, it is the cockpit for a fleet of IoT devices.
 INOA Measurements is the place where all the measured data is going in. It collects, stores, enhances measurements that
 are collected by IoT devices and provide it with help of APIs and UIs.
 
-### INOA Groundcontrol
+### INOA Ground Control
 
-INOA Groundcontrol is the UI to manage the IoT Fleet with INOA.
+INOA Ground Control is the UI to manage the IoT Fleet with INOA.
 
 ### INOA OS
 

@@ -10,6 +10,9 @@ spec:
     - name: mqtt
       port: 8883
       targetPort: mqtt
+    - name: mqtt2
+      port: 1883
+      targetPort: 1883
   selector:
     app.kubernetes.io/name: inoa
 ---
@@ -23,5 +26,8 @@ spec:
     - name: mqtt
       port: 8883
       targetPort: mqtt
+    - name: mqtt1
+      port: 1883
+      targetPort: 1883
   selector:
     app.kubernetes.io/name: inoa

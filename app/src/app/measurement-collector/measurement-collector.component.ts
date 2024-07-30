@@ -2,12 +2,12 @@ import { Component, OnInit } from "@angular/core";
 import {AbstractControl, FormBuilder, FormControl, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
 import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
-import { GatewaysService, ThingTypesService, ThingsService } from "@inoa/api";
-import { GatewayVO, ThingTypeVO, ThingVO } from "@inoa/model";
-import { MatDialog} from "@angular/material/dialog";
-import { ThingCreationDialogComponent, ThingCreationDialogData } from "../thing-creation-dialog/thing-creation-dialog.component";
+import { GatewayVO, GatewaysService, ThingTypesService, ThingsService } from "@inoa/api";
 import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { ThingCategory, ThingCategoryService } from "../thing-category.service";
+import { InternalCommunicationService } from "../internal-communication-service";
+import { DialogService } from "../dialog-service";
+import { ThingCreationDialogComponent } from "../thing-creation-dialog/thing-creation-dialog.component";
 
 function autocompleteObjectValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -53,27 +53,21 @@ export class MeasurementCollectorComponent implements OnInit
 {
   connectionStatus: typeof ConnectionStatus = ConnectionStatus;
 
-  constructor(private _formBuilder: FormBuilder,
-              private gatewaysService: GatewaysService,
-              private thingsService: ThingsService,
-              private thingTypesService: ThingTypesService,
-              private thingCategoryService: ThingCategoryService,
-              public dialog: MatDialog,) {
-  }
-
-  public gateways: GatewayVO[] = [];
-  public thingTypes: ThingTypeVO[] = [];
-  public thingsList: ThingVO[] = [];
+  constructor(
+    private formBuilder: FormBuilder,
+    private gatewaysService: GatewaysService,
+    private thingsService: ThingsService,
+    private thingTypesService: ThingTypesService,
+    private thingCategoryService: ThingCategoryService,
+    private dialogService: DialogService,
+    public intercomService: InternalCommunicationService,
+  ) { }
 
   public filteredGateways: Observable<GatewayVO[]> | undefined;
 
   public satelliteControl = new FormControl("", { validators: [Validators.required, autocompleteObjectValidator()] });
-  public connectionControl = new FormControl("", { validators: [requiredIfValidator(() => this.selectedGateway !== undefined && !this.isOnline(this.selectedGateway))] });
+  public connectionControl = new FormControl("", { validators: [requiredIfValidator(() => this.intercomService.selectedGateway !== undefined && !this.isOnline(this.intercomService.selectedGateway))] });
   public thingControl = new FormControl("", { validators: [Validators.required] });
-
-  public selectedGateway: GatewayVO | undefined;
-  public connectionType: NetworkInterface | undefined;
-  public selectedThing: ThingVO | undefined;
 
   isAnimationRunning = false;
   isInfoCardOpen = false;
@@ -92,13 +86,13 @@ export class MeasurementCollectorComponent implements OnInit
   showInfoCard() { this.isInfoCardOpen = true; }
   hideInfoCard() { this.isInfoCardOpen = false; }
 
-  satelliteFormGroup = this._formBuilder.group(
+  satelliteFormGroup = this.formBuilder.group(
   {
     satellite: this.satelliteControl,
     connection: this.connectionControl
   });
 
-  measurementFormGroup = this._formBuilder.group({ thingControl: this.thingControl });
+  measurementFormGroup = this.formBuilder.group({ thingControl: this.thingControl });
 
   public validation_msgs =
   {
@@ -114,38 +108,62 @@ export class MeasurementCollectorComponent implements OnInit
 
   ngOnInit()
   {
-    this.gatewaysService.findGateways().subscribe(data => { this.gateways = (data.content as any); });
+    this.gatewaysService.findGateways().subscribe(data => { this.intercomService.gateways = data.content; });
 
-    this.filteredGateways = this.satelliteControl.valueChanges
-    .pipe(
+    this.filteredGateways = this.satelliteControl.valueChanges.pipe (
       startWith(""),
-      map(satellite => satellite ? this._filterGateways(satellite) : this.gateways.slice())
+      map(satellite => satellite ? this.filterGateways(satellite) : this.intercomService.gateways.slice())
     );
 
-    this.thingTypesService.findThingTypes().subscribe( (data: { content: ThingTypeVO[]; }) => { this.thingTypes = data.content; });
+    this.thingTypesService.findThingTypes().subscribe( (data) => { this.intercomService.thingTypes = data.content; });
   }
 
-  private _filterGateways(satellite: any): GatewayVO[]
+  filterGateways(satellite: string | GatewayVO): GatewayVO[]
   {
     let filterValue: string;
 
-    if (typeof satellite === "string") { filterValue = satellite.toLowerCase(); }
-    else { filterValue = satellite.gateway_id.toLowerCase(); }
+    if (typeof (satellite) === "string") filterValue = satellite.toLowerCase();
+    else filterValue = satellite.gateway_id.toLowerCase();
 
-    if (filterValue === "") { return this.gateways.slice() }
+    if (filterValue === "") { return this.intercomService.gateways.slice() }
 
-    const filteredSatellites: GatewayVO[]  = this.gateways.filter(option => option.gateway_id.toLowerCase().includes(filterValue));
+    const filteredSatellites: GatewayVO[]  = this.intercomService.gateways.filter(option => option.gateway_id.toLowerCase().includes(filterValue));
 
     if (filteredSatellites.length == 1 && filteredSatellites[0] === satellite)
     {
-      this.selectedGateway = filteredSatellites[0];
-      this.selectedThing = undefined;
+      this.intercomService.selectedGateway = filteredSatellites[0];
+      this.intercomService.selectedThing = undefined;
       this.connectionControl.setValue(null);
     }
-    else { this.selectedGateway = undefined; }
+    else { this.intercomService.selectedGateway = undefined; }
 
     return filteredSatellites;
   }
+
+  openCreateThingDialog()
+  {
+    this.dialogService.openCreateThingDialog()?.afterClosed().subscribe(data =>
+    {
+      if (data != undefined) {
+        this.thingsService.createThing(data).subscribe(() => { this.refreshThingsList(); });
+      }
+    });
+  }
+
+  refreshThingsList()
+	{
+		// Get connected things for Gateway.
+		if (this.intercomService.selectedGateway?.gateway_id)
+		{
+			this.thingsService.findThingsByGatewayId(this.intercomService.selectedGateway.gateway_id).subscribe(next =>
+				{
+					this.intercomService.thingsList = next.content;
+
+					// Select first thing in list
+					if(this.intercomService.thingsList.length > 0) this.intercomService.selectedThing = this.intercomService.thingsList[0];
+				});
+		}
+	}
 
   public displaySatelliteFn(gateway?: GatewayVO): string { return gateway ? gateway.gateway_id : "" }
 
@@ -179,26 +197,26 @@ export class MeasurementCollectorComponent implements OnInit
     // return gatewayVO.network_interfaces?.includes(NetworkInterface.Lan);
   }
 
-  getGatewayStrokeColor() { return this.selectedGateway ? "#2196f3" : "#999"; }
+  getGatewayStrokeColor() { return this.intercomService.selectedGateway ? "#2196f3" : "#999"; }
 
-  getSatelliteFillColor() { return this.selectedGateway ? "#bbdefb" : "#ccc"; }
+  getSatelliteFillColor() { return this.intercomService.selectedGateway ? "#bbdefb" : "#ccc"; }
 
-  getSatelliteTitle(): string { return this.selectedGateway ? this.selectedGateway.gateway_id : "Choose a satellite"; }
+  getSatelliteTitle(): string { return this.intercomService.selectedGateway ? this.intercomService.selectedGateway.gateway_id : "Choose a satellite"; }
 
   getFlowTitleCloudSatellite(): string
   {
-    if (!this.selectedGateway) return this.getSatelliteTitle();
+    if (!this.intercomService.selectedGateway) return this.getSatelliteTitle();
 
-    return this.isOnline(this.selectedGateway) ? "Satellite connected to cloud" : "Connect your satellite [" + this.selectedGateway.gateway_id + "] to INOA Cloud";
+    return this.isOnline(this.intercomService.selectedGateway) ? "Satellite connected to cloud" : "Connect your satellite [" + this.intercomService.selectedGateway.gateway_id + "] to INOA Cloud";
   }
 
-  getFlowColorCloudSatellite() { return this.selectedGateway && this.isOnline(this.selectedGateway) ? "#2196f3" : "#999"; }
+  getFlowColorCloudSatellite() { return this.intercomService.selectedGateway && this.isOnline(this.intercomService.selectedGateway) ? "#2196f3" : "#999"; }
 
-  getFlowColorEnergyMeter() { return this.selectedGateway && this.isOnline(this.selectedGateway) ? "#2196f3" : "#999"; }
+  getFlowColorEnergyMeter() { return this.intercomService.selectedGateway && this.isOnline(this.intercomService.selectedGateway) ? "#2196f3" : "#999"; }
 
   getMainFlowDisplay(): string
   {
-    if (!this.selectedGateway || !this.isMeasuring(this.selectedGateway)) return "none";
+    if (!this.intercomService.selectedGateway || !this.isMeasuring(this.intercomService.selectedGateway)) return "none";
 
     return "inline";
   }
@@ -227,9 +245,9 @@ export class MeasurementCollectorComponent implements OnInit
 
   getThingTitle(category: ThingCategory)
   {
-    if (this.selectedThing && this.selectedThing.thing_type_id && category == this.getThingCategory(this.selectedThing.thing_type_id))
+    if (this.intercomService.selectedThing && this.intercomService.selectedThing.thing_type_id && category == this.getThingCategory(this.intercomService.selectedThing.thing_type_id))
     {
-      return this.selectedThing && this.selectedThing.name ? this.selectedThing.name : "No name";
+      return this.intercomService.selectedThing && this.intercomService.selectedThing.name ? this.intercomService.selectedThing.name : "No name";
     }
 
     return category.title;
@@ -247,7 +265,7 @@ export class MeasurementCollectorComponent implements OnInit
   isThingCategoryConnected(category: ThingCategory): boolean
   {
     console.log(category);
-    if (!this.selectedGateway) return false;
+    if (!this.intercomService.selectedGateway) return false;
     /*
      ** TODO Get connected Things from Gateway.
     for(let thing of this.selectedGateway.connected_things) {
@@ -259,66 +277,25 @@ export class MeasurementCollectorComponent implements OnInit
 
   getFocusStepOneDisplay(): string
   {
-    if (this.selectedGateway) { return "none"; }
+    if (this.intercomService.selectedGateway) { return "none"; }
 
     return "inline";
   }
 
   getFocusStepOneTwoDisplay(): string
   {
-    if (!this.selectedGateway || this.isOnline(this.selectedGateway)) { return "none"; }
+    if (!this.intercomService.selectedGateway || this.isOnline(this.intercomService.selectedGateway)) { return "none"; }
 
     return "inline";
   }
 
   resetAll()
   {
-    this.selectedGateway = undefined;
-    this.selectedThing = undefined;
+    this.intercomService.selectedGateway = undefined;
+    this.intercomService.selectedThing = undefined;
   }
 
-  refreshThingsList()
-  {
-    // Get connected things for Gateway.
-    if (this.selectedGateway?.gateway_id)
-    {
-      this.thingsService.findThingsByGatewayId(this.selectedGateway.gateway_id).subscribe(next =>
-        {
-          this.thingsList = next.content;
-
-          // Select first thing in list
-          if(this.thingsList.length > 0) this.selectedThing = this.thingsList[0];
-        });
-    }
-  }
-
-  thingSelected() { return this.selectedThing; }
-
-  createThingDialog()
-  {
-    if (!this.selectedGateway) { return; }
-
-    const dialogData: ThingCreationDialogData =
-    {
-      gateway: this.selectedGateway,
-      thing: this.selectedThing,
-      thingTypes: this.thingTypes
-    }
-
-    const dialogRef = this.dialog.open(ThingCreationDialogComponent,
-    {
-      width: "600px",
-      data: dialogData,
-    });
-
-    dialogRef.afterClosed().subscribe(result =>
-    {
-      this.thingsService.createThing(result).subscribe(() =>
-      {
-        this.refreshThingsList();
-      });
-    });
-  }
+  thingSelected() { return this.intercomService.selectedThing; }
 
   getThingImage(thingTypeId: string | undefined)
   {

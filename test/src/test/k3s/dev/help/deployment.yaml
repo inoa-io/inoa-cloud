@@ -35,6 +35,18 @@ spec:
               mountPath: /home/static/index.html
               subPath: index.html
               readOnly: true
+            - name: help
+              mountPath: /home/static/help.html
+              subPath: help.html
+              readOnly: true
+            - name: help
+              mountPath: /home/static/inoa_bm_color.svg
+              subPath: inoa_bm_color.svg
+              readOnly: true
+            - name: help
+              mountPath: /home/static/inoa_wm_color.svg
+              subPath: inoa_wm_color.svg
+              readOnly: true
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000

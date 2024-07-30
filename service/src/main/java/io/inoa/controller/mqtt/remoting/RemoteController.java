@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 
 /**
  * Handles RPC commands to be distributed to gateways. This procedure is single
- * threaded be intention by now. Goal is to prevent sending multiple RPCs to one
+ * threaded by intention for now. Goal is to prevent sending multiple RPCs to one
  * gateway.
  */
 @Controller

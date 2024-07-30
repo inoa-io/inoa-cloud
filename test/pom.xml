@@ -142,6 +142,7 @@
 					<portBindings>
 						<portBinding>8080:8080</portBinding>
 						<portBinding>8883:8883</portBinding>
+            <portBinding>1883:1883</portBinding>
 					</portBindings>
 					<ctrImages>
 						<ctrImage>${image.hawkbit}</ctrImage>

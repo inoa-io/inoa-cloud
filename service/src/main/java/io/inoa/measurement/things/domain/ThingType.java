@@ -1,7 +1,6 @@
 package io.inoa.measurement.things.domain;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 import io.micronaut.data.annotation.DateCreated;
@@ -24,10 +23,10 @@ public class ThingType {
 	private String thingTypeId;
 	@MappedProperty
 	private String name;
+	@MappedProperty
+	private String category;
 	@TypeDef(type = DataType.JSON)
 	private Map<String, Object> jsonSchema;
-	@TypeDef(type = DataType.JSON)
-	private List<Map<String, Object>> uiLayout;
 	@DateCreated
 	private Instant created;
 	@DateUpdated

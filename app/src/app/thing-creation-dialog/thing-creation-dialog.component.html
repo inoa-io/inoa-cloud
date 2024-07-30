@@ -10,9 +10,9 @@
 
       <mat-label>Type of the thing to connect.</mat-label>
 
-      <mat-select (selectionChange)="loadThingTypes($event.value)" [(value)]="selectedThingType">
+      <mat-select (selectionChange)="loadThingType($event.value)" [(value)]="selectedThingType">
 
-        <mat-option *ngFor="let thingType of staticThingTypes" [value]="thingType">
+        <mat-option *ngFor="let thingType of data.thingTypes" [value]="thingType">
           <img style="vertical-align: middle;" width="24" src="{{getThingImage(thingType)}}" alt="{{thingType.name}}"/>
           <span style="padding-left: 10pt">{{thingType.name}}</span>
         </mat-option>

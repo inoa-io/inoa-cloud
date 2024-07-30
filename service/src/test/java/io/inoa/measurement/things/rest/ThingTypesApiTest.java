@@ -2,7 +2,6 @@ package io.inoa.measurement.things.rest;
 
 import static io.inoa.test.HttpAssertions.assert201;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.junit.jupiter.api.Disabled;
@@ -26,8 +25,8 @@ public class ThingTypesApiTest extends AbstractUnitTest implements ThingTypesApi
 		var vo = new ThingTypeCreateVO()
 				.name("DvModbusIR")
 				.thingTypeId("dvmodbusir")
-				.jsonSchema(new HashMap<>())
-				.uiLayout(new ArrayList<>());
+				.category("foo")
+				.jsonSchema(new HashMap<>());
 		assert201(() -> client.createThingType(auth("inoa"), vo));
 	}
 

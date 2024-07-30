@@ -1,65 +1,120 @@
-<style>
-	a:link {
-		color: lightblue;
-	}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>INOA Cloud - Local Dev Environment</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+      #content {
+        width: 100%;
+        height: 100%;
+        min-height: 100%;
+      }
 
-	a:visited {
-		color: aqua;
-	}
+      html, body {
+        height: 100%;
+      }
 
-	a:hover {
-		color: lightblue;
-	}
+      .fill {
+        min-height: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg bg-body-secondary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+          <img src="inoa_bm_color.svg" alt="INOA" width="36" height="36">
+          <img src="inoa_wm_color.svg" alt="INOA" width="80">
+          Developer Environment
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" target="content_frame" href="help.html#">Home</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Services
+              </a>
+              <ul class="dropdown-menu" style="width: 300px">
+                <li><a class="dropdown-item" target="content_frame" href="http://inoa.${k3s.ip}.nip.io:8080/index.html">Ground Control</a></li>
+                <li><a class="dropdown-item" target="content_frame" href="http://hawkbit.${k3s.ip}.nip.io:8080">Hawkbit</a></li>
+                <li><a class="dropdown-item" target="content_frame" href="http://dashboard.${k3s.ip}.nip.io:8080/#/workloads?namespace=_all">Kubernetes Dashboard</a></li>
+                <li>
+                  <a class="dropdown-item" target="content_frame" href="http://keycloak.${k3s.ip}.nip.io:8080/admin/inoa/console">Keycloak Admin (admin/password)</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame" href="http://grafana.${k3s.ip}.nip.io:8080">Grafana</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame" href="http://traefik.${k3s.ip}.nip.io:8080">Traefik Dashboard</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame" href="http://kafka.${k3s.ip}.nip.io:8080">Kafka Console</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame" href="http://influxdb.${k3s.ip}.nip.io:8080">Influxdb (admin/password)</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame" href="http://swagger.${k3s.ip}.nip.io:8080">SwaggerUI</a>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Resources
+              </a>
+              <ul class="dropdown-menu" style="width: 300px">
+                <li>
+                  <a class="dropdown-item" target="content_frame"
+                     href="http://grafana.${k3s.ip}.nip.io:8080/explore?schemaVersion=1&panes=%7B%221au%22:%7B%22datasource%22:%22P44368ADAD746BC27%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22grafana-postgresql-datasource%22,%22uid%22:%22P44368ADAD746BC27%22%7D,%22format%22:%22table%22,%22rawSql%22:%22SELECT%20%2A%20FROM%20gateway;%22,%22editorMode%22:%22code%22,%22sql%22:%7B%22columns%22:%5B%7B%22type%22:%22function%22,%22parameters%22:%5B%5D%7D%5D,%22groupBy%22:%5B%7B%22type%22:%22groupBy%22,%22property%22:%7B%22type%22:%22string%22%7D%7D%5D,%22limit%22:50%7D,%22rawQuery%22:true%7D%5D,%22range%22:%7B%22from%22:%22now-6h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1&%22,%22editorMode%22:%22code%22,%22sql%22:%7B%22columns%22:%5B%7B%22type%22:%22function%22,%22parameters%22:%5B%5D%7D%5D,%22groupBy%22:%5B%7B%22type%22:%22groupBy%22,%22property%22:%7B%22type%22:%22string%22%7D%7D%5D,%22limit%22:50%7D,%22table%22:%22gateway%22,%22rawQuery%22:true%7D%5D,%22range%22:%7B%22from%22:%22now-6h%22,%22to%22:%22now%22%7D%7D%7D">Dashboard - Gateways</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame"
+                     href="http://grafana.${k3s.ip}.nip.io:8080/explore?schemaVersion=1&panes=%7B%22QOA%22:%7B%22datasource%22:%22P951FEA4DE68E13C5%22,%22queries%22:%5B%7B%22refId%22:%22Work%22,%22datasource%22:%7B%22type%22:%22influxdb%22,%22uid%22:%22P951FEA4DE68E13C5%22%7D,%22query%22:%22from%28bucket:%20%5C%22default%5C%22%29%5Cn%20%20%7C%3E%20range%28start:%20v.timeRangeStart,%20stop:%20v.timeRangeStop%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22_measurement%5C%22%5D%20%3D%3D%20%5C%22inoa%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22type%5C%22%5D%20%3D%3D%20%5C%22dvh4013%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22unit%5C%22%5D%20%3D%3D%20%5C%22watthour%5C%22%29%5Cn%20%20%7C%3E%20difference%28%29%20%2A%2060%5Cn%22%7D,%7B%22refId%22:%22Power%22,%22datasource%22:%7B%22type%22:%22influxdb%22,%22uid%22:%22P951FEA4DE68E13C5%22%7D,%22query%22:%22from%28bucket:%20%5C%22default%5C%22%29%5Cn%20%20%7C%3E%20range%28start:%20v.timeRangeStart,%20stop:%20v.timeRangeStop%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22_measurement%5C%22%5D%20%3D%3D%20%5C%22inoa%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22type%5C%22%5D%20%3D%3D%20%5C%22dvh4013%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22unit%5C%22%5D%20%3D%3D%20%5C%22watt%5C%22%29%22,%22hide%22:false%7D%5D,%22range%22:%7B%22from%22:%22now-12h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1">Dashboard - DVH 4013</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame"
+                      href="http://dashboard.${k3s.ip}.nip.io:8080/#/pod?namespace=_all">k8s - Running Pods</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Documentation
+              </a>
+              <ul class="dropdown-menu" style="width: 300px">
+                <li>
+                  <a class="dropdown-item" target="content_frame"
+                     href="https://docs.inoa.io/">INOA</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame"
+                     href="https://inoa-io.github.io/satellite/">Satellite Hardware</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame"
+                     href="https://inoa-io.github.io/inoa-os-esp32/">INOA OS ESP32</a>
+                </li>
+                <li>
+                  <a class="dropdown-item" target="content_frame"
+                     href="https://github.com/inoa-io/inoa-os-esp32/blob/main/README.md">INOA OS Readme</a>
+                </li>
+              </ul>
+            </li>
 
-	a:active {
-		color: lightblue;
-	}
-</style>
-
-<body style="background-color: #101518; color: beige;">
-	<h1>URLs</h1>
-	<h2>INOA</h2>
-	<ul>
-		<li>
-			<a target=”_blank" href="http://inoa.127.0.0.1.nip.io:8080/index.html">INOA Groundcontrol</a>
-		</li>
-		<li>
-			<a target=”_blank" href="http://hawkbit.127.0.0.1.nip.io:8080">Hawkbit</a>
-		</li>
-	</ul>
-	<h2>Infrastructure</h2>
-	<ul>
-		<li>
-			<a target=”_blank" href="http://dashboard.127.0.0.1.nip.io:8080/#/workloads?namespace=_all">Dashboard</a>
-		</li>
-		<li>
-			<a target=”_blank" href="http://keycloak.127.0.0.1.nip.io:8080/admin/inoa/console">Keycloak Admin</a> (admin/password)
-		</li>
-		<li>
-			<a target=”_blank" href="http://grafana.127.0.0.1.nip.io:8080">Grafana</a>
-			<a target=”_blank" href="http://grafana.127.0.0.1.nip.io:8080/explore?schemaVersion=1&panes=%7B%221au%22:%7B%22datasource%22:%22P44368ADAD746BC27%22,%22queries%22:%5B%7B%22refId%22:%22A%22,%22datasource%22:%7B%22type%22:%22grafana-postgresql-datasource%22,%22uid%22:%22P44368ADAD746BC27%22%7D,%22format%22:%22table%22,%22rawSql%22:%22SELECT%20%2A%20FROM%20gateway;%22,%22editorMode%22:%22code%22,%22sql%22:%7B%22columns%22:%5B%7B%22type%22:%22function%22,%22parameters%22:%5B%5D%7D%5D,%22groupBy%22:%5B%7B%22type%22:%22groupBy%22,%22property%22:%7B%22type%22:%22string%22%7D%7D%5D,%22limit%22:50%7D,%22rawQuery%22:true%7D%5D,%22range%22:%7B%22from%22:%22now-6h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1&%22,%22editorMode%22:%22code%22,%22sql%22:%7B%22columns%22:%5B%7B%22type%22:%22function%22,%22parameters%22:%5B%5D%7D%5D,%22groupBy%22:%5B%7B%22type%22:%22groupBy%22,%22property%22:%7B%22type%22:%22string%22%7D%7D%5D,%22limit%22:50%7D,%22table%22:%22gateway%22,%22rawQuery%22:true%7D%5D,%22range%22:%7B%22from%22:%22now-6h%22,%22to%22:%22now%22%7D%7D%7D">Gateways from Postgres</a>
-			<a target=”_blank" href="http://grafana.127.0.0.1.nip.io:8080/explore?schemaVersion=1&panes=%7B%22QOA%22:%7B%22datasource%22:%22P951FEA4DE68E13C5%22,%22queries%22:%5B%7B%22refId%22:%22Work%22,%22datasource%22:%7B%22type%22:%22influxdb%22,%22uid%22:%22P951FEA4DE68E13C5%22%7D,%22query%22:%22from%28bucket:%20%5C%22default%5C%22%29%5Cn%20%20%7C%3E%20range%28start:%20v.timeRangeStart,%20stop:%20v.timeRangeStop%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22_measurement%5C%22%5D%20%3D%3D%20%5C%22inoa%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22type%5C%22%5D%20%3D%3D%20%5C%22dvh4013%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22unit%5C%22%5D%20%3D%3D%20%5C%22watthour%5C%22%29%5Cn%20%20%7C%3E%20difference%28%29%20%2A%2060%5Cn%22%7D,%7B%22refId%22:%22Power%22,%22datasource%22:%7B%22type%22:%22influxdb%22,%22uid%22:%22P951FEA4DE68E13C5%22%7D,%22query%22:%22from%28bucket:%20%5C%22default%5C%22%29%5Cn%20%20%7C%3E%20range%28start:%20v.timeRangeStart,%20stop:%20v.timeRangeStop%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22_measurement%5C%22%5D%20%3D%3D%20%5C%22inoa%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22type%5C%22%5D%20%3D%3D%20%5C%22dvh4013%5C%22%29%5Cn%20%20%7C%3E%20filter%28fn:%20%28r%29%20%3D%3E%20r%5B%5C%22unit%5C%22%5D%20%3D%3D%20%5C%22watt%5C%22%29%22,%22hide%22:false%7D%5D,%22range%22:%7B%22from%22:%22now-12h%22,%22to%22:%22now%22%7D%7D%7D&orgId=1">DVH 4013</a>
-		</li>
-		<li>
-			<a target=”_blank" href="http://traefik.127.0.0.1.nip.io:8080">Traefik Dashboard</a>
-		</li>
-		<li>
-			<a target=”_blank" href="http://kafka.127.0.0.1.nip.io:8080">Kafka Console</a>
-		</li>
-		<li>
-			<a target=”_blank" href="http://influxdb.127.0.0.1.nip.io:8080">Influxdb</a> (admin/password)
-		</li>
-		<li>
-			<a target=”_blank" href="http://swagger.127.0.0.1.nip.io:8080">SwaggerUI</a>:
-			Use <b>Authorize</b> with <b>Keycloak (OAuth2, implicit) </b> and user credentials or use
-			<b>BearerAuth (http, Bearer)</b> with token:
-			<pre>curl http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/protocol/openid-connect/token \
-  --silent \
-  --data client_id=inoa-swagger \
-  --data username=admin \
-  --data password=password \
-  --data grant_type=password \
-  | jq -r .access_token</pre>
-		</li>
-	</ul>
-</body>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid fill p-2">
+      <iframe src="help.html" frameborder="0" id="content" name="content_frame"></iframe>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

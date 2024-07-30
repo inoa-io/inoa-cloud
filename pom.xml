@@ -80,6 +80,13 @@
 		<image.keycloak>docker.io/kokuwaio/keycloak:${version.org.keycloak}</image.keycloak>
 		<image.kafka>ghcr.io/grayc-de/kafka:${version.org.apache.kafka}</image.kafka>
 
+    <!-- How many instances of INOA should be started in k3s? -->
+    <!-- Could be overridden via maven property -Dinoa.replicas=0 in case of local running backend service. -->
+    <inoa.replicas>1</inoa.replicas>
+		<!-- How many instances of McNoise are generating traffic? -->
+		<!-- Could be overridden via maven property -Dmcnoise.replicas=10 to produce more traffic. -->
+		<mcnoise.replicas>1</mcnoise.replicas>
+
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->

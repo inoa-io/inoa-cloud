@@ -49,6 +49,7 @@ import {ArrayTypeComponent} from "./thing-creation-dialog/array.type";
 import {MultiSchemaTypeComponent} from "./thing-creation-dialog/multischema.type";
 import {MonacoEditorModule} from "ngx-monaco-editor";
 
+
 export function fleetApiConfigFactory(): FleetConfiguration {
 	const params: FleetConfigurationParameters = {
 		basePath: environment.fleetApiBasePath,

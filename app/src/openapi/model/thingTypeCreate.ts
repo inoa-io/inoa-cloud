@@ -20,16 +20,16 @@ export interface ThingTypeCreateVO {
      */
     name: string;
     /**
-     * External thing type Id
+     * Category.
+     */
+    category?: string;
+    /**
+     * Id as technical reference (never changes).
      */
     thing_type_id?: string;
     /**
      * json_schema
      */
     json_schema?: { [key: string]: any; };
-    /**
-     * ui_layout
-     */
-    ui_layout?: Array<{ [key: string]: any; }>;
 }
 

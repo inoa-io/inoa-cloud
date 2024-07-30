@@ -65,7 +65,7 @@ public class ThingsController implements ThingsApi {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
 		}
 		Thing thing = thingMapper.toThing(thingCreateVO);
-		thing.setThingId(UUID.randomUUID().toString());
+		thing.setThingId(UUID.randomUUID());
 		thing.setTenantId(DEFAULT_TENANT);
 		thing.setThingType(thingType.get());
 
@@ -77,7 +77,7 @@ public class ThingsController implements ThingsApi {
 	@Override
 	public HttpResponse<ThingVO> updateThing(UUID thingId, @Valid ThingUpdateVO thingUpdateVO) {
 
-		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId.toString(), DEFAULT_TENANT);
+		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId, DEFAULT_TENANT);
 		if (optionalThing.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing not found.");
 		}
@@ -91,7 +91,7 @@ public class ThingsController implements ThingsApi {
 
 	@Override
 	public HttpResponse<ThingVO> findThing(UUID thingId) {
-		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId.toString(), DEFAULT_TENANT);
+		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId, DEFAULT_TENANT);
 		if (optionalThing.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing not found.");
 		}
@@ -193,7 +193,7 @@ public class ThingsController implements ThingsApi {
 
 	@Override
 	public HttpResponse<Object> deleteThing(UUID thingId) {
-		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId.toString(), DEFAULT_TENANT);
+		Optional<Thing> optionalThing = thingRepository.findByThingIdAndTenantId(thingId, DEFAULT_TENANT);
 		if (optionalThing.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing not found.");
 		}

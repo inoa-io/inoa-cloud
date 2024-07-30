@@ -26,13 +26,13 @@ export interface ThingTypeVO {
      */
     name: string;
     /**
+     * Category.
+     */
+    category?: string;
+    /**
      * json_schema
      */
     json_schema?: { [key: string]: any; };
-    /**
-     * ui_layout
-     */
-    ui_layout?: Array<{ [key: string]: any; }>;
     properties?: Array<PropertyDefinitionVO>;
     channels?: Array<ThingTypeChannelVO>;
     /**

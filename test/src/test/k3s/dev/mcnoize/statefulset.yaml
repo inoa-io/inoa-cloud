@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: mcnoize
 spec:
-  replicas: 10
+  replicas: ${mcnoise.replicas}
   selector:
     matchLabels:
       app.kubernetes.io/name: mcnoize

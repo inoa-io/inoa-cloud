@@ -2,6 +2,7 @@ package io.inoa.measurement.things.domain;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
@@ -21,7 +22,7 @@ public class Thing {
 	@GeneratedValue
 	private Long id;
 	@MappedProperty
-	private String thingId;
+	private UUID thingId;
 	@MappedProperty
 	private String urn;
 	@MappedProperty

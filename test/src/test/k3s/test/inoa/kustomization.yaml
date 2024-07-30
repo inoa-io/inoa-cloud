@@ -27,7 +27,7 @@ configMapGenerator:
       - FLYWAY_DATASOURCES_DEFAULT_LOCATIONS=classpath:db/migration,filesystem:/app/flyway
       # custom log levels
       - LOGBACK_APPENDER=CONSOLE
-      - LOGGER_LEVELS_IO_INOA=INFO
+      - LOGGER_LEVELS_IO_INOA=TRACE
       - LOGGER_LEVELS_IO_MOQUETTE=WARN
       - LOGGER_LEVELS_IO_MICRONAUT_DATA=INFO
       - LOGGER_LEVELS_IO_MICRONAUT_HTTP=INFO

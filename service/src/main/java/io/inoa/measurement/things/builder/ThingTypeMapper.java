@@ -14,11 +14,11 @@ import io.micronaut.data.model.Page;
 public interface ThingTypeMapper {
 
 	@Mapping(target = "removeJsonSchemaItem", ignore = true)
-	@Mapping(target = "removeUiLayoutItem", ignore = true)
 	@Mapping(target = "channels", ignore = true)
 	@Mapping(target = "removeChannelsItem", ignore = true)
 	@Mapping(target = "properties", ignore = true)
 	@Mapping(target = "removePropertiesItem", ignore = true)
+	@Mapping(target = "id", source = "thingTypeId")
 	ThingTypeVO toThingTypeVO(ThingType thingType);
 
 	@Mapping(target = "id", ignore = true)

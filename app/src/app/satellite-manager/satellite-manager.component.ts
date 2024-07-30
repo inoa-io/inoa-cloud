@@ -1,56 +1,11 @@
 import { HttpContext } from "@angular/common/http";
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
-import { GatewaysService, RemoteService, ThingsService } from "@inoa/api";
-import { GatewayVO, ThingVO, RpcCommandVO } from "@inoa/model";
+import { GatewaysService, GatewayUpdateVO, GatewayVO, RemoteService, RpcCommandVO, ThingsService, ThingVO } from "@inoa/api";
 import { InternalCommunicationService } from "../internal-communication-service";
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
-
-const ELEMENT_DATA: GatewayVO[] =
-[
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000023", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: true, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000024", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000025", created: "2023-01-01 12:12", enabled: false, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-  { gateway_id: "ISRL011-0000026", created: "2023-01-01 12:12", enabled: true, status: { mqtt: { connected: false, timestamp: "2023-10-10 13:12ß"} }, updated: "2023-01-02 12:13" },
-];
-
-const THINGS_DATA: ThingVO[] =
-[
-  { id: "0001", name: "DZG", gateway_id: "ISRL011-0000001", thing_type_id: "DZG", config: { }, created: "2023-01-01 12:12", updated: "2023-01-02 12:13"},
-  { id: "0001", name: "DZG", gateway_id: "ISRL011-0000001", thing_type_id: "DZG", config: { }, created: "2023-01-01 12:12", updated: "2023-01-02 12:13"},
-  { id: "0001", name: "MyStrom", gateway_id: "ISRL011-0000001", thing_type_id: "MyStrom", config: { }, created: "2023-01-01 12:12", updated: "2023-01-02 12:13"},
-  { id: "0001", name: "DZG", gateway_id: "ISRL011-0000001", thing_type_id: "DZG", config: { }, created: "2023-01-01 12:12", updated: "2023-01-02 12:13"},
-]
 
 @Component({
   selector: "gc-satellite-manager",
@@ -66,8 +21,8 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
   displayedColumnsGatewayTable: string[] = ["gateway_id", "name", "enabled", "status", "actions", "created", "updated"];
   displayedColumnsThingsTable: string[] = ["id", "gateway_id", "thing_type_id", "name", "created", "updated"];
 
-  dataSourceGateways = new MatTableDataSource<GatewayVO>(ELEMENT_DATA);
-  dataSourceThings = new MatTableDataSource<ThingVO>(THINGS_DATA);
+  dataSourceGateways = new MatTableDataSource<GatewayVO>;
+  dataSourceThings = new MatTableDataSource<ThingVO>;
 
   selectedSatellite: GatewayVO | undefined;
   selectedThing: ThingVO | undefined;
@@ -77,7 +32,7 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
   functions = [];
   function = "";
 
-  jsonCode = "{ \"key\": \"value\" }";
+  jsonCode = "{\"id\": \"value\", \"method\": \"sys.wink\" }";
 
   monacoOptions =
   {
@@ -136,6 +91,15 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
     //TODO: add restart command here
   }
 
+  toggleEnabledClick(gateway: GatewayVO, event: Event, enable: boolean)
+  {
+    event.stopPropagation();
+
+    const updateData: GatewayUpdateVO = { enabled: enable }
+
+    this.gatewaysService.updateGateway(gateway.gateway_id, updateData).subscribe((returnData) => gateway.enabled = returnData.enabled);
+  }
+
   isRowSelected(rowData: GatewayVO)
   {
     if(!this.selectedSatellite) return false;
@@ -154,12 +118,12 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
   {
     if(this.selectedSatellite)
     {
-      console.log("%cTrying to send Json-Code:", "color: lime;");
-      console.log(this.jsonCode);
-      console.log();
-
       const options = { httpHeaderAccept: "application/json" as const, context: new HttpContext() };
-      const rpcCommand: RpcCommandVO = { id: "1", method: "unknown", params: JSON.parse(this.jsonCode) }
+      const rpcCommand: RpcCommandVO = JSON.parse(this.jsonCode);
+
+      console.log("%cTrying to send Json-Code:", "color: lime;");
+      console.log(rpcCommand);
+      console.log();
 
       this.remoteService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand, undefined, undefined, options)
       .subscribe((response) =>
