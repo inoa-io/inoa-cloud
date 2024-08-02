@@ -100,13 +100,13 @@
 					},
 					"configurations": {
 						"production": {
-							"browserTarget": "groundcontrol:build:production"
+							"buildTarget": "groundcontrol:build:production"
 						},
 						"development": {
-							"browserTarget": "groundcontrol:build:development"
+							"buildTarget": "groundcontrol:build:development"
 						},
             "mockserver": {
-              "browserTarget": "groundcontrol:build:mockserver"
+              "buildTarget": "groundcontrol:build:mockserver"
             }
 					},
 					"defaultConfiguration": "development"
@@ -114,7 +114,7 @@
 				"extract-i18n": {
 					"builder": "@angular-devkit/build-angular:extract-i18n",
 					"options": {
-						"browserTarget": "groundcontrol:build"
+						"buildTarget": "groundcontrol:build"
 					}
 				},
 				"test": {

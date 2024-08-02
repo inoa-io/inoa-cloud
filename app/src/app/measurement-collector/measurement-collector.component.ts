@@ -7,7 +7,6 @@ import { StepperSelectionEvent } from "@angular/cdk/stepper";
 import { ThingCategory, ThingCategoryService } from "../thing-category.service";
 import { InternalCommunicationService } from "../internal-communication-service";
 import { DialogService } from "../dialog-service";
-import { ThingCreationDialogComponent } from "../thing-creation-dialog/thing-creation-dialog.component";
 
 function autocompleteObjectValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {

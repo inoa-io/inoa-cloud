@@ -1,15 +1,15 @@
 @use '@angular/material' as mat;
 
-$inoa-primary-indigo: mat.define-palette(mat.$indigo-palette);
-$inoa-accent-indigo: mat.define-palette(mat.$indigo-palette, A200, A100, A400);
-$inoa-warn-indigo: mat.define-palette(mat.$red-palette);
+$inoa-primary-indigo: mat.m2-define-palette(mat.$m2-indigo-palette);
+$inoa-accent-indigo: mat.m2-define-palette(mat.$m2-indigo-palette, A200, A100, A400);
+$inoa-warn-indigo: mat.m2-define-palette(mat.$m2-red-palette);
 
 // Be sure that you only ever include this mixin once!
 @include mat.core();
 
 $mat-density: 0;
 
-$inoa-theme-indigo-light: mat.define-light-theme(
+$inoa-theme-indigo-light: mat.m2-define-light-theme(
   (
     color:
     (
@@ -20,7 +20,7 @@ $inoa-theme-indigo-light: mat.define-light-theme(
   )
 );
 
-$inoa-theme-indigo-dark: mat.define-dark-theme(
+$inoa-theme-indigo-dark: mat.m2-define-dark-theme(
   (
     color:
     (
