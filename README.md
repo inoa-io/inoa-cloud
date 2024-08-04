@@ -16,11 +16,12 @@ controlled devices.
 #### Development Tools
 
 * [Git](https://git-scm.com/) >= 2.25
-* [Java Development Kit](https://openjdk.org/install/) >= 17.0.8 & < 21
+* [Java Development Kit](https://openjdk.org/install/) >= 17.0.8 & < 18
 * [Maven](https://maven.apache.org/) >= 3.6.3
 * [Docker](https://www.docker.com/) >= 24.0.5
 * [k3s](https://k3s.io/)
 * [Python](https://www.python.org/) >= 3.8.5 (for documentation only)
+* [node.js](https://nodejs.org/en) 18 (for Ground Control UI)
 
 #### Repository Access
 

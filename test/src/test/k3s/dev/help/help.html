@@ -22,6 +22,8 @@
             set-reg-url http://inoa.${k3s.ip}.nip.io:8080/gateway
             # Configure the MQTT endpoint where to communicate with INOA Cloud and send measurements to.
             setup-mqtt mqtt://inoa.${k3s.ip}.nip.io 1883
+            # Configure the endpoint to fetch new software from
+            setup-ota hawkbit.${k3s.ip}.nip.io:8080 /update/inoa/controller/v1
             reboot
           </code></pre>
         </p>

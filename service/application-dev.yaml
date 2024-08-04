@@ -1,0 +1,11 @@
+inoa:
+  mqtt:
+    port: 1884
+    tls:
+      generateKey: true
+      port: 8884
+kafka:
+  enabled: true
+datasources:
+  default:
+    host: postgres.192.168.20.10.nip.io
