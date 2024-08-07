@@ -70,47 +70,112 @@
 			"webOrigins": [ "http://grafana.${k3s.ip}.nip.io:8080/*", "http://grafana.127.0.0.1.nip.io:8080/*"],
 			"defaultClientScopes": [ "email" ],
 			"optionalClientScopes": []
-		},{
-			"id": "inoa-ui",
-			"enabled": true,
-			"clientId": "inoa-ui",
-			"publicClient": false,
-			"secret": "changeMe",
-			"standardFlowEnabled": true,
-			"implicitFlowEnabled": false,
-			"directAccessGrantsEnabled": true,
-			"serviceAccountsEnabled": false,
-			"protocol": "openid-connect",
-			"protocolMappers": [
-				{
-					"name": "audience",
-					"protocol": "openid-connect",
-					"protocolMapper": "oidc-audience-mapper",
-					"config": {
-						"included.custom.audience": "inoa-registry",
-						"id.token.claim": "true",
-						"access.token.claim": "true"
-					}
-				},
-				{
-					"name": "Group-to-Tenant Mapper",
-					"protocol": "openid-connect",
-					"protocolMapper": "oidc-group-membership-mapper",
-					"consentRequired": false,
-					"config": {
-						"full.path": "false",
-						"id.token.claim": "true",
-						"access.token.claim": "true",
-						"claim.name": "tenants",
-						"userinfo.token.claim": "false"
-					}
-				}
-			],
-			"baseUrl": "http://admin.${k3s.ip}.nip.io:8080",
-			"redirectUris": [ "http://admin.${k3s.ip}.nip.io:8080/oauth/callback/keycloak", "http://${k3s.ip}:8080/oauth/callback/keycloak" ],
-			"webOrigins": [ "http://admin.${k3s.ip}.nip.io:8080/*" ],
-			"defaultClientScopes": [ "email", "profile" ],
-			"optionalClientScopes": []
+		},
+    {
+      "id": "inoa-groundcontrol",
+      "enabled": true,
+      "clientId": "inoa-groundcontrol",
+      "secret": "changeMe",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "attributes": {
+        "client_credentials.use_refresh_token": "false",
+        "post.logout.redirect.uris": "http://inoa.${k3s.ip}.nip.io:8080/logout"
+      },
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.client.audience": "elco-burner-selector-app",
+            "id.token.claim": "true",
+            "access.token.claim": "true"
+          }
+        },{
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ],
+      "baseUrl": "http://inoa.${k3s.ip}.nip.io:8080",
+      "redirectUris": [
+        "http://localhost:4200/*",
+        "http://localhost:4300/*",
+        "http://swagger.${k3s.ip}.nip.io:8080/*",
+        "http://inoa.${k3s.ip}.nip.io:8080/oauth/callback/inoa-groundcontrol"
+      ],
+      "webOrigins": [ "*" ],
+      "defaultClientScopes": [ "profile", "email" ],
+      "optionalClientScopes": []
+    },{
+      "id": "inoa-cloud",
+      "enabled": true,
+      "clientId": "inoa-cloud",
+      "secret": "changeMe",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "protocol": "openid-connect",
+      "protocolMappers": [
+        {
+          "name": "role-view-realm",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-role-mapper",
+          "config": {
+            "role": "realm-management.view-realm"
+          }
+        },
+        {
+          "name": "role-view-users",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-role-mapper",
+          "config": {
+            "role": "realm-management.view-users"
+          }
+        },
+        {
+          "name": "role-manage-users",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-role-mapper",
+          "config": {
+            "role": "realm-management.manage-users"
+          }
+        },{
+          "name": "claim",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "config": {
+            "usermodel.clientRoleMapping.clientId":"realm-management",
+            "multivalued": "true",
+            "claim.name": "resource_access.${client_id}.roles",
+            "userinfo.token.claim": "false",
+            "id.token.claim": "false",
+            "access.token.claim": "true"
+          }
+        }
+      ],
+      "attributes": {
+        "post.logout.redirect.uris": "http://inoa.${inoa.k3s}.nip.io:8080/logout",
+        "access.token.lifespan": "60"
+      },
+      "redirectUris": [],
+      "webOrigins": [],
+      "defaultClientScopes": [],
+      "optionalClientScopes": []
 		},{
 			"id": "inoa-mcnoize",
 			"enabled": true,

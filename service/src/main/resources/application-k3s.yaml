@@ -1,0 +1,87 @@
+micronaut:
+  application:
+    name: INOA Cloud
+  server:
+    port: 4300
+  # https://docs.micronaut.io/latest/guide/#clientConfiguration
+  http:
+    services:
+      keycloak:
+        url: http://keycloak.${k3s.ip}.nip.io:8080
+        path: /
+        follow-redirects: false
+        connect-timeout: ${keycloak.connect-timeout:1000ms}
+        read-timeout: ${keycloak.read-timeout:2000ms}
+      hawkbit:
+        url: http://hawkbit.${k3s.ip}.nip.io:8080/UI/login
+  # https://micronaut-projects.github.io/micronaut-security/latest/guide/#securityConfiguration
+  security:
+    oauth2:
+      openid:
+        logout-uri: /oauth/logout
+      clients:
+        inoa-cloud:
+          openid:
+            issuer: ${micronaut.http.services.keycloak.url}${micronaut.http.services.keycloak.path}realms/inoa
+          client-id: inoa-cloud
+          client-secret: ${inoa-cloud.client-secret:changeMe}
+          grant-type: CLIENT_CREDENTIALS
+          client-credentials:
+            service-id-regex: inoa-cloud
+            # https://micronaut-projects.github.io/micronaut-security/latest/guide/#oauth
+        inoa-groundcontrol:
+          openid:
+            issuer: ${micronaut.http.services.keycloak.url}${micronaut.http.services.keycloak.path}realms/inoa
+            end-session.enabled: true
+          client-id: inoa-groundcontrol
+          client-secret: ${inoa-groundcontrol.client-secret:changeMe}
+          scopes:
+            - openid
+            - email
+            - profile
+    # https://micronaut-projects.github.io/micronaut-security/latest/guide/#securityConfiguration
+    token:
+      name-key: sub
+      roles-key: roles
+      # https://micronaut-projects.github.io/micronaut-security/latest/guide/#cookieToken
+      cookie:
+        cookie-http-only: true
+        cookie-same-site: lax
+        # https://micronaut-projects.github.io/micronaut-security/latest/guide/#jwt
+      jwt:
+        claims-validators:
+          audience: inoa-groundcontrol
+        signatures:
+          jwks:
+            keycloak:
+              url: ${micronaut.http.services.keycloak.url}${micronaut.http.services.keycloak.path}realms/inoa/protocol/openid-connect/certs
+    authentication: idtoken
+    redirect:
+      unauthorized:
+        url: /oauth/login/inoa-groundcontrol
+      prior-to-login: true
+    # https://micronaut-projects.github.io/micronaut-security/latest/guide/#logoutHandler
+    endpoints:
+      logout:
+        enabled: true
+        path: /logout
+        get-allowed: true
+inoa:
+  mqtt:
+    port: 1884
+    tls:
+      generateKey: true
+      port: 8884
+datasources:
+  default:
+    host: postgres.${k3s.ip}.nip.io
+    username: inoa
+    database: inoa
+
+influxdb:
+  url: http://influxdb.${k3s.ip}.nip.io:8080
+  organisation: inoa
+  bucket: default
+kafka:
+  bootstrap:
+    servers: kafka.${k3s.ip}.nip.io:9092
