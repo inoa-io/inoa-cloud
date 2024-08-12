@@ -41,7 +41,13 @@ mvn pre-integration-test -Dk3s.failIfExists=false -Dk3s.ip=192.168.xxx.xxx -pl .
 
 ### Windows Scripts
 
+```bash
+# Launch INOA Cloud Locally
+./inoa-startup.bat
+
+# Stop the local instance
 t.b.d.
+```
 
 ### Bind local Satellite
 
