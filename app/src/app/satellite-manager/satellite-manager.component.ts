@@ -1,4 +1,4 @@
-import { HttpContext } from "@angular/common/http";
+import { HttpContext, HttpErrorResponse } from "@angular/common/http";
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { GatewaysService, GatewayUpdateVO, GatewayVO, RemoteService, RpcCommandVO, ThingsService, ThingVO } from "@inoa/api";
@@ -90,7 +90,8 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
   restartClick(gateway: GatewayVO, event: Event)
   {
     event.stopPropagation();
-    //TODO: add restart command here
+    //TODO: add mqtt restart command here and remove the rest version
+    this.rpcRestService.sendRpcReboot(gateway.gateway_id);
   }
 
   toggleEnabledClick(gateway: GatewayVO, event: Event, enable: boolean)
