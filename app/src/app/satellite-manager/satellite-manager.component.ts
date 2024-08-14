@@ -6,6 +6,7 @@ import { InternalCommunicationService } from "../internal-communication-service"
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
+import { RpcRestService } from "../rpc-rest-service";
 
 @Component({
   selector: "gc-satellite-manager",
@@ -55,6 +56,7 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
     private gatewaysService: GatewaysService,
     private thingsService: ThingsService,
     private remoteService: RemoteService,
+    private rpcRestService: RpcRestService,
     public intercomService: InternalCommunicationService)
   { this.selectedSatellite = undefined; }
 
@@ -125,13 +127,16 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
       console.log(rpcCommand);
       console.log();
 
-      this.remoteService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand, undefined, undefined, options)
-      .subscribe((response) =>
-      {
-        console.log("%cGot respone from: " + response.id, "color: lightblue;");
-        if(response.error) console.log("%cSomething went wrong: " + response.error.code + " | " + response.error.message, "color: orange;");
-        if(response.result) console.log("This is the result: " + response.result);
-      });
+      // this.remoteService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand, undefined, undefined, options)
+      // .subscribe((response) =>
+      // {
+      //   console.log("%cGot respone from: " + response.id, "color: lightblue;");
+      //   if(response.error) console.log("%cSomething went wrong: " + response.error.code + " | " + response.error.message, "color: orange;");
+      //   if(response.result) console.log("This is the result: " + response.result);
+      // });
+
+      this.rpcRestService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand)
+        .subscribe((response) => console.log("Respone: " + response));
     }
   }
 
