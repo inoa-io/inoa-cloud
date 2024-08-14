@@ -136,7 +136,7 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
       // });
 
       this.rpcRestService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand)
-        .subscribe((response) => console.log("Respone: " + response));
+        .subscribe((response) => console.log("Respone: " + JSON.stringify(response)));
     }
   }
 
