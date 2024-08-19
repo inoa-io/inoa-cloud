@@ -30,9 +30,6 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
 
   selectedTabIndex = 0;
 
-  functions = [];
-  function = "";
-
   jsonCode = "{\"id\": \"value\", \"method\": \"sys.wink\" }";
 
   monacoOptions =
@@ -128,16 +125,13 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
       console.log(rpcCommand);
       console.log();
 
-      // this.remoteService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand, undefined, undefined, options)
-      // .subscribe((response) =>
-      // {
-      //   console.log("%cGot respone from: " + response.id, "color: lightblue;");
-      //   if(response.error) console.log("%cSomething went wrong: " + response.error.code + " | " + response.error.message, "color: orange;");
-      //   if(response.result) console.log("This is the result: " + response.result);
-      // });
-
-      this.rpcRestService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand)
-        .subscribe((response) => console.log("Respone: " + JSON.stringify(response)));
+      this.remoteService.sendRpcCommand(this.selectedSatellite.gateway_id, rpcCommand, undefined, undefined, options)
+      .subscribe((response) =>
+      {
+        console.log("%cGot respone from: " + response.id, "color: lightblue;");
+        if(response.error) console.log("%cSomething went wrong: " + response.error.code + " | " + response.error.message, "color: orange;");
+        if(response.result) console.log("This is the result: " + response.result);
+      });
     }
   }
 
