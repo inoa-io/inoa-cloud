@@ -1,4 +1,4 @@
-import { HttpContext, HttpErrorResponse } from "@angular/common/http";
+import { HttpContext } from "@angular/common/http";
 import { AfterViewInit, Component, OnInit, ViewChild } from "@angular/core";
 import { FormBuilder } from "@angular/forms";
 import { GatewaysService, GatewayUpdateVO, GatewayVO, RemoteService, RpcCommandVO, ThingsService, ThingVO } from "@inoa/api";

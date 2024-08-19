@@ -1,4 +1,4 @@
-### RPC Commands
+# RPC Commands
 
 One can perform remote procedure calls via MQTT or REST.
 The REST endpoint can be used as: `curl Satellite-XXXXXX.local/rpc -X POST -d "{\"id\": 1, \"method\": \"rpc.list\"}"`
@@ -34,6 +34,7 @@ The XXXXXX section represents the last 6 characters of the gateway_id.
 Http Add Params:
 
 ```
+#!/bin/bash
 {
     "id": "urn:shplg-s:C8C9A3B8FC2A:status",
     "name": "Mary Shelly",
@@ -45,6 +46,7 @@ Http Add Params:
 Datapoint ID:
 
 ```
+#!/bin/bash
 {
     "id": "urn:shplg-s:C8C9A3B8FC2A:status"
 }
@@ -53,6 +55,7 @@ Datapoint ID:
 UART Frame Params:
 
 ```
+#!/bin/bash
 {
     "uart": 1, "frame": "090340000002D083"
 }

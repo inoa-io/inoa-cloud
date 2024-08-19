@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { RpcCommandVO, RpcResponseVO } from "@inoa/model";
+import { RpcCommandVO } from "@inoa/model";
 import { v4 as uuidv4 } from "uuid";
 
 @Injectable({
