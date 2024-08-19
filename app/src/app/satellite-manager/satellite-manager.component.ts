@@ -6,6 +6,7 @@ import { InternalCommunicationService } from "../internal-communication-service"
 import { MatSort } from "@angular/material/sort";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
+import { RpcRestService } from "../rpc-rest-service";
 
 @Component({
   selector: "gc-satellite-manager",
@@ -28,9 +29,6 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
   selectedThing: ThingVO | undefined;
 
   selectedTabIndex = 0;
-
-  functions = [];
-  function = "";
 
   jsonCode = "{\"id\": \"value\", \"method\": \"sys.wink\" }";
 
@@ -55,6 +53,7 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
     private gatewaysService: GatewaysService,
     private thingsService: ThingsService,
     private remoteService: RemoteService,
+    private rpcRestService: RpcRestService,
     public intercomService: InternalCommunicationService)
   { this.selectedSatellite = undefined; }
 
@@ -88,7 +87,8 @@ export class SatelliteManagerComponent implements AfterViewInit, OnInit
   restartClick(gateway: GatewayVO, event: Event)
   {
     event.stopPropagation();
-    //TODO: add restart command here
+    //TODO: add mqtt restart command here and remove the rest version
+    this.rpcRestService.sendRpcReboot(gateway.gateway_id);
   }
 
   toggleEnabledClick(gateway: GatewayVO, event: Event, enable: boolean)
