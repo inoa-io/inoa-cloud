@@ -4,7 +4,7 @@ One can perform remote procedure calls via MQTT or REST.
 The REST endpoint can be used as: `curl Satellite-XXXXXX.local/rpc -X POST -d "{\"id\": 1, \"method\": \"rpc.list\"}"`
 The XXXXXX section represents the last 6 characters of the gateway_id.
 
-# RPC Table
+## RPC Table
 
 | Command | Description | Parameters |
 |-|-|-|
@@ -29,7 +29,7 @@ The XXXXXX section represents the last 6 characters of the gateway_id.
 | dp.get | Get full datapoint info | Datapoint ID |
 | metering.rs485.frame | Sends a RS485 request frame | UART Frame Params |
 
-# RPC Param Examples
+## RPC Param Examples
 
 Http Add Params:
 
