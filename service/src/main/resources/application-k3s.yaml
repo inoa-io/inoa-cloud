@@ -66,6 +66,11 @@ micronaut:
         enabled: true
         path: /logout
         get-allowed: true
+  router:
+    static-resources:
+      app:
+        mapping: /**
+        paths: "file:/${static.path}"
 inoa:
   mqtt:
     port: 1884
@@ -74,14 +79,15 @@ inoa:
       port: 8884
 datasources:
   default:
-    host: postgres.${k3s.ip}.nip.io
+    host: postgres.default
     username: inoa
     database: inoa
+    password: changeMe
 
 influxdb:
-  url: http://influxdb.${k3s.ip}.nip.io:8080
+  url: http://influxdb.default:8086
   organisation: inoa
   bucket: default
 kafka:
   bootstrap:
-    servers: kafka.${k3s.ip}.nip.io:9092
+    servers: kafka.default:9092

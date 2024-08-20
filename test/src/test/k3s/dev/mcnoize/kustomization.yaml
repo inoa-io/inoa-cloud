@@ -9,7 +9,7 @@ configMapGenerator:
   - name: mcnoize-env
     literals:
       - MCNOIZE_DEBUG=true
-      - MCNOIZE_KEYCLOAK_TOKEN_URL=http://keycloak/realms/inoa/protocol/openid-connect/token
+      - MCNOIZE_KEYCLOAK_TOKEN_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
       - MCNOIZE_KEYCLOAK_CLIENT_ID=inoa-mcnoize
       - MCNOIZE_KEYCLOAK_CLIENT_SECRET=changeMe
       - MCNOIZE_INOA_URL=http://inoa
