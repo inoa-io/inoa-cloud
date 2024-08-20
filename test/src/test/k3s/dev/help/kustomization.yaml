@@ -5,4 +5,4 @@ resources:
 
 configMapGenerator:
   - name: help
-    files: [index.html, help.html, inoa_bm_color.svg, inoa_wm_color.svg]
+    files: [index.html, help.html, overview.html, inoa_bm_color.svg, inoa_wm_color.svg, developer-setups.svg]

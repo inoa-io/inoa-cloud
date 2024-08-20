@@ -8,7 +8,21 @@
 </head>
 <body>
 <div class="container">
-  <a href="http://localhost:4200" target="_blank" role="button" class="btn btn-primary">INOA Ground Control (local)</a>
+  <div class="row gx-4">
+    <div class="card p-3 m-3">
+      <div class="card-body">
+        <h5 class="card-title">Access Ground Control</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">Jump into the INOA control center for IoT fleets.</h6>
+        <p class="card-text">
+        You can start using INOA Ground Control in three different ways:
+        <ol>
+          <li><a href="http://inoa.${k3s.ip}.nip.io:8080">Inside k3s</a></li>
+          <li><a href="http://localhost:4200">Locally started via Yarn</a></li>
+          <li><a href="http://localhost:4300">Locally started via Micronaut application.</a>&nbsp;(Telepresence is needed!)</li>
+        </ol>
+        </p>
+      </div>
+    </div>
   <div class="row gx-4">
     <div class="card p-3 m-3">
       <div class="card-body">
@@ -19,9 +33,11 @@
             # Connect to Wifi (if not already done or connected via LAN)
             setup-wifi &lt;SSID&gt; &lt;PASSWORD&gt;
             # Configure the INOA registry URL for self registration
-            set-reg-url http://inoa.${k3s.ip}.nip.io:8080/gateway
+            setup-registry http://inoa.${k3s.ip}.nip.io:8080/gateway
             # Configure the MQTT endpoint where to communicate with INOA Cloud and send measurements to.
             setup-mqtt mqtt://inoa.${k3s.ip}.nip.io 1883
+            # Configure the Hawkbit API endpoint to enable OTA updates for the Satellite
+            setup-ota http://hawkbit.${k3s.ip}.nip.io:8080 /update/inoa/controller/v1
             reboot
           </code></pre>
         </p>
@@ -47,6 +63,25 @@
           </code></pre>
         </p>
         <a class="card-link" target=”_blank" href="http://swagger.${k3s.ip}.nip.io:8080">SwaggerUI</a>
+      </div>
+    </div>
+    <div class="card p-3 m-3">
+      <div class="card-body">
+        <h5 class="card-title">Connect with Telepresence</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">Bring your local service in the game.</h6>
+        <p class="card-text">
+          To integrate your local INOA cloud instance easily with the infrastructure, running inside the k3s cluster,
+          you could use <a href="https://www.getambassador.io/docs/telepresence-oss/latest/install" target="_blank">Telepresence</a>.
+          <br/>
+          If you have installed it, you can connect and intercept traffic for INOA via these commands:
+        <pre><code>
+          telepresence helm install --kubeconfig=$HOME/.kube/k3s.yaml
+          telepresence connect --kubeconfig=$HOME/.kube/k3s.yaml
+          telepresence intercept inoa-http --workload=inoa --service=inoa --port 4300:http
+          telepresence intercept inoa-mqtt --workload=inoa --service=inoa --port 1884:mqtt
+          </code></pre>
+        </p>
+        <a class="card-link" target=”_blank" href="https://www.getambassador.io/docs/telepresence-oss/latest/install">Telepresence</a>
       </div>
     </div>
   </div>
