@@ -8,11 +8,11 @@ spec:
       port: 80
       targetPort: http
     - name: mqtt
-      port: 8883
-      targetPort: mqtt
-    - name: mqtt2
       port: 1883
-      targetPort: 1883
+      targetPort: mqtt
+    - name: mqtts
+      port: 8883
+      targetPort: mqtts
   selector:
     app.kubernetes.io/name: inoa
 ---
@@ -24,10 +24,10 @@ spec:
   type: LoadBalancer
   ports:
     - name: mqtt
-      port: 8883
-      targetPort: mqtt
-    - name: mqtt1
       port: 1883
-      targetPort: 1883
+      targetPort: mqtt
+    - name: mqtts
+      port: 8883
+      targetPort: mqtts
   selector:
     app.kubernetes.io/name: inoa

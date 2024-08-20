@@ -58,6 +58,8 @@ spec:
             - name: http
               containerPort: 8080
             - name: mqtt
+              containerPort: 1883
+            - name: mqtts
               containerPort: 8883
           startupProbe:
             httpGet:

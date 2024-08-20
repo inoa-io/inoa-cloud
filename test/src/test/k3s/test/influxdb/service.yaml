@@ -5,7 +5,7 @@ metadata:
 spec:
   ports:
     - name: http
-      port: 80
+      port: 8086
       targetPort: http
   selector:
     app.kubernetes.io/name: influxdb

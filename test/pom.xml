@@ -139,14 +139,12 @@
 					</execution>
 				</executions>
 				<configuration>
+					<!-- Expose ports to host for usage from outside k3s or host -->
+					<!-- TODO Check if this could make trouble in CI/CD environment with port clashes. -->
 					<portBindings>
 						<portBinding>8080:8080</portBinding>
+						<portBinding>1883:1883</portBinding>
 						<portBinding>8883:8883</portBinding>
-            <portBinding>1883:1883</portBinding>
-						<portBinding>5432:5432</portBinding>
-<!--						<portBinding>9090:9090</portBinding>-->
-						<portBinding>9092:9092</portBinding>
-						<portBinding>9093:9093</portBinding>
 					</portBindings>
 					<ctrImages>
 						<ctrImage>${image.hawkbit}</ctrImage>

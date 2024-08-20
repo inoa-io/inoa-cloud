@@ -12,7 +12,7 @@ configMapGenerator:
       - DATASOURCES_DEFAULT_HOST=postgres.default
       - DATASOURCES_DEFAULT_DATABASE=inoa
       - DATASOURCES_DEFAULT_USERNAME=inoa
-      - INFLUXDB_URL=http://influxdb.default
+      - INFLUXDB_URL=http://influxdb.default:8086
       - INFLUXDB_ORGANISATION=inoa
       - INFLUXDB_BUCKET=default
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
