@@ -92,7 +92,7 @@
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "config": {
-            "included.client.audience": "elco-burner-selector-app",
+            "included.client.audience": "inoa-groundcontrol",
             "id.token.claim": "true",
             "access.token.claim": "true"
           }

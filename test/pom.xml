@@ -13,7 +13,7 @@
 	<name>INOA :: Integration Test</name>
 
 	<properties>
-		<k3s.ip>127.0.0.1</k3s.ip>
+		<!-- <k3s.ip>127.0.0.1</k3s.ip>-->
 		<k3s.imageTag>v1.28.6-k3s2</k3s.imageTag>
 		<k3s.manifests>${project.build.directory}/k3s</k3s.manifests>
 		<k3s.subdir>test</k3s.subdir>
