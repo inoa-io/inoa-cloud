@@ -38,7 +38,7 @@ import { Configuration }                                     from '../configurat
 })
 export class ThingsService {
 
-    protected basePath = 'http://fleet.127.0.0.1.nip.io:8080';
+    protected basePath = 'http://inoa.127.0.0.1.nip.io:8080';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
@@ -98,8 +98,8 @@ export class ThingsService {
     }
 
     /**
-     * Create thing type.
-     * Creates a new thing.
+     * Create thing.
+     * Creates a new thing where we collect data from.
      * @param thingCreateVO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.

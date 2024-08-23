@@ -927,31 +927,6 @@ paths:
           description: Unauthorized.
         404:
           description: No matching thing types found.
-    post:
-      tags:
-        - thingTypes
-      summary: Create thing type.
-      description: Creates a new thing type.
-      operationId: createThingType
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ThingTypeCreate"
-      responses:
-        201:
-          description: Thing type created.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ThingType"
-        400:
-          description: Malformed.
-        401:
-          description: Unauthorized.
-        409:
-          description: Thing type already present.
 
   /thing-types/{thing_type_id}:
     parameters:
@@ -973,31 +948,6 @@ paths:
           description: Unauthorized.
         404:
           description: Thing Type not found.
-    post:
-      tags:
-        - thingTypes
-      summary: Update Thing type.
-      description: Updates existing thing type.
-      operationId: updateThingType
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/ThingTypeUpdate"
-      responses:
-        200:
-          description: Thing type updated.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ThingType"
-        400:
-          description: Malformed.
-        401:
-          description: Unauthorized.
-        404:
-          description: Thing type not found.
     delete:
       tags:
         - thingTypes
@@ -1891,6 +1841,7 @@ components:
       type: string
       enum:
         - io.inoa.log.emitted
+        - io.inoa.cout.emitted
         - io.inoa.measurement.telemetry
       example: io.inoa.log.emitted
 
@@ -1987,40 +1938,73 @@ components:
       type: string
 
     ###
+    ### Measurand
+    ###
+
+    MeasurandProtocol:
+      description: Technical protocol used to request / transfer measurements.
+      type: string
+      enum:
+        - JSON_REST_HTTP
+        - MODBUS_RS485
+        - MODBUS_TCP
+        - S0
+        - MBUS
+        - WMBUS
+
+    MeasurandType:
+      description: Technical type of a measurand represented by an OBIS code.
+      type: object
+      properties:
+        obis_code:
+          description: The OBIS code of the measurand
+          type: string
+          pattern: ^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}$
+          example: 1.8.0
+        name:
+          description: Human readable name of the type.
+          type: string
+          pattern: ^[a-zA-Z0-9\-\_]{1,64}$
+          example: EnergyIn
+        description:
+          type: string
+          maxLength: 1024
+          description: Longer description of the type.
+          example: Electrical energy consumption in Watt hours.
+      required:
+        - obis_code
+        - name
+
+    Measurand:
+      description: A single measurand that shall be measured.
+      type: object
+      properties:
+        measurand_type:
+          $ref: "#/components/schemas/MeasurandType"
+        enabled:
+          type: boolean
+          description: Whether or not this measurand should be measured.
+          example: true
+        interval:
+          type: integer
+          format: int64
+          description: Interval for measuring this measurand in milliseconds.
+          example: 900000
+        timeout:
+          type: integer
+          format: int64
+          description: Timeout for measuring this measurand in milliseconds.
+          example: 1000
+      required:
+        - measurand_type
+        - enabled
+        - interval
+        - timeout
+
+    ###
     ### Thing Type
     ###
 
-    ThingType:
-      description: User with fields.
-      type: object
-      properties:
-        id:
-          $ref: "#/components/schemas/ThingTypeId"
-        name:
-          $ref: "#/components/schemas/Name"
-        category:
-          $ref: "#/components/schemas/Category"
-        json_schema:
-          description: json_schema
-          type: object
-          additionalProperties: {}
-        properties:
-          type: array
-          items:
-            $ref: "#/components/schemas/PropertyDefinition"
-        channels:
-          type: array
-          items:
-            $ref: "#/components/schemas/ThingTypeChannel"
-        created:
-          $ref: "#/components/schemas/Timestamp"
-        updated:
-          $ref: "#/components/schemas/Timestamp"
-      required:
-        - id
-        - name
-        - created
-        - updated
     ThingTypePage:
       description: Page for thing types.
       type: object
@@ -2038,84 +2022,76 @@ components:
       required:
         - content
         - total_size
-    ThingTypeCreate:
-      description: User to create.
+
+    ThingConfigurationType:
+      description: Possible data types of a thing configuration.
+      type: string
+      enum:
+        - STRING
+        - NUMBER
+        - BOOLEAN
+
+    ThingConfiguration:
+      description: Configuration of a thing. For example baud rate, bus address, serial, ...
       type: object
       properties:
         name:
-          $ref: "#/components/schemas/Name"
-        category:
-          $ref: "#/components/schemas/Category"
-        thing_type_id:
-          $ref: "#/components/schemas/ThingTypeId"
-        json_schema:
-          description: json_schema
-          type: object
-          additionalProperties: {}
+          description: Property name of the configuration setting.
+          type: string
+          pattern: ^[a-zA-Z0-9\-\_]{1,64}$
+          example: serial
+        description:
+          description: Description of the configuration setting.
+          type: string
+          maxLength: 1024
+          example: The serial of the energy meter.
+        type:
+          $ref: "#/components/schemas/ThingConfigurationType"
+        validation_regex:
+          description: Regex to validation the configuration value.
+          type: string
+          maxLength: 1024
+          example: ^[0-9]{12}$
+        value:
+          description: The value of the configuration setting.
+          type: string
+          maxLength: 1024
+          example: 100002345679
       required:
         - name
-    ThingTypeUpdate:
-      description: User to update.
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        category:
-          $ref: "#/components/schemas/Category"
-        thing_type_id:
-          $ref: "#/components/schemas/ThingTypeId"
-        json_schema:
-          description: json_schema
-          type: object
-          additionalProperties: {}
-      required:
-        - name
-    ThingTypeChannel:
-      description: Thing Type Channel with fields.
+        - type
+        - value
+
+    ThingType:
+      description: Representation of a specific thing family. For example a type of electrical meter.
       type: object
       properties:
         id:
-          $ref: "#/components/schemas/Id"
-        key:
-          type: string
-          example: power
-          description: key for the channel type
+          $ref: "#/components/schemas/ThingTypeId"
         name:
           $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/Category"
         description:
+          description: Longer description of a thing type.
           type: string
-          example: 1-0:1.8.0*255
-          description: description for the channel type
-        properties:
+          maxLength: 1024
+        version:
+          description: Physical version or firmware version of the thing type
+          type: string
+          maxLength: 64
+        measurand_types:
+          description: List of measurands this type of thing offers.
           type: array
           items:
-            $ref: "#/components/schemas/PropertyDefinition"
-        created:
-          $ref: "#/components/schemas/Timestamp"
-        updated:
-          $ref: "#/components/schemas/Timestamp"
-      required:
-        - id
-        - name
-        - created
-        - updated
-
-    ThingTypeChannelCreate:
-      description: Thing Type Channel with fields.
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        key:
-          type: string
-          example: power
-          description: key for the channel type
-        properties:
+            $ref: "#/components/schemas/MeasurandType"
+        configurations:
+          description: List of configuration settings this type of thing needs.
           type: array
           items:
-            $ref: "#/components/schemas/PropertyDefinition"
-      required:
-        - name
+            $ref: "#/components/schemas/ThingConfiguration"
+        protocol:
+          $ref: "#/components/schemas/MeasurandProtocol"
 
     ###
     ### Thing
@@ -2138,6 +2114,7 @@ components:
       required:
         - content
         - total_size
+
     Thing:
       description: Thing with fields.
       type: object

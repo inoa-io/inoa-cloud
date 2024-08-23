@@ -14,10 +14,11 @@
 /**
  * Subject for cloud events.
  */
-export type CloudEventTypeVO = 'io.inoa.log.emitted' | 'io.inoa.measurement.telemetry';
+export type CloudEventTypeVO = 'io.inoa.log.emitted' | 'io.inoa.cout.emitted' | 'io.inoa.measurement.telemetry';
 
 export const CloudEventTypeVO = {
     LogEmitted: 'io.inoa.log.emitted' as CloudEventTypeVO,
+    CoutEmitted: 'io.inoa.cout.emitted' as CloudEventTypeVO,
     MeasurementTelemetry: 'io.inoa.measurement.telemetry' as CloudEventTypeVO
 };
 

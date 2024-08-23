@@ -9,39 +9,46 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { PropertyDefinitionVO } from './propertyDefinition';
-import { ThingTypeChannelVO } from './thingTypeChannel';
+import { MeasurandProtocolVO } from './measurandProtocol';
+import { ThingConfigurationVO } from './thingConfiguration';
+import { MeasurandTypeVO } from './measurandType';
 
 
 /**
- * User with fields.
+ * Representation of a specific thing family. For example a type of electrical meter.
  */
 export interface ThingTypeVO { 
     /**
      * Id as technical reference (never changes).
      */
-    id: string;
+    id?: string;
     /**
      * Name.
      */
-    name: string;
+    name?: string;
     /**
      * Category.
      */
     category?: string;
     /**
-     * json_schema
+     * Longer description of a thing type.
      */
-    json_schema?: { [key: string]: any; };
-    properties?: Array<PropertyDefinitionVO>;
-    channels?: Array<ThingTypeChannelVO>;
+    description?: string;
     /**
-     * Common timestamp for created/updated timestamps.
+     * Physical version or firmware version of the thing type
      */
-    created: string;
+    version?: string;
     /**
-     * Common timestamp for created/updated timestamps.
+     * List of measurands this type of thing offers.
      */
-    updated: string;
+    measurand_types?: Array<MeasurandTypeVO>;
+    /**
+     * List of configuration settings this type of thing needs.
+     */
+    configurations?: Array<ThingConfigurationVO>;
+    protocol?: MeasurandProtocolVO;
 }
+export namespace ThingTypeVO {
+}
+
 

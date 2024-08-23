@@ -4,16 +4,6 @@ package io.inoa.rest;
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 public interface ThingTypesApiTestSpec { 
 
-	// createThingType
-
-	void createThingType201() throws java.lang.Exception;
-
-	void createThingType400() throws java.lang.Exception;
-
-	void createThingType401() throws java.lang.Exception;
-
-	void createThingType409() throws java.lang.Exception;
-
 	// deleteThingType
 
 	void deleteThingType204() throws java.lang.Exception;
@@ -37,14 +27,4 @@ public interface ThingTypesApiTestSpec {
 	void findThingTypes401() throws java.lang.Exception;
 
 	void findThingTypes404() throws java.lang.Exception;
-
-	// updateThingType
-
-	void updateThingType200() throws java.lang.Exception;
-
-	void updateThingType400() throws java.lang.Exception;
-
-	void updateThingType401() throws java.lang.Exception;
-
-	void updateThingType404() throws java.lang.Exception;
 }

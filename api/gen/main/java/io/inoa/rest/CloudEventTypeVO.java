@@ -4,9 +4,11 @@ package io.inoa.rest;
 public enum CloudEventTypeVO {
 
 	LOG_EMITTED("io.inoa.log.emitted"),
+	COUT_EMITTED("io.inoa.cout.emitted"),
 	MEASUREMENT_TELEMETRY("io.inoa.measurement.telemetry");
 
 	public static final java.lang.String LOG_EMITTED_VALUE = "io.inoa.log.emitted";
+	public static final java.lang.String COUT_EMITTED_VALUE = "io.inoa.cout.emitted";
 	public static final java.lang.String MEASUREMENT_TELEMETRY_VALUE = "io.inoa.measurement.telemetry";
 
 	private final java.lang.String value;

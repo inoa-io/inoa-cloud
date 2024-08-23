@@ -12,24 +12,20 @@
 
 
 /**
- * User to create.
+ * Technical type of a measurand represented by an OBIS code.
  */
-export interface ThingTypeCreateVO { 
+export interface MeasurandTypeVO { 
     /**
-     * Name.
+     * The OBIS code of the measurand
+     */
+    obis_code: string;
+    /**
+     * Human readable name of the type.
      */
     name: string;
     /**
-     * Category.
+     * Longer description of the type.
      */
-    category?: string;
-    /**
-     * Id as technical reference (never changes).
-     */
-    thing_type_id?: string;
-    /**
-     * json_schema
-     */
-    json_schema?: { [key: string]: any; };
+    description?: string;
 }
 

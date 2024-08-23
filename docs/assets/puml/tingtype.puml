@@ -1,0 +1,70 @@
+@startuml
+class Thing {
+  -id: UUID
+  -name: String
+  -description: String
+  -gatewayId: String
+  -thingType: ThingType
+  -thingConfigurations: Map<ThingConfiguration, String>
+  -measurands: Measurand[]
+}
+
+class ThingType {
+  -id: UUID
+  -name: String
+  -description: String
+  -version: String
+  -measurandTypes: MeasurandType[]
+  -configurations: ThingConfiguration[]
+  -protocol: MeasurandProtocol
+}
+
+class ThingConfiguration {
+  - name: String
+  - description: String
+  - type: ThingConfigurationType
+  - validationRegex: String
+  - value: String
+}
+
+enum ThingConfigurationType {
+  STRING
+  NUMBER
+  BOOLEAN
+}
+
+enum MeasurandProtocol {
+  JSON_REST_HTTP
+  MODBUS_RS458
+  MODBUS_TCP
+  S0
+  MBUS
+  WMBUS
+}
+
+class MeasurandType {
+  -obisId: String
+  -name: String
+  -description: String
+}
+
+class Measurand {
+  -id: UUID
+  -measurandType: MeasurandType
+  -enabled: Boolean
+  -interval: Long
+  -timeout: Long
+}
+
+ThingType "1" --> "1..*" MeasurandType
+ThingType "1..*" --> "1" MeasurandProtocol
+
+Thing "1..*" --> "1" ThingType
+Thing "1" --> "1..*" Measurand
+Thing "1" --> "1..*" ThingConfiguration
+
+ThingConfiguration "1..*" --> "1" ThingConfigurationType
+
+Measurand "1..*" --> "1" MeasurandType
+
+@enduml
