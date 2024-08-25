@@ -21,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Create authentication fetcher for local angular development.
+ * TODO - Check if still needed. from my PoV, it isn't with the local setup and default keycloak user.
+ * Needed for yarn deployment because their is no oauth config given.
  *
  * @author stephan.schnabel@grayc.de
  */
@@ -36,7 +38,7 @@ public class AngularAuthenticationFetcher implements AuthenticationFetcher<HttpR
 	@Override
 	public Publisher<Authentication> fetchAuthentication(HttpRequest<?> request) {
 		return request.getHeaders().get(HttpHeaders.REFERER, String.class)
-						.filter(referer -> referer.startsWith("http://localhost"))
+						.filter(referer -> referer.startsWith("http://localhost:4200"))
 						.map(d -> new ServerAuthentication("admin", Set.of(), Map.of(
 										Claims.EXPIRATION_TIME, Date.from(Instant.now().plusSeconds(60)),
 										"tenants", List.of("inoa"),
