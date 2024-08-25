@@ -59,8 +59,7 @@
 
 		<project.build.outputTimestamp>2024-01-10T14:04:49Z</project.build.outputTimestamp>
 
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
+		<maven.compiler.release>17</maven.compiler.release>
 		<maven.compiler.failOnWarning>true</maven.compiler.failOnWarning>
 
 		<maven.release.preparationGoals>verify -N -P release-prepare</maven.release.preparationGoals>
