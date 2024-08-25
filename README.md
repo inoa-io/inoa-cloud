@@ -21,6 +21,7 @@ controlled devices.
 * [Docker](https://www.docker.com/) >= 24.0.5
 * [k3s](https://k3s.io/)
 * [Python](https://www.python.org/) >= 3.8.5 (for documentation only)
+* [Telepresence](https://www.telepresence.io/docs/latest/quick-start/) >= v2.19.6
 
 #### Repository Access
 
