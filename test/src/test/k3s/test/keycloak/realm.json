@@ -108,6 +108,16 @@
             "access.token.claim": "true",
             "userinfo.token.claim": "true"
           }
+        },{
+          "name": "tenants",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "config": {
+            "access.token.claim": "true",
+            "id.token.claim": "true",
+            "claim.name": "tenants",
+            "claim.value": "inoa"
+          }
         }
       ],
       "baseUrl": "http://inoa.${k3s.ip}.nip.io:8080",
