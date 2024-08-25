@@ -19,7 +19,7 @@ spec:
         - name: wait-for-inoa
           image: ${image.traefik}
           imagePullPolicy: Never
-          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://inoa/endpoints/health --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done]
+          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://inoa:8080/endpoints/health --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done]
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000

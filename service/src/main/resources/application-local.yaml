@@ -1,0 +1,9 @@
+micronaut:
+  server:
+    port: 4300
+inoa:
+  mqtt:
+    port: 1884
+    tls:
+      generateKey: true
+      port: 8884

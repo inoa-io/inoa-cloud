@@ -2,7 +2,7 @@ micronaut:
   application:
     name: INOA Cloud
   server:
-    port: 4300
+    port: 8080
   # https://docs.micronaut.io/latest/guide/#clientConfiguration
   http:
     services:
@@ -31,10 +31,10 @@ micronaut:
             # https://micronaut-projects.github.io/micronaut-security/latest/guide/#oauth
         inoa-groundcontrol:
           openid:
-            issuer: ${micronaut.http.services.keycloak.url}${micronaut.http.services.keycloak.path}realms/inoa
+            issuer: http://keycloak.${k3s.ip}.nip.io:8080/realms/inoa
             end-session.enabled: true
           client-id: inoa-groundcontrol
-          client-secret: ${inoa-groundcontrol.client-secret:changeMe}
+          client-secret: changeMe
           scopes:
             - openid
             - email
@@ -73,10 +73,12 @@ micronaut:
         paths: "file:/${static.path}"
 inoa:
   mqtt:
-    port: 1884
+    port: 1883
     tls:
-      generateKey: true
-      port: 8884
+      port: 8883
+      generateKey: false
+      key: /tls/key.pem
+      cert: /tls/cert.pem
 datasources:
   default:
     host: postgres.default
@@ -91,3 +93,6 @@ influxdb:
 kafka:
   bootstrap:
     servers: kafka.default:9092
+
+pageable:
+  maxPageSize: 30
