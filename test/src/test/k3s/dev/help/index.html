@@ -39,15 +39,22 @@
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" target="content_frame" href="help.html#">First Steps</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" aria-current="page" target="content_frame" href="overview.html#">Setup Overview</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                INOA
+              </a>
+              <ul class="dropdown-menu" style="width: 300px">
+                <li><a class="dropdown-item" target="content_frame" href="http://inoa.${k3s.ip}.nip.io:8080/index.html">Ground Control - k3s</a></li>
+                <li><a class="dropdown-item" target="content_frame" href="http://localhost:4200/index.html">Ground Control - Yarn</a></li>
+                <li><a class="dropdown-item" target="content_frame" href="http://localhost:4300/index.html">Ground Control - Micronaut</a></li>
+                <li><a class="dropdown-item" target="content_frame" href="overview.html#">Deployment View</a></li>
+              </ul>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Services
               </a>
               <ul class="dropdown-menu" style="width: 300px">
-                <li><a class="dropdown-item" target="content_frame" href="http://inoa.${k3s.ip}.nip.io:8080/index.html">Ground Control</a></li>
                 <li><a class="dropdown-item" target="content_frame" href="http://hawkbit.${k3s.ip}.nip.io:8080">Hawkbit</a></li>
                 <li><a class="dropdown-item" target="content_frame" href="http://dashboard.${k3s.ip}.nip.io:8080/#/workloads?namespace=_all">Kubernetes Dashboard</a></li>
                 <li>
@@ -63,10 +70,11 @@
                   <a class="dropdown-item" target="content_frame" href="http://kafka.${k3s.ip}.nip.io:8080">Kafka Console</a>
                 </li>
                 <li>
-                  <a class="dropdown-item" target="content_frame" href="http://influxdb.${k3s.ip}.nip.io:8080">Influxdb (admin/password)</a>
+                  <a class="dropdown-item" target="content_frame" href="http://influxdb.${k3s.ip}.nip.io:8080">InfluxDB (admin/password)</a>
                 </li>
                 <li>
                   <a class="dropdown-item" target="content_frame" href="http://swagger.${k3s.ip}.nip.io:8080">SwaggerUI</a>
+                </li>
               </ul>
             </li>
             <li class="nav-item dropdown">
@@ -113,7 +121,7 @@
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Sources
+                Git
               </a>
               <ul class="dropdown-menu" style="width: 300px">
                 <li>
