@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Application" type="MicronautRunConfigurationType" factoryName="Micronaut" nameIsGenerated="true">
+  <configuration default="false" name="03. INOA - Cloud" type="MicronautRunConfigurationType" factoryName="Micronaut">
     <option name="MAIN_CLASS_NAME" value="io.inoa.Application" />
     <module name="inoa-service" />
-    <option name="VM_PARAMETERS" value="-Dmicronaut.environments=k3s -Dk3s.ip=192.168.20.203 -Dstatic.path=$ProjectFileDir$/app/dist" />
+    <option name="VM_PARAMETERS" value="-Dmicronaut.environments=k3s,local -Dk3s.ip=192.168.20.10 -Dstatic.path=$ProjectFileDir$/app/dist" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="io.inoa.*" />
@@ -24,7 +24,7 @@
     <option name="mainClass" value="io.inoa.Application" />
     <option name="passParentEnvs" value="true" />
     <option name="programParameters" value="" />
-    <option name="vmParameters" value="-Dmicronaut.environments=k3s -Dk3s.ip=192.168.20.203 -Dstatic.path=$ProjectFileDir$/app/dist" />
+    <option name="vmParameters" value="-Dmicronaut.environments=k3s,local -Dk3s.ip=192.168.20.10 -Dstatic.path=$ProjectFileDir$/app/dist" />
     <method v="2">
       <option name="Make" enabled="true" />
     </method>

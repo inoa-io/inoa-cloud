@@ -3,12 +3,13 @@
 ### Defines the IP address that is used to expose INOA services.
 ### TODO Find a generic way for interface detection.
 
-INOA_IP="$(ip -4 addr show wlp3s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+#INOA_IP="$(ip -4 addr show enp39s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
 
-export INOA_IP
+export INOA_IP="192.168.20.10"
 export INOA_REPLICAS=1
 export MCNOISE_REPLICAS=0
 export INOA_LOCAL_UI=""
+export KUBECONFIG="${HOME}/.kube/k3s.yaml"
 
 ############################################################
 # Help                                                     #
@@ -28,9 +29,20 @@ Help()
    echo
 }
 
+CleanBuild() {
+  mvn clean install -DskipTests
+}
+
 LaunchK3S() {
   ### Launch the INOA Cloud services in k3s via Maven
-  mvn pre-integration-test -Dk3s.failIfExists=false -Dk3s.ip="${INOA_IP}" -Dinoa.replicas="${INOA_REPLICAS}" -Dmcnoise.replicas="${MCNOISE_REPLICAS}" -pl ./test/
+  mvn pre-integration-test \
+    -DskipTests=true \
+    -Dk3s.failIfExists=false \
+    -Dk3s.kubeconfig="${KUBECONFIG}" \
+    -Dk3s.ip="${INOA_IP}" \
+    -Dinoa.replicas="${INOA_REPLICAS}" \
+    -Dmcnoise.replicas="${MCNOISE_REPLICAS}" \
+    -pl ./test/
 
   echo "INOA configured and started with INOA_IP=${INOA_IP}"
 
@@ -55,7 +67,7 @@ while getopts ":chmnu" option; do
         Help
         exit;;
       c) # clean before launch
-        mvn clean install -DskipTests;;
+        CleanBuild;;
       m)
         export MCNOISE_REPLICAS=10;;
       n) # Do not start INOA in k3s
