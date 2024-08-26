@@ -4,7 +4,7 @@ source ./.env
 
 INOA_LOCAL_UI=""
 
-MVN_ARGS="-DskipTests=true -Dk3s.failIfExists=false -Dk3s.kubeconfig=${KUBECONFIG} -Dinoa.domain=${INOA_DOMAIN} -Dmcnoise.replicas=${MCNOISE_REPLICAS}"
+MVN_ARGS=("-DskipTests=true" "-Dk3s.failIfExists=false" "-Dk3s.kubeconfig=${KUBECONFIG}" "-Dinoa.domain=${INOA_DOMAIN}" "-Dmcnoise.replicas=${MCNOISE_REPLICAS}")
 
 ############################################################
 # Help                                                     #
@@ -24,18 +24,18 @@ Help()
 }
 
 CleanBuild() {
-  mvn clean install ${MVN_ARGS}
+  mvn clean install "${MVN_ARGS[@]}"
 }
 
 LaunchK3S() {
   ### Launch the INOA Cloud services in k3s via Maven
-  mvn pre-integration-test ${MVN_ARGS} -pl ./test/
+  mvn pre-integration-test "${MVN_ARGS[@]}" -pl ./test/
 
   echo "INOA configured and started for INOA_DOMAIN=${INOA_DOMAIN}"
 
   ### Install & connect telepresence to connect to the INOA services
-  telepresence helm install --kubeconfig=${KUBECONFIG}
-  telepresence connect --kubeconfig=${KUBECONFIG}
+  telepresence helm install --kubeconfig="${KUBECONFIG}"
+  telepresence connect --kubeconfig="${KUBECONFIG}"
 
   xdg-open "http://help.${INOA_DOMAIN}:8080"
 }
