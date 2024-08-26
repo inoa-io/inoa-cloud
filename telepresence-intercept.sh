@@ -1,6 +1,7 @@
 #!/bin/bash
 
 ### Not sure if needed but for convention...
+# shellcheck source=/dev/null
 source ./.env
 
 ### just intercept the requests for INOA http and mqtt endpoint.
