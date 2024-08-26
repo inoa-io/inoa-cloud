@@ -70,7 +70,7 @@ micronaut:
     static-resources:
       app:
         mapping: /**
-        paths: "file:/${static.path}"
+        paths: file:/${static.path}
 inoa:
   mqtt:
     port: 1883
