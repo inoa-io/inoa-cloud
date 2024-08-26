@@ -33,7 +33,7 @@ public class KeycloakClient {
 		if (!userTokens.containsKey(username)) {
 			var request = HttpRequest
 					.POST("/realms/inoa/protocol/openid-connect/token", Map.of(
-							"client_id", "inoa-ui",
+							"client_id", "inoa-groundcontrol",
 							"client_secret", "changeMe",
 							"username", username,
 							"password", "password",
