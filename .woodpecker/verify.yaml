@@ -98,8 +98,9 @@ steps:
     <<: *maven
     depends_on: [image, integration-prepare]
     commands:
+      - DOCKER_IP_1=$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n')
       - DOCKER_IP=$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42)
-      - echo "DOCKER_IP=${DOCKER_IP}"
+      - echo "DOCKER_IP_1=${DOCKER_IP_1}"
       - INOA_DOMAIN="${DOCKER_IP}.nip.io"
       - INOA_DOMAIN="127.0.0.1.nip.io"
       - mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dinoa.domain=$INOA_DOMAIN
