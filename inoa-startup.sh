@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=./.env
 source ./.env
 
 INOA_LOCAL_UI=""

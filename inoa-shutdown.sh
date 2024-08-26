@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck source=./.env
 source ./.env
 
 # TODO Verify connection status before quiting.
