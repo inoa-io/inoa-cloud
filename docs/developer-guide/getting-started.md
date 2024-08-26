@@ -26,7 +26,7 @@ Adapt the ip to your local one first
 ```bash
 mvn k3s:rm
 mvn clean install -DskipTests
-mvn pre-integration-test -Dk3s.failIfExists=false -Dk3s.ip=192.168.xxx.xxx -pl ./test/
+mvn pre-integration-test -Dk3s.failIfExists=false -Dinoa.domain=192.168.xxx.xxx.nip.io -pl ./test/
 ```
 
 ### Linux Scripts
@@ -55,8 +55,8 @@ Configure your Satellite to connect to your local running INOA Cloud services vi
 
 ```shell
 # set with your INOA_IP
-set-reg-url http://inoa.<INOA_IP>.nip.io:8080/gateway
-setup-mqtt mqtt://inoa.<INOA_IP>.nip.io 1883
+set-reg-url http://inoa.<INOA_DOMAIN>:8080/gateway
+setup-mqtt mqtt://inoa.<INOA_DOMAIN> 1883
 ```
 
 ### Coding rules

@@ -16,7 +16,7 @@
         <p class="card-text">
         You can start using INOA Ground Control in three different ways:
         <ol>
-          <li><a href="http://inoa.${k3s.ip}.nip.io:8080">Inside k3s</a></li>
+          <li><a href="http://inoa.${inoa.domain}:8080">Inside k3s</a></li>
           <li><a href="http://localhost:4200">Locally started via Yarn</a></li>
           <li><a href="http://localhost:4300">Locally started via Micronaut application.</a>&nbsp;(Telepresence is needed!)</li>
         </ol>
@@ -33,11 +33,11 @@
             # Connect to Wifi (if not already done or connected via LAN)
             setup-wifi &lt;SSID&gt; &lt;PASSWORD&gt;
             # Configure the INOA registry URL for self registration
-            setup-registry http://inoa.${k3s.ip}.nip.io:8080/gateway
+            setup-registry http://inoa.${inoa.domain}:8080/gateway
             # Configure the MQTT endpoint where to communicate with INOA Cloud and send measurements to.
-            setup-mqtt mqtt://inoa.${k3s.ip}.nip.io 1883
+            setup-mqtt mqtt://inoa.${inoa.domain} 1883
             # Configure the Hawkbit API endpoint to enable OTA updates for the Satellite
-            setup-ota http://hawkbit.${k3s.ip}.nip.io:8080 /update/inoa/controller/v1
+            setup-ota http://hawkbit.${inoa.domain}:8080 /update/inoa/controller/v1
             reboot
           </code></pre>
         </p>
@@ -53,7 +53,7 @@
           Use <b>Authorize</b> with <b>Keycloak (OAuth2, implicit) </b> and user credentials or use
           <b>BearerAuth (http, Bearer)</b> with token:
           <pre><code>
-          curl http://keycloak.${k3s.ip}.nip.io:8080/realms/inoa/protocol/openid-connect/token \
+          curl http://keycloak.${inoa.domain}:8080/realms/inoa/protocol/openid-connect/token \
             --silent \
             --data client_id=inoa-swagger \
             --data username=admin \
@@ -62,7 +62,7 @@
             | jq -r .access_token
           </code></pre>
         </p>
-        <a class="card-link" target=”_blank" href="http://swagger.${k3s.ip}.nip.io:8080">SwaggerUI</a>
+        <a class="card-link" target=”_blank" href="http://swagger.${inoa.domain}:8080">SwaggerUI</a>
       </div>
     </div>
     <div class="card p-3 m-3">
@@ -75,8 +75,8 @@
           <br/>
           If you have installed it, you can connect and intercept traffic for INOA via these commands:
         <pre><code>
-          telepresence helm install --kubeconfig=$HOME/.kube/k3s.yaml
-          telepresence connect --kubeconfig=$HOME/.kube/k3s.yaml
+          telepresence helm install --kubeconfig=$HOME/.kube/inoa-k3s.yaml
+          telepresence connect --kubeconfig=$HOME/.kube/inoa-k3s.yaml
           telepresence intercept inoa-http --workload=inoa --service=inoa --port 4300:http
           telepresence intercept inoa-mqtt --workload=inoa --service=inoa --port 1884:mqtt
           </code></pre>

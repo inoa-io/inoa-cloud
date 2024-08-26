@@ -11,10 +11,10 @@ info:
     url: https://github.com/inoa-io
 servers:
   - url: http://inoa.127.0.0.1.nip.io:8080
-  - url: http://inoa.{k3s.ip}.nip.io:8080
+  - url: http://inoa.{inoa.domain}:8080
     variables:
-      k3s.ip:
-        default: 127.0.0.1
+      inoa.domain:
+        default: 127.0.0.1.nip.io
         description: Your local ip where INOA is running
   - url: https://api.inoa.io
 security:

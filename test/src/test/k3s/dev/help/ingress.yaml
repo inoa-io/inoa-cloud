@@ -4,7 +4,7 @@ metadata:
   name: help
 spec:
   rules:
-    - host: help.${k3s.ip}.nip.io
+    - host: help.${inoa.domain}
       http:
         paths:
           - path: /

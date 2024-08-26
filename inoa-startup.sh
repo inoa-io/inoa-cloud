@@ -1,15 +1,10 @@
 #!/bin/bash
 
-### Defines the IP address that is used to expose INOA services.
-### TODO Find a generic way for interface detection.
+source ./.env
 
-#INOA_IP="$(ip -4 addr show enp39s0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+INOA_LOCAL_UI=""
 
-export INOA_IP="192.168.20.10"
-export INOA_REPLICAS=1
-export MCNOISE_REPLICAS=0
-export INOA_LOCAL_UI=""
-export KUBECONFIG="${HOME}/.kube/k3s.yaml"
+MVN_ARGS="-DskipTests=true -Dk3s.failIfExists=false -Dk3s.kubeconfig=${KUBECONFIG} -Dinoa.domain=${INOA_DOMAIN} -Dmcnoise.replicas=${MCNOISE_REPLICAS}"
 
 ############################################################
 # Help                                                     #
@@ -19,34 +14,30 @@ Help()
    # Display Help
    echo "Start local INOA Developer Setup."
    echo
-   echo "Syntax: ./inoa-startup.sh [-c|m|n|u|h]"
+   echo "Syntax: ./inoa-startup.sh [-c|m|u|h]"
    echo "options:"
    echo "c     Clean build before start."
    echo "m     Start some simulated Satellites to generate some traffic."
-   echo "n     No INOA service launched in k3s. Used for local running INOA service."
    echo "u     Start local UI for developing Ground Control."
    echo "h     Print help message."
    echo
 }
 
 CleanBuild() {
-  mvn clean install -DskipTests
+  mvn clean install ${MVN_ARGS}
 }
 
 LaunchK3S() {
   ### Launch the INOA Cloud services in k3s via Maven
-  mvn pre-integration-test \
-    -DskipTests=true \
-    -Dk3s.failIfExists=false \
-    -Dk3s.kubeconfig="${KUBECONFIG}" \
-    -Dk3s.ip="${INOA_IP}" \
-    -Dinoa.replicas="${INOA_REPLICAS}" \
-    -Dmcnoise.replicas="${MCNOISE_REPLICAS}" \
-    -pl ./test/
+  mvn pre-integration-test ${MVN_ARGS} -pl ./test/
 
-  echo "INOA configured and started with INOA_IP=${INOA_IP}"
+  echo "INOA configured and started for INOA_DOMAIN=${INOA_DOMAIN}"
 
-  xdg-open "http://help.${INOA_IP}.nip.io:8080"
+  ### Install & connect telepresence to connect to the INOA services
+  telepresence helm install --kubeconfig=${KUBECONFIG}
+  telepresence connect --kubeconfig=${KUBECONFIG}
+
+  xdg-open "http://help.${INOA_DOMAIN}:8080"
 }
 
 ### Start Ground Control locally for development Maybe: optional?
@@ -57,11 +48,15 @@ LaunchUI() {
   fi
 
 }
+
+echo "Starting INOA with: -Dinoa.domain=${INOA_DOMAIN}"
+
 ############################################################
 # Process the input options. Add options as needed.        #
 ############################################################
 # Get the options
-while getopts ":chmnu" option; do
+# while getopts ":chmu" option; do
+while getopts ":chmu" option; do
    case $option in
       h) # display Help
         Help
@@ -70,8 +65,6 @@ while getopts ":chmnu" option; do
         CleanBuild;;
       m)
         export MCNOISE_REPLICAS=10;;
-      n) # Do not start INOA in k3s
-        export INOA_REPLICAS=0;;
       u) # Launch local UI
         export INOA_LOCAL_UI=1;;
       *) # Invalid options

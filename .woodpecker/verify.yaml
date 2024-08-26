@@ -99,7 +99,7 @@ steps:
     depends_on: [image, integration-prepare]
     commands:
       - DOCKER_IP=$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42)
-      - mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dk3s.ip=$DOCKER_IP
+      - mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dinoa.domain="${DOCKER_IP}.nip.io"
   integration-errors:
     <<: *maven
     depends_on: [integration-test]

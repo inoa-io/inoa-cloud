@@ -4,7 +4,7 @@ metadata:
   name: influxdb
 spec:
   rules:
-    - host: influxdb.${k3s.ip}.nip.io
+    - host: influxdb.${inoa.domain}
       http:
         paths:
           - path: /

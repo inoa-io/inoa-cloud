@@ -15,7 +15,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="74" value="&lt;font&gt;hawkbit.${k3s.ip}.nip.io:8080&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#808080;" parent="36" vertex="1" connectable="0">
+        <mxCell id="74" value="&lt;font&gt;hawkbit.${inoa.domain}:8080&lt;/font&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#808080;" parent="36" vertex="1" connectable="0">
           <mxGeometry x="0.1889" relative="1" as="geometry">
             <mxPoint x="-20" y="9" as="offset" />
           </mxGeometry>
@@ -31,7 +31,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="75" value="inoa.${k3s.ip}.nip.io:8080/gateway" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#808080;" parent="39" vertex="1" connectable="0">
+        <mxCell id="75" value="inoa.${inoa.domain}:8080/gateway" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#808080;" parent="39" vertex="1" connectable="0">
           <mxGeometry x="0.3727" y="-1" relative="1" as="geometry">
             <mxPoint x="-86" y="14" as="offset" />
           </mxGeometry>
@@ -39,7 +39,7 @@
         <mxCell id="40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#336600;" parent="1" source="2" target="38" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="76" value="&lt;span style=&quot;&quot;&gt;inoa.${k3s.ip}.nip.io:1883&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#336600;" parent="40" vertex="1" connectable="0">
+        <mxCell id="76" value="&lt;span style=&quot;&quot;&gt;inoa.${inoa.domain}:1883&lt;/span&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontColor=#336600;" parent="40" vertex="1" connectable="0">
           <mxGeometry x="0.4462" y="-1" relative="1" as="geometry">
             <mxPoint x="-43" y="-1" as="offset" />
           </mxGeometry>

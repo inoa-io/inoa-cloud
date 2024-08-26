@@ -7,13 +7,13 @@ micronaut:
   http:
     services:
       keycloak:
-        url: http://keycloak.${k3s.ip}.nip.io:8080
+        url: http://keycloak.${inoa.domain}:8080
         path: /
         follow-redirects: false
         connect-timeout: ${keycloak.connect-timeout:1000ms}
         read-timeout: ${keycloak.read-timeout:2000ms}
       hawkbit:
-        url: http://hawkbit.${k3s.ip}.nip.io:8080/UI/login
+        url: http://hawkbit.${inoa.domain}:8080/UI/login
   # https://micronaut-projects.github.io/micronaut-security/latest/guide/#securityConfiguration
   security:
     oauth2:
@@ -31,7 +31,7 @@ micronaut:
             # https://micronaut-projects.github.io/micronaut-security/latest/guide/#oauth
         inoa-groundcontrol:
           openid:
-            issuer: http://keycloak.${k3s.ip}.nip.io:8080/realms/inoa
+            issuer: http://keycloak.${inoa.domain}:8080/realms/inoa
             end-session.enabled: true
           client-id: inoa-groundcontrol
           client-secret: changeMe
