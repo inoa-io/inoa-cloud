@@ -33,7 +33,7 @@ inoa.translator:
             obis: 7-1:13.9.0
             unit: cubicmeter
 
-    - name: shplg-s
+    - name: shellyplug-s
       sensors:
         - name: status
           converter: json-path
@@ -41,6 +41,17 @@ inoa.translator:
             power: $.meters[:1].power
             work: $.meters[:1].total
             temperature: $.temperature
+
+    - name: shellyplusplugs
+      sensors:
+        - name: status
+          converter: json-path
+          config:
+            apower: $.switch:0.apower
+            voltage: $.switch:0.voltage
+            current: $.switch:0.current
+            aenergy: $.switch:0.aenergy.total
+            temperature: $.switch:0.temperature.tC
 
     - name: shellyht
       sensors:

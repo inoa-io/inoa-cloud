@@ -12,15 +12,15 @@ export class AppComponent
 {
 	title = "INOA Ground Control";
 	sideNavOpen = false;
+	rpcHistoryOpen = false;
 	routes = routes;
 
 	toggleSideBar() { this.sideNavOpen = !this.sideNavOpen; }
 
+	toggleRpcHistory() { this.rpcHistoryOpen = !this.rpcHistoryOpen; }
+
 	constructor(private router: Router, public intercomService: InternalCommunicationService) {}
 
-	navbarClick(index: number)
-	{
-		this.router.navigate([this.routes[index].path]);
-	}
+	navbarClick(index: number) { this.router.navigate([this.routes[index].path]); }
 }
 

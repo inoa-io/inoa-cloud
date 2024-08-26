@@ -27,15 +27,32 @@
   display: flex
   align-items: flex-start
 
-.sidenav-toggle-button
+.sidenav-toggle-button-left
   margin-right: 10px
   margin-left: -10px
   color: white
 
-.sidenav-bar
+.sidenav-toggle-button-right
+  margin-right: -10px
+  margin-left: 10px
+  color: white
+
+.sidenav-bar-left
   width: 250px
   border-top-right-radius: 5px
   border-bottom-right-radius: 5px
+  overflow: hidden
+
+.sidenav-bar-right
+  width: 650px
+  border-top-left-radius: 5px
+  border-bottom-left-radius: 5px
+  overflow: hidden
+
+.sidenav-toggle-group
+  display: flex
+  flex-direction: column
+  border-width: 0
 
 .sideNavSelector
   margin: auto

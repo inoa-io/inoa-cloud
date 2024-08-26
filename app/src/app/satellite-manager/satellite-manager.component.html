@@ -30,23 +30,14 @@
 								<td mat-cell *matCellDef="let element">{{element.name}}</td>
 							</ng-container>
 
-							<!-- Created Column -->
-							<ng-container matColumnDef="created">
-								<th mat-header-cell *matHeaderCellDef mat-sort-header>Created</th>
-								<td mat-cell *matCellDef="let element">{{element.created | date}}</td>
-							</ng-container>
-
-							<!-- Updated Column -->
-							<ng-container matColumnDef="updated">
-								<th mat-header-cell *matHeaderCellDef mat-sort-header>Updated</th>
-								<td mat-cell *matCellDef="let element">{{element.updated | date}}</td>
-							</ng-container>
-
 							<!-- Enabled Column -->
 							<ng-container matColumnDef="enabled">
 								<th mat-header-cell *matHeaderCellDef>Enabled</th>
 								<td mat-cell *matCellDef="let element" class="mat-cell-center">
-									<button mat-icon-button (click) = "toggleEnabledClick(element, $event, !element.enabled)">
+									<button	mat-icon-button
+										[matTooltip]="element.enabled ? 'Gateway is enabled' : 'Gateway is disabled'"
+										matTooltipPosition="above"
+										(click) = "toggleEnabledClick(element, $event, !element.enabled)">
 										<mat-icon *ngIf="element.enabled" aria-hidden="false" aria-label="Toggle On" fontIcon="toggle_on"></mat-icon>
 										<mat-icon *ngIf="!element.enabled" aria-hidden="false" aria-label="Toggle Off" fontIcon="toggle_off"></mat-icon>
 									</button>
@@ -68,12 +59,28 @@
 								<td mat-cell *matCellDef = "let element; let rowIndex = index" style = "width: 50px">
 									<div style = "display: flex;">
 
-										<button mat-icon-button (click) = "openConsoleClick(rowIndex, $event)" [disabled]="!element.enabled || !element.status.mqtt.connected">
-											<mat-icon aria-hidden="false" aria-label="Terminal" fontIcon="terminal"></mat-icon>
+										<button mat-icon-button
+												matTooltip="Go to gatway terminal"
+												matTooltipPosition="above"
+												(click) = "openConsoleClick(rowIndex, $event)"
+												[disabled]="!element.enabled || !element.status.mqtt.connected">
+												<mat-icon>terminal</mat-icon>
 										</button>
 
-										<button mat-icon-button (click) = "restartClick(element, $event)" [disabled]="!element.enabled || !element.status.mqtt.connected">
-											<mat-icon aria-hidden="false" aria-label="Restart" fontIcon="restart_alt"></mat-icon>
+										<button mat-icon-button
+												matTooltip="Wink gateway LED"
+												matTooltipPosition="above"
+												(click) = "winkClick(element, $event)"
+												[disabled]="!element.enabled || !element.status.mqtt.connected">
+											<mat-icon>remove_red_eye</mat-icon>
+										</button>
+
+										<button mat-icon-button
+												matTooltip="Restart the gateway"
+												matTooltipPosition="above"
+												(click) = "restartClick(element, $event)"
+												[disabled]="!element.enabled || !element.status.mqtt.connected">
+												<mat-icon>restart_alt</mat-icon>
 										</button>
 
 									</div>
@@ -93,16 +100,29 @@
 
 					</div>
 
-					<!-- page indicator Bottom -->
-					<mat-paginator
-						#paginatorRef
-						[length] = "20"
-						[pageSizeOptions] = "intercomService.pageSizes"
-						[pageSize] = "intercomService.pageSize"
-						[pageIndex] = "intercomService.pageNumber"
-						showFirstLastButtons
-						class = "gateway-table-paginator">
-					</mat-paginator>
+					<div class="gateway-table-bottom-bar">
+						<div class="gateway-table-auto-refresh-select">
+							Auto refresh interval:
+							<mat-form-field class="custom-height-select" appearance="outline">
+								<mat-select [(ngModel)]="autoRefreshInterval" (ngModelChange)="onIntervalChange()">
+									<mat-option *ngFor="let interval of autoRefreshIntervals" [value]="interval">
+										{{interval}}
+									</mat-option>
+								</mat-select>
+							</mat-form-field>
+						</div>
+
+						<!-- page indicator Bottom -->
+						<mat-paginator
+							#paginatorRef
+							[length] = "20"
+							[pageSizeOptions] = "intercomService.pageSizes"
+							[pageSize] = "intercomService.pageSize"
+							[pageIndex] = "intercomService.pageNumber"
+							showFirstLastButtons
+							class = "gateway-table-paginator">
+						</mat-paginator>
+					</div>
 
 				</mat-card-content>
 
@@ -162,18 +182,6 @@
 									<td mat-cell *matCellDef="let element">{{element.config}}</td>
 								</ng-container>
 
-								<!-- Created Column -->
-								<ng-container matColumnDef="created">
-									<th mat-header-cell *matHeaderCellDef> Created </th>
-									<td mat-cell *matCellDef="let element">{{element.created | date}}</td>
-								</ng-container>
-
-								<!-- Updated Column -->
-								<ng-container matColumnDef="updated">
-									<th mat-header-cell *matHeaderCellDef> Updated </th>
-									<td mat-cell *matCellDef="let element">{{element.updated | date}}</td>
-								</ng-container>
-
 								<tr mat-header-row *matHeaderRowDef="displayedColumnsThingsTable; sticky: true"></tr>
 								<tr mat-row *matRowDef="let row; columns: displayedColumnsThingsTable;" (click)="cellClickThings(row)" class="element-row"></tr>
 							</table>
@@ -184,7 +192,11 @@
 					<mat-card-actions class="card-actions" align="end">
 
 						<!-- add button -->
-						<button mat-raised-button color="primary" class="gateway-detail-action-button" (click)="createThingDialog()">
+						<button
+							mat-raised-button
+							color="primary"
+							class="gateway-detail-action-button"
+							(click)="createThingDialog()">
 							<mat-icon>add</mat-icon>
 							<span>Add</span>
 						</button>
@@ -254,20 +266,6 @@
 							<div [style.color]="selectedSatellite.status?.mqtt?.connected ? 'green' : 'red'" matListItemLine>{{selectedSatellite.status?.mqtt?.connected}}</div>
 						</mat-list-item>
 
-						<!-- created section -->
-						<mat-list-item>
-							<mat-icon matListItemIcon>noise_control_off</mat-icon>
-							<div matListItemTitle>Created:</div>
-							<div matListItemLine>{{selectedSatellite.created | date}}</div>
-						</mat-list-item>
-
-						<!-- updated section -->
-						<mat-list-item>
-							<mat-icon matListItemIcon>noise_control_off</mat-icon>
-							<div matListItemTitle>Updated:</div>
-							<div matListItemLine>{{selectedSatellite.updated | date}}</div>
-						</mat-list-item>
-
 					</mat-list>
 
 				</mat-card-content>
@@ -290,7 +288,7 @@
 
 	<mat-tab label="Console" *ngIf="selectedSatellite">
 
-		<div class="console-container">
+		<div class="gateway-console-container">
 
 			<mat-card class = "cardConsole">
 
