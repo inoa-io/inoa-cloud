@@ -100,7 +100,7 @@ steps:
     commands:
       - DOCKER_IP=$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42)
       - INOA_DOMAIN="${DOCKER_IP}.nip.io"
-      - mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false
+      - mvn -Dcheck.skip -pl test verify -Dk3s.failIfExists=false -Dinoa.domain=$INOA_DOMAIN
   integration-errors:
     <<: *maven
     depends_on: [integration-test]
