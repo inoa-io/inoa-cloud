@@ -7,3 +7,6 @@ MD009:
 
 # MD013 - Line length
 MD013: false
+
+# MD033 - Inline HTML
+MD033: false

@@ -11,7 +11,7 @@ export class RpcRestService
     constructor(private http: HttpClient) { }
 
     getUrlFromGatewayId(gatewayId: string) {
-        return `http://Satellite-${gatewayId.substring(gatewayId.length - 6)}.local/rpc`;
+        return `http://${gatewayId}/rpc`;
     }
 
     public sendRpcCommand(gatewayId: string, rpcCommand: RpcCommandVO) {

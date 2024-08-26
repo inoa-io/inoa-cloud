@@ -20,12 +20,12 @@ public class JsonPathConverterTest extends AbstractTranslatorTest {
 	@DisplayName("success")
 	@Test
 	void success() {
-		var raw = TelemetryRawVO.of("urn:shplg-s:0A1B2C:status", """
+		var raw = TelemetryRawVO.of("urn:shellyplug-s:0A1B2C:status", """
 				{
 					"wifi_sta": {
 						"connected": true,
 						"ssid": "landskron",
-						"ip": "192.168.178.50",
+						"ip": "192.168.178.50",shplg-s
 						"rssi": -63
 					},
 					"cloud": {
@@ -74,15 +74,15 @@ public class JsonPathConverterTest extends AbstractTranslatorTest {
 					"uptime": 72
 				}
 				""");
-		var messages = convert(converter, raw, "shplg-s", "status");
+		var messages = convert(converter, raw, "shellyplug-s", "status");
 		assertCount(3, messages);
 	}
 
 	@DisplayName("invalid JSON input")
 	@Test
 	void invalidInput() {
-		var raw = TelemetryRawVO.of("urn:shplg-s:0A1B2C:status", "{\"wifi_sta\"::{\"connected\":true,\"ssid\":\"");
-		var messages = convert(converter, raw, "shplg-s", "status");
+		var raw = TelemetryRawVO.of("urn:shellyplug-s:0A1B2C:status", "{\"wifi_sta\"::{\"connected\":true,\"ssid\":\"");
+		var messages = convert(converter, raw, "shellyplug-s", "status");
 		assertCount(0, messages);
 	}
 }

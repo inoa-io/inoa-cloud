@@ -6,15 +6,12 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatSortModule} from "@angular/material/sort";
 import {MatTableModule} from "@angular/material/table";
 import {MatTabsModule} from "@angular/material/tabs";
-import {MatFormFieldModule} from "@angular/material/form-field";
-import {MatSelectModule} from "@angular/material/select";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {SatelliteManagerComponent} from "./satellite-manager.component";
-import {FormsModule} from "@angular/forms";
+import {RpcHistoryComponent} from "./rpc-history-panel.component";
 
 describe("SatelliteManagerComponent", () => {
-  let component: SatelliteManagerComponent;
-  let fixture: ComponentFixture<SatelliteManagerComponent>;
+  let component: RpcHistoryComponent;
+  let fixture: ComponentFixture<RpcHistoryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -26,16 +23,13 @@ describe("SatelliteManagerComponent", () => {
         MatPaginatorModule,
         MatTableModule,
         MatIconModule,
-        MatSelectModule,
-        MatFormFieldModule,
-        BrowserAnimationsModule,
-        FormsModule
+        BrowserAnimationsModule
       ],
-      declarations: [ SatelliteManagerComponent ]
+      declarations: [ RpcHistoryComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(SatelliteManagerComponent);
+    fixture = TestBed.createComponent(RpcHistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

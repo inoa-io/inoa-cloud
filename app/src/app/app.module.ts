@@ -33,6 +33,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatAutocompleteModule} from "@angular/material/autocomplete";
 import {MatRadioModule} from "@angular/material/radio";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import {MatTooltipModule} from "@angular/material/tooltip";
 import {HttpClientModule} from "@angular/common/http";
 import {MatDialogModule} from "@angular/material/dialog";
 import {ThingCreationDialogComponent} from "./thing-creation-dialog/thing-creation-dialog.component";
@@ -48,6 +49,7 @@ import {NullTypeComponent} from "./thing-creation-dialog/null.type";
 import {ArrayTypeComponent} from "./thing-creation-dialog/array.type";
 import {MultiSchemaTypeComponent} from "./thing-creation-dialog/multischema.type";
 import {MonacoEditorModule} from "ngx-monaco-editor";
+import { RpcHistoryComponent } from "./rpc-history-panel/rpc-history-panel.component";
 
 
 export function fleetApiConfigFactory(): FleetConfiguration {
@@ -60,7 +62,8 @@ export function fleetApiConfigFactory(): FleetConfiguration {
 @NgModule({
 	declarations: [
 		AppComponent,
-		HomeComponent,
+    HomeComponent,
+    RpcHistoryComponent,
 		MeasurementCollectorComponent,
 		SatelliteManagerComponent,
 		InstallationMonitorComponent,
@@ -92,6 +95,7 @@ export function fleetApiConfigFactory(): FleetConfiguration {
     AppRoutingModule,
     MatRadioModule,
     MatButtonToggleModule,
+    MatTooltipModule,
     HttpClientModule,
     MatDialogModule,
     FormsModule,
