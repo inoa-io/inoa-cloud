@@ -26,7 +26,6 @@ Please install the following components to your system. Otherwise, you will face
 * [Node.js](https://nodejs.org/en/download/package-manager) >= 18.20
 * [Telepresence](https://www.getambassador.io/docs/telepresence/latest/install) >= v2.19.6
 
-
 #### Setup developer environment
 
 * Clone the project from `git@github.com:inoa-io/inoa-cloud.git`
@@ -34,7 +33,6 @@ Please install the following components to your system. Otherwise, you will face
 * Import the project as Maven project in your IDE
 * Be sure all annotation processors are active in your IDE
 * copy [.env.template](../../.env.template) into a local `.env` file where you can set your local properties.
-
 
 #### Docker Repository Access
 
@@ -67,6 +65,7 @@ For bash there are some scripts that should help to execute the INOA components:
     ```shell
     ./inoa-startup.sh
     ```
+
 2. Intercepts the requests for the INOA service and forwards it to local ports: http (:4300) and mqtt (:1884). Used to route traffic to your local instance of the INOA Service.
 
     ```shell
@@ -78,6 +77,7 @@ For bash there are some scripts that should help to execute the INOA components:
     ```shell
     ./inoa-shutdown.sh
     ```
+
 #### Use Windows Scripts
 
 1. Launch INOA Cloud Locally. Work in progress....
@@ -107,7 +107,6 @@ For bash there are some scripts that should help to execute the INOA components:
     yarn install
     ng serve
     ```
-
 
 ## INOA Modules
 
