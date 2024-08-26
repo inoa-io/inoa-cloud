@@ -1,7 +1,14 @@
 #!/bin/bash
 
+ENV_FILE=.env
+if [ ! -f "$ENV_FILE" ]; then
+    echo "ERROR: Can't stop INOA without local configuration."
+    echo "$ENV_FILE does not exist. Please create it from .env.template and configure at least your local IP."
+    exit 1;
+fi
+
 # shellcheck source=/dev/null
-source ./.env
+source $ENV_FILE
 
 # TODO Verify connection status before quiting.
 #TELEPRESENCE_CONNECTED=telepresence status | grep 'Not connected'

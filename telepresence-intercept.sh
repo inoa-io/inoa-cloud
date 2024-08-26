@@ -1,8 +1,13 @@
 #!/bin/bash
 
-### Not sure if needed but for convention...
+ENV_FILE=.env
+if [ ! -f "$ENV_FILE" ]; then
+    echo "ERROR: Can't start INOA without local configuration."
+    echo "$ENV_FILE does not exist. Please create it from .env.template and configure at least your local IP."
+    exit 1;
+fi
 # shellcheck source=/dev/null
-source ./.env
+source $ENV_FILE
 
 ### just intercept the requests for INOA http and mqtt endpoint.
 INOA_HTTP="$(telepresence list | grep inoa-http)"

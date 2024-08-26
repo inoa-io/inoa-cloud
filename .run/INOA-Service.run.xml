@@ -15,13 +15,14 @@
       <INTERCEPT_ENTRIES />
     </extension>
     <extension name="net.ashald.envfile">
-      <option name="IS_ENABLED" value="false" />
+      <option name="IS_ENABLED" value="true" />
       <option name="IS_SUBST" value="true" />
       <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
       <option name="IS_IGNORE_MISSING_FILES" value="false" />
       <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
       <ENTRIES>
         <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        <ENTRY IS_ENABLED="true" PARSER="env" IS_EXECUTABLE="false" PATH=".env" />
       </ENTRIES>
     </extension>
     <option name="alternativeJrePath" value="17" />
@@ -32,9 +33,6 @@
     <option name="vmParameters" value="-Dmicronaut.environments=k3s,local -Dstatic.path=$ProjectFileDir$/app/dist" />
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="ConnectionRunnerForConfigurationId">
-        <option name="envFile" value="$PROJECT_DIR$/.env" />
-      </option>
       <option name="RunConfigurationTask" enabled="false" run_configuration_name="Telepresence - Intercept" run_configuration_type="ShConfigurationType" />
     </method>
   </configuration>

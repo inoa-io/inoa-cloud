@@ -23,7 +23,7 @@ Please install the following components to your system. Otherwise, you will face
 * [Docker](https://www.docker.com/) >= 24.0.5
 * [k3s](https://k3s.io/)
 * [Python](https://www.python.org/) >= 3.8.5 (for documentation only)
-* [Node.js](https://nodejs.org/en/download/package-manager) >= 18.20
+* [Node.js](https://nodejs.org/en/download/package-manager) >= 18.19
 * [Telepresence](https://www.getambassador.io/docs/telepresence/latest/install) >= v2.19.6
 
 #### Setup developer environment
