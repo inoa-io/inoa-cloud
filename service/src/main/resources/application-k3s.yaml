@@ -91,7 +91,7 @@ inoa:
             description: URI of mqtt server.
             type: STRING
             pattern: (tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}
-          value: mqtt://mqtt.${inoa.domain}:${inoa.mqtt.port}
+          value: tcp://mqtt.${inoa.domain}:${inoa.mqtt.port}
         - definition:
             key: mqtt.insecure
             description: Should the client accept unsecure mqtt connections?
