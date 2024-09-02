@@ -1,0 +1,36 @@
+<!-- headline -->
+<h1
+    *ngIf="!data.isInfo"
+    mat-dialog-title>
+    Something went wrong!
+</h1>
+<h1
+    *ngIf="data.isInfo"
+    mat-dialog-title>
+    This request could not be processed:
+</h1>
+
+<div mat-dialog-content>
+    <!-- error code -->
+    <p *ngIf="data.status && !data.isInfo">
+        <b>Error Code: {{ data.status }}</b>
+    </p>
+
+    <!-- error message -->
+    <mat-card style="background-color: #eeeeee; color: black">
+        <mat-card-content>
+            {{ data.message }}
+        </mat-card-content>
+    </mat-card>
+</div>
+
+<div
+    mat-dialog-actions
+    align="end">
+    <button
+        mat-raised-button
+        mat-dialog-close
+        color="primary">
+        Close
+    </button>
+</div>

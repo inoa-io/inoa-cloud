@@ -1,72 +1,105 @@
 <div class="uber-container">
+    <!-- top toolbar -->
+    <div class="groundcontrol-top-bar">
+        <mat-toolbar
+            color="primary"
+            class="mat-elevation-z10">
+            <!-- side nav toggle left -->
+            <button
+                mat-icon-button
+                class="sidenav-toggle-button-left"
+                (click)="toggleSideBar()">
+                <mat-icon style="margin: 0">menu</mat-icon>
+            </button>
 
-	<!-- top toolbar -->
-	<div class="groundcontrol-top-bar">
-		<mat-toolbar color="primary" class="mat-elevation-z10">
+            <!-- Site title -->
+            <a href="/"
+                ><button class="groundcontrol-logo-home-button">
+                    <img
+                        src="assets/inoa/groundcontrol-text.svg"
+                        height="52"
+                        alt="Ground Control Logo" /></button
+            ></a>
 
-			<!-- side nav toggle left -->
-			<button mat-icon-button class = "sidenav-toggle-button-left" (click) = "toggleSideBar()"><mat-icon style = "margin: 0;">menu</mat-icon></button>
+            <!-- http loading indicator -->
+            <div
+                class="http-bar-container"
+                *ngIf="!intercomService.httpDataLoading">
+                <mat-progress-bar
+                    color="accent"
+                    mode="determinate"
+                    value="100"></mat-progress-bar>
+            </div>
 
-			<!-- Site title -->
-			<a href="/"><button class="groundcontrol-logo-home-button"><img src="assets/inoa/groundcontrol-text.svg" height="52" alt="Ground Control Logo"></button></a>
+            <!-- http loading indicator -->
+            <div
+                class="http-bar-container"
+                *ngIf="intercomService.httpDataLoading">
+                <mat-progress-bar
+                    color="accent"
+                    mode="query"></mat-progress-bar>
+            </div>
 
-			<!-- spacer -->
-			<span style = "flex: 1 1 auto"></span>
+            <!-- TODO: put whoami box here once that works -->
 
-			<!-- TODO: put whoami box here once that works -->
+            <!-- side nav toggle right -->
+            <button
+                mat-icon-button
+                class="sidenav-toggle-button-right"
+                (click)="toggleRpcHistory()">
+                <mat-icon style="margin: 0">dns</mat-icon>
+            </button>
+        </mat-toolbar>
+    </div>
 
-			<!-- side nav toggle right -->
-			<button	mat-icon-button
-				class="sidenav-toggle-button-right"
-				(click)="toggleRpcHistory()">
-					<mat-icon style="margin: 0;">dns</mat-icon>
-			</button>
+    <mat-sidenav-container style="background-color: gray">
+        <!-- side nav for menu items -->
+        <mat-sidenav
+            mode="over"
+            [(opened)]="sideNavOpen"
+            class="sidenav-bar-left mat-elevation-z10">
+            <mat-button-toggle-group
+                class="sidenav-toggle-group"
+                [(ngModel)]="intercomService.pageSelect">
+                <!-- Header -->
+                <div class="sideNavHeaderContainer">
+                    <div
+                        mat-card-avatar
+                        class="sideNavHeaderIcon"
+                        style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+                    <span class="sideNavHeader">Ground Control:</span>
+                </div>
 
-		</mat-toolbar>
-	</div>
+                <mat-divider style="margin-top: 15px"></mat-divider>
 
-	<mat-sidenav-container style="background-color: gray;">
+                <!-- side nav buttons -->
+                <mat-button-toggle
+                    value="{{ route.path }}"
+                    *ngFor="let route of routes; let i = index"
+                    [hidden]="i === 0"
+                    (click)="navbarClick(i)">
+                    <div class="sideNavSelectorContainer">
+                        <mat-icon class="sideNavTickIcon">arrow_right</mat-icon>
+                        <span class="sideNavSelector">{{ route.label }}</span>
+                    </div>
+                </mat-button-toggle>
+            </mat-button-toggle-group>
+        </mat-sidenav>
 
-		<!-- side nav for menu items -->
-		<mat-sidenav mode="side" [(opened)]="sideNavOpen" class="sidenav-bar-left mat-elevation-z10">
+        <!-- sidenav for rpc history -->
+        <mat-sidenav
+            mode="side"
+            position="end"
+            [(opened)]="intercomService.rpcHistoryOpen"
+            class="sidenav-bar-right mat-elevation-z10">
+            <gc-rpc-history-panel></gc-rpc-history-panel>
+        </mat-sidenav>
 
-			<mat-button-toggle-group class="sidenav-toggle-group" [(ngModel)]="intercomService.pageSelect">
-
-				<!-- Header -->
-				<div class="sideNavHeaderContainer">
-					<div mat-card-avatar class = "sideNavHeaderIcon" style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
-					<span class="sideNavHeader">Ground Control:</span>
-				</div>
-
-				<mat-divider style="margin-top: 15px;"></mat-divider>
-
-				<!-- side nav buttons -->
-				<mat-button-toggle
-					value="{{route.path}}"
-					*ngFor="let route of routes let i = index"
-					[hidden]="i===0"
-					(click)="navbarClick(i)">
-					<div class="sideNavSelectorContainer">
-						<mat-icon class="sideNavTickIcon">arrow_right</mat-icon>
-						<span class="sideNavSelector">{{route.label}}</span>
-					</div>
-				</mat-button-toggle>
-
-			</mat-button-toggle-group>
-
-		</mat-sidenav>
-
-		<!-- sidenav for rpc history -->
-		<mat-sidenav mode="side" position="end" [(opened)]="rpcHistoryOpen" class="sidenav-bar-right mat-elevation-z10">
-			<gc-rpc-history-panel></gc-rpc-history-panel>
-		</mat-sidenav>
-
-		<!-- router outlet (content window) -->
-		<mat-sidenav-content>
-			<div>
-				<router-outlet></router-outlet>
-			</div>
-		</mat-sidenav-content>
-
-	</mat-sidenav-container>
+        <!-- router outlet (content window) -->
+        <mat-sidenav-content>
+            <div>
+                <router-outlet></router-outlet>
+            </div>
+        </mat-sidenav-content>
+    </mat-sidenav-container>
 </div>

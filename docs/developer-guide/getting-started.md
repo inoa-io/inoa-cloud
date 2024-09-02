@@ -49,7 +49,7 @@ Configure your Satellite to connect to your local running INOA Cloud services vi
 
 ```shell
 # set with your INOA_IP
-set-reg-url http://inoa.<INOA_IP>.nip.io:8080/gateway
+setup-registry http://inoa.<INOA_IP>.nip.io:8080/gateway
 setup-mqtt mqtt://inoa.<INOA_IP>.nip.io 1883
 ```
 

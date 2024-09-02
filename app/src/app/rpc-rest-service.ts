@@ -4,11 +4,10 @@ import { RpcCommandVO } from "@inoa/model";
 import { v4 as uuidv4 } from "uuid";
 
 @Injectable({
-	providedIn: "root"
+    providedIn: "root"
 })
-export class RpcRestService
-{
-    constructor(private http: HttpClient) { }
+export class RpcRestService {
+    constructor(private http: HttpClient) {}
 
     getUrlFromGatewayId(gatewayId: string) {
         return `http://${gatewayId}/rpc`;
@@ -24,13 +23,13 @@ export class RpcRestService
     }
 
     public sendRpcReboot(gatewayId: string) {
-        const rpcCommand: RpcCommandVO = { method: "sys.reboot" }
+        const rpcCommand: RpcCommandVO = { method: "sys.reboot" };
 
         this.sendRpcCommand(gatewayId, rpcCommand).subscribe();
     }
 
     public sendRpcWink(gatewayId: string) {
-        const rpcCommand: RpcCommandVO = { method: "sys.wink" }
+        const rpcCommand: RpcCommandVO = { method: "sys.wink" };
 
         this.sendRpcCommand(gatewayId, rpcCommand).subscribe();
     }

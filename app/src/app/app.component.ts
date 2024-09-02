@@ -4,23 +4,26 @@ import { Router } from "@angular/router";
 import { InternalCommunicationService } from "./internal-communication-service";
 
 @Component({
-	selector: "gc-app-root",
-	templateUrl: "./app.component.html",
-	styleUrls: ["./app.component.sass"]
+    selector: "gc-app-root",
+    templateUrl: "./app.component.html",
+    styleUrls: ["./app.component.sass"]
 })
-export class AppComponent
-{
-	title = "INOA Ground Control";
-	sideNavOpen = false;
-	rpcHistoryOpen = false;
-	routes = routes;
+export class AppComponent {
+    title = "INOA Ground Control";
+    sideNavOpen = false;
+    routes = routes;
 
-	toggleSideBar() { this.sideNavOpen = !this.sideNavOpen; }
+    toggleSideBar() {
+        this.sideNavOpen = !this.sideNavOpen;
+    }
 
-	toggleRpcHistory() { this.rpcHistoryOpen = !this.rpcHistoryOpen; }
+    toggleRpcHistory() {
+        this.intercomService.rpcHistoryOpen = !this.intercomService.rpcHistoryOpen;
+    }
 
-	constructor(private router: Router, public intercomService: InternalCommunicationService) {}
+    constructor(private router: Router, public intercomService: InternalCommunicationService) {}
 
-	navbarClick(index: number) { this.router.navigate([this.routes[index].path]); }
+    navbarClick(index: number) {
+        this.router.navigate([this.routes[index].path]);
+    }
 }
-

@@ -15,13 +15,24 @@
         <h5 class="card-title">Bind Satellite</h5>
         <h6 class="card-subtitle mb-2 text-body-secondary">Connect an IoT Gateway</h6>
         <p class="card-text">To connect a Satellite with this local INOA Cloud, connect the debug console and enter these commands:
+
           <pre><code>
             # Connect to Wifi (if not already done or connected via LAN)
             setup-wifi &lt;SSID&gt; &lt;PASSWORD&gt;
+          </code></pre>
+
+          <pre><code>
             # Configure the INOA registry URL for self registration
-            set-reg-url http://inoa.${k3s.ip}.nip.io:8080/gateway
+            setup-registry http://inoa.${k3s.ip}.nip.io:8080/gateway
+          </code></pre>
+
+          <pre><code>
             # Configure the MQTT endpoint where to communicate with INOA Cloud and send measurements to.
             setup-mqtt mqtt://inoa.${k3s.ip}.nip.io 1883
+          </code></pre>
+
+          <pre><code>
+            # Reboot Satellite
             reboot
           </code></pre>
         </p>

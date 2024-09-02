@@ -13,6 +13,8 @@ export class HomeComponent
 
   navigate(route: string)
   {
+    if (route === "satellite-manager") this.intercomService.rpcHistoryOpen = true;
+    
     this.intercomService.pageSelect = route;
     this.router.navigate([route]);
   }
