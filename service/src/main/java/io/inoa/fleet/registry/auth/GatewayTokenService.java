@@ -18,7 +18,7 @@ import com.nimbusds.jwt.JWTClaimNames;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import io.inoa.fleet.ApplicationProperties;
+import io.inoa.fleet.FleetProperties;
 import io.inoa.fleet.registry.domain.CredentialRepository;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
@@ -43,7 +43,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GatewayTokenService {
 
 	private final Clock clock;
-	private final ApplicationProperties properties;
+	private final FleetProperties properties;
 	private final GatewayRepository gatewayRepository;
 	private final CredentialRepository credentialRepository;
 

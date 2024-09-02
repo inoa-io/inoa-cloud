@@ -3,6 +3,7 @@ package io.inoa.fleet.registry.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.inoa.fleet.FleetProperties;
 import io.inoa.fleet.registry.domain.Configuration;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayConfigurationRepository;
@@ -25,9 +26,11 @@ public class ConfigurationService {
 	private final TenantConfigurationRepository tenantConfigurationRepository;
 	private final GroupConfigurationRepository groupConfigurationRepository;
 	private final GatewayConfigurationRepository gatewayConfigurationRepository;
+	private final FleetProperties fleetProperties;
 
 	public List<Configuration> findByGateway(Gateway gateway) {
 		var configurations = new ArrayList<Configuration>();
+		configurations.addAll(fleetProperties.getTenant().getConfigurations());
 		configurations.addAll(tenantConfigurationRepository.findByDefinitionTenant(gateway.getTenant()));
 		var groups = gatewayGroupRepository.findGroupByGateway(gateway);
 		if (!groups.isEmpty()) {

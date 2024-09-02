@@ -2,7 +2,7 @@ package io.inoa.fleet.registry.rest.management;
 
 import org.reactivestreams.Publisher;
 
-import io.inoa.fleet.ApplicationProperties;
+import io.inoa.fleet.FleetProperties;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.http.HttpRequest;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TenantSecurityFilter implements HttpServerFilter {
 
-	private final ApplicationProperties properties;
+	private final FleetProperties properties;
 
 	@Override
 	public Publisher<MutableHttpResponse<?>> doFilter(HttpRequest<?> request, ServerFilterChain chain) {

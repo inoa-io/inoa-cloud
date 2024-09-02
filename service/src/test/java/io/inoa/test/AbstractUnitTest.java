@@ -13,8 +13,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
-import io.inoa.fleet.ApplicationProperties;
 import io.inoa.fleet.Data;
+import io.inoa.fleet.FleetProperties;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.rest.JwtProvider;
 import io.micronaut.core.io.socket.SocketUtils;
@@ -43,7 +43,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 	public @Inject Validator validator;
 	public @Inject SignatureGeneratorConfiguration signature;
 	public @Inject Data data;
-	public @Inject ApplicationProperties oldProperties;
+	public @Inject FleetProperties oldProperties;
 	public @Inject KafkaSink kafka;
 
 	// test setup

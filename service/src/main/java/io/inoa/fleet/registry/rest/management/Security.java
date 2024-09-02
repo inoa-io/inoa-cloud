@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import io.inoa.fleet.ApplicationProperties;
+import io.inoa.fleet.FleetProperties;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.fleet.registry.domain.TenantRepository;
 import io.micronaut.http.HttpRequest;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class Security {
 
-	private final ApplicationProperties properties;
+	private final FleetProperties properties;
 	private final TenantRepository tenantRepository;
 	private final SecurityService securityService;
 

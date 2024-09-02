@@ -72,6 +72,31 @@ micronaut:
         mapping: /**
         paths: file:/${static.path}
 inoa:
+  domain: ${inoa.domain:-foo.io}
+  fleet:
+    # allow audience test access to all tenants
+    security:
+      tenant-audience-whitelist: inoa
+    # add some default configurations
+    tenant:
+      configurations:
+        - definition:
+            key: ntp.host
+            description: Host of ntp server to use.
+            type: STRING
+            pattern: "[a-z0-9\\.]{8,20}"
+          value: pool.ntp.org
+        - definition:
+            key: mqtt.url
+            description: URI of mqtt server.
+            type: STRING
+            pattern: (tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}
+          value: mqtt://mqtt.${inoa.domain}:${inoa.mqtt.port}
+        - definition:
+            key: mqtt.insecure
+            description: Should the client accept unsecure mqtt connections?
+            type: BOOLEAN
+          value: true
   mqtt:
     port: 1883
     tls:

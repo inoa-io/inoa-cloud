@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import io.inoa.fleet.registry.domain.Configuration;
 import io.inoa.fleet.registry.domain.ConfigurationDefinition;
-import io.inoa.fleet.registry.domain.Tenant;
-import io.inoa.rest.ConfigurationTypeVO;
 import io.micronaut.context.annotation.ConfigurationProperties;
 import io.micronaut.context.annotation.Context;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +17,7 @@ import lombok.Setter;
 @ConfigurationProperties("inoa.fleet")
 @Getter
 @Setter
-public class ApplicationProperties {
+public class FleetProperties {
 
 	private SecurityProperties security = new SecurityProperties();
 	private TenantProperties tenant = new TenantProperties();
@@ -83,35 +82,16 @@ public class ApplicationProperties {
 	@Setter
 	public static class TenantProperties {
 
-		private List<ConfigurationDefinitionDefault> configurations = new ArrayList<>();
+		private List<DefaultConfiguration> configurations = new ArrayList<>();
 
-		/** Represents a {@link ConfigurationDefinition} with default value. */
+		/** Represents a {@link Configuration} with default value. */
 		@Getter
 		@Setter
-		public static class ConfigurationDefinitionDefault {
+		public static class DefaultConfiguration implements Configuration {
 
 			@NotNull
-			private String key;
-			@NotNull
-			private ConfigurationTypeVO type;
-			@NotNull
-			private String description;
-
-			private Integer minimum;
-			private Integer maximum;
-			private String pattern;
+			private ConfigurationDefinition definition;
 			private String value;
-
-			public ConfigurationDefinition toConfigurationDefinition(Tenant tenant) {
-				return new ConfigurationDefinition()
-						.setTenant(tenant)
-						.setKey(key)
-						.setDescription(description)
-						.setType(type)
-						.setMinimum(minimum)
-						.setMaximum(maximum)
-						.setPattern(pattern);
-			}
 		}
 	}
 
