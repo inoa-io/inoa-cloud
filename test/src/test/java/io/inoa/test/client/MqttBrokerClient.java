@@ -37,6 +37,7 @@ public class MqttBrokerClient {
 		this.options.setUserName(gatewayId + "@" + tenantId);
 		this.options.setPassword(new String(psk).toCharArray());
 		this.options.setCleanSession(true);
+		this.options.setHttpsHostnameVerificationEnabled(false);
 	}
 
 	public MqttClient client() {
@@ -45,23 +46,24 @@ public class MqttBrokerClient {
 
 	@SneakyThrows(GeneralSecurityException.class)
 	public MqttBrokerClient trustAllCertificates() {
-		var trustManager = new X509TrustManager() {
+		if (this.client.getServerURI().startsWith("ssl")) {
+			var trustManager = new X509TrustManager() {
 
-			@Override
-			public void checkClientTrusted(X509Certificate[] chain, String authType) {}
+				@Override
+				public void checkClientTrusted(X509Certificate[] chain, String authType) {}
 
-			@Override
-			public void checkServerTrusted(X509Certificate[] chain, String authType) {}
+				@Override
+				public void checkServerTrusted(X509Certificate[] chain, String authType) {}
 
-			@Override
-			public X509Certificate[] getAcceptedIssuers() {
-				return new X509Certificate[0];
-			}
-		};
-		var sslContext = SSLContext.getInstance("TLS");
-		sslContext.init(null, new TrustManager[] { trustManager }, null);
-		this.options.setSocketFactory(sslContext.getSocketFactory());
-		this.options.setHttpsHostnameVerificationEnabled(false);
+				@Override
+				public X509Certificate[] getAcceptedIssuers() {
+					return new X509Certificate[0];
+				}
+			};
+			var sslContext = SSLContext.getInstance("TLS");
+			sslContext.init(null, new TrustManager[] { trustManager }, null);
+			this.options.setSocketFactory(sslContext.getSocketFactory());
+		}
 		return this;
 	}
 
