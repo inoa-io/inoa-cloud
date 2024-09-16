@@ -5,5 +5,14 @@ inoa:
   mqtt:
     port: 1884
     tls:
-      generateKey: true
       port: 8884
+      key: service/src/test/x509/key.pem
+      cert: service/src/test/x509/cert.pem
+datasources:
+  default:
+    host: localhost
+influxdb:
+  url: http://localhost:8086
+kafka:
+  bootstrap:
+    servers: localhost:9092

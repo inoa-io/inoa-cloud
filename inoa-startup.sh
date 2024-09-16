@@ -12,7 +12,6 @@ source $ENV_FILE
 
 INOA_LOCAL_UI=""
 
-MVN_ARGS=("-DskipTests=true" "-Dk3s.failIfExists=false" "-Dk3s.kubeconfig=${KUBECONFIG}" "-Dinoa.domain=${INOA_DOMAIN}" "-Dmcnoise.replicas=${MCNOISE_REPLICAS}")
 
 ############################################################
 # Help                                                     #
@@ -36,14 +35,16 @@ CleanBuild() {
 }
 
 LaunchK3S() {
+  # shellcheck disable=SC2145
+  echo "MVN_ARGS=${MVN_ARGS[@]}"
   ### Launch the INOA Cloud services in k3s via Maven
   mvn pre-integration-test "${MVN_ARGS[@]}" -pl ./test/
 
   echo "INOA configured and started for INOA_DOMAIN=${INOA_DOMAIN}"
 
   ### Install & connect telepresence to connect to the INOA services
-  telepresence helm install --kubeconfig="${KUBECONFIG}"
-  telepresence connect --kubeconfig="${KUBECONFIG}"
+  # telepresence helm install --kubeconfig="${KUBECONFIG}"
+  # telepresence connect --kubeconfig="${KUBECONFIG}"
 
   xdg-open "http://help.${INOA_DOMAIN}:8080"
 }
@@ -55,6 +56,13 @@ LaunchUI() {
     yarn start
   fi
 
+}
+
+### Expose needed service prots to localhost so they are avaialable for development purposes like run the service locally.
+### Still needed: local host file must be modified for kafka to work.
+ForwardPorts() {
+  kubectl port-forward services/postgres 5432:5432 & kubectl port-forward services/influxdb 8086:8086 & kubectl port-forward services/kafka 9092:9092 9093:9093 &
+  # TODO add to /etc/hotsts file:  127.0.0.1       kafka.default.svc.cluster.local
 }
 
 echo "Starting INOA with: -Dinoa.domain=${INOA_DOMAIN}"
@@ -81,6 +89,8 @@ while getopts ":chmu" option; do
         exit;;
    esac
 done
+
+MVN_ARGS=("-DskipTests=true" "-Dk3s.failIfExists=false" "-Dk3s.kubeconfig=${KUBECONFIG}" "-Dinoa.domain=${INOA_DOMAIN}" "-Dmcnoise.replicas=${MCNOISE_REPLICAS}")
 
 LaunchK3S
 LaunchUI

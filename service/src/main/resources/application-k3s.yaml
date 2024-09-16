@@ -50,7 +50,7 @@ micronaut:
         # https://micronaut-projects.github.io/micronaut-security/latest/guide/#jwt
       jwt:
         claims-validators:
-          audience: inoa-groundcontrol
+          audience: inoa-registry
         signatures:
           jwks:
             keycloak:
@@ -97,6 +97,9 @@ inoa:
             description: Should the client accept unsecure mqtt connections?
             type: BOOLEAN
           value: true
+    gateway:
+      token:
+        audience: inoa-registry
   mqtt:
     port: 1883
     tls:

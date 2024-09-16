@@ -92,7 +92,7 @@
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "config": {
-            "included.client.audience": "inoa-groundcontrol",
+            "included.client.audience": "inoa-registry",
             "id.token.claim": "true",
             "access.token.claim": "true"
           }
@@ -179,7 +179,7 @@
         }
       ],
       "attributes": {
-        "post.logout.redirect.uris": "http://inoa.${inoa.k3s}.nip.io:8080/logout",
+        "post.logout.redirect.uris": "http://inoa.${inoa.domain}:8080/logout",
         "access.token.lifespan": "60"
       },
       "redirectUris": [],
@@ -208,16 +208,31 @@
 						"access.token.claim": "true"
 					}
 				},{
-					"name": "tenants",
-					"protocol": "openid-connect",
-					"protocolMapper": "oidc-hardcoded-claim-mapper",
-					"config": {
-						"access.token.claim": "true",
-						"claim.name": "tenants",
-						"claim.value": "inoa"
-					}
-				}
-			],
+          "name": "Group-to-Tenant Mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "consentRequired": false,
+          "config": {
+            "full.path": "false",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "tenants",
+            "userinfo.token.claim": "false"
+          }
+        },{
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "config": {
+            "claim.name": "roles",
+            "multivalued": "true",
+            "id.token.claim": "true",
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ],
 			"baseUrl": null,
 			"redirectUris": [],
 			"webOrigins": [],
