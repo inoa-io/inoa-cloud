@@ -1,31 +1,35 @@
 import { ApiModule as FleetApiModule, BASE_PATH as FleetBasePath, Configuration as FleetConfiguration, ConfigurationParameters as FleetConfigurationParameters } from "@inoa/api";
+import { environment } from "../environments/environment.production";
+import { FilterPipe } from "./filter.pipe";
+
 import { NgModule } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { RouterModule } from "@angular/router";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { HttpClientModule } from "@angular/common/http";
+import { ErrorHandlingModule } from "./error-handling/error-handling.module";
+import { AppRoutingModule } from "./app-routing.module";
+import { FormlyModule } from "@ngx-formly/core";
+import { FormlyMaterialModule } from "@ngx-formly/material";
+import { MonacoEditorModule } from "ngx-monaco-editor";
+import { MaterialModule } from "./material.module";
+
+import { AppComponent } from "./app.component";
+import { ObjectTypeComponent } from "./dialogs/thing-creation-dialog/object.type";
+import { NullTypeComponent } from "./dialogs/thing-creation-dialog/null.type";
+import { ArrayTypeComponent } from "./dialogs/thing-creation-dialog/array.type";
+import { MultiSchemaTypeComponent } from "./dialogs/thing-creation-dialog/multischema.type";
 import { HomeComponent } from "./home/home.component";
 import { MeasurementCollectorComponent } from "./measurement-collector/measurement-collector.component";
 import { SatelliteManagerComponent } from "./satellite-manager/satellite-manager.component";
 import { InstallationMonitorComponent } from "./installation-monitor/installation-monitor.component";
 import { SetupConfiguratorComponent } from "./setup-configurator/setup-configurator.component";
-import { FilterPipe } from "./filter.pipe";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
-import { ThingCreationDialogComponent } from "./thing-creation-dialog/thing-creation-dialog.component";
-import { ErrorHandlingModule } from "./error-handling/error-handling.module";
-import { environment } from "../environments/environment.production";
-import { AppRoutingModule } from "./app-routing.module";
-import { AppComponent } from "./app.component";
-import { FormlyModule } from "@ngx-formly/core";
-import { FormlyMaterialModule } from "@ngx-formly/material";
-import { ObjectTypeComponent } from "./thing-creation-dialog/object.type";
-import { NullTypeComponent } from "./thing-creation-dialog/null.type";
-import { ArrayTypeComponent } from "./thing-creation-dialog/array.type";
-import { MultiSchemaTypeComponent } from "./thing-creation-dialog/multischema.type";
-import { MonacoEditorModule } from "ngx-monaco-editor";
-import { RpcHistoryComponent } from "./rpc-history-panel/rpc-history-panel.component";
-import { MaterialModule } from "./material.module";
+import { RpcHistoryComponent } from "./satellite-manager/rpc-history-panel/rpc-history-panel.component";
 
+import { ThingCreationDialogComponent } from "./dialogs/thing-creation-dialog/thing-creation-dialog.component";
+import { ConfigEditDialogComponent } from "./dialogs/config-edit-dialog/config-edit-dialog.component";
+import { RenameSatelliteDialogComponent } from "./dialogs/rename-satellite-dialog/rename-satellite-dialog.component";
 export function fleetApiConfigFactory(): FleetConfiguration {
     const params: FleetConfigurationParameters = {
         basePath: environment.fleetApiBasePath,
@@ -35,19 +39,21 @@ export function fleetApiConfigFactory(): FleetConfiguration {
 }
 @NgModule({
     declarations: [
+        FilterPipe,
         AppComponent,
         HomeComponent,
-        RpcHistoryComponent,
         MeasurementCollectorComponent,
         SatelliteManagerComponent,
         InstallationMonitorComponent,
         SetupConfiguratorComponent,
-        FilterPipe,
-        ThingCreationDialogComponent,
+        RpcHistoryComponent,
         ArrayTypeComponent,
         ObjectTypeComponent,
         MultiSchemaTypeComponent,
-        NullTypeComponent
+        NullTypeComponent,
+        ThingCreationDialogComponent,
+        ConfigEditDialogComponent,
+        RenameSatelliteDialogComponent
     ],
     imports: [
         MonacoEditorModule.forRoot(),

@@ -1,7 +1,7 @@
 import { ErrorHandler, Injectable, NgZone } from "@angular/core";
 import { ErrorDialogService } from "./error-dialog.service";
 import { HttpErrorResponse } from "@angular/common/http";
-import { InternalCommunicationService } from "../internal-communication-service";
+import { InternalCommunicationService } from "../services/internal-communication-service";
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {

@@ -138,7 +138,7 @@ public class GatewaysController extends AbstractManagementController implements 
 		var changed = false;
 
 		if (vo.getName() != null) {
-			if (gateway.getName().equals(vo.getName())) {
+			if (Objects.equals(gateway.getName(), vo.getName())) {
 				log.trace("Gateway {}: skip update of name because not changed.", gateway.getName());
 			} else {
 				log.info("Gateway {}: updated name to {}.", gateway.getName(), vo.getName());

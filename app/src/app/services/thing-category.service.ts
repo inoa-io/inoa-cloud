@@ -1,6 +1,6 @@
 import { Injectable, OnDestroy } from "@angular/core";
 import { Subject } from "rxjs";
-import categoriesData from "../assets/thing-categories/categories.json";
+import categoriesData from "../../assets/thing-categories/categories.json";
 
 export interface ThingCategory {
     key: string;

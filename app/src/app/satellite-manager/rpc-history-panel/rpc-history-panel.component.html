@@ -1,4 +1,4 @@
-<mat-card class="cardRpcHistory">
+<mat-card class="card-rpc-history">
     <mat-card-header>
         <div
             mat-card-avatar
@@ -58,7 +58,7 @@
                     </ng-container>
 
                     <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-                    <ng-container matColumnDef="expandedDetail">
+                    <ng-container matColumnDef="expanded_detail">
                         <td
                             mat-cell
                             *matCellDef="let element"
@@ -80,8 +80,8 @@
 
                                 <!-- show response if there is any -->
                                 <div *ngIf="element.response">
-                                    <p>Response:</p>
-                                    <pre><code>{{ element.response }}</code></pre>
+                                    <p>Response:
+                                    <pre><code class="response-code">{{ element.response }}</code></pre>
                                 </div>
 
                                 <!-- show no response if there is none yet -->
@@ -94,16 +94,17 @@
 
                     <tr
                         mat-header-row
-                        *matHeaderRowDef="displayedColumnsRpcHistory"></tr>
+                        *matHeaderRowDef="displayedColumnsRpcHistory; sticky: true"></tr>
                     <tr
                         mat-row
                         *matRowDef="let element; columns: displayedColumnsRpcHistory"
                         class="rpc-history-element-row"
                         [class.rpc-history-expanded-row]="expandedElement === element"
-                        (click)="expandedElement = expandedElement === element ? null : element"></tr>
+                        (click)="expandedElement = expandedElement === element ? null : element"
+                        class="element-row"></tr>
                     <tr
                         mat-row
-                        *matRowDef="let row; columns: ['expandedDetail']"
+                        *matRowDef="let row; columns: ['expanded_detail']"
                         class="rpc-history-detail-row"></tr>
                 </table>
             </div>

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { GatewayVO, ThingTypeVO, ThingVO } from "@inoa/model";
-import { NetworkInterface } from "./measurement-collector/measurement-collector.component";
+import { NetworkInterface } from "../measurement-collector/measurement-collector.component";
 
 @Injectable({
     providedIn: "root"
@@ -29,5 +29,4 @@ export class InternalCommunicationService {
 
     // flags
     httpDataLoading = false;
-    rpcHistoryOpen = false;
 }

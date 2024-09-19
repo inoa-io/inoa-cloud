@@ -373,7 +373,7 @@
 
                                     <p>1. Select the Satellite that is connected to the needed things:</p>
 
-                                    <mat-form-field style="width: 320pt">
+                                    <mat-form-field appearance="outline" style="width: 320pt">
                                         <mat-label>Satellite</mat-label>
 
                                         <input
@@ -477,7 +477,7 @@
                                     <p>1. Select the Thing you want to collect measurements from:</p>
 
                                     <mat-form-field
-                                        appearance="fill"
+                                        appearance="outline"
                                         style="width: 300pt">
                                         <mat-label>Connected things:</mat-label>
                                         <mat-select
@@ -495,15 +495,6 @@
                                             </mat-option>
                                         </mat-select>
                                     </mat-form-field>
-                                </div>
-                                <div fxFlex="10">
-                                    <button
-                                        mat-mini-fab
-                                        color="primary"
-                                        aria-label="Add a new thing..."
-                                        (click)="openCreateThingDialog()">
-                                        <mat-icon>add</mat-icon>
-                                    </button>
                                 </div>
                             </div>
                         </form>

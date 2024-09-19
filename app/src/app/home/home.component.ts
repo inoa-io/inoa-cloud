@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Router } from "@angular/router";
-import { InternalCommunicationService } from "../internal-communication-service";
+import { InternalCommunicationService } from "../services/internal-communication-service";
 
 @Component({
   selector: "gc-app-home",
@@ -13,8 +13,6 @@ export class HomeComponent
 
   navigate(route: string)
   {
-    if (route === "satellite-manager") this.intercomService.rpcHistoryOpen = true;
-    
     this.intercomService.pageSelect = route;
     this.router.navigate([route]);
   }

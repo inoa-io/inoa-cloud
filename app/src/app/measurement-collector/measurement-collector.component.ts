@@ -4,10 +4,9 @@ import { Observable } from "rxjs";
 import { map, startWith } from "rxjs/operators";
 import { GatewayVO, GatewaysService, ThingTypesService, ThingsService } from "@inoa/api";
 import { StepperSelectionEvent } from "@angular/cdk/stepper";
-import { ThingCategory } from "../thing-category.service";
-import { InternalCommunicationService } from "../internal-communication-service";
-import { DialogService } from "../dialog-service";
-import { UtilityService } from "../utility-service";
+import { ThingCategory } from "../services/thing-category.service";
+import { InternalCommunicationService } from "../services/internal-communication-service";
+import { UtilityService } from "../services/utility-service";
 
 function autocompleteObjectValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -62,7 +61,6 @@ export class MeasurementCollectorComponent implements OnInit {
         private thingsService: ThingsService,
         private thingTypesService: ThingTypesService,
         public utilityService: UtilityService,
-        private dialogService: DialogService,
         public intercomService: InternalCommunicationService
     ) {}
 
@@ -148,19 +146,6 @@ export class MeasurementCollectorComponent implements OnInit {
         }
 
         return filteredSatellites;
-    }
-
-    openCreateThingDialog() {
-        this.dialogService
-            .openCreateThingDialog()
-            ?.afterClosed()
-            .subscribe((data) => {
-                if (data != undefined) {
-                    this.thingsService.createThing(data).subscribe(() => {
-                        this.refreshThingsList();
-                    });
-                }
-            });
     }
 
     refreshThingsList() {

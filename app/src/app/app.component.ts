@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { routes } from "./app-routing.module";
 import { Router } from "@angular/router";
-import { InternalCommunicationService } from "./internal-communication-service";
+import { InternalCommunicationService } from "./services/internal-communication-service";
 
 @Component({
     selector: "gc-app-root",
@@ -15,10 +15,6 @@ export class AppComponent {
 
     toggleSideBar() {
         this.sideNavOpen = !this.sideNavOpen;
-    }
-
-    toggleRpcHistory() {
-        this.intercomService.rpcHistoryOpen = !this.intercomService.rpcHistoryOpen;
     }
 
     constructor(private router: Router, public intercomService: InternalCommunicationService) {}

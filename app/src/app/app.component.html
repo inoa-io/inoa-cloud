@@ -41,14 +41,6 @@
             </div>
 
             <!-- TODO: put whoami box here once that works -->
-
-            <!-- side nav toggle right -->
-            <button
-                mat-icon-button
-                class="sidenav-toggle-button-right"
-                (click)="toggleRpcHistory()">
-                <mat-icon style="margin: 0">dns</mat-icon>
-            </button>
         </mat-toolbar>
     </div>
 
@@ -84,15 +76,6 @@
                     </div>
                 </mat-button-toggle>
             </mat-button-toggle-group>
-        </mat-sidenav>
-
-        <!-- sidenav for rpc history -->
-        <mat-sidenav
-            mode="side"
-            position="end"
-            [(opened)]="intercomService.rpcHistoryOpen"
-            class="sidenav-bar-right mat-elevation-z10">
-            <gc-rpc-history-panel></gc-rpc-history-panel>
         </mat-sidenav>
 
         <!-- router outlet (content window) -->

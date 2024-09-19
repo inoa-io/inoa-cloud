@@ -1,4 +1,12 @@
-<h1 mat-dialog-title>Configure a Thing available via {{ data.gateway.gateway_id }}</h1>
+<mat-toolbar
+    color="primary"
+    class="mat-elevation-z2">
+    <img
+        src="assets/inoa/satellite-color.png"
+        alt="INOA Satellite"
+        class="toolbar-icon" />
+    <span>Configure a Thing available via {{ data.gateway.gateway_id }}</span>
+</mat-toolbar>
 
 <form
     [formGroup]="form"
@@ -6,14 +14,14 @@
     <div mat-dialog-content>
         <p>Choose type of thing to configure:</p>
 
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>Type of the thing to connect.</mat-label>
 
             <mat-select
                 (selectionChange)="loadThingType($event.value)"
                 [(value)]="selectedThingType">
                 <mat-option
-                    *ngFor="let thingType of data.thingTypes"
+                    *ngFor="let thingType of intercomService.thingTypes"
                     [value]="thingType">
                     <img
                         style="vertical-align: middle"
@@ -25,10 +33,20 @@
             </mat-select>
         </mat-form-field>
 
-        <img
-            width="60"
-            [src]="category.image"
-            alt="category image" />
+        <div class="thing-header">
+            <!-- image -->
+            <img
+                class="thing-header-image"
+                width="60"
+                [src]="category.image"
+                alt="category image" />
+
+            <!-- title and description -->
+            <div class="thing-header-text">
+                <legend class="thing-title">{{ thingTitle }}</legend>
+                <p class="thing-description">{{ thingDescription }}</p>
+            </div>
+        </div>
 
         <formly-form
             [form]="form"
@@ -36,7 +54,9 @@
             [model]="model"></formly-form>
     </div>
 
-    <div mat-dialog-actions>
+    <div
+        mat-dialog-actions
+        align="end">
         <button
             mat-raised-button
             color="primary"

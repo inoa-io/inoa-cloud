@@ -1,0 +1,65 @@
+.config-dialog {
+    display: flex;
+    height: 500px;
+    width: 600px;
+}
+
+.config-menu {
+    padding: 15px 15px;
+    width: 150px;
+    /* border-right: 1px solid #ccc; */
+}
+
+.config-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    border-radius: 0px;
+}
+
+.config-menu button.active {
+    background-color: #3f51b5;
+    color: white;
+}
+
+.config-content {
+    flex-grow: 1;
+    padding: 20px;
+	padding-top: 3px;
+    overflow-y: auto;
+}
+
+.config-content h3 {
+	margin-bottom: 25px;
+}
+
+.config-content input {
+    width: 100%;
+}
+
+.config-content mat-form-field {
+    width: 100%;
+}
+
+.config-content mat-form-field input {
+	position: absolute;
+	bottom: 18px;
+}
+
+.config-toggle {
+    margin-right: 20px;
+}
+
+.input-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+.toolbar-icon {
+    height: 32px;
+    margin-right: 10px;
+    background-color: white;
+    border-radius: 50%;
+    padding: 5px;
+}
