@@ -207,27 +207,27 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-              <version>${version.org.projectlombok}</version>
+							<version>${version.org.projectlombok}</version>
 						</path>
 						<path>
 							<groupId>org.mapstruct</groupId>
 							<artifactId>mapstruct-processor</artifactId>
-              <version>${version.org.mapstruct}</version>
+							<version>${version.org.mapstruct}</version>
 						</path>
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-              <version>${version.io.micronaut.inject-java}</version>
+							<version>${version.io.micronaut}</version>
 						</path>
 						<path>
 							<groupId>io.micronaut.validation</groupId>
 							<artifactId>micronaut-validation-processor</artifactId>
-              <version>${version.io.micronaut.validation-processor}</version>
+							<version>${version.io.micronaut.validation-processor}</version>
 						</path>
 						<path>
 							<groupId>io.micronaut.data</groupId>
 							<artifactId>micronaut-data-processor</artifactId>
-              <version>${version.io.micronaut.data}</version>
+							<version>${version.io.micronaut.data}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

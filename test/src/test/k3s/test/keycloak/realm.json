@@ -83,6 +83,17 @@
 			"protocol": "openid-connect",
 			"protocolMappers": [
 				{
+					"name": "sub",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-sub-mapper",
+					"consentRequired": false,
+					"config": {
+						"lightweight.claim": "false",
+						"introspection.token.claim": "true",
+						"access.token.claim": "true"
+					}
+				},
+				{
 					"name": "audience",
 					"protocol": "openid-connect",
 					"protocolMapper": "oidc-audience-mapper",
@@ -124,6 +135,17 @@
 			"protocol": "openid-connect",
 			"protocolMappers": [
 				{
+					"name": "sub",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-sub-mapper",
+					"consentRequired": false,
+					"config": {
+						"lightweight.claim": "false",
+						"introspection.token.claim": "true",
+						"access.token.claim": "true"
+					}
+				},
+				{
 					"name": "audience",
 					"protocol": "openid-connect",
 					"protocolMapper": "oidc-audience-mapper",
@@ -159,6 +181,17 @@
 			"publicClient": true,
 			"protocol": "openid-connect",
 			"protocolMappers": [
+				{
+					"name": "sub",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-sub-mapper",
+					"consentRequired": false,
+					"config": {
+						"lightweight.claim": "false",
+						"introspection.token.claim": "true",
+						"access.token.claim": "true"
+					}
+				},
 				{
 					"name": "audience",
 					"protocol": "openid-connect",
@@ -214,6 +247,17 @@
 			"publicClient": true,
 			"protocol": "openid-connect",
 			"protocolMappers": [
+				{
+					"name": "sub",
+					"protocol": "openid-connect",
+					"protocolMapper": "oidc-sub-mapper",
+					"consentRequired": false,
+					"config": {
+						"lightweight.claim": "false",
+						"introspection.token.claim": "true",
+						"access.token.claim": "true"
+					}
+				},
 				{
 					"name": "Group-to-Tenant Mapper",
 					"protocol": "openid-connect",
