@@ -16,15 +16,15 @@ source $ENV_FILE
 INOA_HTTP="$(telepresence list | grep inoa-http)"
 INOA_MQTT="$(telepresence list | grep inoa-mqtt)"
 
-if [ "$INOA_HTTP" ]; then
-  telepresence leave inoa-http
-fi
+#if [ "$INOA_HTTP" ]; then
+#  telepresence leave inoa-http
+#fi
 
-if [ "$INOA_MQTT" ]; then
-  telepresence leave inoa-mqtt
-fi
+#if [ "$INOA_MQTT" ]; then
+#  telepresence leave inoa-mqtt
+#fi
 
-telepresence quit -s
+# telepresence quit -s
 
 mvn k3s:rm -Dk3s.skipRm=false
 

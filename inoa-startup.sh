@@ -42,8 +42,8 @@ LaunchK3S() {
   echo "INOA configured and started for INOA_DOMAIN=${INOA_DOMAIN}"
 
   ### Install & connect telepresence to connect to the INOA services
-  telepresence helm install --kubeconfig="${KUBECONFIG}"
-  telepresence connect --kubeconfig="${KUBECONFIG}"
+  #telepresence helm install --kubeconfig="${KUBECONFIG}"
+  #telepresence connect --kubeconfig="${KUBECONFIG}"
 
   xdg-open "http://help.${INOA_DOMAIN}:8080"
 }
