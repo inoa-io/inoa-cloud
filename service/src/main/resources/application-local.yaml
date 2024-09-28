@@ -12,7 +12,7 @@ datasources:
   default:
     host: localhost
 influxdb:
-  url: http://localhost:8086
+  url: http://influxdb.${inoa.domain}:8080/
 kafka:
   bootstrap:
     servers: localhost:9092

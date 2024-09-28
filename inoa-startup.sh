@@ -54,15 +54,6 @@ LaunchUI() {
 
 }
 
-### Expose needed service ports to localhost so they are available for development purposes like run the service locally.
-### Still needed: local host file must be modified for kafka to work.
-ForwardPorts() {
-  echo "Forwarding Ports for Postgres, InfluxDB & Kafka to localhost"
-  kubectl port-forward services/postgres 5432:5432 & kubectl port-forward services/influxdb 8086:8086 & kubectl port-forward services/kafka 9092:9092 9093:9093 &
-  echo "You have to add this entry to your /etc/hosts to be able to run the service locally."
-  echo "127.0.0.1       kafka.default.svc.cluster.local"
-}
-
 echo "Starting INOA with: -Dinoa.domain=${INOA_DOMAIN}"
 
 ############################################################
@@ -91,7 +82,6 @@ done
 MVN_ARGS=("-DskipTests=true" "-Dk3s.failIfExists=false" "-Dk3s.kubeconfig=${KUBECONFIG}" "-Dinoa.domain=${INOA_DOMAIN}" "-Dmcnoise.replicas=${MCNOISE_REPLICAS}")
 
 LaunchK3S
-ForwardPorts
 LaunchUI
 
 echo "Happy IoT-ing"
