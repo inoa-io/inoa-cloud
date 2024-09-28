@@ -13,3 +13,8 @@ app/node_modules
 .vscode
 
 .env
+
+*.http
+
+# Ignore DevSpace cache and log folder
+.devspace/
