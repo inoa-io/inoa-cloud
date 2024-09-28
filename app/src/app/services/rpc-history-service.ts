@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
+import { BehaviorSubject, Observable } from "rxjs";
 
 export interface RpcExchange {
     id: string;
@@ -21,6 +22,7 @@ export interface RpcExchange {
 })
 export class RpcHistoryService {
     private rpcExchangeHistory: MatTableDataSource<RpcExchange> = new MatTableDataSource<RpcExchange>([]);
+    private rpcHistorySubject: BehaviorSubject<RpcExchange[]> = new BehaviorSubject<RpcExchange[]>([]);
 
     constructor() { }
 
@@ -32,9 +34,14 @@ export class RpcHistoryService {
         }
     }
 
-    addRpcExchange(exchange: RpcExchange) { this.rpcExchangeHistory.data = [exchange, ...this.rpcExchangeHistory.data]; }
+    addRpcExchange(exchange: RpcExchange) {
+        this.rpcExchangeHistory.data = [exchange, ...this.rpcExchangeHistory.data];
+        this.rpcHistorySubject.next(this.rpcExchangeHistory.data);
+    }
 
-    getRpcHistory(): MatTableDataSource<RpcExchange> { return this.rpcExchangeHistory; }
+    getRpcHistory(): Observable<RpcExchange[]> {
+        return this.rpcHistorySubject.asObservable();
+    }
 
     deleteRpcExchange(id: string) { this.rpcExchangeHistory.data = this.rpcExchangeHistory.data.filter((x) => x.id !== id); }
 

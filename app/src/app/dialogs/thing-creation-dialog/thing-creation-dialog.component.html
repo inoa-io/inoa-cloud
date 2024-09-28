@@ -1,0 +1,76 @@
+<mat-toolbar
+    color="primary"
+    class="mat-elevation-z2">
+    <img
+        src="assets/inoa/satellite-color.png"
+        alt="INOA Satellite"
+        class="toolbar-icon" />
+    <span>Configure a Thing available via {{ data.gateway.gateway_id }}</span>
+</mat-toolbar>
+
+<form
+    [formGroup]="form"
+    *ngIf="fields">
+    <div mat-dialog-content>
+        <p>Choose type of thing to configure:</p>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Type of the thing to connect.</mat-label>
+
+            <mat-select
+                (selectionChange)="loadThingType($event.value)"
+                [(value)]="selectedThingType">
+                <mat-option
+                    *ngFor="let thingType of intercomService.thingTypes"
+                    [value]="thingType">
+                    <img
+                        style="vertical-align: middle"
+                        width="24"
+                        src="{{ utilityService.getThingImage(thingType.id) }}"
+                        alt="{{ thingType.name }}" />
+                    <span style="padding-left: 10pt">{{ thingType.name }}</span>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div class="thing-header">
+            <!-- image -->
+            <img
+                class="thing-header-image"
+                width="60"
+                [src]="category.image"
+                alt="category image" />
+
+            <!-- title and description -->
+            <div class="thing-header-text">
+                <legend class="thing-title">{{ thingTitle }}</legend>
+                <p class="thing-description">{{ thingDescription }}</p>
+            </div>
+        </div>
+
+        <formly-form
+            [form]="form"
+            [fields]="fields"
+            [model]="model"></formly-form>
+    </div>
+
+    <div
+        mat-dialog-actions
+        align="end">
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="onCancelClick()">
+            Cancel
+        </button>
+
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="onCreateClick()"
+            [mat-dialog-close]="data.thing"
+            [disabled]="!form.valid">
+            Create
+        </button>
+    </div>
+</form>

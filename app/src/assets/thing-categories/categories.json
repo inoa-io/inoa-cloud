@@ -20,6 +20,11 @@
     "title": "Smart Plug"
   },
   {
+    "key": "sensor",
+    "image": "assets/thing-categories/smart_plug.png",
+    "title": "Sensor"
+  },
+  {
     "key": "wallbox",
     "image": "assets/thing-categories/wallbox.png",
     "title": "Wallbox"

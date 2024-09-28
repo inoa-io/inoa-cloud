@@ -222,6 +222,36 @@ inoa.translator:
             label: power_out
             unit: watt
 
+    # source: https://library.e.abb.com/public/c1e3b171b375492492e79ca10f34e05e/2CDC512084D0101.pdf
+    - name: abb-b23
+      sensors:
+        - name: "0x5000"   # Active import
+          modifier: 10     # 2 decimal places, the unit Wh
+          converter: modbus
+          ext:
+            label: work_in
+            obis: 1-0:1.8.0*255
+            unit: watthour
+        - name: "0x5004"   # Active export
+          modifier: 10     # 2 decimal places, the unit Wh
+          converter: modbus
+          ext:
+            label: work_out
+            obis: 1-0:2.8.0*255
+            unit: watthour
+        - name: "0x5B14"   # Power import
+          modifier: 1      # 3 decimal places, the unit W
+          converter: modbus
+          ext:
+            label: power_in
+            unit: watt
+        - name: "0x5B2C"   # Frequency
+          modifier: 1      # 3 decimal places, the unit Hz
+          converter: modbus
+          ext:
+            label: frequency
+            unit: hertz
+
     # source: Fabian Schlegel
     - name: satellite
       sensors:
