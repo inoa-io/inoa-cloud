@@ -11,7 +11,7 @@ controlled devices.
 
 #### Hardware
 
-* >= 32GB RAM
+* *>= 32GB RAM*
 
 #### Development Tools
 
@@ -21,18 +21,19 @@ Please install the following components to your system. Otherwise, you will face
 * [Java Development Kit](https://openjdk.org/install/) >= 17.0.8 & < 21
 * [Maven](https://maven.apache.org/) >= 3.6.3
 * [Docker](https://www.docker.com/) >= 24.0.5
-* [k3s](https://k3s.io/)
 * [Python](https://www.python.org/) >= 3.8.5 (for documentation only)
-* [Node.js](https://nodejs.org/en/download/package-manager) >= 18.19
-* [Telepresence](https://www.getambassador.io/docs/telepresence/latest/install) >= v2.19.6
+* [Node.js](https://nodejs.org/en/download/package-manager) >= 18.19 with [Yarn 4](https://yarnpkg.com/getting-started/install)
+
+The local environment will be set-up with help of [k3s](https://k3s.io/). This must **not** be installed to prevent conflicts.
 
 #### Setup developer environment
 
 * Clone the project from `git@github.com:inoa-io/inoa-cloud.git`
-* Use an IDE of your choice, recommended is IntelliJJ
+* Use an IDE of your choice, recommended is IntelliJ
 * Import the project as Maven project in your IDE
-* Be sure all annotation processors are active in your IDE
+* Ensure all annotation processors are active in your IDE
 * copy [.env.template](../../.env.template) into a local `.env` file where you can set your local properties.
+* Add `127.0.0.1       kafka.default.svc.cluster.local` to your `/etc/hosts` file for local interactions with Kafka
 
 #### Docker Repository Access
 
@@ -56,7 +57,6 @@ These are the steps you can do:
 4. `INOA-Service` - Start the INOA service locally in JVM and intercept the traffic (http, mqtt) from your k3s instance.
 5. `INOA-GroundControl` - Start INOA GroundControl locally via Yarn in development mode.
 6. `INOA-Cloud - Shutdown` - Close the telepresence connection (if opened) and shutdown all running INOA Cloud services.
-7. `Telepresence - Intercept` - Intercepts the requests for the INOA service (http, mqtt). Is called by `INOA-Service`. Only needed if you launch INOA Service in another way.
 
 #### Use Linux Shell
 
@@ -68,13 +68,7 @@ For bash there are some scripts that should help to execute the INOA components:
     ./inoa-startup.sh
     ```
 
-2. Intercepts the requests for the INOA service and forwards it to local ports: http (:4300) and mqtt (:1884). Used to route traffic to your local instance of the INOA Service.
-
-    ```shell
-    ./telepresence-intercept.sh
-    ```
-
-3. Close the telepresence connection (if opened) and shutdown all running INOA Cloud services.
+2. Close the telepresence connection (if opened) and shutdown all running INOA Cloud services.
 
     ```shell
     ./inoa-shutdown.sh
