@@ -50,11 +50,13 @@ For IntelliJ, there are some run configurations prepared to easily jump into and
 
 These are the steps you can do:
 
-1. `INOA-Cloud - Startup` - Start the whole INOA cloud setup within k3s. After start it will open the INOA Developer Cockpit in your browser with useful links.
-2. `INOA-Service` - Start the INOA service locally in JVM and intercept the traffic (http, mqtt) from your k3s instance.
-3. `INOA-GroundControl` - Start INOA GroundControl locally via Yarn in development mode.
-4. `INOA-Cloud - Shutdown` - Close the telepresence connection (if opened) and shutdown all running INOA Cloud services.
-5. `Telepresence - Intercept` - Intercepts the requests for the INOA service (http, mqtt). Is called by `INOA-Service`. Only needed if you launch INOA Service in another way.
+1. `mvn clean install` - Does a full clean maven build of INOA
+2. `INOA-Cloud - Clean Startup` - Does a clean install and starts the whole INOA cloud setup within k3s. After start it will open the INOA Developer Cockpit in your browser with useful links.
+3. `INOA-Cloud - Startup` - Start the whole INOA cloud setup within k3s. After start it will open the INOA Developer Cockpit in your browser with useful links.
+4. `INOA-Service` - Start the INOA service locally in JVM and intercept the traffic (http, mqtt) from your k3s instance.
+5. `INOA-GroundControl` - Start INOA GroundControl locally via Yarn in development mode.
+6. `INOA-Cloud - Shutdown` - Close the telepresence connection (if opened) and shutdown all running INOA Cloud services.
+7. `Telepresence - Intercept` - Intercepts the requests for the INOA service (http, mqtt). Is called by `INOA-Service`. Only needed if you launch INOA Service in another way.
 
 #### Use Linux Shell
 
@@ -78,7 +80,7 @@ For bash there are some scripts that should help to execute the INOA components:
     ./inoa-shutdown.sh
     ```
 
-#### Use Windows Scripts
+#### Use Windows Batch Scripts
 
 1. Launch INOA Cloud Locally. Work in progress....
 

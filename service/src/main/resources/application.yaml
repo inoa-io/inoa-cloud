@@ -29,6 +29,8 @@ micronaut:
       - pattern: /gateway
         access: isAnonymous()
         http-method: POST
+      - pattern: /gateways/**
+        access: isAuthenticated()
       - pattern: /**
         access: isAuthenticated()
     token:

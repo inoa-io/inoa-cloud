@@ -21,8 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Create authentication fetcher for local angular development.
- * TODO - Check if still needed. from my PoV, it isn't with the local setup and default keycloak user.
- * Needed for yarn deployment because their is no oauth config given.
+ * Needed for yarn deployment because there is no oauth config given.
  *
  * @author stephan.schnabel@grayc.de
  */

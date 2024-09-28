@@ -33,7 +33,6 @@
     <option name="vmParameters" value="-Dmicronaut.environments=k3s,local -Dstatic.path=$ProjectFileDir$/app/dist" />
     <method v="2">
       <option name="Make" enabled="true" />
-      <option name="RunConfigurationTask" enabled="false" run_configuration_name="Telepresence - Intercept" run_configuration_type="ShConfigurationType" />
     </method>
   </configuration>
 </component>
