@@ -16,7 +16,7 @@ spec:
       initContainers:
         - name: wait-for-postgres
           image: ${image.postgresql}
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           command: [sh, -c, until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
           env:
             - name: PGCONNECT_TIMEOUT
@@ -48,7 +48,7 @@ spec:
       containers:
         - name: inoa
           image: ${image.inoa}
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: inoa-env
@@ -70,9 +70,9 @@ spec:
             successThreshold: 1
             failureThreshold: 120
           securityContext:
-            runAsUser: 1000
+            runAsUser: 0
             runAsGroup: 1000
-            runAsNonRoot: true
+            runAsNonRoot: false
             # TODO make read only
             readOnlyRootFilesystem: false
             privileged: false
