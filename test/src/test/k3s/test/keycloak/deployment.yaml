@@ -52,7 +52,7 @@ spec:
               drop: [ALL]
       containers:
         - name: keycloak
-          image: docker.io/kokuwaio/keycloak:${version.org.keycloak}
+          image: docker.io/kokuwaio/keycloak:${version.org.keycloak}-distroless
           imagePullPolicy: Never
           args: [start, --import-realm]
           envFrom:
@@ -65,10 +65,12 @@ spec:
           ports:
             - name: http
               containerPort: 8080
+            - name: management
+              containerPort: 9000
           startupProbe:
             httpGet:
               path: /health
-              port: http
+              port: management
             initialDelaySeconds: 3
             periodSeconds: 1
             successThreshold: 1
