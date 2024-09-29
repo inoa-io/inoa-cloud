@@ -51,10 +51,6 @@ spec:
               mountPath: /home/static/inoa_wm_color.svg
               subPath: inoa_wm_color.svg
               readOnly: true
-            - name: help
-              mountPath: /home/static/developer-setups.svg
-              subPath: developer-setups.svg
-              readOnly: true
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
