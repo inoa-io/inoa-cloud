@@ -11,9 +11,6 @@
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>
-    <extension name="io.datawire.telepresence.products.idea.IdeaRunConfigurationExtension">
-      <INTERCEPT_ENTRIES />
-    </extension>
     <extension name="net.ashald.envfile">
       <option name="IS_ENABLED" value="true" />
       <option name="IS_SUBST" value="true" />

@@ -18,7 +18,7 @@
         <ol>
           <li><a href="http://inoa.${inoa.domain}:8080" target="_blank">Inside k3s</a></li>
           <li><a href="http://localhost:4200" target="_blank">Locally started via Yarn</a></li>
-          <li><a href="http://localhost:4300" target="_blank">Locally started via Micronaut application.</a>&nbsp;(Telepresence is needed!)</li>
+          <li><a href="http://localhost:4300" target="_blank">Locally started as Micronaut application.</a></li>
         </ol>
         </p>
       </div>
@@ -77,21 +77,12 @@
     </div>
     <div class="card p-3 m-3">
       <div class="card-body">
-        <h5 class="card-title">Connect with Telepresence</h5>
-        <h6 class="card-subtitle mb-2 text-body-secondary">Bring your local service in the game.</h6>
+        <h5 class="card-title">Launch INOA Services locally</h5>
+        <h6 class="card-subtitle mb-2 text-body-secondary">Develop & debug in a local VM session.</h6>
         <p class="card-text">
-          To integrate your local INOA cloud instance easily with the infrastructure, running inside the k3s cluster,
-          you could use <a href="https://www.getambassador.io/docs/telepresence-oss/latest/install" target="_blank">Telepresence</a>.
-          <br/>
-          If you have installed it, you can connect and intercept traffic for INOA via these commands:
-        <pre><code>
-          telepresence helm install --kubeconfig=$HOME/.kube/inoa-k3s.yaml
-          telepresence connect --kubeconfig=$HOME/.kube/inoa-k3s.yaml
-          telepresence intercept inoa-http --workload=inoa --service=inoa --port 4300:http
-          telepresence intercept inoa-mqtt --workload=inoa --service=inoa --port 1884:mqtt
-          </code></pre>
+          To integrate your local INOA cloud instance easily with the infrastructure running inside the k3s cluster,
+          you have to launch the Micronaut Application with at least the profiles <code>k3s</code> and <code>local</code>.
         </p>
-        <a class="card-link" target=”_blank" href="https://www.getambassador.io/docs/telepresence-oss/latest/install">Telepresence</a>
       </div>
     </div>
   </div>

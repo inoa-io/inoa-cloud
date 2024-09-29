@@ -56,7 +56,7 @@ These are the steps you can do:
 3. `INOA-Cloud - Startup` - Start the whole INOA cloud setup within k3s. After start it will open the INOA Developer Cockpit in your browser with useful links.
 4. `INOA-Service` - Start the INOA service locally in JVM and intercept the traffic (http, mqtt) from your k3s instance.
 5. `INOA-GroundControl` - Start INOA GroundControl locally via Yarn in development mode.
-6. `INOA-Cloud - Shutdown` - Close the telepresence connection (if opened) and shutdown all running INOA Cloud services.
+6. `INOA-Cloud - Shutdown` - Shutdown all running INOA Cloud services and stops k3s.
 
 #### Use Linux Shell
 
@@ -68,7 +68,7 @@ For bash there are some scripts that should help to execute the INOA components:
     ./inoa-startup.sh
     ```
 
-2. Close the telepresence connection (if opened) and shutdown all running INOA Cloud services.
+2. Shutdown all running INOA Cloud services & stops k3s.
 
     ```shell
     ./inoa-shutdown.sh
