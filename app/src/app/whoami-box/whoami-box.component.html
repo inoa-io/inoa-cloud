@@ -1,0 +1,80 @@
+<!-- ngIf to wait for the whoami data to come in -->
+<!-- <div *ngIf = "whoami$ | async as whoami" class="whoamai-box-container"> -->
+<div class="whoamai-box-container">
+    <!-- a nice little icon -->
+    <div class="session-spinner-container">
+        <!-- a little icon -->
+        <div class="session-icon-container">
+            <mat-icon
+                class="session-icon"
+                [color]="sessionPercentLeft === 0 ? 'warn' : ''"
+                >account_circle</mat-icon
+            >
+        </div>
+
+        <!-- session time spinner -->
+        <div class="session-spinner">
+            <mat-spinner
+                mode="determinate"
+                [value]="sessionPercentLeft"
+                [color]="sessionPercentLeft > 50 ? 'accent': 'warn'"
+                diameter="40"
+                strokeWidth="5"
+                [matTooltip]="sessionTimeLeftString"
+                matTooltipPosition="below"
+                matTooltipClass="tooltip"
+                matTooltipShowDelay="100"
+                matTooltipHideDelay="0">
+            </mat-spinner>
+        </div>
+    </div>
+
+    <!-- name -->
+    <div style="padding: 10px">
+        <!-- <p style = "margin: 0; font-weight: 500; height: 20px">{{ whoami.firstname }} {{ whoami.lastname }}</p>
+        <p style = "margin: 0; font-size: 12px;">{{ whoami.email }}</p> -->
+        <p style="margin: 0; font-weight: 500; height: 20px">Coming Soon</p>
+        <p style="margin: 0; font-size: 12px">coming&#64;soon</p>
+    </div>
+
+    <!-- menu button that only shows a single logout button -->
+    <div style="align-self: center">
+        <button
+            mat-icon-button
+            [matMenuTriggerFor]="menuLogout"
+            data-testid="whoami-menu-button">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+    </div>
+
+    <!-- top right corner menu -->
+    <mat-menu
+        #menuLogout="matMenu"
+        xPosition="before">
+        <!-- link to user manual button -->
+        <button
+            mat-menu-item
+            value="logout"
+            (click)="onUserManualButtonPressed()"
+            data-testid="logout-button">
+            <mat-icon>menu_book</mat-icon>Docs
+        </button>
+
+        <!-- temp expert mode button -->
+        <button
+            mat-menu-item
+            value="expert"
+            (click)="toggleExpertMode()"
+            data-testid="expert-button">
+            <mat-icon>{{ intercomService.expertMode ? 'lock_open' : 'lock' }}</mat-icon>{{ intercomService.expertMode ? 'Disable Expert Mode' : 'Enable Expert Mode' }}
+        </button>
+
+        <!-- logout button -->
+        <button
+            mat-menu-item
+            value="logout"
+            (click)="onLogoutButtonPressed()">
+            <mat-icon>logout</mat-icon>Logout
+        </button>
+    </mat-menu>
+</div>

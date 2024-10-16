@@ -1,6 +1,6 @@
 <div class="home-container" tabindex="0">
 
-	<mat-card class="wizard-card" (click)="navigate('satellite-manager')">
+	<mat-card class="wizard-card" (click)="routingService.navigateName('satellite-manager')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
 			<mat-card-title>Manage Satellites</mat-card-title>
@@ -10,7 +10,7 @@
 		</mat-card-content>
 	</mat-card>
 
-	<mat-card class="wizard-card" (click)="navigate('measurement-collector')">
+	<mat-card class="wizard-card" (click)="routingService.navigateName('measurement-collector')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/measurement-color.png'); background-size: cover;"></div>
 			<mat-card-title>Collect Measurements</mat-card-title>
@@ -20,7 +20,7 @@
 		</mat-card-content>
 	</mat-card>
 
-	<mat-card class="wizard-card" (click)="navigate('setup-configurator')">
+	<mat-card class="wizard-card" (click)="routingService.navigateName('setup-configurator')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/groundcontrol-color.png'); background-size: cover;"></div>
 			<mat-card-title>Configure Setups</mat-card-title>
@@ -30,7 +30,7 @@
 		</mat-card-content>
 	</mat-card>
 
-	<mat-card class="wizard-card" (click)="navigate('installation-monitor')">
+	<mat-card class="wizard-card" (click)="routingService.navigateName('installation-monitor')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/fleet-color.png'); background-size: cover;"></div>
 			<mat-card-title>Monitor Installations</mat-card-title>

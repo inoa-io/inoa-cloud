@@ -1,0 +1,165 @@
+<!-- config card -->
+<mat-card class="card-gateway-config card-gateway-shadow satellite-background">
+    <mat-card-header>
+        <div
+            mat-card-avatar
+            style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+        <mat-card-title>Change satellite configuration for</mat-card-title>
+        <mat-card-subtitle>
+            <div class="gateway-status-container">
+                <span>{{ intercomService.selectedGateway?.gateway_id }} ({{ intercomService.selectedGateway?.name }})</span>
+            </div>
+        </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content class="mat-card-content-config">
+        <div class="config-container">
+            <div class="config-table">
+                <!-- wifi config -->
+                <div class="config-table-row">
+                    <div><div class="config-table-column-title">Wifi:</div></div>
+                    <div class="config-item-double">
+                        <p class="config-part">SSID:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ configData["wifiSid"] }}</p>
+                        <p class="config-part">Password:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ "■".repeat(configData["wifiPassword"].length) }}</p>
+                    </div>
+                    <div class="config-table-column-actions">
+                        <button
+                            (click)="configEditClick(['wifiSid', 'wifiPassword'])"
+                            class="config-button"
+                            mat-icon-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ethernet config -->
+                <div
+                    *ngIf="intercomService.hardwareVersion !== 1"
+                    class="config-table-row">
+                    <div><div class="config-table-column-title">Ethernet:</div></div>
+                    <div class="config-item-double">
+                        <mat-checkbox
+                            class="config-checkbox"
+                            [(ngModel)]="configData['ethEnabled']"
+                            (ngModelChange)="updateConfigurationClicked()"
+                            >Enabled</mat-checkbox
+                        >
+                    </div>
+                    <div class="config-table-column-actions"></div>
+                </div>
+
+                <!-- registry config -->
+                <div class="config-table-row">
+                    <div><div class="config-table-column-title">Registry Endpoint:</div></div>
+                    <div class="config-item-double">
+                        <p class="config-part">{{ configData["registryUrl"] }}</p>
+                    </div>
+                    <div class="config-table-column-actions">
+                        <button
+                            (click)="configEditClick(['registryUrl'])"
+                            class="config-button"
+                            mat-icon-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- mqtt config -->
+                <div class="config-table-row">
+                    <div><div class="config-table-column-title">MQTT Endpoint:</div></div>
+                    <div class="config-item-double">
+                        <p class="config-part">{{ configData["mqttUrl"] }}</p>
+                        <p class="config-part">Port:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ configData["mqttPort"] }}</p>
+                    </div>
+                    <div class="config-table-column-actions">
+                        <button
+                            (click)="configEditClick(['mqttUrl', 'mqttPort'])"
+                            class="config-button"
+                            mat-icon-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- update config -->
+                <div class="config-table-row">
+                    <div><div class="config-table-column-title">Update Server:</div></div>
+                    <div class="config-item-double">
+                        <p class="config-part">{{ configData["hawkbitHost"] }}</p>
+                        <p class="config-part">Base Path:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ configData["hawkbitBasePath"] }}</p>
+                    </div>
+                    <div class="config-table-column-actions">
+                        <button
+                            (click)="configEditClick(['hawkbitHost', 'hawkbitBasePath'])"
+                            class="config-button"
+                            mat-icon-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ntp config -->
+                <div class="config-table-row">
+                    <div><div class="config-table-column-title">NTP Server:</div></div>
+                    <div class="config-item-double">
+                        <p class="config-part">{{ configData["ntpHost"] }}</p>
+                    </div>
+                    <div class="config-table-column-actions">
+                        <button
+                            (click)="configEditClick(['ntpHost'])"
+                            class="config-button"
+                            mat-icon-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- metering config -->
+                <div class="config-table-row">
+                    <div><div class="config-table-column-title">Metering Interval:</div></div>
+                    <div class="config-item-double">
+                        <p class="config-part">{{ formatMillisecTimeToSec(configData["meteringCycleDuration"]) }}</p>
+                    </div>
+                    <div class="config-table-column-actions">
+                        <button
+                            (click)="configEditClick(['meteringCycleDuration'])"
+                            class="config-button"
+                            mat-icon-button>
+                            <mat-icon>edit</mat-icon>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- feature toggles config -->
+                <div class="config-table-row-no-border">
+                    <div><div class="config-table-column-title">Feature Toggles:</div></div>
+                    <div>
+                        <div class="config-checkbox-grid">
+                            <mat-checkbox
+                                (ngModelChange)="updateConfigurationClicked()"
+                                [ngModel]="configData['bufferingEnabled']"
+                                >Local Buffering</mat-checkbox
+                            >
+                            <mat-checkbox
+                                (ngModelChange)="updateConfigurationClicked()"
+                                [ngModel]="configData['telnetEnabled']"
+                                >Telnet</mat-checkbox
+                            >
+                            <mat-checkbox
+                                (ngModelChange)="updateConfigurationClicked()"
+                                [ngModel]="configData['loggingMqttLogging']"
+                                >MQTT Logging</mat-checkbox
+                            >
+                            <mat-checkbox
+                                (ngModelChange)="updateConfigurationClicked()"
+                                [ngModel]="configData['loggingMqttConsole']"
+                                >MQTT Console</mat-checkbox
+                            >
+                        </div>
+                    </div>
+                    <div class="config-table-column-actions"></div>
+                </div>
+            </div>
+        </div>
+    </mat-card-content>
+</mat-card>

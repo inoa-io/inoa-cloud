@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
-import { routes } from "./app-routing.module";
-import { Router } from "@angular/router";
 import { InternalCommunicationService } from "./services/internal-communication-service";
+import { RoutingService } from "./services/routing-service";
 
 @Component({
     selector: "gc-app-root",
@@ -11,15 +10,10 @@ import { InternalCommunicationService } from "./services/internal-communication-
 export class AppComponent {
     title = "INOA Ground Control";
     sideNavOpen = false;
-    routes = routes;
 
     toggleSideBar() {
         this.sideNavOpen = !this.sideNavOpen;
     }
 
-    constructor(private router: Router, public intercomService: InternalCommunicationService) {}
-
-    navbarClick(index: number) {
-        this.router.navigate([this.routes[index].path]);
-    }
+    constructor(public routingService: RoutingService, public intercomService: InternalCommunicationService) {}
 }

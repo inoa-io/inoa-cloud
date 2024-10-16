@@ -1,0 +1,96 @@
+.card-gateway-config {
+	width: 100%;
+	height: var(--gateway-detail-card-size);
+	padding: 15px;
+	overflow: hidden;
+}
+
+.mat-card-content-config {
+	padding-top: 15px;
+	overflow: hidden;
+	height: 100%;
+}
+
+.card-gateway-shadow {
+	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	margin-bottom: 5px;
+}
+
+.config-container {
+	margin-left: 55px;
+    display: flex;
+	flex-direction: column;
+}
+
+.card-actions {
+	margin-top: auto;
+	margin-bottom: 0;
+}
+
+.mat-card-content-gateway-config {
+	padding-top: 15px;
+	overflow: hidden;
+}
+
+.config-table {
+	width: 1000px;
+	margin-top: 25px;
+}
+
+.config-table-row {
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid #e0e0e0;
+	border-spacing: 0;
+}
+
+.config-table-row-no-border {
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+}
+
+.config-item-double {
+	width: 900px;
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+}
+
+.config-part {
+	width: 50%;
+	margin-top: 0;
+}
+
+.config-checkbox {
+	width: 50%;
+	margin-top: 0;
+	transform: translate(-10px, -10px);
+}
+
+.config-table-column-title {
+	width: 200px;
+	font-weight: 500;
+	vertical-align:top;
+}
+
+.config-table-column-options {
+	width: 500px;
+}
+
+.config-table-column-actions {
+	width: 50px;
+	height: 40px;
+}
+
+.config-checkbox-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	transform: translate(-10px, -10px);
+}
+.config-button {
+	transform: translate(-10px, -10px);
+}

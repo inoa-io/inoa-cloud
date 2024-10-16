@@ -1,20 +1,11 @@
 import { Component } from "@angular/core";
-import { Router } from "@angular/router";
-import { InternalCommunicationService } from "../services/internal-communication-service";
+import { RoutingService } from "../services/routing-service";
 
 @Component({
-  selector: "gc-app-home",
-  templateUrl: "./home.component.html",
-  styleUrls: ["./home.component.css"]
+    selector: "gc-app-home",
+    templateUrl: "./home.component.html",
+    styleUrls: ["./home.component.css"]
 })
-export class HomeComponent
-{
-  constructor(private router: Router, private intercomService: InternalCommunicationService) { }
-
-  navigate(route: string)
-  {
-    this.intercomService.pageSelect = route;
-    this.router.navigate([route]);
-  }
+export class HomeComponent {
+    constructor(public routingService: RoutingService) {}
 }
-

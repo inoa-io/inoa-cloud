@@ -5,46 +5,38 @@
         src="assets/inoa/satellite-color.png"
         alt="INOA Satellite"
         class="toolbar-icon" />
-    <span>Config Editor - {{ selectedGroup.name }}</span>
+    <span>Change Satellite Config</span>
 </mat-toolbar>
 
-<div class="config-dialog">
-    <div class="config-menu">
-        <button
-            mat-button
-            *ngFor="let group of configGroups"
-            (click)="selectGroup(group)"
-            [class.active]="group === selectedGroup">
-            {{ group.name }}
-        </button>
+<mat-dialog-content>
+
+    <div class="config-satellite-dialog">
+        <mat-form-field
+            *ngFor="let configName of data.configNames"
+            appearance="outline"
+            class="full-width">
+            <mat-label>{{ configLabels.get(configName) }}</mat-label>
+            <input
+                matInput
+                [type]="configName === 'wifiPassword' ? 'password' : 'text'"
+                spellcheck="false"
+                [(ngModel)]="data.configData[configName]"
+                [placeholder]="'Enter new value for ' + configLabels.get(configName)"
+                cdkFocusInitial />
+        </mat-form-field>
     </div>
-
-    <div class="config-content">
-        <h3>{{ selectedGroup.name }} - Configuration</h3>
-
-        <div class="input-stack">
-            <ng-container *ngFor="let item of selectedGroup.items">
-                <mat-form-field
-                    appearance="outline"
-                    *ngIf="item.type === 'input'">
-                    <mat-label>{{ item.label }}</mat-label>
-                    <input
-                        matInput
-                        [(ngModel)]="data[item.key]"
-                        [type]="item.inputType || 'text'" />
-                </mat-form-field>
-
-                <mat-checkbox
-                    *ngIf="item.type === 'toggle'"
-                    [(ngModel)]="data[item.key]">
-                    {{ item.label }}
-                </mat-checkbox>
-            </ng-container>
-        </div>
-    </div>
-</div>
+</mat-dialog-content>
 
 <mat-dialog-actions align="end">
+    <!-- warning text -->
+    <p *ngIf="shouldWarn()" class="config-warning">
+        False configuration may result in communication loss.
+    </p>
+
+    <!-- filler -->
+    <div style="flex: 1;"></div>
+
+    <!-- close button -->
     <button
         mat-raised-button
         color="primary"
@@ -52,12 +44,12 @@
         Cancel
     </button>
 
+    <!-- save button -->
     <button
         mat-raised-button
-        color="warn"
+        [color]="shouldWarn() ? 'warn' : 'primary'"
         [mat-dialog-close]="data"
-        (click)="save()"
-        cdkFocusInitial>
-        Save
+        (click)="save()">
+        Send
     </button>
 </mat-dialog-actions>

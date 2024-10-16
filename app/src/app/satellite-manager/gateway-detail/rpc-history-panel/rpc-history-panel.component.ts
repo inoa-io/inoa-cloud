@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
-import { InternalCommunicationService } from "../../services/internal-communication-service";
-import { RpcExchange, RpcHistoryService } from "../../services/rpc-history-service";
+import { InternalCommunicationService } from "../../../services/internal-communication-service";
+import { RpcExchange, RpcHistoryService } from "../../../services/rpc-history-service";
 import { animate, state, style, transition, trigger } from "@angular/animations";
 import { Subscription } from "rxjs";
 

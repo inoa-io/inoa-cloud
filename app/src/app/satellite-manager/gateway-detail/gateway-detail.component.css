@@ -1,0 +1,251 @@
+.id-card-content-gateway-table {
+	padding-top: 15px;
+	overflow: auto;
+}
+
+.mat-card-content-gateway-details {
+	margin-top: -16px;
+	overflow: hidden;
+	display: flex;
+	flex-direction: row;
+}
+
+.mat-card-content-console {
+	padding-top: 15px;
+	overflow: hidden;
+	height: 100%;
+}
+
+.mat-card-content-overview {
+	padding-top: 15px;
+	overflow: hidden;
+	height: 100%;
+}
+
+.mat-card-content-gateway-overview {
+	padding-top: 15px;
+	overflow: hidden;
+}
+
+.mat-card-content-gateway-actions {
+	padding-left: 0;
+	padding-right: 0;
+	margin: 0 0;
+	transform: translateY(-25px);
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+.gateway-card-container {
+	height: var(--gateway-detail-card-container-size);
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.mat-mdc-tab {
+	background: #f0f0f0;
+}
+
+.monaco-editor {
+	width: 100%;
+	height: 100%;
+}
+
+th {
+	text-align: center;
+}
+
+.mat-column-thing_config_id {
+	text-align: left;
+	flex: 1;
+}
+
+.mat-column-category {
+	width: 150px;
+	text-align: left;
+}
+
+.gateway-detail-action-button {
+	margin-top: 8px;
+	margin-left: 10px;
+}
+
+.mat-column-enabled {
+	width: 85px;
+	min-width: 85px;
+	max-width: 85px;
+	text-align: center;
+}
+
+.mat-column-created {
+	width: 100px;
+	text-align: right;
+}
+
+.mat-column-updated {
+	width: 100px;
+	text-align: right;
+}
+
+.mat-column-id {
+	width: 300px;
+	text-align: left;
+}
+
+.mat-column-name {
+	flex: 1;
+	text-align: left;
+}
+
+.console-action-button {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+.gateway-detail-mega-container {
+	width: calc(100vw - 315px);
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.card-actions {
+	margin-top: auto;
+	margin-bottom: 0;
+}
+
+.gateway-table-tab-group {
+	height: 100%;
+	margin: 0px 10px;
+	margin-top: -5px;
+}
+
+.element-row {
+	cursor: pointer;
+}
+
+.element-row:hover {
+	background: #f5f5f5;
+}
+
+.element-row-selected {
+	background: #e5e5e5;
+}
+
+.element-row-selected:hover {
+	background: #d5d5d5;
+}
+
+.card-gateway-console {
+	flex: 1;
+	height: var(--gateway-detail-card-size);
+	padding: 15px;
+	overflow: hidden;
+}
+
+.card-gateway-overview {
+	width: 100%;
+	height: var(--gateway-detail-card-size);
+	padding: 15px;
+	overflow: hidden;
+}
+
+.card-gateway-actions {
+	padding: 15px;
+	margin: 0px 10px;
+	height: 65px;
+}
+
+.card-gateway-details {
+	display: flex;
+	padding: 15px;
+	margin: 0px 10px;
+	height: 70px;
+}
+
+.card-gateway-shadow {
+	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	margin-bottom: 5px;
+}
+
+.loading-overlay-container {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.loading-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #FFFFFFAA;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
+}
+
+.gateway-detail-header-text {
+	font-size: 24px;
+	margin-left: 15px;
+	transform: translateY(-18px);
+}
+
+.deselect-gateway-button {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	z-index: 1000;
+}
+
+.connected-indicator-icon {
+	scale: 1.5;
+	margin-right: 25px;
+	margin-top: 8px;
+}
+
+.alert-indicator-icon-no-shake {
+    scale: 1.5;
+    margin-right: 75px;
+    margin-top: 8px;
+}
+
+.alert-indicator-icon {
+    scale: 1.5;
+    margin-right: 75px;
+    margin-top: 8px;
+    animation: shake 0.5s infinite alternate;
+}
+
+@keyframes shake {
+    0% {
+        transform: rotate(0deg);
+    }
+    25% {
+        transform: rotate(10deg);
+    }
+    50% {
+        transform: rotate(0deg);
+    }
+    75% {
+        transform: rotate(-10deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.gateway-enabled-toggle {
+	margin-left: 25px;
+	margin-top: 17px;
+	scale: 1.5;
+}

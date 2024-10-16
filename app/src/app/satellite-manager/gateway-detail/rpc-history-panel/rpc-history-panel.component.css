@@ -42,7 +42,7 @@
 
 .card-rpc-history {
     padding: 15px;
-    height: calc(100% - 15px);
+    height: var(--gateway-detail-card-size);
     overflow: hidden;
 }
 
@@ -121,12 +121,12 @@
     background: #d5d5d5;
 }
 
-.cardConsole {
-    flex: 1 1;
-    padding: 15px;
-    height: 98%;
-}
-
 .mat-column-expanded_detail {
     border: none;
+}
+
+.card-gateway-shadow {
+	box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	margin-bottom: 5px;
 }

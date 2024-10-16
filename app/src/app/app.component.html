@@ -21,24 +21,22 @@
                         alt="Ground Control Logo" /></button
             ></a>
 
-            <!-- http loading indicator -->
-            <div
-                class="http-bar-container"
-                *ngIf="!intercomService.httpDataLoading">
-                <mat-progress-bar
-                    color="accent"
-                    mode="determinate"
-                    value="100"></mat-progress-bar>
+            <div class="navigation-container">
+                <!-- navigation label -->
+                <span class="navigation-label">{{ routingService.routes[routingService.selectedPageIndex].label }}</span>
+
+                <!-- http loading indicator -->
+                <div class="http-bar-container">
+                    <mat-progress-bar
+                        *ngIf="!intercomService.httpDataLoading"
+                        color="accent"
+                        mode="determinate"
+                        value="100"></mat-progress-bar>
+                </div>
             </div>
 
-            <!-- http loading indicator -->
-            <div
-                class="http-bar-container"
-                *ngIf="intercomService.httpDataLoading">
-                <mat-progress-bar
-                    color="accent"
-                    mode="query"></mat-progress-bar>
-            </div>
+            <!-- whoami box -->
+            <gc-whoami-box></gc-whoami-box>
 
             <!-- TODO: put whoami box here once that works -->
         </mat-toolbar>
@@ -52,7 +50,7 @@
             class="sidenav-bar-left mat-elevation-z10">
             <mat-button-toggle-group
                 class="sidenav-toggle-group"
-                [(ngModel)]="intercomService.pageSelect">
+                [(ngModel)]="routingService.selectedPageIndex">
                 <!-- Header -->
                 <div class="sideNavHeaderContainer">
                     <div
@@ -66,10 +64,10 @@
 
                 <!-- side nav buttons -->
                 <mat-button-toggle
-                    value="{{ route.path }}"
-                    *ngFor="let route of routes; let i = index"
+                    *ngFor="let route of routingService.routes; let i = index"
+                    value="{{ i }}"
                     [hidden]="i === 0"
-                    (click)="navbarClick(i)">
+                    (click)="routingService.navigateIndex(i)">
                     <div class="sideNavSelectorContainer">
                         <mat-icon class="sideNavTickIcon">arrow_right</mat-icon>
                         <span class="sideNavSelector">{{ route.label }}</span>
@@ -80,7 +78,7 @@
 
         <!-- router outlet (content window) -->
         <mat-sidenav-content>
-            <div>
+            <div style="overflow: hidden">
                 <router-outlet></router-outlet>
             </div>
         </mat-sidenav-content>
