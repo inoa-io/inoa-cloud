@@ -26,9 +26,13 @@ micronaut:
         access: isAnonymous()
       - pattern: /openapi/**
         access: isAnonymous()
+        ## Authentication must be done without Keycloak for Gateway requests.
       - pattern: /gateway
         access: isAnonymous()
-        http-method: POST
+      - pattern: /gateway/**
+        access: isAnonymous()
+      - pattern: /gateways/**
+        access: isAuthenticated()
       - pattern: /**
         access: isAuthenticated()
     token:

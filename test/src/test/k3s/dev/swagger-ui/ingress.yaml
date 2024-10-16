@@ -4,7 +4,7 @@ metadata:
   name: swagger-ui
 spec:
   rules:
-    - host: swagger.${k3s.ip}.nip.io
+    - host: swagger.${inoa.domain}
       http:
         paths:
           - path: /

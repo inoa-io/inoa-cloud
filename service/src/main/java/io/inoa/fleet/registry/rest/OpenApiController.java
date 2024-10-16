@@ -54,7 +54,7 @@ public class OpenApiController {
 		Optional<String> openapiUrl = env.get("registry.openapi.url", String.class);
 		Optional<String> url = openapiUrl.or(() -> contextPath);
 		if (url.isPresent()) {
-			// TODO OpenaPI: parse spec with SnakeYAML and operate on object model
+			// TODO OpenAPI: parse spec with SnakeYAML and operate on object model
 			specString = specString.replace("servers: []", "servers:\n- url: " + url.get());
 		}
 

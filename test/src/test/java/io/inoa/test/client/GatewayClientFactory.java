@@ -48,7 +48,7 @@ public class GatewayClientFactory {
 		private String bearer() {
 			if (token == null) {
 				var now = Instant.now();
-				var claims = new JWTClaimsSet.Builder().audience("gateway-registry").jwtID(UUID.randomUUID().toString())
+				var claims = new JWTClaimsSet.Builder().audience("inoa-cloud").jwtID(UUID.randomUUID().toString())
 						.issuer(gatewayId).issueTime(Date.from(now)).notBeforeTime(Date.from(now))
 						.expirationTime(Date.from(now.plusSeconds(10)));
 				var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());
@@ -80,7 +80,7 @@ public class GatewayClientFactory {
 				assertNotNull(mqttUrl, "mqtt.url is null");
 				mqtt = assertDoesNotThrow(
 						() -> new MqttBrokerClient(mqttUrl.toString(), "inoa", gatewayId, preSharedKey),
-						"failed to create hono mqtt client");
+						"failed to create mqtt client");
 			}
 			return mqtt;
 		}

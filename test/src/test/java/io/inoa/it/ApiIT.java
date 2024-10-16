@@ -37,7 +37,7 @@ public class ApiIT extends AbstractIntegrationTest {
 				.credentialValue(new byte[0])),
 				"failed to register gateway");
 
-		// get gateway and check tpye of timestamp
+		// get gateway and check type of timestamp
 
 		var request = HttpRequest.GET("/gateways/" + gatewayId).header(HttpHeaders.AUTHORIZATION, keycloak.admin());
 		var response = assert200(() -> client.toBlocking().exchange(request, JsonNode.class));

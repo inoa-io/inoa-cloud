@@ -18,9 +18,10 @@ public class GatewayAuthentication implements Authentication {
 
 	private static final long serialVersionUID = 1L;
 
-	private final Gateway gateway;
+	private final transient Gateway gateway;
 	private final String name;
-	private final Map<String, Object> attributes;
+
+	private final transient Map<String, Object> attributes;
 
 	public GatewayAuthentication(Gateway gateway) {
 		this.gateway = gateway;

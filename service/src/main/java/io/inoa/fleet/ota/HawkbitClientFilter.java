@@ -2,7 +2,7 @@ package io.inoa.fleet.ota;
 
 import org.reactivestreams.Publisher;
 
-import io.inoa.fleet.ApplicationProperties;
+import io.inoa.fleet.FleetProperties;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.MutableHttpRequest;
 import io.micronaut.http.annotation.Filter;
@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HawkbitClientFilter implements HttpClientFilter {
 
-	private final ApplicationProperties properties;
+	private final FleetProperties properties;
 
 	@Override
 	public Publisher<? extends HttpResponse<?>> doFilter(MutableHttpRequest<?> request, ClientFilterChain chain) {

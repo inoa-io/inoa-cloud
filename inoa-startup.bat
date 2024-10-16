@@ -91,7 +91,7 @@ if %RUN_K3S%==1 (
     echo.
     echo Starting Inoa...
 
-    call mvn pre-integration-test -Dk3s.failIfExists=false -Dk3s.ip=%INOA_IP% -Dinoa.replicas=%INOA_REPLICAS%  -Dmcnoise.replicas=%MCNOISE_REPLICAS% -pl ./test/
+    call mvn pre-integration-test -Dk3s.failIfExists=false -Dinoa.domain=%INOA_IP%.nip.io -Dmcnoise.replicas=%MCNOISE_REPLICAS% -pl ./test/
     echo Opening Help-Page...
     echo.
     start http://help.%INOA_IP%.nip.io:8080

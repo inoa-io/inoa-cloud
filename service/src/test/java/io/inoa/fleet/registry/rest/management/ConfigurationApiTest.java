@@ -51,13 +51,13 @@ public class ConfigurationApiTest extends AbstractUnitTest implements Configurat
 			data.definition(tenant, type.toString(), type, d -> d.setDescription("1"));
 			data.definition(otherTenant, type.toString(), type, d -> d.setDescription("2"));
 		}
-		var definitsions = assert200(() -> client.findConfigurationDefinitions(auth(tenant)));
-		assertEquals(4, definitsions.size(), "size");
-		assertTrue(definitsions.stream().allMatch(d -> d.getDescription().equals("1")), "tenant");
-		assertEquals(ConfigurationTypeVO.BOOLEAN, definitsions.get(0).getType(), "order");
-		assertEquals(ConfigurationTypeVO.INTEGER, definitsions.get(1).getType(), "order");
-		assertEquals(ConfigurationTypeVO.STRING, definitsions.get(2).getType(), "order");
-		assertEquals(ConfigurationTypeVO.URL, definitsions.get(3).getType(), "order");
+		var definitions = assert200(() -> client.findConfigurationDefinitions(auth(tenant)));
+		assertEquals(4, definitions.size(), "size");
+		assertTrue(definitions.stream().allMatch(d -> d.getDescription().equals("1")), "tenant");
+		assertEquals(ConfigurationTypeVO.BOOLEAN, definitions.get(0).getType(), "order");
+		assertEquals(ConfigurationTypeVO.INTEGER, definitions.get(1).getType(), "order");
+		assertEquals(ConfigurationTypeVO.STRING, definitions.get(2).getType(), "order");
+		assertEquals(ConfigurationTypeVO.URL, definitions.get(3).getType(), "order");
 	}
 
 	@DisplayName("findConfigurationDefinitions(401): no token")

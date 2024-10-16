@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +20,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.inoa.fleet.FleetProperties;
 import io.inoa.fleet.registry.auth.GatewayTokenHelper;
+import io.inoa.fleet.registry.domain.Configuration;
 import io.inoa.rest.ConfigurationTypeVO;
 import io.inoa.rest.CredentialTypeVO;
 import io.inoa.rest.CredentialsApiTestClient;
@@ -29,6 +32,7 @@ import io.inoa.rest.GatewayApiTestSpec;
 import io.inoa.rest.GatewaysApiTestClient;
 import io.inoa.rest.RegisterVO;
 import io.inoa.test.AbstractUnitTest;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
 
 /**
@@ -36,6 +40,7 @@ import jakarta.inject.Inject;
  *
  * @author Stephan Schnabel
  */
+@MicronautTest(environments = {"test"})
 @DisplayName("gateway: configuration")
 public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSpec {
 
@@ -44,6 +49,7 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
 	@Inject CredentialsApiTestClient credentialsClient;
 	@Inject TargetsApiClient targetsApiClient;
 	@Inject GatewayTokenHelper gatewayToken;
+	@Inject FleetProperties fleetProperties;
 
 	@DisplayName("getConfiguration(200): without configuration")
 	@Test
@@ -60,8 +66,25 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
 
 		var auth = gatewayToken.bearer(data.gateway());
 		var actual = assert200(() -> client.getConfiguration(auth));
-		var expected = Map.of();
-		assertEquals(expected, actual, "configuration");
+		var expected = fleetProperties.getTenant().getConfigurations();
+		assertEquals(expected.size(), actual.size(), "size");
+		for (Configuration configuration : expected) {
+			assertTrue(actual.containsKey(configuration.getDefinition().getKey()));
+			Object otherValue = actual.get(configuration.getDefinition().getKey());
+			assertNotNull(otherValue);
+			switch (configuration.getDefinition().getType()) {
+				case STRING:
+					assertEquals(String.class, otherValue.getClass());
+					break;
+				case INTEGER:
+					assertEquals(Integer.class, otherValue.getClass());
+					break;
+				case BOOLEAN:
+					assertEquals(Boolean.class, otherValue.getClass());
+					break;
+			}
+			assertEquals(configuration.getValue(), otherValue.toString());
+		}
 	}
 
 	@DisplayName("getConfiguration(200): with configuration")
@@ -88,12 +111,33 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
 		data.configuration(gateway, definitionBoolean, "false");
 		data.configuration(gateway, definitionInteger, "12345");
 
+		String tenantMqtttUrl = "mqtt://tenant.domain.tld:1883";
+		var definitionMqttUrl = data.definition(tenant, "mqtt.url", ConfigurationTypeVO.STRING);
+		data.configuration(definitionMqttUrl, tenantMqtttUrl);
+
 		// get config
 
 		var auth = gatewayToken.bearer(gateway);
 		var actual = assert200(() -> client.getConfiguration(auth));
-		var expected = Map.of("boolean", false, "integer", 12345, "string", "mäh");
-		assertEquals(actual, expected, "configuration");
+		assertTrue(actual.containsKey("boolean"));
+		assertEquals(false, actual.get("boolean"));
+		assertTrue(actual.containsKey("integer"));
+		assertEquals(12345, actual.get("integer"));
+		assertTrue(actual.containsKey("string"));
+		assertEquals("mäh", actual.get("string"));
+
+		var defaults = fleetProperties.getTenant().getConfigurations();
+		for (Configuration configuration : defaults) {
+			assertTrue(actual.containsKey(configuration.getDefinition().getKey()));
+			Object otherValue = actual.get(configuration.getDefinition().getKey());
+			assertNotNull(otherValue);
+			if (configuration.getDefinition().getKey().equals("mqtt.url")) {
+				// tenant specific value must be delivered instead of default value.
+				assertEquals(tenantMqtttUrl, otherValue.toString());
+			} else {
+				assertEquals(configuration.getValue(), otherValue.toString());
+			}
+		}
 	}
 
 	@DisplayName("getConfiguration(401): no token")

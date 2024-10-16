@@ -40,6 +40,10 @@ spec:
               subPath: help.html
               readOnly: true
             - name: help
+              mountPath: /home/static/overview.html
+              subPath: overview.html
+              readOnly: true
+            - name: help
               mountPath: /home/static/inoa_bm_color.svg
               subPath: inoa_bm_color.svg
               readOnly: true

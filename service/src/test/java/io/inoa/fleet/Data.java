@@ -70,7 +70,7 @@ public class Data {
 	private final TenantConfigurationRepository tenantConfigurationRepository;
 	private final GroupConfigurationRepository groupConfigurationRepository;
 	private final GatewayConfigurationRepository gatewayConfigurationRepository;
-	private final ApplicationProperties applicationProperties;
+	private final FleetProperties fleetProperties;
 
 	// jwt
 
@@ -102,7 +102,7 @@ public class Data {
 	}
 
 	public JWTClaimsSet tokenClaims(UUID gateway, Instant now) {
-		return new JWTClaimsSet.Builder().audience(applicationProperties.getGateway().getToken().getAudience())
+		return new JWTClaimsSet.Builder().audience(fleetProperties.getGateway().getToken().getAudience())
 				.jwtID(UUID.randomUUID().toString()).issuer(gateway.toString()).issueTime(Date.from(now))
 				.notBeforeTime(Date.from(now)).expirationTime(Date.from(now)).build();
 	}

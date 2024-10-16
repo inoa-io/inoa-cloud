@@ -4,7 +4,7 @@ metadata:
   name: inoa
 spec:
   rules:
-    - host: inoa.${k3s.ip}.nip.io
+    - host: inoa.${inoa.domain}
       http:
         paths:
           - path: /

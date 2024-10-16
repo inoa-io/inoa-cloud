@@ -4,7 +4,7 @@ metadata:
   name: kubernetes-dashboard
 spec:
   rules:
-    - host: dashboard.${k3s.ip}.nip.io
+    - host: dashboard.${inoa.domain}
       http:
         paths:
           - path: /

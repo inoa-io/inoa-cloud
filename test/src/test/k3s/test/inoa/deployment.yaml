@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: inoa
 spec:
-  replicas: ${inoa.replicas}
+  replicas: 1
   revisionHistoryLimit: 0
   selector:
     matchLabels:
@@ -58,6 +58,8 @@ spec:
             - name: http
               containerPort: 8080
             - name: mqtt
+              containerPort: 1883
+            - name: mqtts
               containerPort: 8883
           startupProbe:
             httpGet:
@@ -81,9 +83,6 @@ spec:
             - name: tls
               mountPath: /tls
               readOnly: true
-            - name: flyway
-              mountPath: /app/flyway
-              readOnly: true
             - name: moquette
               mountPath: /moquette
               readOnly: false
@@ -91,9 +90,6 @@ spec:
       terminationGracePeriodSeconds: 5
       enableServiceLinks: false
       volumes:
-        - name: flyway
-          configMap:
-            name: inoa-flyway
         - name: tls
           configMap:
             name: inoa-tls

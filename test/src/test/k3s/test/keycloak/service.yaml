@@ -3,11 +3,12 @@ kind: Service
 metadata:
   name: keycloak
 spec:
+  # TODO Check if this is still needed. I didn't miss it.
   # fixed ip to enable `hostAlias` to rewrite `keycloak.127.0.0.1.nip.io` from service name `keycloak`
-  clusterIP: 10.53.100.1
+  # clusterIP: 10.53.100.1
   ports:
     - name: http
-      port: 80
+      port: 8080
       targetPort: http
   selector:
     app.kubernetes.io/name: keycloak

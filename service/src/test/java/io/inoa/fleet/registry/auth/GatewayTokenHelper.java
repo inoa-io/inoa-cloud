@@ -11,8 +11,8 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
-import io.inoa.fleet.ApplicationProperties;
 import io.inoa.fleet.Data;
+import io.inoa.fleet.FleetProperties;
 import io.inoa.fleet.registry.domain.Credential;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.micronaut.http.HttpHeaderValues;
@@ -31,7 +31,7 @@ public class GatewayTokenHelper {
 
 	private final Clock clock;
 	private final Data data;
-	private final ApplicationProperties properties;
+	private final FleetProperties properties;
 
 	public String bearer(Gateway gateway) {
 		return bearer(data.findCredentials(gateway).stream().findFirst().orElse(data.credentialPSK(gateway)));
@@ -56,7 +56,7 @@ public class GatewayTokenHelper {
 				.issuer(gatewayId)
 				.issueTime(Date.from(clock.instant()))
 				.notBeforeTime(Date.from(clock.instant()))
-				.expirationTime(Date.from(clock.instant().plusSeconds(1)));
+				.expirationTime(Date.from(clock.instant().plusSeconds(300)));
 		claimsManipulator.accept(claims);
 
 		var jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims.build());

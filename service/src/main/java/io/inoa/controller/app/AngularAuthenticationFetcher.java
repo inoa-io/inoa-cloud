@@ -21,10 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 
 /**
  * Create authentication fetcher for local angular development.
+ * Needed for yarn deployment because there is no oauth config given.
  *
  * @author stephan.schnabel@grayc.de
  */
-@Requires(property = "micronaut.application.name", value = "inoa-k3s")
+@Requires(env = "k3s")
 @Singleton
 @Slf4j
 public class AngularAuthenticationFetcher implements AuthenticationFetcher<HttpRequest<?>> {

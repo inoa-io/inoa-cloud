@@ -4,7 +4,6 @@ import static io.inoa.test.HttpAssertions.assert200;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,9 +30,10 @@ public class AppFilesIT extends AbstractIntegrationTest {
 
 	@DisplayName("/index.html be served")
 	@Test
-	@Disabled("we need keycloak auth for this")
 	void index() {
-		var response = client.toBlocking().exchange("/", String.class);
+		var request = HttpRequest.GET("/").header(HttpHeaders.AUTHORIZATION, keycloak.admin());
+		var response = client.toBlocking().exchange(request, String.class);
+
 		assertEquals(HttpStatus.OK, response.getStatus());
 		assertEquals(MediaType.TEXT_HTML_TYPE, response.getContentType().orElse(null));
 		var body = response.body();

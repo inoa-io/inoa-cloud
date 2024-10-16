@@ -1,0 +1,27 @@
+micronaut:
+  server:
+    port: 4300
+    cors:
+      configurations:
+        ui:
+          allowed-origins:
+            - http://swagger.${inoa.domain}:8080
+inoa:
+  mqtt:
+    port: 1884
+    tls:
+      port: 8884
+      key: service/src/test/x509/key.pem
+      cert: service/src/test/x509/cert.pem
+datasources:
+  default:
+    host: localhost
+influxdb:
+  url: http://influxdb.${inoa.domain}:8080/
+kafka:
+  bootstrap:
+    servers: localhost:9092
+logger:
+  levels:
+    io.micronaut: INFO
+    io.inoa: TRACE

@@ -11,3 +11,7 @@ app/node_modules
 *.iml
 
 .vscode
+
+.env
+
+*.http

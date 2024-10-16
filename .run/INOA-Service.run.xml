@@ -1,0 +1,35 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="INOA-Service" type="MicronautRunConfigurationType" factoryName="Micronaut">
+    <option name="ALTERNATIVE_JRE_PATH" value="17" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+    <option name="MAIN_CLASS_NAME" value="io.inoa.Application" />
+    <module name="inoa-service" />
+    <option name="VM_PARAMETERS" value="-Dmicronaut.environments=k3s,local -Dstatic.path=$ProjectFileDir$/app/dist" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="io.inoa.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="true" />
+      <option name="IS_SUBST" value="true" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
+        <ENTRY IS_ENABLED="true" PARSER="env" IS_EXECUTABLE="false" PATH=".env" />
+      </ENTRIES>
+    </extension>
+    <option name="alternativeJrePath" value="17" />
+    <option name="alternativeJrePathEnabled" value="true" />
+    <option name="mainClass" value="io.inoa.Application" />
+    <option name="passParentEnvs" value="true" />
+    <option name="programParameters" value="" />
+    <option name="vmParameters" value="-Dmicronaut.environments=k3s,local -Dstatic.path=$ProjectFileDir$/app/dist" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -6,20 +6,12 @@ resources:
 configMapGenerator:
   - name: inoa-env
     literals:
-      - MICRONAUT_APPLICATION_NAME=inoa-k3s
-      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak.default/realms/inoa/protocol/openid-connect/certs
-      - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit.default
+      - MICRONAUT_ENVIRONMENTS=k3s
+      - INOA_DOMAIN=${inoa.domain}
+      # only needed for wait-for-postgres
       - DATASOURCES_DEFAULT_HOST=postgres.default
       - DATASOURCES_DEFAULT_DATABASE=inoa
       - DATASOURCES_DEFAULT_USERNAME=inoa
-      - INFLUXDB_URL=http://influxdb.default
-      - INFLUXDB_ORGANISATION=inoa
-      - INFLUXDB_BUCKET=default
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - KAFKA_CONSUMERS_DEFAULT_METADATA_MAX_AGE_MS=1000
-      - INOA_MQTT_TLS_GENERATE_KEY=false
-      - INOA_MQTT_TLS_KEY=/tls/key.pem
-      - INOA_MQTT_TLS_CERT=/tls/cert.pem
       - INOA_MQTT_DATA_PATH=/moquette
       # map endpoints to default port to expose them
       - ENDPOINTS_ALL_PORT=8080
@@ -32,8 +24,6 @@ configMapGenerator:
       - LOGGER_LEVELS_IO_MICRONAUT_DATA=INFO
       - LOGGER_LEVELS_IO_MICRONAUT_HTTP=INFO
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=ERROR
-  - name: inoa-flyway
-    files: [R__data.sql]
   - name: inoa-tls
     files:
       - files/cert.pem

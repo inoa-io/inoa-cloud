@@ -37,7 +37,7 @@ public class TranslateListener {
 
 	@Topic(patterns = "hono\\.telemetry\\..*")
 	void receive(ConsumerRecord<String, String> record) {
-
+		log.trace("Received message:\n" + record.value());
 		String tenantId = null;
 		if (record.headers().lastHeader(KafkaHeader.TENANT_ID) != null) {
 			var deviceId = record.headers().lastHeader(KafkaHeader.TENANT_ID);
@@ -46,7 +46,7 @@ public class TranslateListener {
 			// fallback but the header should always exist
 			tenantId = record.topic().substring(15);
 		}
-
+		log.trace("Receiving telemetry data for tenant {}...", tenantId);
 		String gatewayId = null;
 
 		if (record.headers().lastHeader("gatewayName") != null) {
@@ -59,6 +59,7 @@ public class TranslateListener {
 			// fallback but the header should always exist
 			gatewayId = record.key();
 		}
+		log.trace("Receiving telemetry data for tenant {} and gateway {} ...", tenantId, gatewayId);
 		var payload = record.value();
 
 		try {
@@ -75,10 +76,12 @@ public class TranslateListener {
 					.collect(Collectors.toList());
 			if (telemetryOptional.isEmpty()) {
 				metrics.counterIgnore(tenantId).increment();
+				log.trace("No telemetry data found. Ignoring message from {} in tenant {}.", gatewayId, tenantId);
 				return;
 			}
 			for (var telemetry : telemetryOptional) {
 				producer.send(new ProducerRecord<>("inoa.telemetry." + tenantId, telemetry.getGatewayId(), telemetry));
+				log.trace("Sent new telemetry data into kafka topic inoa.telemetry.{} \n {}.", tenantId, telemetry);
 				metrics.counterSuccess(tenantId, telemetry.getDeviceType(), telemetry.getSensor()).increment();
 			}
 

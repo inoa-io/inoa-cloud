@@ -44,6 +44,7 @@ public class TranslateService {
 	}
 
 	public List<TelemetryVO> translate(String tenantId, String gatewayId, TelemetryRawVO raw) {
+		log.debug("Translate TelemetryRawVO {}", raw.toString());
 
 		// parse urn
 
