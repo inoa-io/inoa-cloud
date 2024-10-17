@@ -44,4 +44,11 @@ public class NumberConverterTest extends AbstractTranslatorTest {
 		var raw = TelemetryRawVO.of("urn:example:0815:number", "NAN");
 		assertEmpty(converter, raw, "example", "number");
 	}
+
+	@DisplayName("success: with factor")
+	@Test
+	void withFactor() {
+		var raw = TelemetryRawVO.of("urn:sct-013-030:0815:ct", "234");
+		assertSingleValue(7.02D, converter, raw, "sct-013-030", "ct");
+	}
 }

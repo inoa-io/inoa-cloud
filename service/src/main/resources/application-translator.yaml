@@ -252,6 +252,56 @@ inoa.translator:
             label: frequency
             unit: hertz
 
+    # source: https://www.alldatasheet.com/datasheet-pdf/pdf/1155087/YHDC/SCT-013.html
+    - name: sct-013-005
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.005
+    - name: sct-013-010
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.01
+    - name: sct-013-015
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.015
+    - name: sct-013-020
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.02
+    - name: sct-013-025
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.025
+    - name: sct-013-030
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.03
+    - name: sct-013-050
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.05
+    - name: sct-013-060
+      sensors:
+        - name: ct
+          converter: number
+          config:
+            factor: 0.06
+
     # source: Fabian Schlegel
     - name: satellite
       sensors:
