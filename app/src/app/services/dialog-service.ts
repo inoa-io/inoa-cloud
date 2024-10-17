@@ -23,7 +23,7 @@ export class DialogService {
         };
 
         const dialogRef = this.dialog.open(ThingCreationDialogComponent, {
-            width: "600px",
+            width: "700px",
             data: thingCreationDialogData
         });
 

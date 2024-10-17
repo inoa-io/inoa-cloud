@@ -130,7 +130,7 @@ export class ThingCreationDialogComponent implements OnDestroy {
                     case "s0":
                         dataPointParams = {
                             id: "urn:s0:" + this.data.thing.name.replace(/\s/g, "").toLocaleLowerCase() + ":gas",
-                            interface: Number(this.form.get("port")?.value),
+                            interface: this.form.get("port")?.value,
                             name: this.data.thing.name,
                             enabled: true
                         };

@@ -85,7 +85,26 @@ VALUES
 		's0',
 		'S0 Impulse Counter',
 		'energy_meter',
-		'{"title":"S0 Impulse Counter","description":"A simple counter connected via S0 interface.","type":"object","required":["name"],"properties":{"name":{"type":"string","default":"My new S0 counter","title":"Name your thing..."},"port":{"type":"string","title":"Port"}}}',
+		'{
+			"title": "S0 Impulse Counter",
+			"description": "A simple counter connected via S0 interface.",
+			"type": "object",
+			"required": ["name"],
+			"properties":
+			{
+				"name":
+				{
+					"type": "string",
+					"default": "My new S0 counter",
+					"title": "Name your thing..."
+				},
+				"port":
+				{
+					"type": "string",
+					"title": "Port"
+				}
+			}
+		}',
 		CURRENT_TIMESTAMP,
 		CURRENT_TIMESTAMP
 	);
