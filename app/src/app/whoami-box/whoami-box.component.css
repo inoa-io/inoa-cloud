@@ -34,3 +34,18 @@
 	left: 50%;
 	transform: translate(-1px, -1px);
 }
+
+.whoami-data-container {
+	padding: 10px;
+}
+
+.whoami-data-name {
+	margin: 0;
+	font-weight: 500;
+	height: 20px
+}
+
+.whoami-data-email {
+	margin: 0;
+	font-size: 12px;
+}

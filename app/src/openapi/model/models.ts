@@ -46,3 +46,4 @@ export * from './thingTypeUpdate';
 export * from './thingType';
 export * from './thingUpdate';
 export * from './thing';
+export * from './user';

@@ -1,3 +1,5 @@
+export * from './auth.service';
+import { AuthService } from './auth.service';
 export * from './configuration.service';
 import { ConfigurationService } from './configuration.service';
 export * from './credentials.service';
@@ -18,4 +20,4 @@ export * from './thingTypes.service';
 import { ThingTypesService } from './thingTypes.service';
 export * from './things.service';
 import { ThingsService } from './things.service';
-export const APIS = [ConfigurationService, CredentialsService, GatewayService, GatewaysService, GroupsService, PropertiesService, RemoteService, TenantsService, ThingTypesService, ThingsService];
+export const APIS = [AuthService, ConfigurationService, CredentialsService, GatewayService, GatewaysService, GroupsService, PropertiesService, RemoteService, TenantsService, ThingTypesService, ThingsService];

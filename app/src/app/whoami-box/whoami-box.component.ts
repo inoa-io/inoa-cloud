@@ -1,5 +1,6 @@
 import { AfterViewInit, Component } from "@angular/core";
 import { InternalCommunicationService } from "../services/internal-communication-service";
+import { AuthService } from "@inoa/api";
 
 @Component({
     selector: "gc-whoami-box",
@@ -7,8 +8,7 @@ import { InternalCommunicationService } from "../services/internal-communication
     styleUrls: ["./whoami-box.component.css"]
 })
 export class WhoamiBoxComponent implements AfterViewInit {
-    // whoami$ = this.authService.whoami();
-    whoami$: any;
+    whoami$ = this.authService.whoami();
     indicatorLanguage = "de";
     sessionPercentLeft = 100;
     sessionExpirationDate = new Date();
@@ -16,10 +16,9 @@ export class WhoamiBoxComponent implements AfterViewInit {
     sessionTimeLeftString = "";
 
     constructor(
-        // private authService: AuthService,
+        private authService: AuthService,
         public intercomService: InternalCommunicationService
     ) {
-        this.sessionExpirationDate.setTime(this.sessionStartDate.getTime() + 300000);
         //recalculates the session time progress every second
         setInterval(() => {
             this.recalcSessionTimeSpinnerProgress();
@@ -34,22 +33,18 @@ export class WhoamiBoxComponent implements AfterViewInit {
     }
 
     ngAfterViewInit() {
-        console.log("Whoami Box will be available soon (once Keycloak is implemented)");
-        // this.whoami$.subscribe(data =>
-        // {
-        // 	this.sessionExpirationDate = new Date(data.session_expires);
-        // 	this.sessionStartDate = new Date();
-        // 	// give email, permissions and other data to the intercom service so all components can see it
-        // 	this.intercomService.userEmail = data.email;
-        // 	this.intercomService.currentUserPermissions = data.permissions ? data.permissions : [];
-        // 	this.intercomService.userIsAdmin = data.is_landlord && data.is_reseller; //only admins have both flags set to true
-        // 	this.intercomService.userIsReseller = data.is_reseller && !data.is_landlord;
-        // 	this.intercomService.userIsLandlord = data.is_landlord && !data.is_reseller;
-        // 	this.intercomService.associatedLandlordId = data.associated_landlord;
-        // 	this.intercomService.raisePermissionsLoadedEvent();
-        // 	console.log("User " + this.intercomService.userEmail + " has the following permissions:");
-        // 	this.intercomService.currentUserPermissions.forEach(permission => { console.log(permission); });
-        // });
+        this.whoami$.subscribe(data =>
+        {
+            console.log("received whoami data");
+            console.log(data);
+
+            // set session time data
+            this.sessionStartDate = new Date();
+            this.sessionExpirationDate = new Date(data.session_expires);
+            
+        	// give email to the intercom service so all components can see it
+        	this.intercomService.userEmail = data.email;
+        });
     }
 
     //calculates the mini spinner progress to show how much session time is left and the time left for the tooltip

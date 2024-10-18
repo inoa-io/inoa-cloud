@@ -39,6 +39,50 @@ tags:
   - name: remote
     description: Remote control of gateways.
 paths:
+  /whoami:
+    get:
+      summary: Current User
+      description: Gives Information about the current user.
+      operationId: whoami
+      tags: [auth]
+      responses:
+        200:
+          description: Current User.
+          content:
+            application/json:
+              schema:
+                title: User
+                description: Current User.
+                type: object
+                properties:
+                  firstname:
+                    description: First name.
+                    type: string
+                    maxLength: 100
+                    example: Erika
+                  lastname:
+                    description: Last name.
+                    type: string
+                    maxLength: 100
+                    example: Mustermann
+                  email:
+                    description: Email.
+                    type: string
+                    format: email
+                    maxLength: 254
+                    example: erika.mustermann@example.com
+                  session_expires:
+                    description: When does the current session end?
+                    type: string
+                    format: date-time
+                    example: 2021-01-01T00:00:00Z
+                required:
+                  - firstname
+                  - lastname
+                  - email
+                  - session_expires
+        401:
+          description: Unauthorized
   /tenants:
     get:
       tags: [tenants]

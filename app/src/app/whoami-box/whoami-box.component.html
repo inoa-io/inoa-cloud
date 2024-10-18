@@ -1,6 +1,5 @@
 <!-- ngIf to wait for the whoami data to come in -->
-<!-- <div *ngIf = "whoami$ | async as whoami" class="whoamai-box-container"> -->
-<div class="whoamai-box-container">
+<div *ngIf = "whoami$ | async as whoami" class="whoamai-box-container">
     <!-- a nice little icon -->
     <div class="session-spinner-container">
         <!-- a little icon -->
@@ -29,12 +28,10 @@
         </div>
     </div>
 
-    <!-- name -->
-    <div style="padding: 10px">
-        <!-- <p style = "margin: 0; font-weight: 500; height: 20px">{{ whoami.firstname }} {{ whoami.lastname }}</p>
-        <p style = "margin: 0; font-size: 12px;">{{ whoami.email }}</p> -->
-        <p style="margin: 0; font-weight: 500; height: 20px">Coming Soon</p>
-        <p style="margin: 0; font-size: 12px">coming&#64;soon</p>
+    <!-- whoami data -->
+    <div class="whoami-data-container">
+        <p class="whoami-data-name">{{ whoami.firstname }} {{ whoami.lastname }}</p>
+        <p class="whoami-data-email">{{ whoami.email }}</p>
     </div>
 
     <!-- menu button that only shows a single logout button -->
