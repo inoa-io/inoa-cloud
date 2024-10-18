@@ -33,7 +33,7 @@
 					}
 				],
 				"quotes": [
-					"error",
+					"warn",
 					"double"
 				]
 			}

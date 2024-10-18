@@ -10,20 +10,20 @@ import { GlobalErrorHandler } from "./error-handler";
 import { HttpLoadingInterceptor } from "./http-loading.interceptor";
 
 @NgModule({
-    declarations: [ErrorDialogComponent],
-    imports: [CommonModule, RouterModule, MaterialModule],
-    exports: [ErrorDialogComponent],
-    providers: [
-        ErrorDialogService,
-        {
-            provide: ErrorHandler,
-            useClass: GlobalErrorHandler
-        },
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: HttpLoadingInterceptor,
-            multi: true
-        }
-    ]
+	declarations: [ErrorDialogComponent],
+	imports: [CommonModule, RouterModule, MaterialModule],
+	exports: [ErrorDialogComponent],
+	providers: [
+		ErrorDialogService,
+		{
+			provide: ErrorHandler,
+			useClass: GlobalErrorHandler
+		},
+		{
+			provide: HTTP_INTERCEPTORS,
+			useClass: HttpLoadingInterceptor,
+			multi: true
+		}
+	]
 })
 export class ErrorHandlingModule {}

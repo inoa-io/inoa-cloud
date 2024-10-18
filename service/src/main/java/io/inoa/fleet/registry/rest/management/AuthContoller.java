@@ -15,10 +15,10 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class AuthContoller implements AuthApi {
-	private final Security security;
+  private final Security security;
 
-	@Override
-	public HttpResponse<UserVO> whoami() {
-		return HttpResponse.ok(security.getUser());
-	}
+  @Override
+  public HttpResponse<UserVO> whoami() {
+    return HttpResponse.ok(security.getUser());
+  }
 }

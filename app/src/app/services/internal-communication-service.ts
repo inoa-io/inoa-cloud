@@ -3,39 +3,41 @@ import { GatewayVO, TenantVO, ThingTypeVO, ThingVO } from "@inoa/model";
 import { NetworkInterface } from "../measurement-collector/measurement-collector.component";
 
 @Injectable({
-    providedIn: "root"
+	providedIn: "root"
 })
 export class InternalCommunicationService {
-    //paginator parameters
-    pageNumber = 0;
-    pageSize = 10;
-    pageSizes = [10, 25, 50, 100];
+	//paginator parameters
+	pageNumber = 0;
+	pageSize = 10;
+	pageSizes = [10, 25, 50, 100];
 
-    // selected things
-    selectedGateway: GatewayVO | undefined;
-    selectedGatewayId: string | null = null;
-    connectionType: NetworkInterface | undefined;
-    selectedThing: ThingVO | undefined;
+	// selected things
+	selectedGateway: GatewayVO | undefined;
+	selectedGatewayId: string | null = null;
+	connectionType: NetworkInterface | undefined;
+	selectedThing: ThingVO | undefined;
 
-    // datasets
-    gateways: GatewayVO[] = [];
-    thingTypes: ThingTypeVO[] = [];
-    tenantList: TenantVO[] = [];
-    thingsList: ThingVO[] = [];
+	// datasets
+	gateways: GatewayVO[] = [];
+	thingTypes: ThingTypeVO[] = [];
+	tenantList: TenantVO[] = [];
+	thingsList: ThingVO[] = [];
 
-    // data
-    userEmail = "admin@example.org"
-    hardwareVersion = 0;
+	// data
+	userEmail = "admin@example.org";
+	hardwareVersion = 0;
 
-    // flags
-    httpDataLoading = false;
-    expertMode = false;
-    isLoadingDB = false;
-    isLoadingSat = false;
-    isLoadingSysInfo = false;
-    isLoadingConfig = false;
+	// flags
+	httpDataLoading = false;
+	expertMode = false;
+	isLoadingDB = false;
+	isLoadingSat = false;
+	isLoadingSysInfo = false;
+	isLoadingConfig = false;
 
-    //should be raised after display permissions have been received
+	//should be raised after display permissions have been received
 	selectedGatewayChangedEventEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
-	raiseSelectedGatewayChangedEvent() { this.selectedGatewayChangedEventEmitter.emit(); }
+	raiseSelectedGatewayChangedEvent() {
+		this.selectedGatewayChangedEventEmitter.emit();
+	}
 }

@@ -18,7 +18,12 @@ spec:
         - name: wait-for-postgres
           image: ${image.postgresql}
           imagePullPolicy: Never
-          command: [sh, -c, until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
+          command:
+            [
+              sh,
+              -c,
+              until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done,
+            ]
           env:
             - name: PGCONNECT_TIMEOUT
               value: "1"

@@ -1,160 +1,135 @@
 <ng-template #loadingSpinner>
-    <mat-progress-spinner
-        diameter="100"
-        mode="indeterminate"></mat-progress-spinner>
+	<mat-progress-spinner diameter="100" mode="indeterminate"></mat-progress-spinner>
 </ng-template>
 
 <div class="gateway-detail-mega-container">
-    <!-- header card -->
-    <mat-card class="card-gateway-details card-gateway-shadow">
-        <mat-card-content class="mat-card-content-gateway-details">
-            <!-- Satellite Logo -->
-            <div
-                mat-card-avatar
-                style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+	<!-- header card -->
+	<mat-card class="card-gateway-details card-gateway-shadow">
+		<mat-card-content class="mat-card-content-gateway-details">
+			<!-- Satellite Logo -->
+			<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
 
-            <!-- Text showing gateway ID and name -->
-            <p class="gateway-detail-header-text">{{ intercomService.selectedGateway?.gateway_id }} - {{ intercomService.selectedGateway?.name }}</p>
+			<!-- Text showing gateway ID and name -->
+			<p class="gateway-detail-header-text">{{ intercomService.selectedGateway?.gateway_id }} - {{ intercomService.selectedGateway?.name }}</p>
 
-            <!-- filler -->
-            <div style="flex: 1"></div>
+			<!-- filler -->
+			<div style="flex: 1"></div>
 
-            <!-- connected status icon -->
-            <mat-icon
-                class="connected-indicator-icon"
-                fontIcon="{{ intercomService.selectedGateway?.status?.mqtt?.connected ? 'sensors' : 'sensors_off' }}"
-                [style.color]="intercomService.selectedGateway?.status?.mqtt?.connected ? 'green' : 'red'"
-                matTooltip="{{ 'Satellite ' + (intercomService.selectedGateway?.status?.mqtt?.connected ? 'is' : 'is not') + ' connected to INOA Cloud.' }}">
-            </mat-icon>
+			<!-- connected status icon -->
+			<mat-icon
+				class="connected-indicator-icon"
+				fontIcon="{{ intercomService.selectedGateway?.status?.mqtt?.connected ? 'sensors' : 'sensors_off' }}"
+				[style.color]="intercomService.selectedGateway?.status?.mqtt?.connected ? 'green' : 'red'"
+				matTooltip="{{ 'Satellite ' + (intercomService.selectedGateway?.status?.mqtt?.connected ? 'is' : 'is not') + ' connected to INOA Cloud.' }}"
+			>
+			</mat-icon>
 
-            <!-- alert status icon -->
-            <mat-icon
-                [class.alert-indicator-icon]="alert"
-                [class.alert-indicator-icon-no-shake]="!alert"
-                fontIcon="{{ alert ? 'notification_important' : 'notifications_off' }}"
-                [style.color]="alert ? 'red' : 'darkgrey'"
-                matTooltip="{{ (alert ? 'There are alerts' : 'No alerts') + ' for this Satellite.' }}">
-            </mat-icon>
+			<!-- alert status icon -->
+			<mat-icon
+				[class.alert-indicator-icon]="alert"
+				[class.alert-indicator-icon-no-shake]="!alert"
+				fontIcon="{{ alert ? 'notification_important' : 'notifications_off' }}"
+				[style.color]="alert ? 'red' : 'darkgrey'"
+				matTooltip="{{ (alert ? 'There are alerts' : 'No alerts') + ' for this Satellite.' }}"
+			>
+			</mat-icon>
 
-            <!-- deselect gateway button -->
-            <button
-                class="deselect-gateway-button"
-                mat-fab
-                (click)="deselectGateway()">
-                <mat-icon>close</mat-icon>
-            </button>
-        </mat-card-content>
-    </mat-card>
+			<!-- deselect gateway button -->
+			<button class="deselect-gateway-button" mat-fab (click)="deselectGateway()">
+				<mat-icon>close</mat-icon>
+			</button>
+		</mat-card-content>
+	</mat-card>
 
-    <mat-tab-group
-        class="gateway-table-tab-group"
-        mat-stretch-tabs="false"
-        mat-align-tabs="start"
-        [(selectedIndex)]="selectedTabIndex"
-        headerPosition="above"
-        animationDuration="300ms"
-        backgroundColor="primary">
-        <!-- Overview -->
-        <mat-tab label="Overview">
-            <div class="gateway-card-container">
-                <div class="loading-overlay-container">
-                    <gc-gateway-overview></gc-gateway-overview>
+	<mat-tab-group
+		class="gateway-table-tab-group"
+		mat-stretch-tabs="false"
+		mat-align-tabs="start"
+		[(selectedIndex)]="selectedTabIndex"
+		headerPosition="above"
+		animationDuration="300ms"
+		backgroundColor="primary"
+	>
+		<!-- Overview -->
+		<mat-tab label="Overview">
+			<div class="gateway-card-container">
+				<div class="loading-overlay-container">
+					<gc-gateway-overview></gc-gateway-overview>
 
-                    <!-- loading indicator overlay -->
-                    <div
-                        class="loading-overlay"
-                        *ngIf="intercomService.isLoadingSysInfo">
-                        <ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
-                    </div>
-                </div>
-            </div>
-        </mat-tab>
+					<!-- loading indicator overlay -->
+					<div class="loading-overlay" *ngIf="intercomService.isLoadingSysInfo">
+						<ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
+					</div>
+				</div>
+			</div>
+		</mat-tab>
 
-        <!-- Configuration -->
-        <mat-tab label="Configuration">
-            <div class="gateway-card-container">
-                <div class="loading-overlay-container">
-                    <gc-gateway-configuration></gc-gateway-configuration>
+		<!-- Configuration -->
+		<mat-tab label="Configuration">
+			<div class="gateway-card-container">
+				<div class="loading-overlay-container">
+					<gc-gateway-configuration></gc-gateway-configuration>
 
-                    <!-- loading indicator overlay -->
-                    <div
-                        class="loading-overlay"
-                        *ngIf="intercomService.isLoadingConfig">
-                        <ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
-                    </div>
-                </div>
-            </div>
-        </mat-tab>
+					<!-- loading indicator overlay -->
+					<div class="loading-overlay" *ngIf="intercomService.isLoadingConfig">
+						<ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
+					</div>
+				</div>
+			</div>
+		</mat-tab>
 
-        <!-- datapoints -->
-        <mat-tab label="Datapoints">
-            <gc-gateway-datapoints></gc-gateway-datapoints>
-        </mat-tab>
+		<!-- datapoints -->
+		<mat-tab label="Datapoints">
+			<gc-gateway-datapoints></gc-gateway-datapoints>
+		</mat-tab>
 
-        <mat-tab
-            label="RPC Console"
-            *ngIf="intercomService.selectedGatewayId && intercomService.expertMode">
-            <div class="gateway-card-container">
-                <mat-card class="card-gateway-console card-gateway-shadow">
-                    <mat-card-header>
-                        <div
-                            mat-card-avatar
-                            style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
-                        <mat-card-title>RPC Command Editor for</mat-card-title>
-                        <mat-card-subtitle>{{ intercomService.selectedGateway?.name }} ({{ intercomService.selectedGateway?.gateway_id }})</mat-card-subtitle>
-                    </mat-card-header>
+		<mat-tab label="RPC Console" *ngIf="intercomService.selectedGatewayId && intercomService.expertMode">
+			<div class="gateway-card-container">
+				<mat-card class="card-gateway-console card-gateway-shadow">
+					<mat-card-header>
+						<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+						<mat-card-title>RPC Command Editor for</mat-card-title>
+						<mat-card-subtitle>{{ intercomService.selectedGateway?.name }} ({{ intercomService.selectedGateway?.gateway_id }})</mat-card-subtitle>
+					</mat-card-header>
 
-                    <mat-card-content class="mat-card-content-console">
-                        <ngx-monaco-editor
-                            class="monaco-editor"
-                            [options]="monacoOptions"
-                            [(ngModel)]="jsonCode">
-                        </ngx-monaco-editor>
-                    </mat-card-content>
+					<mat-card-content class="mat-card-content-console">
+						<ngx-monaco-editor class="monaco-editor" [options]="monacoOptions" [(ngModel)]="jsonCode"> </ngx-monaco-editor>
+					</mat-card-content>
 
-                    <mat-card-actions
-                        class="card-actions"
-                        align="end">
-                        <!-- send button -->
-                        <button
-                            mat-raised-button
-                            color="warn"
-                            class="console-action-button"
-                            (click)="sendRPC()">
-                            <mat-icon>upload</mat-icon>
-                            <span>Send</span>
-                        </button>
-                    </mat-card-actions>
-                </mat-card>
+					<mat-card-actions class="card-actions" align="end">
+						<!-- send button -->
+						<button mat-raised-button color="warn" class="console-action-button" (click)="sendRPC()">
+							<mat-icon>upload</mat-icon>
+							<span>Send</span>
+						</button>
+					</mat-card-actions>
+				</mat-card>
 
-                <gc-rpc-history-panel></gc-rpc-history-panel>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
+				<gc-rpc-history-panel></gc-rpc-history-panel>
+			</div>
+		</mat-tab>
+	</mat-tab-group>
 
-    <!-- actions card (a place for all the buttons that have not found a home yet) -->
-    <mat-card class="card-gateway-actions card-gateway-shadow">
-        <mat-card-content class="mat-card-content-gateway-actions">
-            <!-- enable button -->
-            <mat-slide-toggle
-                class="gateway-enabled-toggle"
-                [checked]="intercomService.selectedGateway?.enabled"
-                (change)="toggleEnabledClick(intercomService.selectedGateway!, $event.checked)"
-                [matTooltip]="'Satellite is ' + (intercomService.selectedGateway?.enabled ? 'allowed' : 'not allowed') + ' to connect to INOA Cloud.'">
-            </mat-slide-toggle>
+	<!-- actions card (a place for all the buttons that have not found a home yet) -->
+	<mat-card class="card-gateway-actions card-gateway-shadow">
+		<mat-card-content class="mat-card-content-gateway-actions">
+			<!-- enable button -->
+			<mat-slide-toggle
+				class="gateway-enabled-toggle"
+				[checked]="intercomService.selectedGateway?.enabled"
+				(change)="toggleEnabledClick(intercomService.selectedGateway!, $event.checked)"
+				[matTooltip]="'Satellite is ' + (intercomService.selectedGateway?.enabled ? 'allowed' : 'not allowed') + ' to connect to INOA Cloud.'"
+			>
+			</mat-slide-toggle>
 
-            <!-- filler div -->
-            <div style="flex: 1"></div>
+			<!-- filler div -->
+			<div style="flex: 1"></div>
 
-            <!-- restart button -->
-            <button
-                (click)="restartClick(intercomService.selectedGateway, $event)"
-                mat-raised-button
-                color="warn"
-                class="gateway-detail-action-button">
-                <mat-icon>restart_alt</mat-icon>
-                <span>Restart</span>
-            </button>
-        </mat-card-content>
-    </mat-card>
+			<!-- restart button -->
+			<button (click)="restartClick(intercomService.selectedGateway, $event)" mat-raised-button color="warn" class="gateway-detail-action-button">
+				<mat-icon>restart_alt</mat-icon>
+				<span>Restart</span>
+			</button>
+		</mat-card-content>
+	</mat-card>
 </div>

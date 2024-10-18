@@ -4,7 +4,6 @@ when:
     branch: main
 
 steps:
-
   backstage:
     image: ghcr.io/grayc-de/plugins/backstage-entity-validator
     depends_on: []
@@ -21,29 +20,7 @@ steps:
     when: [path: [fluxcd/**]]
 
   maven:
-    image: ghcr.io/grayc-de/plugins/maven
+    image: ghcr.io/grayc-de/plugins/inoa
     depends_on: []
     commands: [mvn validate]
     when: [path: ["**/*.java", "**/pom.xml"]]
-
-  markdown:
-    image: ghcr.io/grayc-de/plugins/markdownlint
-    depends_on: []
-    when: [path: ["**/*.md", .markdownlint.yaml]]
-
-  shell:
-    image: ghcr.io/grayc-de/plugins/shellcheck
-    depends_on: []
-    when: [path: ["**/*.sh"]]
-
-  yaml:
-    image: ghcr.io/grayc-de/plugins/yamllint
-    depends_on: []
-    when: [path: ["**/*.yaml", .yamllint.yaml]]
-
-  yarn:
-    image: ghcr.io/grayc-de/plugins/node:20
-    depends_on: []
-    directory: app
-    commands: [yarn config --no-defaults, yarn install --immutable, yarn lint]
-    when: [path: [app/**]]

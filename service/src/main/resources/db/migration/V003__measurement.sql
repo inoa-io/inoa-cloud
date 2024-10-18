@@ -1,45 +1,47 @@
-CREATE TABLE
-    thing_type (
-        id SERIAL NOT NULL,
-        thing_type_id VARCHAR(100) NOT NULL,
-        name VARCHAR(100) NOT NULL,
-        json_schema VARCHAR(10000) NOT NULL,
-        ui_layout VARCHAR(10000) NOT NULL,
-        created TIMESTAMP NOT NULL,
-        updated TIMESTAMP NOT NULL,
-        CONSTRAINT pk_thing_type PRIMARY KEY (id),
-        CONSTRAINT uq_thing_type_thing_type_id UNIQUE (thing_type_id)
-    );
+CREATE
+    TABLE
+        thing_type(
+            id SERIAL NOT NULL,
+            thing_type_id VARCHAR(100) NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            json_schema VARCHAR(10000) NOT NULL,
+            ui_layout VARCHAR(10000) NOT NULL,
+            created TIMESTAMP NOT NULL,
+            updated TIMESTAMP NOT NULL,
+            CONSTRAINT pk_thing_type PRIMARY KEY(id),
+            CONSTRAINT uq_thing_type_thing_type_id UNIQUE(thing_type_id)
+        );
 
-CREATE TABLE
-    thing (
-        id SERIAL NOT NULL,
-        thing_id UUID NOT NULL,
-        tenant_id VARCHAR(100) NOT NULL,
-        gateway_id VARCHAR(100) NULL,
-        urn VARCHAR(255) NULL,
-        name VARCHAR(100) NOT NULL,
-        config VARCHAR(10000) NOT NULL,
-        thing_type_id INTEGER NOT NULL,
-        created TIMESTAMP NOT NULL,
-        updated TIMESTAMP NOT NULL,
-        CONSTRAINT pk_thing PRIMARY KEY (id),
-        CONSTRAINT uq_thing_thing_id UNIQUE (thing_id),
-        CONSTRAINT fk_thing_thing_type_id FOREIGN KEY (thing_type_id) REFERENCES thing_type (id)
-    );
+CREATE
+    TABLE
+        thing(
+            id SERIAL NOT NULL,
+            thing_id UUID NOT NULL,
+            tenant_id VARCHAR(100) NOT NULL,
+            gateway_id VARCHAR(100) NULL,
+            urn VARCHAR(255) NULL,
+            name VARCHAR(100) NOT NULL,
+            config VARCHAR(10000) NOT NULL,
+            thing_type_id INTEGER NOT NULL,
+            created TIMESTAMP NOT NULL,
+            updated TIMESTAMP NOT NULL,
+            CONSTRAINT pk_thing PRIMARY KEY(id),
+            CONSTRAINT uq_thing_thing_id UNIQUE(thing_id),
+            CONSTRAINT fk_thing_thing_type_id FOREIGN KEY(thing_type_id) REFERENCES thing_type(id)
+        );
 
-INSERT INTO
-    thing_type (
-        id,
-        thing_type_id,
-        name,
-        json_schema,
-        ui_layout,
-        created,
-        updated
-    )
-VALUES
-    (
+INSERT
+    INTO
+        thing_type(
+            id,
+            thing_type_id,
+            name,
+            json_schema,
+            ui_layout,
+            created,
+            updated
+        )
+    VALUES(
         1,
         'dvmodbusir',
         'DvModbusIR',
@@ -49,18 +51,18 @@ VALUES
         CURRENT_TIMESTAMP
     );
 
-INSERT INTO
-    thing_type (
-        id,
-        thing_type_id,
-        name,
-        json_schema,
-        ui_layout,
-        created,
-        updated
-    )
-VALUES
-    (
+INSERT
+    INTO
+        thing_type(
+            id,
+            thing_type_id,
+            name,
+            json_schema,
+            ui_layout,
+            created,
+            updated
+        )
+    VALUES(
         4,
         's0',
         'S0',
@@ -70,18 +72,18 @@ VALUES
         CURRENT_TIMESTAMP
     );
 
-INSERT INTO
-    thing_type (
-        id,
-        thing_type_id,
-        name,
-        json_schema,
-        ui_layout,
-        created,
-        updated
-    )
-VALUES
-    (
+INSERT
+    INTO
+        thing_type(
+            id,
+            thing_type_id,
+            name,
+            json_schema,
+            ui_layout,
+            created,
+            updated
+        )
+    VALUES(
         5,
         'dvh4013',
         'DZG DVH4013',
@@ -91,18 +93,18 @@ VALUES
         CURRENT_TIMESTAMP
     );
 
-INSERT INTO
-    thing_type (
-        id,
-        thing_type_id,
-        name,
-        json_schema,
-        ui_layout,
-        created,
-        updated
-    )
-VALUES
-    (
+INSERT
+    INTO
+        thing_type(
+            id,
+            thing_type_id,
+            name,
+            json_schema,
+            ui_layout,
+            created,
+            updated
+        )
+    VALUES(
         6,
         'shplg-s',
         'Shelly Plug S',
@@ -112,18 +114,18 @@ VALUES
         CURRENT_TIMESTAMP
     );
 
-INSERT INTO
-    thing_type (
-        id,
-        thing_type_id,
-        name,
-        json_schema,
-        ui_layout,
-        created,
-        updated
-    )
-VALUES
-    (
+INSERT
+    INTO
+        thing_type(
+            id,
+            thing_type_id,
+            name,
+            json_schema,
+            ui_layout,
+            created,
+            updated
+        )
+    VALUES(
         7,
         'mdvh4006',
         'DZG MDVH4006',

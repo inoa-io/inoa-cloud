@@ -46,7 +46,7 @@
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #FFFFFFAA;
+	background-color: #ffffffaa;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -124,31 +124,31 @@
 }
 
 .thing-config-element-detail {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 .config-code {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    max-width: 100%;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	max-width: 100%;
 }
 
 .thing-config-detail-row {
-    height: 0;
+	height: 0;
 }
 
 .thing-config-row:hover {
-    background: whitesmoke;
+	background: whitesmoke;
 }
 
 .satellite-things-table {
-    width: 100%;
+	width: 100%;
 }
 
 .mat-column-expanded_detail {
-    border: none;
+	border: none;
 }
 
 .mat-column-match {

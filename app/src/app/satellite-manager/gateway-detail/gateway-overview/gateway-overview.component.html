@@ -1,106 +1,96 @@
 <!-- overview card -->
 <mat-card class="card-gateway-overview card-gateway-shadow satellite-background">
-    <mat-card-header>
-        <div
-            mat-card-avatar
-            style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
-        <mat-card-title>Change satellite configuration for</mat-card-title>
-        <mat-card-subtitle>
-            <div class="gateway-status-container">
-                <span>{{ intercomService.selectedGateway?.gateway_id }} ({{ intercomService.selectedGateway?.name }})</span>
-            </div>
-        </mat-card-subtitle>
-    </mat-card-header>
+	<mat-card-header>
+		<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+		<mat-card-title>Change satellite configuration for</mat-card-title>
+		<mat-card-subtitle>
+			<div class="gateway-status-container">
+				<span>{{ intercomService.selectedGateway?.gateway_id }} ({{ intercomService.selectedGateway?.name }})</span>
+			</div>
+		</mat-card-subtitle>
+	</mat-card-header>
 
-    <mat-card-content class="mat-card-content-overview">
-        <div class="overview-container">
-            <div class="overview-table">
-                <!-- serial info -->
-                <div class="overview-table-row">
-                    <div><div class="overview-table-column-title">Serial Number:</div></div>
-                    <div class="overview-item-container">
-                        <p class="overview-part">{{ intercomService.selectedGateway?.gateway_id }}</p>
-                    </div>
-                    <div class="overview-table-column-actions"></div>
-                </div>
+	<mat-card-content class="mat-card-content-overview">
+		<div class="overview-container">
+			<div class="overview-table">
+				<!-- serial info -->
+				<div class="overview-table-row">
+					<div><div class="overview-table-column-title">Serial Number:</div></div>
+					<div class="overview-item-container">
+						<p class="overview-part">{{ intercomService.selectedGateway?.gateway_id }}</p>
+					</div>
+					<div class="overview-table-column-actions"></div>
+				</div>
 
-                <!-- name info -->
-                <div class="overview-table-row">
-                    <div><div class="overview-table-column-title">Name:</div></div>
-                    <div class="overview-item-container">
-                        <p class="overview-part">{{ intercomService.selectedGateway?.name }}</p>
-                    </div>
-                    <div class="overview-table-column-actions">
-                        <button
-                            (click)="renameSatelliteClick(intercomService.selectedGateway, $event)"
-                            class="overview-button"
-                            mat-icon-button>
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </div>
-                </div>
+				<!-- name info -->
+				<div class="overview-table-row">
+					<div><div class="overview-table-column-title">Name:</div></div>
+					<div class="overview-item-container">
+						<p class="overview-part">{{ intercomService.selectedGateway?.name }}</p>
+					</div>
+					<div class="overview-table-column-actions">
+						<button (click)="renameSatelliteClick(intercomService.selectedGateway, $event)" class="overview-button" mat-icon-button>
+							<mat-icon>edit</mat-icon>
+						</button>
+					</div>
+				</div>
 
-                <!-- tenant info -->
-                <div class="overview-table-row">
-                    <div><div class="overview-table-column-title">Tenant:</div></div>
-                    <div class="overview-item-container">
-                        <!-- TODO: add tenant info here -->
-                        <p class="overview-part">- Coming Soon -</p>
-                    </div>
-                    <div class="overview-table-column-actions">
-                        <button
-                            class="overview-button"
-                            mat-icon-button
-                            disabled>
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </div>
-                </div>
+				<!-- tenant info -->
+				<div class="overview-table-row">
+					<div><div class="overview-table-column-title">Tenant:</div></div>
+					<div class="overview-item-container">
+						<!-- TODO: add tenant info here -->
+						<p class="overview-part">- Coming Soon -</p>
+					</div>
+					<div class="overview-table-column-actions">
+						<button class="overview-button" mat-icon-button disabled>
+							<mat-icon>edit</mat-icon>
+						</button>
+					</div>
+				</div>
 
-                <!-- location info -->
-                <div class="overview-table-row">
-                    <div><div class="overview-table-column-title">Location:</div></div>
-                    <div class="overview-item-container">
-                        <!-- TODO: add location info here -->
-                        <p class="overview-part">- Coming Soon -</p>
-                    </div>
-                    <div class="overview-table-column-actions">
-                        <button
-                            class="overview-button"
-                            mat-icon-button
-                            disabled>
-                            <mat-icon>edit</mat-icon>
-                        </button>
-                    </div>
-                </div>
+				<!-- location info -->
+				<div class="overview-table-row">
+					<div><div class="overview-table-column-title">Location:</div></div>
+					<div class="overview-item-container">
+						<!-- TODO: add location info here -->
+						<p class="overview-part">- Coming Soon -</p>
+					</div>
+					<div class="overview-table-column-actions">
+						<button class="overview-button" mat-icon-button disabled>
+							<mat-icon>edit</mat-icon>
+						</button>
+					</div>
+				</div>
 
-                <!-- hardware info -->
-                <div class="overview-table-row">
-                    <div><div class="overview-table-column-title">Hardware-Version:</div></div>
-                    <div class="overview-item-container">
-                        <p class="overview-part">{{ sysData["hardwareRevision"] }}</p>
-                    </div>
-                    <div class="overview-table-column-actions"></div>
-                </div>
+				<!-- hardware info -->
+				<div class="overview-table-row">
+					<div><div class="overview-table-column-title">Hardware-Version:</div></div>
+					<div class="overview-item-container">
+						<p class="overview-part">{{ sysData["hardwareRevision"] }}</p>
+					</div>
+					<div class="overview-table-column-actions"></div>
+				</div>
 
-                <!-- software info -->
-                <div class="overview-table-row-no-border">
-                    <div><div class="overview-table-column-title">Software-Version:</div></div>
-                    <div class="overview-item-container">
-                        <p class="overview-part">{{ sysData["buildRevision"] }} ({{ sysData["buildDate"] }})</p>
-                    </div>
-                    <div class="overview-table-column-actions">
-                        <!-- update status -->
-                        <mat-icon
-                            [class.update-status-icon-available]="updateAvailable"
-                            [class.update-status-icon-unavailable]="!updateAvailable"
-                            fontIcon="cached"
-                            [style.color]="updateAvailable ? 'green' : 'grey'"
-                            matTooltip="{{ (updateAvailable ? 'Update' : 'No new versions') + ' available.' }}">
-                        </mat-icon>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </mat-card-content>
+				<!-- software info -->
+				<div class="overview-table-row-no-border">
+					<div><div class="overview-table-column-title">Software-Version:</div></div>
+					<div class="overview-item-container">
+						<p class="overview-part">{{ sysData["buildRevision"] }} ({{ sysData["buildDate"] }})</p>
+					</div>
+					<div class="overview-table-column-actions">
+						<!-- update status -->
+						<mat-icon
+							[class.update-status-icon-available]="updateAvailable"
+							[class.update-status-icon-unavailable]="!updateAvailable"
+							fontIcon="cached"
+							[style.color]="updateAvailable ? 'green' : 'grey'"
+							matTooltip="{{ (updateAvailable ? 'Update' : 'No new versions') + ' available.' }}"
+						>
+						</mat-icon>
+					</div>
+				</div>
+			</div>
+		</div>
+	</mat-card-content>
 </mat-card>

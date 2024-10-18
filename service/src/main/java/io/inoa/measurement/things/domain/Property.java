@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Property {
-	private String key;
-	private Object value;
+  private String key;
+  private Object value;
 }

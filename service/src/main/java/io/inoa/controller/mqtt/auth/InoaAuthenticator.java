@@ -9,16 +9,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InoaAuthenticator implements IAuthenticator {
 
-	@Override
-	public boolean checkValid(String clientId, String username, byte[] password) {
+  @Override
+  public boolean checkValid(String clientId, String username, byte[] password) {
 
-		var gateway = MqttGatewayIdentifier.of(username);
-		if (gateway == null) {
-			return false;
-		}
+    var gateway = MqttGatewayIdentifier.of(username);
+    if (gateway == null) {
+      return false;
+    }
 
-		log.error("Autorized {}/{}", gateway.tenantId(), gateway.gatewayId());
+    log.error("Autorized {}/{}", gateway.tenantId(), gateway.gatewayId());
 
-		return true;
-	}
+    return true;
+  }
 }

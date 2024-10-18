@@ -1,11 +1,10 @@
 package io.inoa.controller.translator.converter.common;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import io.inoa.controller.translator.AbstractTranslatorTest;
 import io.inoa.messaging.TelemetryRawVO;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link JsonPathConverter}.
@@ -15,12 +14,15 @@ import jakarta.inject.Inject;
 @DisplayName("translator: converter json-path")
 public class JsonPathConverterTest extends AbstractTranslatorTest {
 
-	@Inject JsonPathConverter converter;
+  @Inject JsonPathConverter converter;
 
-	@DisplayName("success")
-	@Test
-	void success() {
-		var raw = TelemetryRawVO.of("urn:shellyplug-s:0A1B2C:status", """
+  @DisplayName("success")
+  @Test
+  void success() {
+    var raw =
+        TelemetryRawVO.of(
+            "urn:shellyplug-s:0A1B2C:status",
+            """
 				{
 					"wifi_sta": {
 						"connected": true,
@@ -74,15 +76,17 @@ public class JsonPathConverterTest extends AbstractTranslatorTest {
 					"uptime": 72
 				}
 				""");
-		var messages = convert(converter, raw, "shellyplug-s", "status");
-		assertCount(3, messages);
-	}
+    var messages = convert(converter, raw, "shellyplug-s", "status");
+    assertCount(3, messages);
+  }
 
-	@DisplayName("invalid JSON input")
-	@Test
-	void invalidInput() {
-		var raw = TelemetryRawVO.of("urn:shellyplug-s:0A1B2C:status", "{\"wifi_sta\"::{\"connected\":true,\"ssid\":\"");
-		var messages = convert(converter, raw, "shellyplug-s", "status");
-		assertCount(0, messages);
-	}
+  @DisplayName("invalid JSON input")
+  @Test
+  void invalidInput() {
+    var raw =
+        TelemetryRawVO.of(
+            "urn:shellyplug-s:0A1B2C:status", "{\"wifi_sta\"::{\"connected\":true,\"ssid\":\"");
+    var messages = convert(converter, raw, "shellyplug-s", "status");
+    assertCount(0, messages);
+  }
 }

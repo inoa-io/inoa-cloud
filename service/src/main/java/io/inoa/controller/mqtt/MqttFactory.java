@@ -1,14 +1,5 @@
 package io.inoa.controller.mqtt;
 
-import java.security.Security;
-import java.security.cert.CertificateException;
-import java.util.Properties;
-
-import javax.net.ssl.SSLException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.micronaut.context.annotation.Factory;
 import io.moquette.broker.ISslContextCreator;
 import io.moquette.broker.config.IConfig;
@@ -19,6 +10,12 @@ import io.netty.handler.ssl.SslProtocols;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
+import java.security.Security;
+import java.security.cert.CertificateException;
+import java.util.Properties;
+import javax.net.ssl.SSLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Factory for mqtt broker.
@@ -28,45 +25,46 @@ import jakarta.inject.Singleton;
 @Factory
 public class MqttFactory {
 
-	private static final Logger log = LoggerFactory.getLogger(MqttFactory.class);
+  private static final Logger log = LoggerFactory.getLogger(MqttFactory.class);
 
-	@PostConstruct
-	void log() {
-		log.info("Starting controller: {}", getClass().getPackage().getName());
-		Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
-	}
+  @PostConstruct
+  void log() {
+    log.info("Starting controller: {}", getClass().getPackage().getName());
+    Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+  }
 
-	@Singleton
-	IConfig config(MqttProperties properties) {
-		log.info("Configuration: {}", properties);
-		var config = new MemoryConfig(new Properties());
-		config.setProperty(IConfig.ALLOW_ANONYMOUS_PROPERTY_NAME, String.valueOf(false));
-		config.setProperty(IConfig.HOST_PROPERTY_NAME, properties.getHost());
-		config.setProperty(IConfig.PORT_PROPERTY_NAME, String.valueOf(properties.getPort()));
-		config.setProperty(IConfig.SSL_PORT_PROPERTY_NAME, String.valueOf(properties.getTls().getPort()));
-		config.setProperty(IConfig.PERSISTENCE_ENABLED_PROPERTY_NAME, String.valueOf(false));
-		// Immediate flush to avoid timing issues in tests or dependant clients
-		config.setProperty(IConfig.BUFFER_FLUSH_MS_PROPERTY_NAME, String.valueOf(0));
-		config.setProperty(IConfig.ENABLE_TELEMETRY_NAME, "false");
-		return config;
-	}
+  @Singleton
+  IConfig config(MqttProperties properties) {
+    log.info("Configuration: {}", properties);
+    var config = new MemoryConfig(new Properties());
+    config.setProperty(IConfig.ALLOW_ANONYMOUS_PROPERTY_NAME, String.valueOf(false));
+    config.setProperty(IConfig.HOST_PROPERTY_NAME, properties.getHost());
+    config.setProperty(IConfig.PORT_PROPERTY_NAME, String.valueOf(properties.getPort()));
+    config.setProperty(
+        IConfig.SSL_PORT_PROPERTY_NAME, String.valueOf(properties.getTls().getPort()));
+    config.setProperty(IConfig.PERSISTENCE_ENABLED_PROPERTY_NAME, String.valueOf(false));
+    // Immediate flush to avoid timing issues in tests or dependant clients
+    config.setProperty(IConfig.BUFFER_FLUSH_MS_PROPERTY_NAME, String.valueOf(0));
+    config.setProperty(IConfig.ENABLE_TELEMETRY_NAME, "false");
+    return config;
+  }
 
-	@Singleton
-	SslContext sslContext(MqttProperties properties) throws SSLException, CertificateException {
-		SslContextBuilder builder;
-		var tls = properties.getTls();
-		if (tls.isGenerateKey()) {
-			var cert = new SelfSignedCertificate();
-			builder = SslContextBuilder.forServer(cert.key(), cert.cert());
-		} else {
-			builder = SslContextBuilder.forServer(tls.getCert().toFile(), tls.getKey().toFile());
-		}
-		return builder.protocols(SslProtocols.TLS_v1_2).build();
-	}
+  @Singleton
+  SslContext sslContext(MqttProperties properties) throws SSLException, CertificateException {
+    SslContextBuilder builder;
+    var tls = properties.getTls();
+    if (tls.isGenerateKey()) {
+      var cert = new SelfSignedCertificate();
+      builder = SslContextBuilder.forServer(cert.key(), cert.cert());
+    } else {
+      builder = SslContextBuilder.forServer(tls.getCert().toFile(), tls.getKey().toFile());
+    }
+    return builder.protocols(SslProtocols.TLS_v1_2).build();
+  }
 
-	// TODO Dokumentieren warum das gebraucht wird.
-	@Singleton
-	ISslContextCreator sslContextCreator(SslContext sslContext) {
-		return () -> sslContext;
-	}
+  // TODO Dokumentieren warum das gebraucht wird.
+  @Singleton
+  ISslContextCreator sslContextCreator(SslContext sslContext) {
+    return () -> sslContext;
+  }
 }

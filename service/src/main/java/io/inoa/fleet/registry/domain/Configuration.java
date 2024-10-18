@@ -7,7 +7,7 @@ package io.inoa.fleet.registry.domain;
  */
 public interface Configuration {
 
-	ConfigurationDefinition getDefinition();
+  ConfigurationDefinition getDefinition();
 
-	String getValue();
+  String getValue();
 }

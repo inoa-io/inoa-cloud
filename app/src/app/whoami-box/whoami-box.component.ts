@@ -3,9 +3,9 @@ import { InternalCommunicationService } from "../services/internal-communication
 import { AuthService } from "@inoa/api";
 
 @Component({
-    selector: "gc-whoami-box",
-    templateUrl: "./whoami-box.component.html",
-    styleUrls: ["./whoami-box.component.css"]
+	selector: "gc-whoami-box",
+	templateUrl: "./whoami-box.component.html",
+	styleUrls: ["./whoami-box.component.css"]
 })
 export class WhoamiBoxComponent implements AfterViewInit {
     whoami$ = this.authService.whoami();
@@ -25,12 +25,12 @@ export class WhoamiBoxComponent implements AfterViewInit {
         }, 1000);
     }
 
-    //this is just to make time calculations work like they should
-    adjustForTimezone(date: Date): Date {
-        const timeOffsetInMS: number = date.getTimezoneOffset() * 60000;
-        date.setTime(date.getTime() + timeOffsetInMS);
-        return date;
-    }
+	//this is just to make time calculations work like they should
+	adjustForTimezone(date: Date): Date {
+		const timeOffsetInMS: number = date.getTimezoneOffset() * 60000;
+		date.setTime(date.getTime() + timeOffsetInMS);
+		return date;
+	}
 
     ngAfterViewInit() {
         this.whoami$.subscribe(data =>
@@ -47,39 +47,39 @@ export class WhoamiBoxComponent implements AfterViewInit {
         });
     }
 
-    //calculates the mini spinner progress to show how much session time is left and the time left for the tooltip
-    recalcSessionTimeSpinnerProgress() {
-        const timeFormattingOptions: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric", second: "numeric" };
+	//calculates the mini spinner progress to show how much session time is left and the time left for the tooltip
+	recalcSessionTimeSpinnerProgress() {
+		const timeFormattingOptions: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric", second: "numeric" };
 
-        const nowTime = Date.now();
-        const sessionExpirationTime = this.sessionExpirationDate.getTime();
-        const sessionStartTime = this.sessionStartDate.getTime();
+		const nowTime = Date.now();
+		const sessionExpirationTime = this.sessionExpirationDate.getTime();
+		const sessionStartTime = this.sessionStartDate.getTime();
 
-        const timeLeftInSession = sessionExpirationTime - nowTime;
-        const sessionLength = sessionExpirationTime - sessionStartTime;
-        const timeInSession = nowTime - sessionStartTime;
+		const timeLeftInSession = sessionExpirationTime - nowTime;
+		const sessionLength = sessionExpirationTime - sessionStartTime;
+		const timeInSession = nowTime - sessionStartTime;
 
-        const timeLeftDate = new Date(timeLeftInSession);
+		const timeLeftDate = new Date(timeLeftInSession);
 
-        //only show time left while there is actually still time left
-        if (timeLeftInSession > 0) {
-            this.sessionTimeLeftString = "This session expires in: " + this.adjustForTimezone(timeLeftDate).toLocaleString("de-De", timeFormattingOptions);
-            this.sessionPercentLeft = 100 - (timeInSession / sessionLength) * 100;
-        } else {
-            this.sessionTimeLeftString = "Session expired";
-            this.sessionPercentLeft = 0;
-        }
-    }
+		//only show time left while there is actually still time left
+		if (timeLeftInSession > 0) {
+			this.sessionTimeLeftString = "This session expires in: " + this.adjustForTimezone(timeLeftDate).toLocaleString("de-De", timeFormattingOptions);
+			this.sessionPercentLeft = 100 - (timeInSession / sessionLength) * 100;
+		} else {
+			this.sessionTimeLeftString = "Session expired";
+			this.sessionPercentLeft = 0;
+		}
+	}
 
-    //open user manual in new window
-    onUserManualButtonPressed() {
-        window.open(window.location + "docs", "_blank");
-    }
+	//open user manual in new window
+	onUserManualButtonPressed() {
+		window.open(window.location + "docs", "_blank");
+	}
 
-    //logout
-    onLogoutButtonPressed() {
-        window.open("/oauth/logout", "_self");
-    }
+	//logout
+	onLogoutButtonPressed() {
+		window.open("/oauth/logout", "_self");
+	}
 
 	toggleExpertMode() {
 		this.intercomService.expertMode = !this.intercomService.expertMode;

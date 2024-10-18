@@ -1,4 +1,3 @@
 creation_rules:
-
   - path_regex: ^.*/.*.env$
     gcp_kms: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd

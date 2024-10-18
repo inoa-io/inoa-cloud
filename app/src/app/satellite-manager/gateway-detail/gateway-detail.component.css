@@ -187,7 +187,7 @@ th {
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #FFFFFFAA;
+	background-color: #ffffffaa;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -214,34 +214,34 @@ th {
 }
 
 .alert-indicator-icon-no-shake {
-    scale: 1.5;
-    margin-right: 75px;
-    margin-top: 8px;
+	scale: 1.5;
+	margin-right: 75px;
+	margin-top: 8px;
 }
 
 .alert-indicator-icon {
-    scale: 1.5;
-    margin-right: 75px;
-    margin-top: 8px;
-    animation: shake 0.5s infinite alternate;
+	scale: 1.5;
+	margin-right: 75px;
+	margin-top: 8px;
+	animation: shake 0.5s infinite alternate;
 }
 
 @keyframes shake {
-    0% {
-        transform: rotate(0deg);
-    }
-    25% {
-        transform: rotate(10deg);
-    }
-    50% {
-        transform: rotate(0deg);
-    }
-    75% {
-        transform: rotate(-10deg);
-    }
-    100% {
-        transform: rotate(0deg);
-    }
+	0% {
+		transform: rotate(0deg);
+	}
+	25% {
+		transform: rotate(10deg);
+	}
+	50% {
+		transform: rotate(0deg);
+	}
+	75% {
+		transform: rotate(-10deg);
+	}
+	100% {
+		transform: rotate(0deg);
+	}
 }
 
 .gateway-enabled-toggle {

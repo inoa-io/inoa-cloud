@@ -10,31 +10,24 @@ import io.micronaut.data.annotation.Relation.Kind;
 import lombok.Data;
 
 /*
-* A definition for a configuration.
-*
-* @author Stephan Schnabel
-*/
+ * A definition for a configuration.
+ *
+ * @author Stephan Schnabel
+ */
 @MappedEntity
 @Data
 public class ConfigurationDefinition {
 
-	@Id
-	@GeneratedValue
-	private Long id;
+  @Id @GeneratedValue private Long id;
 
-	@Relation(Kind.MANY_TO_ONE)
-	private Tenant tenant;
-	@MappedProperty
-	private String key;
-	@MappedProperty
-	private ConfigurationTypeVO type;
-	@MappedProperty
-	private String description;
+  @Relation(Kind.MANY_TO_ONE)
+  private Tenant tenant;
 
-	@MappedProperty
-	private Integer maximum;
-	@MappedProperty
-	private Integer minimum;
-	@MappedProperty
-	private String pattern;
+  @MappedProperty private String key;
+  @MappedProperty private ConfigurationTypeVO type;
+  @MappedProperty private String description;
+
+  @MappedProperty private Integer maximum;
+  @MappedProperty private Integer minimum;
+  @MappedProperty private String pattern;
 }

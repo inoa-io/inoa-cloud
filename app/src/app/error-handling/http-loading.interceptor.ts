@@ -6,15 +6,15 @@ import { InternalCommunicationService } from "../services/internal-communication
 
 @Injectable()
 export class HttpLoadingInterceptor implements HttpInterceptor {
-    constructor(private intercomService: InternalCommunicationService) {}
+	constructor(private intercomService: InternalCommunicationService) {}
 
-    intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-        this.intercomService.httpDataLoading = true;
+	intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+		this.intercomService.httpDataLoading = true;
 
-        return next.handle(request).pipe(
-            finalize(() => {
-                this.intercomService.httpDataLoading = false;
-            })
-        ) as Observable<HttpEvent<unknown>>;
-    }
+		return next.handle(request).pipe(
+			finalize(() => {
+				this.intercomService.httpDataLoading = false;
+			})
+		) as Observable<HttpEvent<unknown>>;
+	}
 }

@@ -1,16 +1,16 @@
-INSERT INTO
-    thing_type (
-        id,
-        thing_type_id,
-        protocol,
-        name,
-        category,
-        json_schema,
-        created,
-        updated
-    )
-VALUES
-    (
+INSERT
+    INTO
+        thing_type(
+            id,
+            thing_type_id,
+            protocol,
+            name,
+            category,
+            json_schema,
+            created,
+            updated
+        )
+    VALUES(
         9,
         'sct-013',
         'rms',

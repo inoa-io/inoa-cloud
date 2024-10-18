@@ -247,7 +247,6 @@ paths:
         429:
           description: Too many requests. The server will refuse further attempts and the client has to wait another second.
 
-
   /rest/v1/distributionsets:
     post:
       tags:

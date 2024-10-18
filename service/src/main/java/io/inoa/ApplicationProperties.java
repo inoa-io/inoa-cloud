@@ -11,7 +11,6 @@ import lombok.Setter;
 @Setter
 public class ApplicationProperties {
 
-	/** Definition of the domain this inoa instance is running on. */
-	private String domain = "domain";
-
+  /** Definition of the domain this inoa instance is running on. */
+  private String domain = "domain";
 }

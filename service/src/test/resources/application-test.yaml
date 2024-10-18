@@ -1,5 +1,4 @@
 micronaut:
-
   ## test client with increased read-timeout for debbuging
   http:
     client:

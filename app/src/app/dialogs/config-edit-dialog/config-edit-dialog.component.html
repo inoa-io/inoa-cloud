@@ -1,55 +1,40 @@
-<mat-toolbar
-    color="primary"
-    class="mat-elevation-z2">
-    <img
-        src="assets/inoa/satellite-color.png"
-        alt="INOA Satellite"
-        class="toolbar-icon" />
-    <span>Change Satellite Config</span>
+<mat-toolbar color="primary" class="mat-elevation-z2">
+	<img src="assets/inoa/satellite-color.png" alt="INOA Satellite" class="toolbar-icon" />
+	<span>Change Satellite Config</span>
 </mat-toolbar>
 
 <mat-dialog-content>
-
-    <div class="config-satellite-dialog">
-        <mat-form-field
-            *ngFor="let configName of data.configNames"
-            appearance="outline"
-            class="full-width">
-            <mat-label>{{ configLabels.get(configName) }}</mat-label>
-            <input
-                matInput
-                [type]="configName === 'wifiPassword' ? 'password' : 'text'"
-                spellcheck="false"
-                [(ngModel)]="data.configData[configName]"
-                [placeholder]="'Enter new value for ' + configLabels.get(configName)"
-                cdkFocusInitial />
-        </mat-form-field>
-    </div>
+	<div class="config-satellite-dialog">
+		<mat-form-field *ngFor="let configName of data.configNames" appearance="outline" class="full-width">
+			<mat-label>{{ configLabels.get(configName) }}</mat-label>
+			<input
+				matInput
+				[type]="configName === 'wifiPassword' ? 'password' : 'text'"
+				spellcheck="false"
+				[(ngModel)]="data.configData[configName]"
+				[placeholder]="'Enter new value for ' + configLabels.get(configName)"
+				cdkFocusInitial
+			/>
+		</mat-form-field>
+	</div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-    <!-- warning text -->
-    <p *ngIf="shouldWarn()" class="config-warning">
-        False configuration may result in communication loss.
-    </p>
+	<!-- warning text -->
+	<p *ngIf="shouldWarn()" class="config-warning">
+		False configuration may result in communication loss.
+	</p>
 
-    <!-- filler -->
-    <div style="flex: 1;"></div>
+	<!-- filler -->
+	<div style="flex: 1;"></div>
 
-    <!-- close button -->
-    <button
-        mat-raised-button
-        color="primary"
-        (click)="close()">
-        Cancel
-    </button>
+	<!-- close button -->
+	<button mat-raised-button color="primary" (click)="close()">
+		Cancel
+	</button>
 
-    <!-- save button -->
-    <button
-        mat-raised-button
-        [color]="shouldWarn() ? 'warn' : 'primary'"
-        [mat-dialog-close]="data"
-        (click)="save()">
-        Send
-    </button>
+	<!-- save button -->
+	<button mat-raised-button [color]="shouldWarn() ? 'warn' : 'primary'" [mat-dialog-close]="data" (click)="save()">
+		Send
+	</button>
 </mat-dialog-actions>

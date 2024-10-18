@@ -1990,7 +1990,7 @@ components:
         params:
           description: Parameters of the command as JSON object
           type: object
-          example: {uart: 1, frame: \"1603000D0004D6ED\"}
+          example: { uart: 1, frame: \"1603000D0004D6ED\" }
       required:
         - method
     RpcResponse:
@@ -2016,7 +2016,8 @@ components:
         result:
           description: Result of the command as JSON object
           type: object
-          example: [urn:shellyplug-s:483FDA1D3A03:status, urn:dvh4013:33011408:0x0002]
+          example:
+            [urn:shellyplug-s:483FDA1D3A03:status, urn:dvh4013:33011408:0x0002]
       required:
         - id
     ThingTypeId:

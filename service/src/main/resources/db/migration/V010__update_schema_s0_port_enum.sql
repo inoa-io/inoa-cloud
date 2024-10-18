@@ -1,5 +1,6 @@
 -- s0 update schema port enum
-UPDATE thing_type
+UPDATE
+    thing_type
 SET
     json_schema = '{
 			"title": "S0 Impulse Counter",
@@ -26,4 +27,4 @@ SET
 			}
 		}'
 WHERE
-	thing_type_id = 's0';
+    thing_type_id = 's0';

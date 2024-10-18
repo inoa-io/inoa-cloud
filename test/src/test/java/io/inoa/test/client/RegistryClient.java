@@ -12,16 +12,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class RegistryClient {
 
-	private final KeycloakClient keycloak;
-	private final GatewaysApiTestClient gatewaysClient;
+  private final KeycloakClient keycloak;
+  private final GatewaysApiTestClient gatewaysClient;
 
-	public GatewayDetailVO findGateway(String gatewayId) {
-		return assert200(() -> gatewaysClient.findGateway(keycloak.admin(), gatewayId, null),
-				"faild to get gateway");
-	}
+  public GatewayDetailVO findGateway(String gatewayId) {
+    return assert200(
+        () -> gatewaysClient.findGateway(keycloak.admin(), gatewayId, null),
+        "faild to get gateway");
+  }
 
-	public GatewayDetailVO update(String gatewayId, GatewayUpdateVO gatewayUpdateVO) {
-		return assert200(() -> gatewaysClient.updateGateway(keycloak.admin(), gatewayId, gatewayUpdateVO, null),
-				"faild to update gateway");
-	}
+  public GatewayDetailVO update(String gatewayId, GatewayUpdateVO gatewayUpdateVO) {
+    return assert200(
+        () -> gatewaysClient.updateGateway(keycloak.admin(), gatewayId, gatewayUpdateVO, null),
+        "faild to update gateway");
+  }
 }

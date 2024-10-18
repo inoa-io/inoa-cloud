@@ -30,6 +30,7 @@
 	</licenses>
 
 	<modules>
+		<module>app</module>
 		<module>api</module>
 		<module>service</module>
 		<module>image</module>
@@ -103,6 +104,7 @@
 		<version.org.keycloak>25.0.4</version.org.keycloak>
 		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
 		<version.org.projectlombok>1.18.32</version.org.projectlombok>
+		<version.com.diffplug.spotless.spotless-maven-plugin>2.44.0.BETA3</version.com.diffplug.spotless.spotless-maven-plugin>
 
 	</properties>
 
@@ -289,6 +291,89 @@
 					<artifactId>k3s-maven-plugin</artifactId>
 					<version>${version.io.kokuwa.maven.k3s}</version>
 				</plugin>
+				<plugin>
+					<groupId>com.diffplug.spotless</groupId>
+					<artifactId>spotless-maven-plugin</artifactId>
+					<version>${version.com.diffplug.spotless.spotless-maven-plugin}</version>
+					<configuration>
+						<formats>
+							<!-- Git files -->
+							<format>
+								<includes>
+									<include>.gitattributes</include>
+									<include>.gitignore</include>
+								</includes>
+								<trimTrailingWhitespace/>
+								<endWithNewline/>
+								<indent>
+									<tabs>true</tabs>
+									<spacesPerTab>4</spacesPerTab>
+								</indent>
+							</format>
+						</formats>
+						<java>
+							<googleJavaFormat>
+								<version>1.10.0</version>
+								<style>GOOGLE</style>
+								<reflowLongStrings>true</reflowLongStrings>
+								<formatJavadoc>true</formatJavadoc>
+							</googleJavaFormat>
+							<formatAnnotations />
+							<importOrder>
+								<wildcardsLast>true</wildcardsLast>
+								<!-- We stick to the defaults as first step
+								<order>
+									<file>${project.basedir}/src/main/resources/ide.importorder</file>
+								</order> -->
+								<semanticSort>true</semanticSort>
+							</importOrder>
+							<removeUnusedImports />
+						</java>
+						<!-- Good for Flyway to avoid hash changes on unwanted whitespace changes -->
+						<sql>
+							<includes>
+								<include>src/main/resources/**/*.sql</include>
+								<include>src/test/resources/**/*.sql</include>
+							</includes>
+							<excludes>
+								<exclude>**/target/**/*.sql</exclude>
+								<exclude>**/dist/**/*.sql</exclude>
+							</excludes>
+							<dbeaver />
+						</sql>
+						<yaml>
+							<includes>
+								<include>**/*.yaml</include>
+							</includes>
+							<excludes>
+								<exclude>**/target/**/*.yaml</exclude>
+								<!-- By now, we would corrupt the replica setting as string -->
+								<exclude>**/mcnoize/*.yaml</exclude>
+								<exclude>**/dist/**/*.yaml</exclude>
+								<exclude>**/node_modules/**/*.yaml</exclude>
+							</excludes>
+							<prettier />
+						</yaml>
+						<markdown>
+							<includes>
+								<include>**/*.md</include>
+							</includes>
+							<excludes>
+								<exclude>**/target/**/*.md</exclude>
+								<exclude>**/dist/**/*.md</exclude>
+								<exclude>**/node_modules/**/*.md</exclude>
+							</excludes>
+							<flexmark/>
+						</markdown>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<configuration>
+						<skip>true</skip>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -318,6 +403,19 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<executions><execution><id>default</id><phase /></execution></executions>
+			</plugin>
+			<plugin>
+				<groupId>com.diffplug.spotless</groupId>
+				<artifactId>spotless-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>default</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 
 		</plugins>

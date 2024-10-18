@@ -3,17 +3,17 @@ import { InternalCommunicationService } from "./services/internal-communication-
 import { RoutingService } from "./services/routing-service";
 
 @Component({
-    selector: "gc-app-root",
-    templateUrl: "./app.component.html",
-    styleUrls: ["./app.component.sass"]
+	selector: "gc-app-root",
+	templateUrl: "./app.component.html",
+	styleUrls: ["./app.component.sass"]
 })
 export class AppComponent {
-    title = "INOA Ground Control";
-    sideNavOpen = false;
+	title = "INOA Ground Control";
+	sideNavOpen = false;
 
-    toggleSideBar() {
-        this.sideNavOpen = !this.sideNavOpen;
-    }
+	toggleSideBar() {
+		this.sideNavOpen = !this.sideNavOpen;
+	}
 
-    constructor(public routingService: RoutingService, public intercomService: InternalCommunicationService) {}
+	constructor(public routingService: RoutingService, public intercomService: InternalCommunicationService) {}
 }

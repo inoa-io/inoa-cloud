@@ -1,39 +1,21 @@
-<mat-toolbar
-    color="primary"
-    class="mat-elevation-z2">
-    <img
-        src="assets/inoa/satellite-color.png"
-        alt="INOA Satellite"
-        class="toolbar-icon" />
-    <span>Rename Satellite</span>
+<mat-toolbar color="primary" class="mat-elevation-z2">
+	<img src="assets/inoa/satellite-color.png" alt="INOA Satellite" class="toolbar-icon" />
+	<span>Rename Satellite</span>
 </mat-toolbar>
 
 <div class="rename-satellite-dialog">
-    <mat-form-field
-        appearance="outline"
-        class="full-width">
-        <mat-label>Satellite Name</mat-label>
-        <input
-            matInput
-            [(ngModel)]="data.name"
-            placeholder="Enter new name"
-            cdkFocusInitial />
-    </mat-form-field>
+	<mat-form-field appearance="outline" class="full-width">
+		<mat-label>Satellite Name</mat-label>
+		<input matInput [(ngModel)]="data.name" placeholder="Enter new name" cdkFocusInitial />
+	</mat-form-field>
 </div>
 
 <mat-dialog-actions align="end">
-    <button
-        mat-raised-button
-        color="primary"
-        (click)="close()">
-        Cancel
-    </button>
+	<button mat-raised-button color="primary" (click)="close()">
+		Cancel
+	</button>
 
-    <button
-        mat-raised-button
-        color="primary"
-        [mat-dialog-close]="data"
-        (click)="save()">
-        Save
-    </button>
+	<button mat-raised-button color="primary" [mat-dialog-close]="data" (click)="save()">
+		Save
+	</button>
 </mat-dialog-actions>

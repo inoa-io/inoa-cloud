@@ -1,38 +1,38 @@
 .config-satellite-dialog {
-    width: 600px;
-    padding: 20px 20px;
-    padding-top: 30px;
+	width: 600px;
+	padding: 20px 20px;
+	padding-top: 30px;
 }
 
 .full-width {
-    width: 100%;
+	width: 100%;
 }
 
 .toolbar-icon {
-    height: 32px;
-    margin-right: 10px;
-    background-color: white;
-    border-radius: 50%;
-    padding: 5px;
+	height: 32px;
+	margin-right: 10px;
+	background-color: white;
+	border-radius: 50%;
+	padding: 5px;
 }
 
 .config-warning {
-    color: red;
-    margin-left: 35px;
-    animation: blink 2s infinite;
+	color: red;
+	margin-left: 35px;
+	animation: blink 2s infinite;
 }
 
 @keyframes blink {
-    0% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 1;
-    }
-    75% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
+	0% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 1;
+	}
+	75% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
 }

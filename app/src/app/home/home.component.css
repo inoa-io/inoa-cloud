@@ -1,14 +1,13 @@
-.wizard-card
-{
-  width: 650px;
-  cursor: pointer;
+.wizard-card {
+	width: 650px;
+	cursor: pointer;
 }
 
 .home-container {
-  height: calc(100vh - 92px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 25px;
+	height: calc(100vh - 92px);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 25px;
 }

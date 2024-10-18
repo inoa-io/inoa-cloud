@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PropertyDefinition {
-	private String key;
-	private String name;
-	private String inputType;
+  private String key;
+  private String name;
+  private String inputType;
 }

@@ -1,86 +1,62 @@
 <div class="uber-container">
-    <!-- top toolbar -->
-    <div class="groundcontrol-top-bar">
-        <mat-toolbar
-            color="primary"
-            class="mat-elevation-z10">
-            <!-- side nav toggle left -->
-            <button
-                mat-icon-button
-                class="sidenav-toggle-button-left"
-                (click)="toggleSideBar()">
-                <mat-icon style="margin: 0">menu</mat-icon>
-            </button>
+	<!-- top toolbar -->
+	<div class="groundcontrol-top-bar">
+		<mat-toolbar color="primary" class="mat-elevation-z10">
+			<!-- side nav toggle left -->
+			<button mat-icon-button class="sidenav-toggle-button-left" (click)="toggleSideBar()">
+				<mat-icon style="margin: 0">menu</mat-icon>
+			</button>
 
-            <!-- Site title -->
-            <a href="/"
-                ><button class="groundcontrol-logo-home-button">
-                    <img
-                        src="assets/inoa/groundcontrol-text.svg"
-                        height="52"
-                        alt="Ground Control Logo" /></button
-            ></a>
+			<!-- Site title -->
+			<a href="/"
+				><button class="groundcontrol-logo-home-button">
+					<img src="assets/inoa/groundcontrol-text.svg" height="52" alt="Ground Control Logo" /></button
+			></a>
 
-            <div class="navigation-container">
-                <!-- navigation label -->
-                <span class="navigation-label">{{ routingService.routes[routingService.selectedPageIndex].label }}</span>
+			<div class="navigation-container">
+				<!-- navigation label -->
+				<span class="navigation-label">{{ routingService.routes[routingService.selectedPageIndex].label }}</span>
 
-                <!-- http loading indicator -->
-                <div class="http-bar-container">
-                    <mat-progress-bar
-                        *ngIf="!intercomService.httpDataLoading"
-                        color="accent"
-                        mode="determinate"
-                        value="100"></mat-progress-bar>
-                </div>
-            </div>
+				<!-- http loading indicator -->
+				<div class="http-bar-container">
+					<mat-progress-bar *ngIf="!intercomService.httpDataLoading" color="accent" mode="determinate" value="100"></mat-progress-bar>
+				</div>
+			</div>
 
-            <!-- whoami box -->
-            <gc-whoami-box></gc-whoami-box>
+			<!-- whoami box -->
+			<gc-whoami-box></gc-whoami-box>
 
-            <!-- TODO: put whoami box here once that works -->
-        </mat-toolbar>
-    </div>
+			<!-- TODO: put whoami box here once that works -->
+		</mat-toolbar>
+	</div>
 
-    <mat-sidenav-container style="background-color: gray">
-        <!-- side nav for menu items -->
-        <mat-sidenav
-            mode="over"
-            [(opened)]="sideNavOpen"
-            class="sidenav-bar-left mat-elevation-z10">
-            <mat-button-toggle-group
-                class="sidenav-toggle-group"
-                [(ngModel)]="routingService.selectedPageIndex">
-                <!-- Header -->
-                <div class="sideNavHeaderContainer">
-                    <div
-                        mat-card-avatar
-                        class="sideNavHeaderIcon"
-                        style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
-                    <span class="sideNavHeader">Ground Control:</span>
-                </div>
+	<mat-sidenav-container style="background-color: gray">
+		<!-- side nav for menu items -->
+		<mat-sidenav mode="over" [(opened)]="sideNavOpen" class="sidenav-bar-left mat-elevation-z10">
+			<mat-button-toggle-group class="sidenav-toggle-group" [(ngModel)]="routingService.selectedPageIndex">
+				<!-- Header -->
+				<div class="sideNavHeaderContainer">
+					<div mat-card-avatar class="sideNavHeaderIcon" style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+					<span class="sideNavHeader">Ground Control:</span>
+				</div>
 
-                <mat-divider style="margin-top: 15px"></mat-divider>
+				<mat-divider style="margin-top: 15px"></mat-divider>
 
-                <!-- side nav buttons -->
-                <mat-button-toggle
-                    *ngFor="let route of routingService.routes; let i = index"
-                    value="{{ i }}"
-                    [hidden]="i === 0"
-                    (click)="routingService.navigateIndex(i)">
-                    <div class="sideNavSelectorContainer">
-                        <mat-icon class="sideNavTickIcon">arrow_right</mat-icon>
-                        <span class="sideNavSelector">{{ route.label }}</span>
-                    </div>
-                </mat-button-toggle>
-            </mat-button-toggle-group>
-        </mat-sidenav>
+				<!-- side nav buttons -->
+				<mat-button-toggle *ngFor="let route of routingService.routes; let i = index" value="{{ i }}" [hidden]="i === 0" (click)="routingService.navigateIndex(i)">
+					<div class="sideNavSelectorContainer">
+						<mat-icon class="sideNavTickIcon">arrow_right</mat-icon>
+						<span class="sideNavSelector">{{ route.label }}</span>
+					</div>
+				</mat-button-toggle>
+			</mat-button-toggle-group>
+		</mat-sidenav>
 
-        <!-- router outlet (content window) -->
-        <mat-sidenav-content>
-            <div style="overflow: hidden">
-                <router-outlet></router-outlet>
-            </div>
-        </mat-sidenav-content>
-    </mat-sidenav-container>
+		<!-- router outlet (content window) -->
+		<mat-sidenav-content>
+			<div style="overflow: hidden">
+				<router-outlet></router-outlet>
+			</div>
+		</mat-sidenav-content>
+	</mat-sidenav-container>
 </div>

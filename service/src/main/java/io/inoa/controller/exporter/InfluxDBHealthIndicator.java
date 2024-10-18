@@ -1,13 +1,6 @@
 package io.inoa.controller.exporter;
 
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.reactivestreams.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.influxdb.client.InfluxDBClient;
-
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.context.env.Environment;
 import io.micronaut.core.async.publisher.Publishers;
@@ -15,6 +8,10 @@ import io.micronaut.health.HealthStatus;
 import io.micronaut.management.health.indicator.HealthIndicator;
 import io.micronaut.management.health.indicator.HealthResult;
 import jakarta.inject.Singleton;
+import java.util.concurrent.atomic.AtomicReference;
+import org.reactivestreams.Publisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link HealthIndicator} for InfluxDB.
@@ -26,26 +23,26 @@ import jakarta.inject.Singleton;
 @Singleton
 public class InfluxDBHealthIndicator implements HealthIndicator {
 
-	private static final Logger log = LoggerFactory.getLogger(InfluxDBHealthIndicator.class);
+  private static final Logger log = LoggerFactory.getLogger(InfluxDBHealthIndicator.class);
 
-	private final AtomicReference<HealthStatus> status = new AtomicReference<>();
-	private final InfluxDBClient influxdb;
+  private final AtomicReference<HealthStatus> status = new AtomicReference<>();
+  private final InfluxDBClient influxdb;
 
-	public InfluxDBHealthIndicator(InfluxDBClient influxdb) {
-		this.influxdb = influxdb;
-	}
+  public InfluxDBHealthIndicator(InfluxDBClient influxdb) {
+    this.influxdb = influxdb;
+  }
 
-	@Override
-	public Publisher<HealthResult> getResult() {
-		if (status.get() != HealthStatus.UP) {
-			if (influxdb.ready() == null) {
-				log.warn("Failed to ping to InfluxDB");
-				status.set(HealthStatus.DOWN);
-			} else {
-				status.set(HealthStatus.UP);
-				log.info("InfluxDB connection etablished with version {}", influxdb.version());
-			}
-		}
-		return Publishers.just(HealthResult.builder("influxdb", status.get()).build());
-	}
+  @Override
+  public Publisher<HealthResult> getResult() {
+    if (status.get() != HealthStatus.UP) {
+      if (influxdb.ready() == null) {
+        log.warn("Failed to ping to InfluxDB");
+        status.set(HealthStatus.DOWN);
+      } else {
+        status.set(HealthStatus.UP);
+        log.info("InfluxDB connection etablished with version {}", influxdb.version());
+      }
+    }
+    return Publishers.just(HealthResult.builder("influxdb", status.get()).build());
+  }
 }

@@ -1,60 +1,60 @@
 .card-collect-measurements {
-  flex: 1 1;
+	flex: 1 1;
 	height: 100%;
 	padding: 15px;
 	margin-left: 15px;
-  margin-right: 15px;
+	margin-right: 15px;
 	position: relative;
 }
 
 .collect-measurements-container {
-  height: calc(100vh - 92px);
-  display: flex;
+	height: calc(100vh - 92px);
+	display: flex;
 }
 
 .collect-measurements-svg-container {
-  width: 100%;
-  display: flex;
-  align-items: right;
-  justify-content: right;
-  margin-top: -25px;
+	width: 100%;
+	display: flex;
+	align-items: right;
+	justify-content: right;
+	margin-top: -25px;
 }
 
 .collect-measurements-wizard-container {
-  width: 100%;
-  height: 100%;  
+	width: 100%;
+	height: 100%;
 }
 
 .collect-measurements-wizard {
-  display: flex;
-  flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 .collect-measurements-wizard-step {
-  flex: 1 1;
+	flex: 1 1;
 }
 
 .card-info {
 	height: 100%;
 	padding: 15px;
-  margin-right: 15px;
+	margin-right: 15px;
 	position: relative;
 }
 
 .collect-measurements-svg {
-  width: 700px;
+	width: 700px;
 }
 
 .collect-measurements-card-content {
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 }
 
 .info-list {
-  margin-top: -25px;
-  margin-bottom: 15px;
+	margin-top: -25px;
+	margin-bottom: 15px;
 }
 
 .card-actions {
@@ -70,65 +70,65 @@
 }
 
 .satellite-selector-sub-step-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
 }
 
 .navigation {
-  position: absolute;
-  bottom: 20px;
-  right: 30px;
+	position: absolute;
+	bottom: 20px;
+	right: 30px;
 }
 
 .wifi-iframe {
-  width: 650px;
-  flex: 1;
+	width: 650px;
+	flex: 1;
 }
 
 .info-header-icon {
-  width: 40px;
-  height: 40px;
-  font-size: 36px;
+	width: 40px;
+	height: 40px;
+	font-size: 36px;
 }
 
 .container {
-  min-height: 100%;
-  width: 100%;
+	min-height: 100%;
+	width: 100%;
 }
 
 .mat-radio-button ~ .mat-radio-button {
-  margin-left: 16px;
+	margin-left: 16px;
 }
 .flow-down {
-  stroke-dasharray: 20, 60;
-  stroke-dashoffset: 0;
-  animation: flow-down 1s linear forwards infinite;
+	stroke-dasharray: 20, 60;
+	stroke-dashoffset: 0;
+	animation: flow-down 1s linear forwards infinite;
 }
 
 .flow-up {
-  stroke-dasharray: 20, 60;
-  stroke-dashoffset: 0;
-  animation: flow-up 1s linear forwards infinite;
+	stroke-dasharray: 20, 60;
+	stroke-dashoffset: 0;
+	animation: flow-up 1s linear forwards infinite;
 }
 @keyframes flow-down {
-  to {
-    stroke-dashoffset: 80;
-  }
+	to {
+		stroke-dashoffset: 80;
+	}
 }
 @keyframes flow-up {
-  to {
-    stroke-dashoffset: -80;
-  }
+	to {
+		stroke-dashoffset: -80;
+	}
 }
 
 .example-radio-group {
-  display: flex;
-  flex-direction: column;
-  margin: 15px 0;
-  align-items: flex-start;
+	display: flex;
+	flex-direction: column;
+	margin: 15px 0;
+	align-items: flex-start;
 }
 
 .example-radio-button {
-  margin: 5px;
+	margin: 5px;
 }

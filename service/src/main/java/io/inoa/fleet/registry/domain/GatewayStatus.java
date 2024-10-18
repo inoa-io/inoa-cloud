@@ -8,6 +8,6 @@ import lombok.Data;
 @Data
 public class GatewayStatus {
 
-	@Relation(Relation.Kind.EMBEDDED)
-	private GatewayStatusMqtt mqtt;
+  @Relation(Relation.Kind.EMBEDDED)
+  private GatewayStatusMqtt mqtt;
 }

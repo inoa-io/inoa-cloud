@@ -1,0 +1,35 @@
+---
+when:
+  event: push
+  branch: main
+  path:
+    include:
+      - .woodpecker/plugin.yaml
+      - .woodpecker/plugin/*
+steps:
+  prepare:
+    image: ghcr.io/grayc-de/plugins/inoa
+    commands:
+      - cp docs/user-manual/requirements.txt .woodpecker/plugin/requirements.txt
+  build:
+    image: ghcr.io/grayc-de/plugins/kaniko
+    secrets:
+      - DOCKER_CONFIG_JSON
+    settings:
+      context: .woodpecker/plugin
+      destination: ghcr.io/grayc-de/plugins/inoa
+  check:
+    image: ghcr.io/grayc-de/plugins/inoa
+    privileged: true
+    backend_options:
+      kubernetes:
+        securityContext:
+          privileged: true
+    pull: true
+    commands:
+      - dockerd-start
+      - java --version
+      - mvn --version
+      - node --version
+      - yarn --version
+      - docker version

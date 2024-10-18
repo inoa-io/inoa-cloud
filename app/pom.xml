@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.inoa</groupId>
+		<artifactId>inoa-parent</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>inoa-app</artifactId>
+	<packaging>pom</packaging>
+
+	<name>INOA :: App</name>
+
+	<properties>
+		<angular.configuration>development</angular.configuration>
+		<!-- will be overriden by `git-commit-id-maven-plugin` -->
+		<git.commit.id.full />
+		<git.commit.time />
+		<git.tags />
+		<git.branch />
+	</properties>
+
+	<build>
+		<plugins>
+			<!-- Version shown in UI -->
+			<plugin>
+				<groupId>io.github.git-commit-id</groupId>
+				<artifactId>git-commit-id-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<configuration>
+							<commitIdGenerationMode>full</commitIdGenerationMode>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/src/environments-template</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+							<overwrite>true</overwrite>
+							<outputDirectory>${project.basedir}/src/environments</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- yarn calls -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>yarn-install</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<arguments>
+								<argument>install</argument>
+								<argument>--immutable</argument>
+							</arguments>
+						</configuration>
+					</execution>
+					<!-- Tests are deactivated until we found a way to have chrome in woodpecker
+					<execution>
+						<id>yarn-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<arguments>
+								<argument>test</argument>
+								<argument>-no-watch</argument>
+								<argument>-no-progress</argument>
+							</arguments>
+							<skip>${skipTests}</skip>
+						</configuration>
+					</execution> -->
+					<execution>
+						<id>yarn-build</id>
+						<phase>package</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<arguments>
+								<argument>build</argument>
+								<argument>--no-progress</argument>
+								<argument>--configuration=${angular.configuration}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<executable>yarn</executable>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>check</id>
+			<activation>
+				<property>
+					<name>!check.skip</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>yarn-install</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<arguments>
+										<argument>install</argument>
+										<argument>--immutable</argument>
+									</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>yarn-lint</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<arguments>
+										<argument>lint</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.diffplug.spotless</groupId>
+						<artifactId>spotless-maven-plugin</artifactId>
+						<version>${version.com.diffplug.spotless.spotless-maven-plugin}</version>
+						<configuration>
+							<formats>
+								<format>
+									<includes>
+										<include>${project.basedir}/src/**/*.ts</include>
+										<include>${project.basedir}/src/**/*.css</include>
+										<include>${project.basedir}/src/**/*.html</include>
+									</includes>
+									<prettier>
+										<prettierVersion>1.19.0</prettierVersion>
+										<configFile>${project.basedir}/.prettierrc</configFile>
+									</prettier>
+								</format>
+							</formats>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>deploy</id>
+			<activation>
+				<property>
+					<name>env.CI</name>
+				</property>
+			</activation>
+			<properties>
+				<angular.configuration>production</angular.configuration>
+			</properties>
+		</profile>
+	</profiles>
+</project>

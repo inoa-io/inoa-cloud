@@ -1,113 +1,86 @@
 <mat-card class="card-rpc-history card-gateway-shadow">
-    <mat-card-header>
-        <div
-            mat-card-avatar
-            style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
-        <mat-card-title>RPC-History</mat-card-title>
-        <mat-card-subtitle>Click on entries to see details.</mat-card-subtitle>
-    </mat-card-header>
+	<mat-card-header>
+		<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+		<mat-card-title>RPC-History</mat-card-title>
+		<mat-card-subtitle>Click on entries to see details.</mat-card-subtitle>
+	</mat-card-header>
 
-    <mat-card-content class="mat-card-content-rpc-history">
-        <div class="rpc-exchange-history-container">
-            <div class="rpc-exchange-history">
-                <table
-                    mat-table
-                    class="rpc-history-table"
-                    [dataSource]="rpcHistoryService.getRpcHistory()"
-                    multiTemplateDataRows>
-                    <!-- gateway id column -->
-                    <ng-container matColumnDef="gateway_id">
-                        <th
-                            mat-header-cell
-                            *matHeaderCellDef>
-                            Gateway-ID:
-                        </th>
-                        <td
-                            mat-cell
-                            *matCellDef="let element">
-                            {{ element.gateway_id }}
-                        </td>
-                    </ng-container>
+	<mat-card-content class="mat-card-content-rpc-history">
+		<div class="rpc-exchange-history-container">
+			<div class="rpc-exchange-history">
+				<table mat-table class="rpc-history-table" [dataSource]="rpcHistoryService.getRpcHistory()" multiTemplateDataRows>
+					<!-- gateway id column -->
+					<ng-container matColumnDef="gateway_id">
+						<th mat-header-cell *matHeaderCellDef>
+							Gateway-ID:
+						</th>
+						<td mat-cell *matCellDef="let element">
+							{{ element.gateway_id }}
+						</td>
+					</ng-container>
 
-                    <!-- method column -->
-                    <ng-container matColumnDef="method">
-                        <th
-                            mat-header-cell
-                            *matHeaderCellDef>
-                            Command:
-                        </th>
-                        <td
-                            mat-cell
-                            *matCellDef="let element">
-                            {{ element.method }}
-                        </td>
-                    </ng-container>
+					<!-- method column -->
+					<ng-container matColumnDef="method">
+						<th mat-header-cell *matHeaderCellDef>
+							Command:
+						</th>
+						<td mat-cell *matCellDef="let element">
+							{{ element.method }}
+						</td>
+					</ng-container>
 
-                    <!-- status column -->
-                    <ng-container matColumnDef="status">
-                        <th
-                            mat-header-cell
-                            *matHeaderCellDef>
-                            Status
-                        </th>
-                        <td
-                            mat-cell
-                            *matCellDef="let element">
-                            <mat-icon [ngStyle]="{ color: rpcHistoryService.getRpcStatusColor(element.status) }"> circle </mat-icon>
-                        </td>
-                    </ng-container>
+					<!-- status column -->
+					<ng-container matColumnDef="status">
+						<th mat-header-cell *matHeaderCellDef>
+							Status
+						</th>
+						<td mat-cell *matCellDef="let element">
+							<mat-icon [ngStyle]="{ color: rpcHistoryService.getRpcStatusColor(element.status) }"> circle </mat-icon>
+						</td>
+					</ng-container>
 
-                    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-                    <ng-container matColumnDef="expanded_detail">
-                        <td
-                            mat-cell
-                            *matCellDef="let element"
-                            [attr.colspan]="3">
-                            <div
-                                class="rpc-history-element-detail"
-                                [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
-                                <!-- show rpc id if there is any -->
-                                <div *ngIf="element.id">
-                                    <p>Rpc-ID:</p>
-                                    <pre><code>{{ element.id }}</code></pre>
-                                </div>
+					<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+					<ng-container matColumnDef="expanded_detail">
+						<td mat-cell *matCellDef="let element" [attr.colspan]="3">
+							<div class="rpc-history-element-detail" [@detailExpand]="element === expandedElement ? 'expanded' : 'collapsed'">
+								<!-- show rpc id if there is any -->
+								<div *ngIf="element.id">
+									<p>Rpc-ID:</p>
+									<pre><code>{{ element.id }}</code></pre>
+								</div>
 
-                                <!-- show parameters if there is any -->
-                                <div *ngIf="element.parameters">
-                                    <p>Parameters:</p>
-                                    <pre><code>{{ element.parameters }}</code></pre>
-                                </div>
+								<!-- show parameters if there is any -->
+								<div *ngIf="element.parameters">
+									<p>Parameters:</p>
+									<pre><code>{{ element.parameters }}</code></pre>
+								</div>
 
-                                <!-- show response if there is any -->
-                                <div *ngIf="element.response">
-                                    <p>Response:
-                                    <pre><code class="response-code">{{ element.response }}</code></pre>
-                                </div>
+								<!-- show response if there is any -->
+								<div *ngIf="element.response">
+									<p>Response:</p>
+									<pre><code class="response-code">{{ element.response }}</code></pre>
+								</div>
 
-                                <!-- show no response if there is none yet -->
-                                <div *ngIf="!element.response">
-                                    <p>No response</p>
-                                </div>
-                            </div>
-                        </td>
-                    </ng-container>
+								<!-- show no response if there is none yet -->
+								<div *ngIf="!element.response">
+									<p>No response</p>
+								</div>
+							</div>
+						</td>
+					</ng-container>
 
-                    <tr
-                        mat-header-row
-                        *matHeaderRowDef="displayedColumnsRpcHistory; sticky: true"></tr>
-                    <tr
-                        mat-row
-                        *matRowDef="let element; columns: displayedColumnsRpcHistory"
-                        class="rpc-history-element-row"
-                        [class.rpc-history-expanded-row]="expandedElement === element"
-                        (click)="expandedElement = expandedElement === element ? null : element"
-                        class="element-row"></tr>
-                    <tr
-                        mat-row
-                        *matRowDef="let row; columns: ['expanded_detail']"
-                        class="rpc-history-detail-row"></tr>
-                </table>
-            </div>
-        </div>
-    </mat-card-content>
+					<tr mat-header-row *matHeaderRowDef="displayedColumnsRpcHistory; sticky: true"></tr>
+					<tr
+						mat-row
+						*matRowDef="let element; columns: displayedColumnsRpcHistory"
+						class="rpc-history-element-row"
+						[class.rpc-history-expanded-row]="expandedElement === element"
+						(click)="expandedElement = expandedElement === element ? null : element"
+						class="element-row"
+					></tr>
+					<tr mat-row *matRowDef="let row; columns: ['expanded_detail']" class="rpc-history-detail-row"></tr>
+				</table>
+			</div>
+		</div>
+	</mat-card-content>
 </mat-card>

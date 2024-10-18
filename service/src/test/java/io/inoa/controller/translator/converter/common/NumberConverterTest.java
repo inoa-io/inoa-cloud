@@ -1,11 +1,10 @@
 package io.inoa.controller.translator.converter.common;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
 import io.inoa.controller.translator.AbstractTranslatorTest;
 import io.inoa.messaging.TelemetryRawVO;
 import jakarta.inject.Inject;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link NumberConverter}.
@@ -15,40 +14,40 @@ import jakarta.inject.Inject;
 @DisplayName("translator: converter number")
 public class NumberConverterTest extends AbstractTranslatorTest {
 
-	@Inject NumberConverter converter;
+  @Inject NumberConverter converter;
 
-	@DisplayName("success: long as number")
-	@Test
-	void successLong() {
-		var raw = TelemetryRawVO.of("urn:example:0815:number", "1234");
-		assertSingleValue(1234D, converter, raw, "example", "number");
-	}
+  @DisplayName("success: long as number")
+  @Test
+  void successLong() {
+    var raw = TelemetryRawVO.of("urn:example:0815:number", "1234");
+    assertSingleValue(1234D, converter, raw, "example", "number");
+  }
 
-	@DisplayName("success: negatice double as number")
-	@Test
-	void successDouble() {
-		var raw = TelemetryRawVO.of("urn:example:0815:number", "-123.456");
-		assertSingleValue(-123.456D, converter, raw, "example", "number");
-	}
+  @DisplayName("success: negatice double as number")
+  @Test
+  void successDouble() {
+    var raw = TelemetryRawVO.of("urn:example:0815:number", "-123.456");
+    assertSingleValue(-123.456D, converter, raw, "example", "number");
+  }
 
-	@DisplayName("success: with modifier")
-	@Test
-	void successModifier() {
-		var raw = TelemetryRawVO.of("urn:example:0815:number-with-modifier", 9876);
-		assertSingleValue(98760D, converter, raw, "example", "number-with-modifier");
-	}
+  @DisplayName("success: with modifier")
+  @Test
+  void successModifier() {
+    var raw = TelemetryRawVO.of("urn:example:0815:number-with-modifier", 9876);
+    assertSingleValue(98760D, converter, raw, "example", "number-with-modifier");
+  }
 
-	@DisplayName("fail: value not convertable")
-	@Test
-	void failNoConvertable() {
-		var raw = TelemetryRawVO.of("urn:example:0815:number", "NAN");
-		assertEmpty(converter, raw, "example", "number");
-	}
+  @DisplayName("fail: value not convertable")
+  @Test
+  void failNoConvertable() {
+    var raw = TelemetryRawVO.of("urn:example:0815:number", "NAN");
+    assertEmpty(converter, raw, "example", "number");
+  }
 
-	@DisplayName("success: with factor")
-	@Test
-	void withFactor() {
-		var raw = TelemetryRawVO.of("urn:sct-013-030:0815:ct", "234");
-		assertSingleValue(7.02D, converter, raw, "sct-013-030", "ct");
-	}
+  @DisplayName("success: with factor")
+  @Test
+  void withFactor() {
+    var raw = TelemetryRawVO.of("urn:sct-013-030:0815:ct", "234");
+    assertSingleValue(7.02D, converter, raw, "sct-013-030", "ct");
+  }
 }

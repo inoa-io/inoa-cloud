@@ -65,45 +65,43 @@ For bash there are some scripts that should help to execute the INOA components:
 
 1. Start the whole INOA Cloud setup within k3s. After start it will open the INOA Developer Cockpit in your browser with useful links.
 
-    ```shell
-    ./inoa-startup.sh
-    ```
-
+   ```shell
+   ./inoa-startup.sh
+   ```
 2. Shutdown all running INOA Cloud services & stops k3s.
 
-    ```shell
-    ./inoa-shutdown.sh
-    ```
+   ```shell
+   ./inoa-shutdown.sh
+   ```
 
 #### Use Windows Batch Scripts
 
 1. Launch INOA Cloud Locally. Work in progress....
 
-    ```bash
-    # Launch INOA Cloud Locally
-    ./inoa-startup.bat
-    ```
+   ```bash
+   # Launch INOA Cloud Locally
+   ./inoa-startup.bat
+   ```
 
 #### Use Maven & Yarn
 
 1. Build INOA Cloud services and start the whole environment via k3s:
 
-    ```shell
-    source .env
-    mvn k3s:rm
-    mvn clean install
-    mvn clean pre-integration-test -Dk3s.failIfExists=false -pl ./test/ -Dinoa.domain=${INOA_DOMAIN}
-    ```
-
+   ```shell
+   source .env
+   mvn k3s:rm
+   mvn clean install
+   mvn clean pre-integration-test -Dk3s.failIfExists=false -pl ./test/ -Dinoa.domain=${INOA_DOMAIN}
+   ```
 2. Check the now running services via [http://help.${INOA_DOMAIN}:8080/](http://help.127.0.0.1.nip.io:8080/).
 3. Start a local instance of INOA GroundControl for UI development:
 
-    ```shell
-    source .env
-    cd app
-    yarn install
-    ng serve
-    ```
+   ```shell
+   source .env
+   cd app
+   yarn install
+   ng serve
+   ```
 
 ## INOA Modules
 

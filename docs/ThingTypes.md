@@ -5,9 +5,8 @@ Here you can find the latest and greatest Information about how to configure you
 ## URN Format
 
 - The format is always: urn:\<thingType>:\<thingId>:\<sensor>
-<br>
+  <br>
 - <b>\<thingType></b> can currently be one of the following options:
-
   - s0
   - shellyplug-s
   - shellyplusplugs
@@ -15,11 +14,10 @@ Here you can find the latest and greatest Information about how to configure you
   - dvmodbusir
   - dvh4013
   - mdvh4006
-<br>
+    <br>
 - <b>\<thingId></b> can be chosen freely. We usually use the MAC of the thing.
-<br>
+  <br>
 - <b>\<sensor></b> is ThingType specific.
-
   - For S0 type the only option is "gas" right now.
   - For Shelly plugs the only option is "status" right now.
 

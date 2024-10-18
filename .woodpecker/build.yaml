@@ -21,7 +21,6 @@ services:
           privileged: true
 
 steps:
-
   deploy:
     image: ghcr.io/grayc-de/plugins/maven
     environment: [DOCKER_HOST=tcp://dockerd:2375]

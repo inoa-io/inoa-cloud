@@ -43,7 +43,7 @@
 
 .gateway-table {
 	width: 100%;
-	
+
 	.mat-column-actions {
 		width: auto;
 		text-align: center;
@@ -109,7 +109,7 @@
 		padding-top: 7px;
 		padding-bottom: 5px;
 	}
-  
+
 	.mat-mdc-select {
 		padding-top: 0;
 		padding-bottom: 0;

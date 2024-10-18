@@ -6,17 +6,13 @@ when:
 
 variables:
   - &when-path
-    path: [api/**, app/**, service/**, image/**, test/**, pom.xml, lombok.config]
+    path:
+      [api/**, app/**, service/**, image/**, test/**, pom.xml, lombok.config]
   - &maven
-    image: ghcr.io/grayc-de/plugins/maven
+    image: ghcr.io/grayc-de/plugins/inoa
     depends_on: []
-    environment: [DOCKER_HOST=tcp://dockerd:2375, TESTCONTAINERS_RYUK_DISABLED=true]
-    when:
-      <<: *when-path
-  - &node
-    image: ghcr.io/grayc-de/plugins/node:20-chrome
-    depends_on: []
-    directory: app
+    environment:
+      [DOCKER_HOST=tcp://dockerd:2375, TESTCONTAINERS_RYUK_DISABLED=true]
     when:
       <<: *when-path
 
@@ -33,17 +29,16 @@ services:
       kubernetes:
         securityContext:
           privileged: true
-    when: {<<: *when-path}
+    when: { <<: *when-path }
 
 steps:
-
   # speed up later steps by preloading used images
   preload-images:
     <<: *maven
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
       # docker build
-      - docker pull --quiet ghcr.io/grayc-de/node:20 &
+      - docker pull --quiet ghcr.io/grayc-de/plugins/inoa &
       - docker pull --quiet docker.io/library/debian:stable-slim &
       - docker pull --quiet docker.io/eclipse-temurin:17-jre &
       # test containers
@@ -55,10 +50,6 @@ steps:
       - docker pull --quiet ghcr.io/inoa-io/mcnoize:0.0.1 &
       - wait
     secrets: [DOCKER_CONFIG_JSON]
-  preload-yarn:
-    <<: *node
-    commands: [yarn config --no-defaults, yarn install --immutable]
-    when: [path: [app/**]]
 
   build-api:
     <<: *maven
@@ -69,8 +60,8 @@ steps:
     commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl service]
   build-app:
     <<: *maven
-    depends_on: [preload-images]
-    commands: [docker build . --file image/src/docker/Dockerfile --target=app]
+    depends_on: [build-api]
+    commands: [mvn -Dcheck.skip -Dmaven.test.skip install -pl app]
 
   test-service:
     <<: *maven
@@ -80,9 +71,10 @@ steps:
       - mvn -Dcheck.skip test -pl service -Dsurefire.rerunFailingTestsCount=2
     when: [path: [pom.xml, api/**, service/**]]
   test-app:
-    <<: *node
-    depends_on: [preload-yarn]
-    commands: [yarn test --no-progress --no-watch]
+    <<: *maven
+    depends_on: [build-app]
+    commands:
+      [mvn -Dcheck.skip test -pl app -Dsurefire.rerunFailingTestsCount=2]
     when: [path: [app/**]]
 
   image:
@@ -93,7 +85,11 @@ steps:
   integration-prepare:
     <<: *maven
     depends_on: [build-api]
-    commands: [touch test/a, mvn -Dcheck.skip -pl test pre-integration-test -Dk3s.dockerImages= -Dk3s.skipApply -Dk3s.registries=a -Dk3s.debug=true -X]
+    commands:
+      [
+        touch test/a,
+        mvn -Dcheck.skip -pl test pre-integration-test -Dk3s.dockerImages= -Dk3s.skipApply -Dk3s.registries=a -Dk3s.debug=true -X,
+      ]
   integration-test:
     <<: *maven
     depends_on: [image, integration-prepare]

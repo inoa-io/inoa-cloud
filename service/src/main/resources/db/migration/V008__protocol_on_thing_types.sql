@@ -1,39 +1,44 @@
-CREATE TYPE protocol_enum AS ENUM (
-    's0',
-    'http',
-    'modbus-rs485',
-    'modbus-tcp',
-    'rms',
-	'adc'
-);
+CREATE
+    TYPE protocol_enum AS ENUM(
+        's0',
+        'http',
+        'modbus-rs485',
+        'modbus-tcp',
+        'rms',
+        'adc'
+    );
 
-ALTER TABLE thing_type
-ADD COLUMN protocol protocol_enum NOT NULL DEFAULT 'http';
+ALTER TABLE
+    thing_type ADD COLUMN protocol protocol_enum NOT NULL DEFAULT 'http';
 
 -- s0 update
-UPDATE thing_type
+UPDATE
+    thing_type
 SET
-	protocol = 's0'
+    protocol = 's0'
 WHERE
-	thing_type_id = 's0';
+    thing_type_id = 's0';
 
 -- dvmodbusir update
-UPDATE thing_type
+UPDATE
+    thing_type
 SET
-	protocol = 'modbus-rs485'
+    protocol = 'modbus-rs485'
 WHERE
-	thing_type_id = 'dvmodbusir';
+    thing_type_id = 'dvmodbusir';
 
 -- dvh4013 update
-UPDATE thing_type
+UPDATE
+    thing_type
 SET
-	protocol = 'modbus-rs485'
+    protocol = 'modbus-rs485'
 WHERE
-	thing_type_id = 'dvh4013';
+    thing_type_id = 'dvh4013';
 
 -- mdvh4006 update
-UPDATE thing_type
+UPDATE
+    thing_type
 SET
-	protocol = 'modbus-rs485'
+    protocol = 'modbus-rs485'
 WHERE
-	thing_type_id = 'mdvh4006';
+    thing_type_id = 'mdvh4006';

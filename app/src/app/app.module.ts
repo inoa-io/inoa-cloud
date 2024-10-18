@@ -39,65 +39,65 @@ import { ConfigEditDialogComponent } from "./dialogs/config-edit-dialog/config-e
 import { WhoamiBoxComponent } from "./whoami-box/whoami-box.component";
 
 export function fleetApiConfigFactory(): FleetConfiguration {
-    const params: FleetConfigurationParameters = {
-        basePath: environment.fleetApiBasePath,
-        accessToken: environment.fleetApiToken
-    };
-    return new FleetConfiguration(params);
+	const params: FleetConfigurationParameters = {
+		basePath: environment.fleetApiBasePath,
+		accessToken: environment.fleetApiToken
+	};
+	return new FleetConfiguration(params);
 }
 @NgModule({
-    declarations: [
-        FilterPipe,
-        AppComponent,
-        HomeComponent,
-        MeasurementCollectorComponent,
-        SatelliteManagerComponent,
-        InstallationMonitorComponent,
-        SetupConfiguratorComponent,
-        RpcHistoryComponent,
-        GatewayTableComponent,
-        GatewayDetailComponent,
-        GatewayConfigurationComponent,
-        GatewayDatapointsComponent,
-        GatewayOverviewComponent,
-        ArrayTypeComponent,
-        ObjectTypeComponent,
-        MultiSchemaTypeComponent,
-        NullTypeComponent,
-        ThingCreationDialogComponent,
-        RenameSatelliteDialogComponent,
-        ConfigEditDialogComponent,
-        WhoamiBoxComponent
-    ],
-    imports: [
-        MonacoEditorModule.forRoot(),
-        FleetApiModule.forRoot(fleetApiConfigFactory),
-        BrowserModule,
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        RouterModule,
-        AppRoutingModule,
-        MaterialModule,
-        ErrorHandlingModule,
-        HttpClientModule,
-        FormsModule,
-        MaterialModule,
-        FormlyModule.forRoot({
-            // validationMessages: [
-            //     { name: 'required', message: 'This field is required' },
-            //     { name: 'uniqueItems', message: 'should NOT have duplicate items' },
-            //     { name: 'enum', message: `must be equal to one of the allowed values` },
-            // ],
-            types: [
-                { name: "null", component: NullTypeComponent, wrappers: ["form-field"] },
-                { name: "array", component: ArrayTypeComponent },
-                { name: "object", component: ObjectTypeComponent },
-                { name: "multischema", component: MultiSchemaTypeComponent }
-            ]
-        }),
-        FormlyMaterialModule
-    ],
-    providers: [{ provide: FleetBasePath, useValue: environment.fleetApiBasePath }],
-    bootstrap: [AppComponent]
+	declarations: [
+		FilterPipe,
+		AppComponent,
+		HomeComponent,
+		MeasurementCollectorComponent,
+		SatelliteManagerComponent,
+		InstallationMonitorComponent,
+		SetupConfiguratorComponent,
+		RpcHistoryComponent,
+		GatewayTableComponent,
+		GatewayDetailComponent,
+		GatewayConfigurationComponent,
+		GatewayDatapointsComponent,
+		GatewayOverviewComponent,
+		ArrayTypeComponent,
+		ObjectTypeComponent,
+		MultiSchemaTypeComponent,
+		NullTypeComponent,
+		ThingCreationDialogComponent,
+		RenameSatelliteDialogComponent,
+		ConfigEditDialogComponent,
+		WhoamiBoxComponent
+	],
+	imports: [
+		MonacoEditorModule.forRoot(),
+		FleetApiModule.forRoot(fleetApiConfigFactory),
+		BrowserModule,
+		BrowserAnimationsModule,
+		ReactiveFormsModule,
+		RouterModule,
+		AppRoutingModule,
+		MaterialModule,
+		ErrorHandlingModule,
+		HttpClientModule,
+		FormsModule,
+		MaterialModule,
+		FormlyModule.forRoot({
+			// validationMessages: [
+			//     { name: 'required', message: 'This field is required' },
+			//     { name: 'uniqueItems', message: 'should NOT have duplicate items' },
+			//     { name: 'enum', message: `must be equal to one of the allowed values` },
+			// ],
+			types: [
+				{ name: "null", component: NullTypeComponent, wrappers: ["form-field"] },
+				{ name: "array", component: ArrayTypeComponent },
+				{ name: "object", component: ObjectTypeComponent },
+				{ name: "multischema", component: MultiSchemaTypeComponent }
+			]
+		}),
+		FormlyMaterialModule
+	],
+	providers: [{ provide: FleetBasePath, useValue: environment.fleetApiBasePath }],
+	bootstrap: [AppComponent]
 })
 export class AppModule {}

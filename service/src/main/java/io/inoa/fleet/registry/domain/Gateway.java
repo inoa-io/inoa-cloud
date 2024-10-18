@@ -1,9 +1,5 @@
 package io.inoa.fleet.registry.domain;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-
 import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.DateUpdated;
@@ -13,6 +9,9 @@ import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.MappedProperty;
 import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.annotation.Transient;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -24,30 +23,24 @@ import lombok.Data;
 @Data
 public class Gateway {
 
-	@Id
-	@GeneratedValue
-	private Long id;
+  @Id @GeneratedValue private Long id;
 
-	@Relation(Relation.Kind.MANY_TO_ONE)
-	private Tenant tenant;
-	@MappedProperty
-	private String gatewayId;
-	@MappedProperty
-	private String name;
-	@MappedProperty
-	private Boolean enabled;
-	@Relation(Relation.Kind.EMBEDDED)
-	private GatewayStatus status;
+  @Relation(Relation.Kind.MANY_TO_ONE)
+  private Tenant tenant;
 
-	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
-	private Instant created;
-	@DateUpdated(truncatedTo = ChronoUnit.MILLIS)
-	private Instant updated;
+  @MappedProperty private String gatewayId;
+  @MappedProperty private String name;
+  @MappedProperty private Boolean enabled;
 
-	@Transient
-	@Nullable
-	private List<Group> groups;
-	@Transient
-	@Nullable
-	private List<GatewayProperty> properties;
+  @Relation(Relation.Kind.EMBEDDED)
+  private GatewayStatus status;
+
+  @DateCreated(truncatedTo = ChronoUnit.MILLIS)
+  private Instant created;
+
+  @DateUpdated(truncatedTo = ChronoUnit.MILLIS)
+  private Instant updated;
+
+  @Transient @Nullable private List<Group> groups;
+  @Transient @Nullable private List<GatewayProperty> properties;
 }

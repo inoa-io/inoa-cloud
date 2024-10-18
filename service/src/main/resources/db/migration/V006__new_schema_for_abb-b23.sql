@@ -1,15 +1,15 @@
-INSERT INTO
-    thing_type (
-        id,
-        thing_type_id,
-        name,
-        category,
-        json_schema,
-        created,
-        updated
-    )
-VALUES
-    (
+INSERT
+    INTO
+        thing_type(
+            id,
+            thing_type_id,
+            name,
+            category,
+            json_schema,
+            created,
+            updated
+        )
+    VALUES(
         8,
         'abb-b23',
         'ABB B23',

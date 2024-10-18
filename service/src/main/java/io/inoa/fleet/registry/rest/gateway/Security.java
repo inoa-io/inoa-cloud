@@ -15,9 +15,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class Security {
 
-	Gateway getGateway() {
-		return ServerRequestContext.currentRequest()
-				.flatMap(request -> request.getUserPrincipal(GatewayAuthentication.class))
-				.map(GatewayAuthentication::getGateway).orElseThrow();
-	}
+  Gateway getGateway() {
+    return ServerRequestContext.currentRequest()
+        .flatMap(request -> request.getUserPrincipal(GatewayAuthentication.class))
+        .map(GatewayAuthentication::getGateway)
+        .orElseThrow();
+  }
 }

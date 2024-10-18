@@ -19,7 +19,7 @@
 
 .config-container {
 	margin-left: 55px;
-    display: flex;
+	display: flex;
 	flex-direction: column;
 }
 
@@ -74,7 +74,7 @@
 .config-table-column-title {
 	width: 200px;
 	font-weight: 500;
-	vertical-align:top;
+	vertical-align: top;
 }
 
 .config-table-column-options {
