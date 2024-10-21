@@ -14,7 +14,7 @@
 	<name>INOA :: App</name>
 
 	<properties>
-		<angular.configuration>development</angular.configuration>
+		<angular.configuration>production</angular.configuration>
 		<!-- will be overriden by `git-commit-id-maven-plugin` -->
 		<git.commit.id.full />
 		<git.commit.time />
