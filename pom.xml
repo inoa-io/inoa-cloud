@@ -84,6 +84,8 @@
 		<!-- Could be overridden via maven property -Dmcnoise.replicas=10 to produce more traffic. -->
 		<mcnoise.replicas>1</mcnoise.replicas>
 
+		<check.skip>false</check.skip>
+
 		<!-- ===================================================================== -->
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
@@ -296,6 +298,7 @@
 					<artifactId>spotless-maven-plugin</artifactId>
 					<version>${version.com.diffplug.spotless.spotless-maven-plugin}</version>
 					<configuration>
+						<skip>${check.skip}</skip>
 						<formats>
 							<!-- Git files -->
 							<format>
