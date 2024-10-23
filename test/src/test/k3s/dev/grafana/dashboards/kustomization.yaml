@@ -8,3 +8,9 @@ configMapGenerator:
     options:
       annotations:
         grafana.io/folder: fleet
+  - name: grafana-dashboards-ems
+    files:
+      - fleet/inoa-ems-heatmap.json
+    options:
+      annotations:
+        grafana.io/folder: ems
