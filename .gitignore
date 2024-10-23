@@ -4,6 +4,7 @@ app/.angular
 app/.yarn
 app/dist
 app/node_modules
+app/src/environments
 
 .moquette_uuid
 

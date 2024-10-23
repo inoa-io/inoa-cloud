@@ -20,6 +20,7 @@
 		<git.commit.time />
 		<git.tags />
 		<git.branch />
+		<git.commit.id.describe />
 	</properties>
 
 	<build>
@@ -30,15 +31,17 @@
 				<artifactId>git-commit-id-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>validate</phase>
+						<id>get-the-git-infos</id>
 						<goals>
 							<goal>revision</goal>
 						</goals>
-						<configuration>
-							<commitIdGenerationMode>full</commitIdGenerationMode>
-						</configuration>
+						<phase>initialize</phase>
 					</execution>
 				</executions>
+				<configuration>
+					<skipPoms>false</skipPoms>
+					<commitIdGenerationMode>full</commitIdGenerationMode>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
