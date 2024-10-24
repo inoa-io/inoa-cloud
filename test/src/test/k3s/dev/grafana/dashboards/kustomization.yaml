@@ -11,7 +11,7 @@ configMapGenerator:
         grafana.io/folder: fleet
   - name: grafana-dashboards-ems
     files:
-      - inoa-ems-power-data.json
+      - ems/inoa-ems-power-data.json
     options:
       annotations:
         grafana.io/folder: ems
