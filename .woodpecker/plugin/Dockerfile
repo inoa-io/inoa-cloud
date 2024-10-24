@@ -2,7 +2,7 @@
 ### this is our build image with maven, java 17,node 18 and other stuff
 ###
 
-FROM ghcr.io/grayc-de/node:20
+FROM ghcr.io/grayc-de/plugins/node:20
 
 ### curl
 
