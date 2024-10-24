@@ -1,22 +1,43 @@
 {
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
   "editable": false,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 2,
+  "links": [],
+  "liveNow": false,
   "panels": [
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "pCkN5-F4z"
+        "uid": "P951FEA4DE68E13C5"
       },
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -24,7 +45,8 @@
               }
             ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
@@ -42,11 +64,13 @@
           "calcs": [
             "lastNotNull"
           ],
+          "fields": "",
           "values": false
         },
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.2.4",
       "targets": [
         {
           "datasource": {
@@ -63,7 +87,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "pCkN5-F4z"
+        "uid": "P951FEA4DE68E13C5"
       },
       "fieldConfig": {
         "defaults": {
@@ -77,11 +101,13 @@
             },
             "inspect": false
           },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -164,6 +190,7 @@
         "cellHeight": "sm",
         "footer": {
           "countRows": false,
+          "fields": "",
           "reducer": [
             "sum"
           ],
@@ -172,7 +199,7 @@
         "frameIndex": 7,
         "showHeader": true
       },
-      "pluginVersion": "9.5.1",
+      "pluginVersion": "10.2.4",
       "targets": [
         {
           "datasource": {
@@ -189,7 +216,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "pCkN5-F4z"
+        "uid": "P951FEA4DE68E13C5"
       },
       "fieldConfig": {
         "defaults": {
@@ -198,6 +225,12 @@
           },
           "custom": {
             "fillOpacity": 70,
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
             "lineWidth": 0,
             "spanNulls": false
           },
@@ -252,11 +285,13 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               }
             ]
           }
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
         "h": 9,
@@ -297,7 +332,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "pCkN5-F4z"
+        "uid": "P951FEA4DE68E13C5"
       },
       "fieldConfig": {
         "defaults": {
@@ -305,8 +340,10 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
+            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -317,6 +354,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -333,11 +371,13 @@
               "mode": "off"
             }
           },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -346,10 +386,11 @@
             ]
           },
           "unit": "bytes"
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
-        "h": 15,
+        "h": 9,
         "w": 11,
         "x": 0,
         "y": 9
@@ -387,7 +428,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "pCkN5-F4z"
+        "uid": "P951FEA4DE68E13C5"
       },
       "fieldConfig": {
         "defaults": {
@@ -395,8 +436,10 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
+            "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -407,6 +450,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -423,11 +467,13 @@
               "mode": "off"
             }
           },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -436,10 +482,11 @@
             ]
           },
           "unit": "bytes"
-        }
+        },
+        "overrides": []
       },
       "gridPos": {
-        "h": 15,
+        "h": 9,
         "w": 13,
         "x": 11,
         "y": 9
@@ -475,12 +522,20 @@
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 38,
+  "refresh": "",
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
   "time": {
     "from": "now-1h",
     "to": "now"
   },
+  "timepicker": {},
+  "timezone": "",
   "title": "Satellite Fleet",
   "uid": "mKwyswBVz",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }

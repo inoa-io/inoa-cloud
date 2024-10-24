@@ -15,10 +15,10 @@
 		}
 	  ]
 	},
-	"editable": true,
+	"editable": false,
 	"fiscalYearStartMonth": 0,
 	"graphTooltip": 0,
-	"id": 3,
+	"id": 5,
 	"links": [],
 	"liveNow": false,
 	"panels": [
@@ -30,18 +30,20 @@
 		"fieldConfig": {
 		  "defaults": {
 			"color": {
-			  "mode": "palette-classic"
+			  "mode": "thresholds",
+			  "seriesBy": "last"
 			},
 			"custom": {
-			  "axisBorderShow": false,
+			  "axisBorderShow": true,
 			  "axisCenteredZero": false,
 			  "axisColorMode": "text",
+			  "axisGridShow": true,
 			  "axisLabel": "",
 			  "axisPlacement": "auto",
 			  "barAlignment": 0,
 			  "drawStyle": "line",
-			  "fillOpacity": 0,
-			  "gradientMode": "none",
+			  "fillOpacity": 25,
+			  "gradientMode": "opacity",
 			  "hideFrom": {
 				"legend": false,
 				"tooltip": false,
@@ -49,21 +51,25 @@
 			  },
 			  "insertNulls": false,
 			  "lineInterpolation": "linear",
+			  "lineStyle": {
+				"fill": "solid"
+			  },
 			  "lineWidth": 1,
-			  "pointSize": 5,
+			  "pointSize": 4,
 			  "scaleDistribution": {
 				"type": "linear"
 			  },
-			  "showPoints": "auto",
+			  "showPoints": "always",
 			  "spanNulls": false,
 			  "stacking": {
 				"group": "A",
 				"mode": "none"
 			  },
 			  "thresholdsStyle": {
-				"mode": "off"
+				"mode": "dashed"
 			  }
 			},
+			"fieldMinMax": false,
 			"mappings": [],
 			"thresholds": {
 			  "mode": "absolute",
@@ -73,17 +79,18 @@
 				  "value": null
 				},
 				{
-				  "color": "red",
-				  "value": 80
+				  "color": "text",
+				  "value": 35
 				}
 			  ]
-			}
+			},
+			"unit": "celsius"
 		  },
 		  "overrides": []
 		},
 		"gridPos": {
-		  "h": 8,
-		  "w": 12,
+		  "h": 15,
+		  "w": 24,
 		  "x": 0,
 		  "y": 0
 		},
@@ -91,9 +98,9 @@
 		"options": {
 		  "legend": {
 			"calcs": [],
-			"displayMode": "list",
+			"displayMode": "table",
 			"placement": "bottom",
-			"showLegend": true
+			"showLegend": false
 		  },
 		  "tooltip": {
 			"mode": "single",
@@ -106,7 +113,7 @@
 			  "type": "influxdb",
 			  "uid": "P951FEA4DE68E13C5"
 			},
-			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"volatage\")",
+			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"temperature\")",
 			"refId": "A"
 		  }
 		],
@@ -114,20 +121,20 @@
 		"type": "timeseries"
 	  }
 	],
-	"refresh": "",
+	"refresh": "10s",
 	"schemaVersion": 39,
 	"tags": [],
 	"templating": {
 	  "list": []
 	},
 	"time": {
-	  "from": "now-6h",
+	  "from": "now-3h",
 	  "to": "now"
 	},
 	"timepicker": {},
 	"timezone": "",
-	"title": "Voltage Data",
-	"uid": "f87291b9-8af1-4486-aac4-1bb26476c311",
-	"version": 1,
+	"title": "Temperature Data",
+	"uid": "f87291b9-8af1-4486-aac4-1bb26476c312",
+	"version": 2,
 	"weekStart": ""
   }

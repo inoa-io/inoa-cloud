@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrl: './ems-dashboard.component.css'
 })
 export class EmsDashboardComponent {
-
+  
 }
