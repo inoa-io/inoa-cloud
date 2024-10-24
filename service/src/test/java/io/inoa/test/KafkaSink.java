@@ -21,6 +21,7 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.Uuid;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 @Factory
@@ -92,6 +93,11 @@ public class KafkaSink {
         @Override
         public Map metrics() {
           throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public Uuid clientInstanceId(Duration duration) {
+          return Uuid.randomUuid();
         }
 
         @Override
