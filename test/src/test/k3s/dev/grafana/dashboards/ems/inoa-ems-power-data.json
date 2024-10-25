@@ -15,10 +15,9 @@
 		}
 	  ]
 	},
-	"editable": false,
+	"editable": true,
 	"fiscalYearStartMonth": 0,
 	"graphTooltip": 0,
-	"id": 6,
 	"links": [],
 	"liveNow": false,
 	"panels": [
@@ -115,7 +114,7 @@
 			},
 			"downsampler": "sum",
 			"expression": "PDS",
-			"hide": true,
+			"hide": false,
 			"refId": "BPDS",
 			"settings": {
 			  "mode": "dropNN"
@@ -132,7 +131,7 @@
 			},
 			"downsampler": "sum",
 			"expression": "PDSP",
-			"hide": true,
+			"hide": false,
 			"refId": "BPDSP",
 			"settings": {
 			  "mode": "dropNN"
@@ -148,7 +147,7 @@
 			  "uid": "__expr__"
 			},
 			"expression": "$BPDS + $BPDSP",
-			"hide": false,
+			"hide": true,
 			"refId": "Summed Power",
 			"type": "math"
 		  }

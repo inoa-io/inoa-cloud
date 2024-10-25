@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-set MCNOISE_REPLICAS=1
+set MCNOISE_REPLICAS=0
 set INOA_REPLICAS=1
 set INOA_IP=
 
