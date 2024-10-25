@@ -134,41 +134,7 @@ inoa:
       generateKey: false
       key: /tls/key.pem
       cert: /tls/cert.pem
-datasources:
-  default:
-    host: postgres.default
-    username: inoa
-    database: inoa
-    password: changeMe
 
-influxdb:
-  url: http://influxdb.default:8086
-  organisation: inoa
-  bucket: default
-kafka:
-  bootstrap:
-    servers: kafka.default:9092
-
-pageable:
-  maxPageSize: 30
-endpoints:
-  all:
-    enabled: false
-    path: /endpoints
-    sensitive: false
-  health:
-    enabled: true
-    details-visible: ANONYMOUS
-    disk-space:
-      enabled: false
-    discovery-client:
-      enabled: false
-  flyway:
-    enabled: true
-  prometheus:
-    enabled: true
-  kafka:
-    enabled: true
 logger:
   levels:
     io.micronaut: INFO

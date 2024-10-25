@@ -13,7 +13,7 @@ import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
 export class GatewayDetailComponent {
 	selectedTabIndex = 0;
 
-	jsonCode = '{ "method": "rpc.list" }';
+	jsonCode = "{ 'method': 'rpc.list' }";
 
 	alert = false;
 

@@ -54,6 +54,7 @@ jackson:
 datasources:
   default:
     driverClassName: org.postgresql.Driver
+    host: postgres.default
     url: jdbc:postgresql://${datasources.default.host:postgres}:${datasources.default.port:5432}/${datasources.default.database}
     database: inoa
     username: inoa
@@ -73,3 +74,31 @@ inoa:
     # allow audience test access to all tenants
     security:
       tenant-audience-whitelist: test
+influxdb:
+  url: http://influxdb.default:8086
+  organisation: inoa
+  bucket: default
+kafka:
+  bootstrap:
+    servers: kafka.default:9092
+
+pageable:
+  maxPageSize: 30
+endpoints:
+  all:
+    enabled: false
+    path: /endpoints
+    sensitive: false
+  health:
+    enabled: true
+    details-visible: ANONYMOUS
+    disk-space:
+      enabled: false
+    discovery-client:
+      enabled: false
+  flyway:
+    enabled: true
+  prometheus:
+    enabled: true
+  kafka:
+    enabled: true
