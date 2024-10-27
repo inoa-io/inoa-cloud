@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inoa-fleet
+  title: INOA Fleet
+  description:
+    INOA Fleet is a cloud service to manage IoT gateways and the connected sensors and meters.
+  annotations:
+    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/service
+    backstage.io/techdocs-ref: dir:../techdocs
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+spec:
+  owner: grayc
+  system: inoa
+  lifecycle: productive
+  type: service
+  dependsOn:
+    - component:inoa-postgres
+    - component:inoa-influxdb
+    - component:inoa-keycloak
+    - component:inoa-kafka

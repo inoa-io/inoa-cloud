@@ -1,0 +1,14 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inoa-kafka
+  title: INOA Kafka
+  description:
+    The event stream infrastructure of INOA to asynchronously transfer events and measured data.
+  annotations:
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+spec:
+  owner: grayc
+  system: default/inoa
+  lifecycle: productive
+  type: service

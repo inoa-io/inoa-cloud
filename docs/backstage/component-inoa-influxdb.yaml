@@ -1,0 +1,15 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inoa-influxdb
+  title: INOA Influx Database
+  description:
+    The time series database for measured data in context of INOA Fleet
+  annotations:
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+spec:
+  owner: grayc
+  system: default/inoa
+  lifecycle: productive
+  type: service
+

@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: inoa-fleet-api
+  title: INOA Fleet API
+  description:
+    The API to manage an IoT fleet within INOA
+  annotations:
+    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/api
+    backstage.io/techdocs-ref: dir:../techdocs
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+spec:
+  owner: grayc
+  system: inoa
+  lifecycle: productive
+  type: openapi
+  definition:
+    $text: url:https://git.grayc.io/inoa/cloud/api/api/openapi.yaml

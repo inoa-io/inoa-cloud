@@ -1,0 +1,25 @@
+when:
+  event: [manual, push]
+  path:
+    - .woodpecker/techdocs.yaml
+    - docs/techdocs
+
+services:
+  - name: dockerd
+    image: ghcr.io/grayc-de/plugins/dockerd
+    ports: [2375]
+    privileged: true
+    backend_options:
+      kubernetes:
+        securityContext:
+          privileged: true
+
+steps:
+  techdocs:
+    image: ghcr.io/grayc-de/techdocs
+    entrypoint:
+      - /bin/bash -c
+    commands:
+      - techdocs-cli generate --no-docker --source-dir $CI_WORKSPACE/docs/techdocs --output-dir $CI_WORKSPACE/docs/target
+      - techdocs-cli publish --publisher-type googleGcs --storage-name grayc-techdocs --entity inoa/cloud --directory $CI_WORKSPACE/docs/target
+    secrets: [DOCKER_CONFIG_JSON]

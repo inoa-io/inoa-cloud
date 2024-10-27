@@ -1,0 +1,82 @@
+# Project information
+site_name: INOA Cloud Architecture Documentation
+nav:
+  - index.md
+  - ...
+
+repo_url: https://git.grayc.io/inoa/cloud
+repo_name: INOA Cloud
+
+extra:
+  social:
+    - name: contact us via Slack
+      icon: fontawesome/brands/slack
+      link: https://inoa-io.slack.com
+    - name: Contribute in Gitea
+      icon: simple/gitea
+      link: https://git.grayc.io/inoa/cloud
+theme:
+  name: material
+  features:
+    - navigation.indexes
+    - navigation.footer
+    - toc.integrate
+    - toc.follow
+    - content.action.edit
+  palette:
+    scheme: indigo
+plugins:
+  techdocs-core:
+  awesome-pages:
+    collapse_single_pages: true
+    filename: .pages
+  pagenav-generator:
+  monorepo:
+  enumerate-headings:
+    toc_depth: 3
+    strict: true
+    increment_across_pages: true
+#    include:
+#      - "**/index.md"
+    exclude:
+      - index.md
+      - 09_architecture_decisions/ADR*
+      - 08_concepts/*/**
+markdown_extensions:
+  - admonition:
+  - toc:
+      permalink: true
+      baselevel: 1
+      toc_depth: 3
+  - def_list
+  - codehilite
+  - tables
+  - attr_list
+  - md_in_html
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.critic
+  - pymdownx.inlinehilite
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.keys
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tilde
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_div_format
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - plantuml_markdown:
+      format: svg

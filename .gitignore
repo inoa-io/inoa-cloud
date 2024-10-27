@@ -15,3 +15,5 @@ app/node_modules
 .env
 
 *.http
+
+.venv
