@@ -18,9 +18,9 @@ import java.util.Optional;
 public interface TenantConfigurationRepository
     extends GenericRepository<TenantConfiguration, Long> {
 
-  List<TenantConfiguration> findByDefinitionTenant(Tenant tenant);
+  List<TenantConfiguration> findByTenant(Tenant tenant);
 
-  List<TenantConfiguration> findByDefinitionTenantInList(List<Tenant> tenant);
+  List<TenantConfiguration> findByTenantInList(List<Tenant> tenant);
 
   Optional<TenantConfiguration> findByDefinition(ConfigurationDefinition definition);
 

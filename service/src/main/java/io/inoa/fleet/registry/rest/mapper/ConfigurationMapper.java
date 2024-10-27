@@ -38,7 +38,6 @@ public interface ConfigurationMapper {
       List<ConfigurationDefinition> configurationDefinitions);
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "tenant", ignore = true)
   @Mapping(target = "minimum", ignore = true)
   @Mapping(target = "maximum", ignore = true)
   @Mapping(target = "pattern", ignore = true)
@@ -51,7 +50,6 @@ public interface ConfigurationMapper {
       ConfigurationDefinition configurationDefinition);
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "tenant", ignore = true)
   @Mapping(target = "minimum", source = "minLength")
   @Mapping(target = "maximum", source = "maxLength")
   ConfigurationDefinition toDefinitionString(
@@ -63,7 +61,6 @@ public interface ConfigurationMapper {
       ConfigurationDefinition configurationDefinition);
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "tenant", ignore = true)
   @Mapping(target = "pattern", ignore = true)
   ConfigurationDefinition toDefinitionInteger(
       ConfigurationDefinitionIntegerVO configurationDefinition);
@@ -74,7 +71,6 @@ public interface ConfigurationMapper {
       ConfigurationDefinition configurationDefinition);
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "tenant", ignore = true)
   @Mapping(target = "minimum", ignore = true)
   @Mapping(target = "maximum", ignore = true)
   @Mapping(target = "pattern", ignore = true)

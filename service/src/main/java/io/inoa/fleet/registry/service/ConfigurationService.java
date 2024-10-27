@@ -30,8 +30,7 @@ public class ConfigurationService {
   public List<Configuration> findByGateway(Gateway gateway) {
     var configurations = new ArrayList<Configuration>();
     configurations.addAll(fleetProperties.getTenant().getConfigurations());
-    configurations.addAll(
-        tenantConfigurationRepository.findByDefinitionTenant(gateway.getTenant()));
+    configurations.addAll(tenantConfigurationRepository.findByTenant(gateway.getTenant()));
     var groups = gatewayGroupRepository.findGroupByGateway(gateway);
     if (!groups.isEmpty()) {
       configurations.addAll(groupConfigurationRepository.findByGroupIn(groups));

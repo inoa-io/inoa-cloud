@@ -105,6 +105,7 @@ inoa:
     security:
       tenant-audience-whitelist: inoa
     # add some default configurations
+    # TODO: remove redundant definitions of configuration definitions
     tenant:
       configurations:
         - definition:

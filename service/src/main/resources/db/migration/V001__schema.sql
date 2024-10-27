@@ -1,4 +1,14 @@
 CREATE
+    TYPE protocol_enum AS ENUM(
+        's0',
+        'http',
+        'modbus-rs485',
+        'modbus-tcp',
+        'rms',
+        'adc'
+    );
+
+CREATE
     TABLE
         tenant(
             id SERIAL NOT NULL,
@@ -139,18 +149,13 @@ CREATE
     TABLE
         configuration_definition(
             id SERIAL NOT NULL,
-            tenant_id INTEGER NOT NULL,
-            KEY VARCHAR(48) NOT NULL,
+            KEY VARCHAR(48) NOT NULL UNIQUE,
             TYPE VARCHAR(7) NOT NULL,
             description VARCHAR(200) NULL,
             minimum INTEGER NULL,
             maximum INTEGER NULL,
             pattern VARCHAR(1000) NULL,
             CONSTRAINT pk_configuration_definition PRIMARY KEY(id),
-            CONSTRAINT uq_configuration_definition UNIQUE(
-                tenant_id,
-                KEY
-            ),
             CONSTRAINT chk_configuration_definition_key CHECK(
                 KEY ~ '^[a-zA-Z0-9\-\.\_]{3,48}$'
             ),
@@ -170,23 +175,24 @@ CREATE
             CONSTRAINT chk_configuration_definition_pattern CHECK(
                 pattern IS NULL
                 OR TYPE = 'STRING'
-            ),
-            CONSTRAINT fk_configuration_definition FOREIGN KEY(tenant_id) REFERENCES tenant(id) ON
-            DELETE
-                CASCADE
+            )
         );
 
 CREATE
     TABLE
         tenant_configuration(
             id SERIAL NOT NULL,
+            tenant_id INTEGER NOT NULL,
             definition_id INTEGER NOT NULL,
             value VARCHAR(1000) NOT NULL,
             CONSTRAINT pk_tenant_configuration PRIMARY KEY(id),
             CONSTRAINT uq_tenant_configuration UNIQUE(definition_id),
             CONSTRAINT fk_tenant_configuration_definition FOREIGN KEY(definition_id) REFERENCES configuration_definition(id) ON
             DELETE
-                CASCADE
+                CASCADE,
+                CONSTRAINT fk_tenant_configuration_tenant FOREIGN KEY(tenant_id) REFERENCES tenant(id) ON
+                DELETE
+                    CASCADE
         );
 
 CREATE
@@ -227,4 +233,37 @@ CREATE
                 CONSTRAINT fk_gateway_configuration_definition FOREIGN KEY(definition_id) REFERENCES configuration_definition(id) ON
                 DELETE
                     CASCADE
+        );
+
+CREATE
+    TABLE
+        thing_type(
+            id SERIAL NOT NULL,
+            thing_type_id VARCHAR(100) NOT NULL,
+            protocol protocol_enum NOT NULL DEFAULT 'http',
+            name VARCHAR(100) NOT NULL,
+            json_schema VARCHAR(10000) NOT NULL,
+            created TIMESTAMP NOT NULL,
+            updated TIMESTAMP NOT NULL,
+            category VARCHAR(100) NOT NULL,
+            CONSTRAINT pk_thing_type PRIMARY KEY(id),
+            CONSTRAINT uq_thing_type_thing_type_id UNIQUE(thing_type_id)
+        );
+
+CREATE
+    TABLE
+        thing(
+            id SERIAL NOT NULL,
+            thing_id UUID NOT NULL,
+            tenant_id VARCHAR(100) NOT NULL,
+            gateway_id VARCHAR(100) NULL,
+            urn VARCHAR(255) NULL,
+            name VARCHAR(100) NOT NULL,
+            config VARCHAR(10000) NOT NULL,
+            thing_type_id INTEGER NOT NULL,
+            created TIMESTAMP NOT NULL,
+            updated TIMESTAMP NOT NULL,
+            CONSTRAINT pk_thing PRIMARY KEY(id),
+            CONSTRAINT uq_thing_thing_id UNIQUE(thing_id),
+            CONSTRAINT fk_thing_thing_type_id FOREIGN KEY(thing_type_id) REFERENCES thing_type(id)
         );

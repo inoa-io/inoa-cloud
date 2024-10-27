@@ -240,23 +240,21 @@ public class Data {
     return credentialRepository.save(credential);
   }
 
-  public ConfigurationDefinition definition(Tenant tenant, String key, ConfigurationTypeVO type) {
-    return definition(tenant, key, type, d -> {});
+  public ConfigurationDefinition definition(String key, ConfigurationTypeVO type) {
+    return definition(key, type, d -> {});
   }
 
   public ConfigurationDefinition definition(
-      Tenant tenant,
-      String key,
-      ConfigurationTypeVO type,
-      Consumer<ConfigurationDefinition> consumer) {
-    var definition = new ConfigurationDefinition().setTenant(tenant).setKey(key).setType(type);
+      String key, ConfigurationTypeVO type, Consumer<ConfigurationDefinition> consumer) {
+    var definition = new ConfigurationDefinition().setKey(key).setType(type);
     consumer.accept(definition);
     return configurationDefinitionRepository.save(definition);
   }
 
-  public Configuration configuration(ConfigurationDefinition definition, String value) {
+  public Configuration configuration(
+      ConfigurationDefinition definition, Tenant tenant, String value) {
     return tenantConfigurationRepository.save(
-        new TenantConfiguration().setDefinition(definition).setValue(value));
+        new TenantConfiguration().setDefinition(definition).setTenant(tenant).setValue(value));
   }
 
   public Configuration configuration(
@@ -290,7 +288,7 @@ public class Data {
   }
 
   public Long countDefinitions(Tenant tenant) {
-    return (long) configurationDefinitionRepository.findByTenantOrderByKey(tenant).size();
+    return (long) configurationDefinitionRepository.findAllOrderByKey().size();
   }
 
   public Tenant find(Tenant tenant) {
@@ -324,7 +322,7 @@ public class Data {
   }
 
   public ConfigurationDefinition findConfigurationDefinition(Tenant tenant, String key) {
-    return configurationDefinitionRepository.findByTenantAndKey(tenant, key).orElse(null);
+    return configurationDefinitionRepository.findByKey(key).orElse(null);
   }
 
   public String findConfigurationValue(ConfigurationDefinition definition) {

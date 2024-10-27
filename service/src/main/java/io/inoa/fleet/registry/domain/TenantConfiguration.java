@@ -22,5 +22,8 @@ public class TenantConfiguration implements Configuration {
   @Relation(Kind.MANY_TO_ONE)
   private ConfigurationDefinition definition;
 
+  @Relation(Kind.MANY_TO_ONE)
+  private Tenant tenant;
+
   @MappedProperty private String value;
 }
