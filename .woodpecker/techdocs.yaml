@@ -1,25 +1,36 @@
 when:
-  event: [manual, push]
-  path:
-    - .woodpecker/techdocs.yaml
-    - docs/techdocs
-
-services:
-  - name: dockerd
-    image: ghcr.io/grayc-de/plugins/dockerd
-    ports: [2375]
-    privileged: true
-    backend_options:
-      kubernetes:
-        securityContext:
-          privileged: true
+  - event: [manual, push, pull_request]
+    path:
+      - .woodpecker/techdocs.yaml
+      - docs/techdocs/**
+    branch: main
 
 steps:
-  techdocs:
-    image: ghcr.io/grayc-de/techdocs
+
+  generate:
+    image: ghcr.io/grayc-de/techdocs:latest
     entrypoint:
-      - /bin/bash -c
-    commands:
-      - techdocs-cli generate --no-docker --source-dir $CI_WORKSPACE/docs/techdocs --output-dir $CI_WORKSPACE/docs/target
-      - techdocs-cli publish --publisher-type googleGcs --storage-name grayc-techdocs --entity inoa/cloud --directory $CI_WORKSPACE/docs/target
+      [
+        "/techdocs/entrypoint-generate.sh",
+        "--source-dir", "docs/techdocs",
+        "--output-dir", "docs/target"
+      ]
     secrets: [DOCKER_CONFIG_JSON]
+
+  publish:
+    image: ghcr.io/grayc-de/techdocs:latest
+    entrypoint:
+      [
+        "/techdocs/entrypoint-publish.sh",
+        "--publisher-type", "googleGcs",
+        "--storage-name", "grayc-techdocs",
+        "--entity", "default/System/inoa-cloud",
+        "--directory", "docs/target"
+      ]
+    environment:
+      PUBLISH_TECHDOCS_SECRET:
+        from_secret: GRAYC_TECHDOCS
+    secrets: [DOCKER_CONFIG_JSON, GRAYC_TECHDOCS]
+    when:
+      - event: [manual, push]
+        branch: main

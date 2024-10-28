@@ -36,8 +36,6 @@ plugins:
     toc_depth: 3
     strict: true
     increment_across_pages: true
-#    include:
-#      - "**/index.md"
     exclude:
       - index.md
       - 09_architecture_decisions/ADR*

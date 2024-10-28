@@ -1,7 +1,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: inoa
+  name: inoa-cloud
   title: INOA
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud
