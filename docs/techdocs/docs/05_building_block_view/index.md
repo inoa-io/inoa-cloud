@@ -42,8 +42,7 @@
 
 ### Component Diagram (Level 1)
 
-![Building-Blocks-Layer-1](building-blocks-layer-1-fleet.drawio.svg#only-light)
-![Building-Blocks-Layer-1](building-blocks-layer-1-fleet-dark.drawio.svg#only-dark)
+![Building-Blocks-Layer-1](building-blocks-layer-1-fleet-dark.drawio.svg)
 
 ### Ground Control
 
@@ -84,5 +83,4 @@ The measured data from the sensors and meters is stored into a timeseries databa
 
 ### Component Diagram (Level 2)
 
-![Building-Blocks-Layer-2](building-blocks-layer-2-fleet-service.drawio.svg#only-light)
-![Building-Blocks-Layer-2](building-blocks-layer-2-fleet-service-dark.drawio.svg#only-dark)
+![Building-Blocks-Layer-2](building-blocks-layer-2-fleet-service-dark.drawio.svg)

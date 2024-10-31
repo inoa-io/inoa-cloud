@@ -6,9 +6,10 @@ metadata:
   description:
     The event stream infrastructure of INOA to asynchronously transfer events and measured data.
   annotations:
-    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+    backstage.io/techdocs-entity: system:default/inoa-cloud
+    backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=kafka"
 spec:
   owner: grayc
-  system: default/inoa
+  system: default/inoa-cloud
   lifecycle: productive
   type: service

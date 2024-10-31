@@ -7,12 +7,11 @@ metadata:
     The API to manage an IoT fleet within INOA
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/api
-    backstage.io/techdocs-ref: dir:../techdocs
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
 spec:
   owner: grayc
-  system: inoa
+  system: default/inoa-cloud
   lifecycle: productive
   type: openapi
   definition:
-    $text: url:https://git.grayc.io/inoa/cloud/api/api/openapi.yaml
+    $text: https://git.grayc.io/inoa/cloud/src/branch/main/api/openapi.yaml

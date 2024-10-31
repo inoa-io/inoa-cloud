@@ -42,8 +42,7 @@
 
 ## Collecting measured Data via INOA Satellites
 
-![Telemetry Collection](dataflows.drawio-telemetry.svg#only-light)
-![Telemetry Collection](dataflows.drawio-telemetry-dark.svg#only-dark)
+![Telemetry Collection](dataflows.drawio-telemetry-dark.svg)
 
 This is the main use case of INOA:
 

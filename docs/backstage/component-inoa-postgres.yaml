@@ -6,10 +6,11 @@ metadata:
   description:
     The main database for structured data in context of INOA Fleet
   annotations:
+    backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
 spec:
   owner: grayc
-  system: default/inoa
+  system: default/inoa-cloud
   lifecycle: productive
   type: service
 

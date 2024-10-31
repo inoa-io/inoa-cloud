@@ -1,0 +1,20 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inoa-hawkbit
+  title: INOA Hawkbit
+  description:
+    The service to provide software updates to IoT devices.
+  annotations:
+    backstage.io/techdocs-entity: system:default/inoa-cloud
+    backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=hawkbit"
+spec:
+  owner: grayc
+  system: default/inoa-cloud
+  lifecycle: productive
+  type: service
+  dependsOn:
+    - component:inoa-postgres
+    - resource:keycloak-realm-inoa
+  providesApis:
+    - inoa-hawkbit-api
