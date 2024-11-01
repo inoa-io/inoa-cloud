@@ -1,7 +1,7 @@
 mkdocs>=1.5.2
 Markdown>=3.4.4
 
-mkdocs-awesome-pages-plugin==2.9.2
+mkdocs-awesome-pages-plugin==2.9.3
 mkdocs-drawio-file==1.5.2
 mkdocs-enumerate-headings-plugin==0.6.1
 mkdocs-exclude==1.0.2
