@@ -8,6 +8,7 @@ metadata:
   annotations:
     backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=influxdb"
+    simpleicons.org/icon-slug: influxdb
 spec:
   owner: grayc
   system: default/inoa-cloud

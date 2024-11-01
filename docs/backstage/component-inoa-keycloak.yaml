@@ -8,6 +8,7 @@ metadata:
   annotations:
     backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+    simpleicons.org/icon-slug: keycloak
 spec:
   owner: grayc
   system: default/inoa-cloud
