@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="INOA-Service" type="MicronautRunConfigurationType" factoryName="Micronaut">
+  <configuration default="false" name="INOA-Fleet-Service" type="MicronautRunConfigurationType" factoryName="Micronaut">
     <option name="ALTERNATIVE_JRE_PATH" value="17" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="io.inoa.Application" />

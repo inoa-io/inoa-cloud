@@ -4,7 +4,7 @@ metadata:
   name: inoa-cloud
   title: INOA Cloud
   annotations:
-    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/
+    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/
     backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/techdocs-ref: url:https://git.grayc.io/inoa/cloud/src/branch/main/docs/techdocs
 #    backstage.io/view-url: https://git.grayc.io/inoa/cloud/src/branch/main/catalog-info.yaml

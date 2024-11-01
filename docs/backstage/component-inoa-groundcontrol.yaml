@@ -6,7 +6,7 @@ metadata:
   description:
     Ground Control is the user interface of INOA cloud that offers featrues to manage a fleet of IoT gatways.
   annotations:
-    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/app
+    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/app
     backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
 spec:
