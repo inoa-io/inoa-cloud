@@ -15,13 +15,9 @@ import java.util.Optional;
 public interface ConfigurationDefinitionRepository
     extends CrudRepository<ConfigurationDefinition, Long> {
 
-  List<ConfigurationDefinition> findByTenantOrderByKey(Tenant tenant);
+  List<ConfigurationDefinition> findAllOrderByKey();
 
-  List<ConfigurationDefinition> findByTenantInListOrderByKey(List<Tenant> tenant);
+  Optional<ConfigurationDefinition> findByKey(String key);
 
-  Optional<ConfigurationDefinition> findByTenantAndKey(Tenant tenant, String key);
-
-  boolean existsByTenantAndKey(Tenant tenant, String key);
-
-  boolean existsByTenantInListAndKey(List<Tenant> tenant, String key);
+  boolean existsByKey(String key);
 }

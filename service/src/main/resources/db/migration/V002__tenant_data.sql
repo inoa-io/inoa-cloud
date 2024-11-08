@@ -1,0 +1,18 @@
+INSERT
+    INTO
+        tenant(
+            tenant_id,
+            name,
+            enabled,
+            gateway_id_pattern,
+            created,
+            updated
+        )
+    VALUES(
+        'inoa',
+        'INOA',
+        TRUE,
+        'IS[A-Z]{2}[0-9]{2}-[A-F0-9]{12}',
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+    );

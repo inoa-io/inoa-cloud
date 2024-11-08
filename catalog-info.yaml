@@ -1,34 +1,8 @@
 apiVersion: backstage.io/v1alpha1
-kind: System
+kind: Location
 metadata:
-  name: inoa
-  title: INOA
-  annotations:
-    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud
-    backstage.io/techdocs-ref: url:https://git.grayc.io/inoa/cloud/src/branch/main/docs/techdocs
-    backstage.io/view-url: https://git.grayc.io/inoa/cloud/src/branch/main/catalog-info.yaml
-    backstage.io/edit-url: https://git.grayc.io/inoa/cloud/_edit/main/catalog-info.yaml
-    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+  name: location-inoa-cloud
+  description: The INOA Cloud components.
 spec:
-  owner: grayc
----
-apiVersion: backstage.io/v1alpha1
-kind: Resource
-metadata:
-  name: keycloak-realm-inoa
-  title: Keycloak Realm INOA
-  links:
-    - title: Admin Console
-      url: https://oidc.inoa.io/admin/inoa/console
-  annotations:
-    backstage.io/view-url: https://git.grayc.io/inoa/cloud/src/branch/main/catalog-info.yaml
-    backstage.io/edit-url: https://git.grayc.io/inoa/cloud/_edit/main/catalog-info.yaml
-    backstage.io/kubernetes-namespace: infrastructure
-    backstage.io/kubernetes-label-selector: app.kubernetes.io/name=keycloak
-spec:
-  system: inoa
-  owner: grayc
-  lifecycle: production
-  type: keycloak-realm
-  dependsOn:
-    - component:keycloak
+  targets:
+    - ./docs/backstage/**/*.yaml

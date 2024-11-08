@@ -87,8 +87,7 @@ steps:
     depends_on: [build-api]
     commands:
       [
-        touch test/a,
-        mvn -Dcheck.skip -pl test pre-integration-test -Dk3s.dockerImages= -Dk3s.skipApply -Dk3s.registries=a -Dk3s.debug=true -X,
+        mvn -Dcheck.skip -pl test pre-integration-test -Dk3s.skipApply -Dk3s.dockerImages=,
       ]
   integration-test:
     <<: *maven

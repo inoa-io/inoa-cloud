@@ -14,14 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import io.inoa.fleet.FleetProperties;
 import io.inoa.fleet.registry.auth.GatewayTokenHelper;
 import io.inoa.fleet.registry.domain.Configuration;
-import io.inoa.rest.ConfigurationTypeVO;
-import io.inoa.rest.CredentialTypeVO;
-import io.inoa.rest.CredentialsApiTestClient;
-import io.inoa.rest.GatewayApi;
-import io.inoa.rest.GatewayApiTestClient;
-import io.inoa.rest.GatewayApiTestSpec;
-import io.inoa.rest.GatewaysApiTestClient;
-import io.inoa.rest.RegisterVO;
+import io.inoa.rest.*;
 import io.inoa.test.AbstractUnitTest;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
@@ -48,6 +41,7 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
   @Inject TargetsApiClient targetsApiClient;
   @Inject GatewayTokenHelper gatewayToken;
   @Inject FleetProperties fleetProperties;
+  @Inject ConfigurationApiTestClient client2;
 
   @DisplayName("getConfiguration(200): without configuration")
   @Test
@@ -57,8 +51,8 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
     // create config for another tenant
 
     var otherTenant = data.tenant();
-    var otherDefinition = data.definition(otherTenant, "other", ConfigurationTypeVO.STRING);
-    data.configuration(otherDefinition, "meh");
+    var otherDefinition = data.definition("other", ConfigurationTypeVO.STRING);
+    data.configuration(otherDefinition, otherTenant, "meh");
 
     // create gateway and get config
 
@@ -98,11 +92,11 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
 
     // create config
 
-    var definitionBoolean = data.definition(tenant, "boolean", ConfigurationTypeVO.BOOLEAN);
-    var definitionString = data.definition(tenant, "string", ConfigurationTypeVO.STRING);
-    var definitionInteger = data.definition(tenant, "integer", ConfigurationTypeVO.INTEGER);
-    var definitionUrl = data.definition(tenant, "url", ConfigurationTypeVO.URL);
-    data.configuration(definitionString, "meh");
+    var definitionBoolean = data.definition("boolean", ConfigurationTypeVO.BOOLEAN);
+    var definitionString = data.definition("string", ConfigurationTypeVO.STRING);
+    var definitionInteger = data.definition("integer", ConfigurationTypeVO.INTEGER);
+    var definitionUrl = data.definition("url", ConfigurationTypeVO.URL);
+    data.configuration(definitionString, tenant, "meh");
     data.configuration(group1, definitionString, "muh");
     data.configuration(group2, definitionUrl, "http://host");
     data.configuration(gateway, definitionString, "mäh");
@@ -110,8 +104,9 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
     data.configuration(gateway, definitionInteger, "12345");
 
     String tenantMqtttUrl = "mqtt://tenant.domain.tld:1883";
-    var definitionMqttUrl = data.definition(tenant, "mqtt.url", ConfigurationTypeVO.STRING);
-    data.configuration(definitionMqttUrl, tenantMqtttUrl);
+    var mqtt_uuid = UUID.randomUUID().toString();
+    var definitionMqttUrl = data.definition("mqtt.url" + mqtt_uuid, ConfigurationTypeVO.STRING);
+    data.configuration(definitionMqttUrl, tenant, tenantMqtttUrl);
 
     // get config
 
@@ -129,7 +124,7 @@ public class GatewayApiTest extends AbstractUnitTest implements GatewayApiTestSp
       assertTrue(actual.containsKey(configuration.getDefinition().getKey()));
       Object otherValue = actual.get(configuration.getDefinition().getKey());
       assertNotNull(otherValue);
-      if (configuration.getDefinition().getKey().equals("mqtt.url")) {
+      if (configuration.getDefinition().getKey().equals("mqtt.url" + mqtt_uuid)) {
         // tenant specific value must be delivered instead of default value.
         assertEquals(tenantMqtttUrl, otherValue.toString());
       } else {

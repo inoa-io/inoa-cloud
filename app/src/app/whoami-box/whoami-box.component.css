@@ -6,15 +6,17 @@
 }
 
 .session-icon-container {
+	width: 50px;
+	height: 50px;
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	transform: translate(-17px, -17px);
+	transform: translate(-25px, -25px);
 }
 
 .session-spinner-container {
-	width: 34px;
-	height: 34px;
+	width: 55px;
+	height: 55px;
 	align-self: center;
 	position: relative;
 }
@@ -24,15 +26,6 @@
 	justify-content: flex-end;
 	align-items: flex-start;
 	z-index: 2000;
-}
-
-.session-icon {
-	width: 36px;
-	height: 36px;
-	font-size: 36px;
-	top: 50%;
-	left: 50%;
-	transform: translate(-1px, -1px);
 }
 
 .whoami-data-container {
@@ -48,4 +41,11 @@
 .whoami-data-email {
 	margin: 0;
 	font-size: 12px;
+}
+
+.gravatar-image {
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

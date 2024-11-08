@@ -1,0 +1,18 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: inoa-keycloak
+  title: INOA Keycloak
+  description:
+    The authorization service in context of INOA.
+  annotations:
+    backstage.io/techdocs-entity: system:default/inoa-cloud
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+    simpleicons.org/icon-slug: keycloak
+spec:
+  owner: grayc
+  system: default/inoa-cloud
+  lifecycle: productive
+  type: service
+  dependsOn:
+    - component:inoa-postgres

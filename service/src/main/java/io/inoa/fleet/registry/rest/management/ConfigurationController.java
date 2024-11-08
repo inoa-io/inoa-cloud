@@ -54,9 +54,7 @@ public class ConfigurationController extends AbstractManagementController
 
   @Override
   public HttpResponse<List<ConfigurationDefinitionVO>> findConfigurationDefinitions() {
-    return HttpResponse.ok(
-        mapper.toDefinitions(
-            definitionRepository.findByTenantInListOrderByKey(security.getGrantedTenants())));
+    return HttpResponse.ok(mapper.toDefinitions(definitionRepository.findAll()));
   }
 
   @Override
@@ -68,11 +66,10 @@ public class ConfigurationController extends AbstractManagementController
     if (!Objects.equals(key, vo.getKey())) {
       throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Key in path differs from model.");
     }
-    if (definitionRepository.existsByTenantAndKey(tenant, vo.getKey())) {
+    if (definitionRepository.existsByKey(vo.getKey())) {
       throw new HttpStatusException(HttpStatus.CONFLICT, "Key already exists.");
     }
-    ConfigurationDefinition definition =
-        definitionRepository.save(mapper.toDefinition(vo).setTenant(tenant));
+    ConfigurationDefinition definition = definitionRepository.save(mapper.toDefinition(vo));
     return HttpResponse.created(mapper.toDefinition(definition));
   }
 
@@ -80,7 +77,7 @@ public class ConfigurationController extends AbstractManagementController
   public HttpResponse<Object> deleteConfigurationDefinition(
       @NonNull String key, @NonNull Optional<String> tenantId) {
     var tenant = resolveAmbiguousTenant(security.getGrantedTenants(), tenantId);
-    var optional = definitionRepository.findByTenantAndKey(tenant, key);
+    var optional = definitionRepository.findByKey(key);
     if (optional.isEmpty()) {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Definition not found.");
     }
@@ -93,7 +90,7 @@ public class ConfigurationController extends AbstractManagementController
   @Override
   public HttpResponse<List<ConfigurationVO>> findConfigurations() {
     var tenants = security.getGrantedTenants();
-    var configurations = tenantConfigurationRepository.findByDefinitionTenantInList(tenants);
+    var configurations = tenantConfigurationRepository.findByTenantInList(tenants);
     return HttpResponse.ok(mapper.toConfigurations(configurations));
   }
 
@@ -127,7 +124,10 @@ public class ConfigurationController extends AbstractManagementController
             c -> tenantConfigurationRepository.update(definition.getId(), value),
             () ->
                 tenantConfigurationRepository.save(
-                    new TenantConfiguration().setDefinition(definition).setValue(value)));
+                    new TenantConfiguration()
+                        .setDefinition(definition)
+                        .setValue(value)
+                        .setTenant(tenant)));
     return HttpResponse.noContent();
   }
 
@@ -220,7 +220,7 @@ public class ConfigurationController extends AbstractManagementController
   }
 
   private ConfigurationDefinition getConfigurationDefinition(Tenant tenant, String key) {
-    var optional = definitionRepository.findByTenantAndKey(tenant, key);
+    var optional = definitionRepository.findByKey(key);
     if (optional.isEmpty()) {
       throw new HttpStatusException(HttpStatus.NOT_FOUND, "Definition not found.");
     }

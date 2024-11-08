@@ -32,7 +32,7 @@ The local environment will be set-up with help of [k3s](https://k3s.io/). This m
 * Use an IDE of your choice, recommended is IntelliJ
 * Import the project as Maven project in your IDE
 * Ensure all annotation processors are active in your IDE
-* copy [.env.template](../../.env.template) into a local `.env` file where you can set your local properties.
+* copy [.env.template](.env.template) into a local `.env` file where you can set your local properties.
 * Configure your local IP that should be used for the network traffic from browser and possible Satellite to INOA Cloud
 * Add `127.0.0.1       kafka.default.svc.cluster.local` to your `/etc/hosts` file for local interactions with Kafka
 
@@ -107,8 +107,8 @@ For bash there are some scripts that should help to execute the INOA components:
 
 ### INOA Fleet
 
-INOA Fleet is the swiss army knife to manage your IoT devices and gateways in a simple way. With help of some great open
-source tools, it is the cockpit for a fleet of IoT devices.
+[INOA Fleet](service/README.md) is the swiss army knife to manage your IoT devices and gateways in a simple way. With help of some great open
+source tools, it is the gateway to & from a fleet of IoT devices.
 
 ### INOA Measurement
 
@@ -117,7 +117,7 @@ are collected by IoT devices and provide it with help of APIs and UIs.
 
 ### INOA Ground Control
 
-INOA Ground Control is the UI to manage the IoT Fleet with INOA.
+[INOA Ground Control](app/README.md) is the UI to manage the IoT Fleet with INOA.
 
 ### INOA OS
 

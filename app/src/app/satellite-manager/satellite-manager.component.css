@@ -1,19 +1,27 @@
 .satellite-manager-container {
 	display: flex;
 	flex-direction: row;
-	gap: 15px;
+	gap: 50px;
+	width: calc(200vw + 50px);
+	height: calc(100vh - 92px);
+}
+
+.satellite-manager-container-mini {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
 	width: 200vw;
 	height: calc(100vh - 92px);
 }
 
 .gateway-table-uber-container {
-	width: calc(100% - 80px);
+	width: calc(100% - 70px);
 	height: 100%;
 	transition: width 0.3s ease;
 }
 
 .gateway-table-uber-container-mini {
-	width: 300px;
+	width: 305px;
 	height: 100%;
 	transition: width 0.3s ease;
 }

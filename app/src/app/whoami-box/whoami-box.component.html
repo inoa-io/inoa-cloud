@@ -2,31 +2,12 @@
 <div *ngIf = "whoami$ | async as whoami" class="whoamai-box-container">
     <!-- a nice little icon -->
     <div class="session-spinner-container">
-        <!-- a little icon -->
+        <!-- gravatar icon -->
         <div class="session-icon-container">
-            <mat-icon
-                class="session-icon"
-                [color]="sessionPercentLeft === 0 ? 'warn' : ''"
-                >account_circle</mat-icon
-            >
+			<a href="https://gravatar.com" target="_blank" matTooltip="View profile on Gravatar">
+				<img class="gravatar-image" [src]="getGravatarUrl(whoami.email)" alt="Gravatar image for {{ whoami.email }}">
+			</a>
         </div>
-
-		<!-- session time spinner -->
-		<div class="session-spinner">
-			<mat-spinner
-				mode="determinate"
-				[value]="sessionPercentLeft"
-				[color]="sessionPercentLeft > 50 ? 'accent' : 'warn'"
-				diameter="40"
-				strokeWidth="5"
-				[matTooltip]="sessionTimeLeftString"
-				matTooltipPosition="below"
-				matTooltipClass="tooltip"
-				matTooltipShowDelay="100"
-				matTooltipHideDelay="0"
-			>
-			</mat-spinner>
-		</div>
 	</div>
 
     <!-- whoami data -->

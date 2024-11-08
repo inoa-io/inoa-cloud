@@ -1,6 +1,7 @@
 import { AfterViewInit, Component } from "@angular/core";
 import { InternalCommunicationService } from "../services/internal-communication-service";
 import { AuthService } from "@inoa/api";
+import * as CryptoJS from "crypto-js";
 
 @Component({
 	selector: "gc-whoami-box",
@@ -18,12 +19,7 @@ export class WhoamiBoxComponent implements AfterViewInit {
     constructor(
         private authService: AuthService,
         public intercomService: InternalCommunicationService
-    ) {
-        //recalculates the session time progress every second
-        setInterval(() => {
-            this.recalcSessionTimeSpinnerProgress();
-        }, 1000);
-    }
+    ) { }
 
 	//this is just to make time calculations work like they should
 	adjustForTimezone(date: Date): Date {
@@ -36,39 +32,21 @@ export class WhoamiBoxComponent implements AfterViewInit {
         this.whoami$.subscribe(data =>
         {
             console.log("received whoami data");
-            console.log(data);
-
+			console.log(data);
+			
             // set session time data
             this.sessionStartDate = new Date();
             this.sessionExpirationDate = new Date(data.session_expires);
             
         	// give email to the intercom service so all components can see it
-        	this.intercomService.userEmail = data.email;
+			this.intercomService.userEmail = data.email;
         });
-    }
+	}
+	
+	getGravatarUrl(email: string): string {
+		const trimmedEmail = email.trim().toLowerCase();
 
-	//calculates the mini spinner progress to show how much session time is left and the time left for the tooltip
-	recalcSessionTimeSpinnerProgress() {
-		const timeFormattingOptions: Intl.DateTimeFormatOptions = { hour: "numeric", minute: "numeric", second: "numeric" };
-
-		const nowTime = Date.now();
-		const sessionExpirationTime = this.sessionExpirationDate.getTime();
-		const sessionStartTime = this.sessionStartDate.getTime();
-
-		const timeLeftInSession = sessionExpirationTime - nowTime;
-		const sessionLength = sessionExpirationTime - sessionStartTime;
-		const timeInSession = nowTime - sessionStartTime;
-
-		const timeLeftDate = new Date(timeLeftInSession);
-
-		//only show time left while there is actually still time left
-		if (timeLeftInSession > 0) {
-			this.sessionTimeLeftString = "This session expires in: " + this.adjustForTimezone(timeLeftDate).toLocaleString("de-De", timeFormattingOptions);
-			this.sessionPercentLeft = 100 - (timeInSession / sessionLength) * 100;
-		} else {
-			this.sessionTimeLeftString = "Session expired";
-			this.sessionPercentLeft = 0;
-		}
+		return "https://gravatar.com/avatar/" + CryptoJS.SHA256(trimmedEmail).toString();
 	}
 
 	//open user manual in new window

@@ -1,0 +1,36 @@
+when:
+  - event: [manual, push, pull_request]
+    path:
+      - .woodpecker/techdocs.yaml
+      - docs/techdocs/**
+    branch: main
+
+steps:
+
+  generate:
+    image: ghcr.io/grayc-de/techdocs:latest
+    entrypoint:
+      [
+        "/techdocs/entrypoint-generate.sh",
+        "--source-dir", "docs/techdocs",
+        "--output-dir", "docs/target"
+      ]
+    secrets: [DOCKER_CONFIG_JSON]
+
+  publish:
+    image: ghcr.io/grayc-de/techdocs:latest
+    entrypoint:
+      [
+        "/techdocs/entrypoint-publish.sh",
+        "--publisher-type", "googleGcs",
+        "--storage-name", "grayc-techdocs",
+        "--entity", "default/System/inoa-cloud",
+        "--directory", "docs/target"
+      ]
+    environment:
+      PUBLISH_TECHDOCS_SECRET:
+        from_secret: GRAYC_TECHDOCS
+    secrets: [DOCKER_CONFIG_JSON, GRAYC_TECHDOCS]
+    when:
+      - event: [manual, push]
+        branch: main
