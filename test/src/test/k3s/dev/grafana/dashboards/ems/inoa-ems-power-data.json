@@ -18,6 +18,7 @@
 	"editable": true,
 	"fiscalYearStartMonth": 0,
 	"graphTooltip": 0,
+	"id": 2,
 	"links": [],
 	"liveNow": false,
 	"panels": [
@@ -93,63 +94,9 @@
 			  "type": "influxdb",
 			  "uid": "P951FEA4DE68E13C5"
 			},
-			"hide": true,
-			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"power\")",
+			"hide": false,
+			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"power\" or r[\"sensor\"] == \"apower\")\r\n  |> aggregateWindow(every: 15m, fn: sum, createEmpty: true, offset: 0s)",
 			"refId": "PDS"
-		  },
-		  {
-			"datasource": {
-			  "type": "influxdb",
-			  "uid": "P951FEA4DE68E13C5"
-			},
-			"hide": true,
-			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"apower\")",
-			"refId": "PDSP"
-		  },
-		  {
-			"datasource": {
-			  "name": "Expression",
-			  "type": "__expr__",
-			  "uid": "__expr__"
-			},
-			"downsampler": "sum",
-			"expression": "PDS",
-			"hide": false,
-			"refId": "BPDS",
-			"settings": {
-			  "mode": "dropNN"
-			},
-			"type": "resample",
-			"upsampler": "fillna",
-			"window": "15m"
-		  },
-		  {
-			"datasource": {
-			  "name": "Expression",
-			  "type": "__expr__",
-			  "uid": "__expr__"
-			},
-			"downsampler": "sum",
-			"expression": "PDSP",
-			"hide": false,
-			"refId": "BPDSP",
-			"settings": {
-			  "mode": "dropNN"
-			},
-			"type": "resample",
-			"upsampler": "fillna",
-			"window": "15m"
-		  },
-		  {
-			"datasource": {
-			  "name": "Expression",
-			  "type": "__expr__",
-			  "uid": "__expr__"
-			},
-			"expression": "$BPDS + $BPDSP",
-			"hide": true,
-			"refId": "Summed Power",
-			"type": "math"
 		  }
 		],
 		"title": "Power Heatmap",
@@ -164,8 +111,7 @@
 		"fieldConfig": {
 		  "defaults": {
 			"color": {
-			  "mode": "continuous-YlRd",
-			  "seriesBy": "last"
+			  "mode": "palette-classic"
 			},
 			"custom": {
 			  "axisBorderShow": false,
@@ -173,9 +119,9 @@
 			  "axisColorMode": "text",
 			  "axisLabel": "",
 			  "axisPlacement": "left",
-			  "barAlignment": 0,
+			  "barAlignment": 1,
 			  "drawStyle": "line",
-			  "fillOpacity": 20,
+			  "fillOpacity": 32,
 			  "gradientMode": "none",
 			  "hideFrom": {
 				"legend": false,
@@ -183,20 +129,20 @@
 				"viz": false
 			  },
 			  "insertNulls": false,
-			  "lineInterpolation": "linear",
+			  "lineInterpolation": "stepAfter",
 			  "lineStyle": {
 				"fill": "solid"
 			  },
-			  "lineWidth": 2,
+			  "lineWidth": 1,
 			  "pointSize": 8,
 			  "scaleDistribution": {
 				"type": "linear"
 			  },
-			  "showPoints": "always",
+			  "showPoints": "never",
 			  "spanNulls": false,
 			  "stacking": {
 				"group": "A",
-				"mode": "none"
+				"mode": "normal"
 			  },
 			  "thresholdsStyle": {
 				"mode": "dashed"
@@ -248,63 +194,9 @@
 			  "type": "influxdb",
 			  "uid": "P951FEA4DE68E13C5"
 			},
-			"hide": true,
-			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"power\")",
-			"refId": "PDS"
-		  },
-		  {
-			"datasource": {
-			  "type": "influxdb",
-			  "uid": "P951FEA4DE68E13C5"
-			},
-			"hide": true,
-			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"apower\")",
-			"refId": "PDSP"
-		  },
-		  {
-			"datasource": {
-			  "name": "Expression",
-			  "type": "__expr__",
-			  "uid": "__expr__"
-			},
-			"downsampler": "sum",
-			"expression": "PDS",
-			"hide": true,
-			"refId": "BPDS",
-			"settings": {
-			  "mode": "dropNN"
-			},
-			"type": "resample",
-			"upsampler": "fillna",
-			"window": "15m"
-		  },
-		  {
-			"datasource": {
-			  "name": "Expression",
-			  "type": "__expr__",
-			  "uid": "__expr__"
-			},
-			"downsampler": "sum",
-			"expression": "PDSP",
-			"hide": true,
-			"refId": "BPDSP",
-			"settings": {
-			  "mode": "dropNN"
-			},
-			"type": "resample",
-			"upsampler": "fillna",
-			"window": "15m"
-		  },
-		  {
-			"datasource": {
-			  "name": "Expression",
-			  "type": "__expr__",
-			  "uid": "__expr__"
-			},
-			"expression": "$BPDS + $BPDSP",
 			"hide": false,
-			"refId": "Summed Power",
-			"type": "math"
+			"query": "from(bucket: \"default\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"sensor\"] == \"power\" or r[\"sensor\"] == \"apower\")\r\n  |> aggregateWindow(every: 15m, fn: sum, createEmpty: true, offset: 0s)",
+			"refId": "15m"
 		  }
 		],
 		"title": "Power Graph",
@@ -312,7 +204,7 @@
 		"type": "timeseries"
 	  }
 	],
-	"refresh": "",
+	"refresh": "5s",
 	"schemaVersion": 39,
 	"tags": [],
 	"templating": {
