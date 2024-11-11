@@ -3,8 +3,7 @@ kind: Component
 metadata:
   name: inoa-postgres
   title: INOA Postgres Database
-  description:
-    The main database for structured data in context of INOA Fleet
+  description: The main database for structured data in context of INOA Fleet
   annotations:
     backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
@@ -14,4 +13,3 @@ spec:
   system: default/inoa-cloud
   lifecycle: productive
   type: service
-

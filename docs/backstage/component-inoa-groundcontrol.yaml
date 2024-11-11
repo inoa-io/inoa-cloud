@@ -3,8 +3,7 @@ kind: Component
 metadata:
   name: inoa-groundcontrol
   title: INOA Ground Control
-  description:
-    Ground Control is the user interface of INOA cloud that offers featrues to manage a fleet of IoT gatways.
+  description: Ground Control is the user interface of INOA cloud that offers featrues to manage a fleet of IoT gatways.
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/app
     backstage.io/techdocs-entity: system:default/inoa-cloud

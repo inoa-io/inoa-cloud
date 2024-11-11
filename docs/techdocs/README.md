@@ -9,6 +9,7 @@
 ### Pre-Requisits
 
 1. [npx](https://www.npmjs.com/package/npx) version 10.2.2
+
    ```shell
    npm install -g npx
    ```
@@ -35,3 +36,4 @@ This could be solved with these plugins:
    <br/>**--> Doesn't work inside of Backstage, because it blocks external javascripts**
 2. [mkdocs-drawio-exporter](https://pypi.org/project/mkdocs-drawio-exporter/) - exports draw.io diagrams into images (svg or png) and rewrites the links.
    <br/>**--> Doesn't work because the docker image for techdocs doesn't have a drawio executable and I was not able to install it into Alpine.**
+

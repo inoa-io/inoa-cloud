@@ -3,8 +3,7 @@ kind: Component
 metadata:
   name: inoa-influxdb
   title: INOA Influx Database
-  description:
-    The time series database for measured data in context of INOA Fleet
+  description: The time series database for measured data in context of INOA Fleet
   annotations:
     backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=influxdb"
@@ -14,4 +13,3 @@ spec:
   system: default/inoa-cloud
   lifecycle: productive
   type: service
-

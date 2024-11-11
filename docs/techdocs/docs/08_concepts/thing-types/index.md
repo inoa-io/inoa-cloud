@@ -4,7 +4,7 @@
 
 !!! Warning
 
-     This document is still WIP, that's why not every thing is explained yet
+        This document is still WIP, that's why not every thing is explained yet
 
 This concept defines, how we manage and organize things that could be integrated with INOA.
 For each type of thing we Do have a so called `ThingType` that contains these aspects of a thing:
@@ -18,7 +18,6 @@ For each type of thing we Do have a so called `ThingType` that contains these as
 
 * The format is always: `urn:\<thingType>:\<thingId>:\<sensor>`
 * **\<thingType>** can currently be one of the following options:
-
   * s0
   * shellyplug-s
   * shellyplusplugs
@@ -27,7 +26,6 @@ For each type of thing we Do have a so called `ThingType` that contains these as
   * dvh4013
   * mdvh4006
   * ...
-
 * **\<thingId>** can be chosen freely. We usually use the MAC of the thing.
 * **\<sensor>** is ThingType specific.
 * For S0 type the only option is "gas" right now.

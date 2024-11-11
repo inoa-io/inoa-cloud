@@ -58,3 +58,4 @@ In the Configuration Service we do have 4 layers of Configuration to make config
 2. **Tenant Layer** - Configurations are stored into the database in the table `tenant_configuration`. These values override the instance layer on a per-tenant level.
 3. **Group Layer** - Configurations are stored in the table `group_configuration`. These values override the instance and the tenant layer per logical group of Satellites.
 4. **Gateway LAmer** - Configurations at this layer are stored in `gateway_configuration` table. These are the concrete values stored per Satellite and override all the values in the layers above.
+
