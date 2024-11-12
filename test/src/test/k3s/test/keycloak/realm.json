@@ -10,6 +10,7 @@
 	"duplicateEmailsAllowed": false,
 	"loginWithEmailAllowed": true,
 	"verifyEmail": true,
+	"sslRequired": "none",
 	"accessTokenLifespan": 86400,
 	"accessTokenLifespanForImplicitFlow": 86400,
 	"ssoSessionIdleTimeout": 86400,
@@ -24,7 +25,6 @@
     "xRobotsTag": "none",
     "xFrameOptions": "",
     "contentSecurityPolicy": "default-src http: 'unsafe-eval' 'unsafe-inline'; object-src 'none'",
-  	"ssl-required": "none",
     "xXSSProtection": "1; mode=block",
     "strictTransportSecurity": "max-age=31536000; includeSubDomains"
   },
