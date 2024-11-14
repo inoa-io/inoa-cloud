@@ -1,6 +1,6 @@
 package io.inoa.measurement.things.rest;
 
-import io.inoa.measurement.ApplicationProperties;
+import io.inoa.measurement.MeasurementProperties;
 import io.inoa.rest.UserVO;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
@@ -32,7 +32,7 @@ public class Security {
   private static final String CLAIM_NAME_FAMILY_NAME = "family_name";
   private static final String CLAIM_NAME_EMAIL = "email";
 
-  private final ApplicationProperties properties;
+  private final MeasurementProperties properties;
   private final SecurityService securityService;
 
   /**

@@ -3,8 +3,7 @@ kind: API
 metadata:
   name: inoa-fleet-api
   title: INOA Fleet API
-  description:
-    The API to manage an IoT fleet within INOA
+  description: The API to manage an IoT fleet within INOA
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/api
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa

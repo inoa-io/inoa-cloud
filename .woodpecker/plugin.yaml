@@ -1,10 +1,15 @@
 when:
-  event: push
-  branch: main
-  path:
-    include:
-      - .woodpecker/plugin.yaml
-      - .woodpecker/plugin/*
+  - event: manual
+    path:
+      include:
+        - .woodpecker/plugin.yaml
+        - .woodpecker/plugin/*
+  - event: push
+    branch: main
+    path:
+      include:
+        - .woodpecker/plugin.yaml
+        - .woodpecker/plugin/*
 steps:
   build:
     image: ghcr.io/grayc-de/plugins/kaniko

@@ -3,8 +3,7 @@ kind: Component
 metadata:
   name: inoa-kafka
   title: INOA Kafka
-  description:
-    The event stream infrastructure of INOA to asynchronously transfer events and measured data.
+  description: The event stream infrastructure of INOA to asynchronously transfer events and measured data.
   annotations:
     backstage.io/techdocs-entity: system:default/inoa-cloud
     backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=kafka"

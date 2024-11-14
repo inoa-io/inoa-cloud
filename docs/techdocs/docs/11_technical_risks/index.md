@@ -2,10 +2,5 @@
 
 ## Known Risks
 
-
 ## Technical Debts
-
-
-
-
 

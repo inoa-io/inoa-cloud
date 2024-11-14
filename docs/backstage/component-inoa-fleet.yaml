@@ -3,8 +3,7 @@ kind: Component
 metadata:
   name: inoa-fleet
   title: INOA Fleet
-  description:
-    INOA Fleet is a cloud service to manage IoT gateways and the connected sensors and meters.
+  description: INOA Fleet is a cloud service to manage IoT gateways and the connected sensors and meters.
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/service
     backstage.io/techdocs-entity: system:default/inoa-cloud

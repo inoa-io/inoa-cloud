@@ -1,4 +1,5 @@
 ---
+
 tags:
 
 - architecture
@@ -20,10 +21,11 @@ decisions together.
 ## Decision
 
 1. We record architecture decisions within this project.
-3. We use __Pull Requests__ to make decisions transparent to the team and give everybody the chance to add his
+2. We use __Pull Requests__ to make decisions transparent to the team and give everybody the chance to add his
    preferences.
 
 ## Consequences
 
 1. Our decisions become transparent to all developers and users of `INOA`.
 2. Every team member must understand [MarkDown](https://www.markdownguide.org/basic-syntax/) syntax.
+
