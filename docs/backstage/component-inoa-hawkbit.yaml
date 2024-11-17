@@ -6,7 +6,7 @@ metadata:
   description: The service to provide software updates to IoT devices.
   annotations:
     backstage.io/techdocs-entity: system:default/inoa-cloud
-    backstage.io/kubernetes-label-selector: "app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=hawkbit"
+    backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=hawkbit
 spec:
   owner: grayc
   system: default/inoa-cloud

@@ -18,12 +18,15 @@
 
 ### Set-Up & Start
 
-Launch the techdocs via npx locally:
+1. Launch the techdocs via npx locally:
 
-```sh
-cd docs/techdocs
-npx @techdocs/cli serve -v -i  ghcr.io/grayc-de/techdocs:latest
-```
+   ```sh
+   cd docs/techdocs
+   npx @techdocs/cli serve -v -i  ghcr.io/grayc-de/techdocs:latest
+   ```
+2. or launch via IntelliJ Run Configuration:
+
+   ![Run Techdocs](docs/images/run-techdocs.png)
 
 ## Known Issues
 

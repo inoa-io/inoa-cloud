@@ -4,14 +4,14 @@ when:
     branch: main
 
 steps:
+  # Linting fopr backstage coatalog entities
   backstage:
     image: ghcr.io/grayc-de/plugins/backstage-entity-validator
-    depends_on: []
-    when: [path: [catalog-info.yaml]]
+    when: [path: [catalog-info.yaml, docs/backstage/**]]
 
+  # Linting for k8s kustomize configurations
   kustomize:
     image: ghcr.io/grayc-de/plugins/kubectl
-    depends_on: []
     commands:
       - kubectl kustomize ./fluxcd/kiste/dev
       - kubectl kustomize ./fluxcd/kiste/prod
@@ -19,8 +19,15 @@ steps:
       - kubectl kustomize ./fluxcd/live/prod
     when: [path: [fluxcd/**]]
 
-  maven:
+  # Linting for dockerfiles
+  dockerfile:
+    image: ghcr.io/grayc-de/plugins/hadolint
+    when: [path: ["**/Dockerfile"]]
+
+  # Linting for *.java, *.sql, *.md, *.yaml
+  # WARNING: The markdown and yaml rules in spotless are different to the rules used by yamllint and markdownlint.
+  # TODO unify this rules to reduce confusion and effort while switching between projects or force one tool for all?
+  spotless:
     image: ghcr.io/grayc-de/plugins/inoa
-    depends_on: []
     commands: [mvn validate]
     when: [path: ["**/*.java", "**/pom.xml"]]

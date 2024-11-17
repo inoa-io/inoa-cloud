@@ -10,11 +10,11 @@ steps:
     image: ghcr.io/grayc-de/techdocs:latest
     entrypoint:
       [
-        "/techdocs/entrypoint-generate.sh",
-        "--source-dir",
-        "docs/techdocs",
-        "--output-dir",
-        "docs/target",
+        /techdocs/entrypoint-generate.sh,
+        --source-dir,
+        docs/techdocs,
+        --output-dir,
+        docs/target,
       ]
     secrets: [DOCKER_CONFIG_JSON]
 
@@ -22,15 +22,15 @@ steps:
     image: ghcr.io/grayc-de/techdocs:latest
     entrypoint:
       [
-        "/techdocs/entrypoint-publish.sh",
-        "--publisher-type",
-        "googleGcs",
-        "--storage-name",
-        "grayc-techdocs",
-        "--entity",
-        "default/System/inoa-cloud",
-        "--directory",
-        "docs/target",
+        /techdocs/entrypoint-publish.sh,
+        --publisher-type,
+        googleGcs,
+        --storage-name,
+        grayc-techdocs,
+        --entity,
+        default/System/inoa-cloud,
+        --directory,
+        docs/target,
       ]
     environment:
       PUBLISH_TECHDOCS_SECRET:
