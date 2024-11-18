@@ -94,7 +94,7 @@
 		<version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.maven.k3s>1.5.0</version.io.kokuwa.maven.k3s>
-		<version.io.kokuwa.micronaut.codegen>4.2.0</version.io.kokuwa.micronaut.codegen>
+		<version.io.kokuwa.micronaut.codegen>4.3.1</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut>4.5.1</version.io.micronaut>
 		<version.io.micronaut.data>4.8.5</version.io.micronaut.data>
