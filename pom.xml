@@ -104,7 +104,7 @@
 		<version.org.bouncycastle>1.78.1</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>25.0.6</version.org.keycloak>
-		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
+		<version.org.mapstruct>1.6.3</version.org.mapstruct>
 		<version.org.projectlombok>1.18.36</version.org.projectlombok>
 		<version.com.diffplug.spotless.spotless-maven-plugin>2.44.0.BETA3</version.com.diffplug.spotless.spotless-maven-plugin>
 
