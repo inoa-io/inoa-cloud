@@ -3313,37 +3313,37 @@ __metadata:
   linkType: hard
 
 "@ngx-formly/core@npm:^6.3.6":
-  version: 6.3.6
-  resolution: "@ngx-formly/core@npm:6.3.6"
+  version: 6.3.10
+  resolution: "@ngx-formly/core@npm:6.3.10"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     "@angular/forms": ">=13.2.0"
     rxjs: ^6.5.3 || ^7.0.0
-  checksum: 10c0/7bb31ae80245e9873f93e084cd86b55d40889465912ed3d4905b7481c74e63dc8ac4516ba788c7093aacfa7667d2417655252af199769e93660bf4163261d499
+  checksum: 10c0/b05eb3aef6e6b87907ad45032252a421a24660ae444ddc4cdc089e9b307f28cc1ba1f36c2395d0a03873ee6bd1586ff68b4cab6a1ce35a51a209c42f5866554a
   languageName: node
   linkType: hard
 
 "@ngx-formly/material@npm:^6.3.6":
-  version: 6.3.6
-  resolution: "@ngx-formly/material@npm:6.3.6"
+  version: 6.3.10
+  resolution: "@ngx-formly/material@npm:6.3.10"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     "@angular/material": ">=13.0.0"
-    "@ngx-formly/core": 6.3.6
-  checksum: 10c0/c86f7c5e9fef3da86d228fa0830f4da2eb2d25c0a09a30b5d86fd374810875ab1fd679fa1ed1bd93f3d414094d533329d58e43160482360b9b2c79e314a3d444
+    "@ngx-formly/core": 6.3.10
+  checksum: 10c0/53a028bc768a191cd50eb2edad79680428eca5a8934b93e4ad07154dbde40cf84a369520a874e3936a236c34d1567b7a259adcde856abb0cde31d58cfb137018
   languageName: node
   linkType: hard
 
 "@ngx-formly/schematics@npm:^6.3.6":
-  version: 6.3.6
-  resolution: "@ngx-formly/schematics@npm:6.3.6"
+  version: 6.3.10
+  resolution: "@ngx-formly/schematics@npm:6.3.10"
   dependencies:
     "@angular-devkit/core": "npm:^13.0.3"
     "@angular-devkit/schematics": "npm:^13.0.3"
     "@schematics/angular": "npm:^13.0.3"
-  checksum: 10c0/a37c62c217d81c9c8d704e4864ee65b5ddef8908edd8c080042e86cf6bc1ff6b160639bc1df9b87cb652ca1d982b4ef29680e17ceb15ef9f663a1b4feb2dc808
+  checksum: 10c0/03cbbae59492088493b686c3ec7187409cdc1ba4a3b9c1aa8462d73e6ce52958ace9c505cca4a6f0500dbedbd010dd831b0a000f7e049aa5cbae4961b7c29c2e
   languageName: node
   linkType: hard
 
