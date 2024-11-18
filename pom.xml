@@ -90,7 +90,7 @@
 		<!-- ============================== Libaries ============================= -->
 		<!-- ===================================================================== -->
 
-		<version.com.influxdb.client>7.0.0</version.com.influxdb.client>
+		<version.com.influxdb.client>7.2.0</version.com.influxdb.client>
 		<version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.maven.k3s>1.5.0</version.io.kokuwa.maven.k3s>
