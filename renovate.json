@@ -1,12 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"dependencyDashboard": true,
-	"dependencyDashboardApproval": true,
-	"dependencyDashboardOSVVulnerabilitySummary": "all",
 	"kubernetes": { "fileMatch": ["kustomization\\.yaml"] },
-	"separateMajorMinor": true,
-	"separateMinorPatch": true,
-	"separateMultipleMajor": true,
 	"packageRules": [
 		{
 			"matchUpdateTypes": ["patch"],
@@ -23,8 +17,29 @@
 			],
 			"enabled": false
 		},{
-			"matchPackagePatterns": ["woodpecker"],
-			"enabled": false
+			"groupName": "micronaut",
+			"matchPackageNames": ["io.micronaut:**", "io.micronaut.data:**", "io.micronaut.platform:**", "io.micronaut.serde:**", "io.micronaut.validation:**"]
+		},{
+			"groupName": "@angular",
+			"matchPackageNames": ["@angular/**"]
+		},{
+			"groupName": "@angular-dev",
+			"matchPackageNames": ["@angular-devkit/**"]
+		},{
+			"groupName": "@angular-eslint",
+			"matchPackageNames": ["@angular-eslint/**"]
+		},{
+			"groupName": "@typescript-eslint",
+			"matchPackageNames": ["@typescript-eslint/**"]
+		},{
+			"groupName": "@ngx-formly",
+			"matchPackageNames": ["@ngx-formly/**"]
+		},{
+			"groupName": "karma",
+			"matchPackageNames": ["karma**", "jasmine-core", "@types/jasmine"]
+		},{
+			"groupName": "monaco",
+			"matchPackageNames": ["monaco-editor", "ngx-monaco-editor"]
 		}
 	]
 }
