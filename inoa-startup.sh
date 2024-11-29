@@ -38,12 +38,12 @@ CleanBuild() {
 LaunchK3S() {
   if [ "${CLEAN}" ]; then
     echo "Clean up before..."
-    CleanBuild
+    CleanBuild || { echo "Clean Build failed!" ; exit 1; }
   fi
   # shellcheck disable=SC2145
   echo "MVN_ARGS=${MVN_ARGS[@]}"
   ### Launch the INOA Cloud services in k3s via Maven
-  mvn pre-integration-test "${MVN_ARGS[@]}" -pl ./test/
+  mvn pre-integration-test "${MVN_ARGS[@]}" -pl ./test/  || { echo "Pre-Integration-Test failed!" ; exit 1; }
 
   echo "INOA configured and started for INOA_DOMAIN=${INOA_DOMAIN}"
 
