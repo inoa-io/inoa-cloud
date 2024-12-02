@@ -7,7 +7,7 @@ FROM ghcr.io/grayc-de/plugins/node:20
 ### curl
 
 RUN apt-get -qq update \
-  && apt-get -qq install --yes --no-install-recommends curl \
+  && apt-get -qq install --yes --no-install-recommends curl=7.88.1-10+deb12u8 \
   && rm -rf /etc/*- /var/cache/* /var/log/* /var/lib/apt/lists/* /var/lib/dpkg/*-old
 
 ### java 17
@@ -26,7 +26,7 @@ ENV PATH=${PATH}:/opt/maven/bin
 ### dockerd
 
 RUN apt-get -qq update \
-  && apt-get -qq install --yes --no-install-recommends docker.io ca-certificates \
+  && apt-get -qq install --yes --no-install-recommends docker.io=20.10.24+dfsg1-1+deb12u1 ca-certificates=20230311 \
   && rm -rf /etc/*- /var/cache/* /var/log/* /var/lib/apt/lists/* /var/lib/dpkg/*-old \
   && DOCKER="dockerd --log-level=error --data-root=/woodpecker/docker &> /dev/null &" \
   && echo "$DOCKER" > /usr/bin/dockerd-start \
