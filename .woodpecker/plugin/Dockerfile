@@ -2,7 +2,7 @@
 ### this is our build image with maven, java 17,node 18 and other stuff
 ###
 FROM ghcr.io/grayc-de/base/java:17-jdk as JAVA
-FROM ghcr.io/grayc-de/plugins/maven as MAVEN
+FROM ghcr.io/grayc-de/plugins/maven:3-jdk21 as MAVEN
 FROM ghcr.io/grayc-de/plugins/node:20
 
 ### curl
