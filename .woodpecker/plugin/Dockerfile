@@ -31,11 +31,3 @@ RUN apt-get -qq update \
   && DOCKER="dockerd --log-level=error --data-root=/woodpecker/docker &> /dev/null &" \
   && echo "$DOCKER" > /usr/bin/dockerd-start \
   && chmod +x /usr/bin/dockerd-start
-
-### mkdocs
-
-COPY requirements.txt requirements.txt
-RUN apt-get -qq update \
-  && apt-get -qq install --yes --no-install-recommends python3-pip \
-  && rm -rf /etc/*- /var/cache/* /var/log/* /var/lib/apt/lists/* /var/lib/dpkg/*-old \
-  && pip3 install --no-cache-dir --break-system-packages -r requirements.txt
