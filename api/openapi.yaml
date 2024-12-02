@@ -1439,6 +1439,74 @@ components:
       type: string
       maxLength: 100
       example: Some gateway name
+    GatewayLocationData:
+      description: Detailed location information for the gateway
+      type: object
+      properties:
+        house_number:
+          type: string
+          maxLength: 10
+          description: Building number
+          example: "6"
+        road:
+          type: string
+          maxLength: 100
+          description: Street or road name
+          example: "Somestreet"
+        neighbourhood:
+          type: string
+          maxLength: 100
+          description: Neighborhood or local area name
+          example: "Downtown"
+        suburb:
+          type: string
+          maxLength: 100
+          description: Suburb name
+          example: "West End"
+        city_district:
+          type: string
+          maxLength: 100
+          description: District within the city
+          example: "Central District"
+        city:
+          type: string
+          maxLength: 100
+          description: City name
+          example: "Somewhereville"
+        state:
+          type: string
+          maxLength: 100
+          description: State or province name
+          example: "State"
+        postcode:
+          type: string
+          maxLength: 20
+          description: Postal or ZIP code
+          example: "10815"
+        country:
+          type: string
+          maxLength: 100
+          description: Country name
+          example: "Germany"
+        country_code:
+          type: string
+          maxLength: 2
+          description: Two-letter ISO country code
+          example: "DE"
+        latitude:
+          type: number
+          format: double
+          description: Latitude coordinate in decimal degrees
+          minimum: -90
+          maximum: 90
+          example: 52.520008
+        longitude:
+          type: number
+          format: double
+          description: Longitude coordinate in decimal degrees
+          minimum: -180
+          maximum: 180
+          example: 13.404954
     GatewayGroups:
       description: Ids of groups where gateway is member.
       type: array
@@ -1454,6 +1522,8 @@ components:
           $ref: "#/components/schemas/GatewayId"
         name:
           $ref: "#/components/schemas/GatewayName"
+        location:
+          $ref: "#/components/schemas/GatewayLocationData"
         enabled:
           $ref: "#/components/schemas/Enabled"
         created:
@@ -1675,6 +1745,8 @@ components:
           $ref: "#/components/schemas/GatewayId"
         name:
           $ref: "#/components/schemas/GatewayName"
+        location:
+          $ref: "#/components/schemas/GatewayLocationData"
         enabled:
           $ref: "#/components/schemas/Enabled"
         group_ids:
@@ -1708,6 +1780,8 @@ components:
           $ref: "#/components/schemas/GatewayId"
         name:
           $ref: "#/components/schemas/GatewayName"
+        location:
+          $ref: "#/components/schemas/GatewayLocationData"
         enabled:
           $ref: "#/components/schemas/Enabled"
         group_ids:
@@ -1719,6 +1793,8 @@ components:
       properties:
         name:
           $ref: "#/components/schemas/GatewayName"
+        location:
+          $ref: "#/components/schemas/GatewayLocationData"
         enabled:
           $ref: "#/components/schemas/Enabled"
         group_ids:

@@ -15,7 +15,7 @@
 			<div class="overview-table">
 				<!-- serial info -->
 				<div class="overview-table-row">
-					<div><div class="overview-table-column-title">Serial Number:</div></div>
+					<div class="overview-table-column-title">Serial Number:</div>
 					<div class="overview-item-container">
 						<p class="overview-part">{{ intercomService.selectedGateway?.gateway_id }}</p>
 					</div>
@@ -24,48 +24,51 @@
 
 				<!-- name info -->
 				<div class="overview-table-row">
-					<div><div class="overview-table-column-title">Name:</div></div>
+					<div class="overview-table-column-title">Name:</div>
 					<div class="overview-item-container">
-						<p class="overview-part">{{ intercomService.selectedGateway?.name }}</p>
+						<p class="overview-part">{{ intercomService.selectedGateway ? intercomService.selectedGateway.name : "-" }}</p>
 					</div>
 					<div class="overview-table-column-actions">
-						<button (click)="renameSatelliteClick(intercomService.selectedGateway, $event)" class="overview-button" mat-icon-button>
-							<mat-icon>edit</mat-icon>
+						<button (click)="renameSatelliteClick(intercomService.selectedGateway, $event)" class="overview-button" mat-raised-button color="primary">
+							<mat-icon class="overview-button-icon">edit</mat-icon>
 						</button>
 					</div>
 				</div>
 
 				<!-- tenant info -->
 				<div class="overview-table-row">
-					<div><div class="overview-table-column-title">Tenant:</div></div>
+					<div class="overview-table-column-title">Tenant:</div>
 					<div class="overview-item-container">
 						<!-- TODO: add tenant info here -->
 						<p class="overview-part">- Coming Soon -</p>
 					</div>
 					<div class="overview-table-column-actions">
-						<button class="overview-button" mat-icon-button disabled>
-							<mat-icon>edit</mat-icon>
+						<button class="overview-button" mat-raised-button color="primary" disabled>
+							<mat-icon class="overview-button-icon">edit</mat-icon>
 						</button>
 					</div>
 				</div>
 
 				<!-- location info -->
-				<div class="overview-table-row">
-					<div><div class="overview-table-column-title">Location:</div></div>
-					<div class="overview-item-container">
-						<!-- TODO: add location info here -->
-						<p class="overview-part">- Coming Soon -</p>
+				<div class="overview-location-container">
+					<div class="overview-table-row-location">
+						<div class="overview-table-column-title">Location:</div>
+						<div class="overview-item-container">
+							<p class="overview-part">{{ intercomService.selectedGateway && intercomService.selectedGateway.location ? this.mapService.buildAddressString(intercomService.selectedGateway.location) : "-" }}</p>
+						</div>
+						<div class="overview-table-column-actions">
+							<button (click)="locationEditorClick(intercomService.selectedGateway, $event)" class="overview-button" mat-raised-button color="primary">
+								<mat-icon class="overview-button-icon">edit</mat-icon>
+							</button>
+						</div>
 					</div>
-					<div class="overview-table-column-actions">
-						<button class="overview-button" mat-icon-button disabled>
-							<mat-icon>edit</mat-icon>
-						</button>
-					</div>
+					<!-- TODO: Find a better way to this (condition is like this so the component gets loaded at the start and the map can be initialized) -->
+					<div *ngIf="(mapService.checkSelectedGatewayLocationValid()) || !intercomService.selectedGateway" [class]="intercomService.viewModes[1].active ? 'invisible-map' : 'tiny-map'" #mapRef></div>
 				</div>
 
 				<!-- hardware info -->
 				<div class="overview-table-row">
-					<div><div class="overview-table-column-title">Hardware-Version:</div></div>
+					<div class="overview-table-column-title">Hardware-Version:</div>
 					<div class="overview-item-container">
 						<p class="overview-part">{{ sysData["hardwareRevision"] }}</p>
 					</div>
@@ -74,7 +77,7 @@
 
 				<!-- software info -->
 				<div class="overview-table-row-no-border">
-					<div><div class="overview-table-column-title">Software-Version:</div></div>
+					<div class="overview-table-column-title">Software-Version:</div>
 					<div class="overview-item-container">
 						<p class="overview-part">{{ sysData["buildRevision"] }} ({{ sysData["buildDate"] }})</p>
 					</div>

@@ -32,10 +32,12 @@ import { GatewayDetailComponent } from "./satellite-manager/gateway-detail/gatew
 import { GatewayConfigurationComponent } from "./satellite-manager/gateway-detail/gateway-configuration/gateway-configuration.component";
 import { GatewayDatapointsComponent } from "./satellite-manager/gateway-detail/gateway-datapoints/gateway-datapoints.component";
 import { GatewayOverviewComponent } from "./satellite-manager/gateway-detail/gateway-overview/gateway-overview.component";
+import { GatewayFleetMapComponent } from "./satellite-manager/gateway-detail/gateway-fleet-map/gateway-fleet-map.component";
 
 import { ThingCreationDialogComponent } from "./dialogs/thing-creation-dialog/thing-creation-dialog.component";
 import { RenameSatelliteDialogComponent } from "./dialogs/rename-satellite-dialog/rename-satellite-dialog.component";
 import { ConfigEditDialogComponent } from "./dialogs/config-edit-dialog/config-edit-dialog.component";
+import { LocationEditorDialogComponent } from "./dialogs/location-editor-dialog/location-editor-dialog.component";
 import { WhoamiBoxComponent } from "./whoami-box/whoami-box.component";
 
 export function fleetApiConfigFactory(): FleetConfiguration {
@@ -60,6 +62,7 @@ export function fleetApiConfigFactory(): FleetConfiguration {
 		GatewayConfigurationComponent,
 		GatewayDatapointsComponent,
 		GatewayOverviewComponent,
+		GatewayFleetMapComponent,
 		ArrayTypeComponent,
 		ObjectTypeComponent,
 		MultiSchemaTypeComponent,
@@ -67,6 +70,7 @@ export function fleetApiConfigFactory(): FleetConfiguration {
 		ThingCreationDialogComponent,
 		RenameSatelliteDialogComponent,
 		ConfigEditDialogComponent,
+		LocationEditorDialogComponent,
 		WhoamiBoxComponent
 	],
 	imports: [

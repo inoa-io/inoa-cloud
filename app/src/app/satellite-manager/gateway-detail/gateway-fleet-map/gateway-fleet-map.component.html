@@ -1,0 +1,30 @@
+<div [class]="intercomService.selectedGateway ? 'map-uber-container-mini' : 'map-uber-container'">
+	<div #mapRef [class]="intercomService.selectedGateway ? 'map-container-mini' : 'map-container'"></div>
+
+	<div class="map-actions-container" *ngIf="!intercomService.selectedGateway">
+		<!-- city selector -->
+		<mat-form-field class="formfield-city-select" appearance="outline">
+			<mat-label>Go to City</mat-label>
+			<mat-select (selectionChange)="mapService.flyToCity(map, $event.value)" value="Dresden">
+				<mat-option *ngFor="let city of mapService.cities | keyvalue" [value]="city.key">{{city.key}}</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<!-- filler -->
+		<div style="flex: 1"></div>
+
+		<!-- Selection map type -->
+		<mat-form-field class="formfield-map-tpye" appearance="outline">
+			<mat-label>Map type</mat-label>
+			<mat-select [(value)] = "mapService.mapType" [formControl] = "mapService.mapTypeFormControl">
+			<mat-option value="normal">Normal</mat-option>
+			<mat-option value="sat">Satellite</mat-option>
+			<mat-option value="opvn">ÖPVN</mat-option>
+			<mat-option value="topo">Topography</mat-option>
+			<mat-option value="gray">Grey</mat-option>
+			<mat-option value="clear">Clear</mat-option>
+			<mat-option value="dark">Dark</mat-option>
+			</mat-select>
+		</mat-form-field>
+	</div>
+</div>

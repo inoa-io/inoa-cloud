@@ -6,6 +6,7 @@ public class GatewayCreateVO {
 
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID = "gateway_id";
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
+	public static final java.lang.String JSON_PROPERTY_LOCATION = "location";
 	public static final java.lang.String JSON_PROPERTY_ENABLED = "enabled";
 	public static final java.lang.String JSON_PROPERTY_GROUP_IDS = "group_ids";
 
@@ -22,6 +23,11 @@ public class GatewayCreateVO {
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
+
+	@jakarta.validation.Valid
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LOCATION)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private GatewayLocationDataVO location;
 
 	/** Flag if enabled or not. */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_ENABLED)
@@ -46,13 +52,14 @@ public class GatewayCreateVO {
 		GatewayCreateVO other = (GatewayCreateVO) object;
 		return java.util.Objects.equals(gatewayId, other.gatewayId)
 				&& java.util.Objects.equals(name, other.name)
+				&& java.util.Objects.equals(location, other.location)
 				&& java.util.Objects.equals(enabled, other.enabled)
 				&& java.util.Objects.equals(groupIds, other.groupIds);
 	}
 
 	@Override
 	public int hashCode() {
-		return java.util.Objects.hash(gatewayId, name, enabled, groupIds);
+		return java.util.Objects.hash(gatewayId, name, location, enabled, groupIds);
 	}
 
 	@Override
@@ -61,6 +68,7 @@ public class GatewayCreateVO {
 				.append("GatewayCreateVO[")
 				.append("gatewayId=").append(gatewayId).append(",")
 				.append("name=").append(name).append(",")
+				.append("location=").append(location).append(",")
 				.append("enabled=").append(enabled).append(",")
 				.append("groupIds=").append(groupIds)
 				.append("]")
@@ -76,6 +84,11 @@ public class GatewayCreateVO {
 
 	public GatewayCreateVO name(java.lang.String newName) {
 		this.name = newName;
+		return this;
+	}
+
+	public GatewayCreateVO location(GatewayLocationDataVO newLocation) {
+		this.location = newLocation;
 		return this;
 	}
 
@@ -120,6 +133,14 @@ public class GatewayCreateVO {
 
 	public void setName(java.lang.String newName) {
 		this.name = newName;
+	}
+
+	public GatewayLocationDataVO getLocation() {
+		return location;
+	}
+
+	public void setLocation(GatewayLocationDataVO newLocation) {
+		this.location = newLocation;
 	}
 
 	public java.lang.Boolean getEnabled() {

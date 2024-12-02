@@ -35,6 +35,11 @@ export class InternalCommunicationService {
 	isLoadingSysInfo = false;
 	isLoadingConfig = false;
 
+	viewModes = [
+		{ name: "Table", active: true, icon: "table", tabIndex: 0 },
+		{ name: "Map", active: false, icon: "map", tabIndex: 1 },
+	];
+
 	//should be raised after display permissions have been received
 	selectedGatewayChangedEventEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
 	raiseSelectedGatewayChangedEvent() {

@@ -191,7 +191,7 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
         oldProperties.getGateway().getToken().getIssuedAtThreshold().isPresent(),
         "iat threshold missing");
 
-    var gateway = data.gateway(data.tenant());
+    var gateway = data.gateway(data.tenant()).setLocation(data.getNullLocation());
     var credential = data.credentialPSK(gateway);
     var jwt = gatewayToken.token(gateway.getGatewayId(), credential.getValue());
     assertSuccess(gateway, jwt);
@@ -207,7 +207,7 @@ public class GatewayTokenServiceTest extends AbstractUnitTest {
     oldProperties.getGateway().getToken().setIssuedAtThreshold(Optional.empty());
 
     var keyPair = data.generateKeyPair();
-    var gateway = data.gateway(data.tenant());
+    var gateway = data.gateway(data.tenant()).setLocation(data.getNullLocation());
     data.credentialRSA(gateway, keyPair);
 
     var claims =

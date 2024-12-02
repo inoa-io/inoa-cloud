@@ -1,8 +1,8 @@
 import { SelectionModel } from "@angular/cdk/collections";
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from "@angular/core";
-import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
 import { MatTable, MatTableDataSource } from "@angular/material/table";
+import { MatTabGroup } from "@angular/material/tabs";
 import { GatewaysService, TenantsService } from "@inoa/api";
 import { GatewayUpdateVO, GatewayVO } from "@inoa/model";
 import { interval, of, Subscription, switchMap } from "rxjs";
@@ -18,12 +18,12 @@ import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
 })
 export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 	@ViewChild("sortRef") sort!: MatSort;
-	@ViewChild("paginatorRef") paginator!: MatPaginator;
 	@ViewChild("tableRef") table!: MatTable<GatewayVO>;
+	@ViewChild("tabsRef") viewTabGroup!: MatTabGroup;
 
 	dataSourceGateways = new MatTableDataSource<GatewayVO>();
 	selectionGateways = new SelectionModel<GatewayVO>(true, []);
-	displayedColumnsGatewayTable: string[] = ["gateway_id", "name", "tenant", "filler", "enabled", "status", "actions"];
+	displayedColumnsGatewayTable: string[] = ["gateway_id", "name", "tenant", "location", "address", "filler", "enabled", "status", "actions"];
 	displayedColumnsGatewayTableMini: string[] = ["id_name_combo"];
 
 	private autoTableRefresher!: Subscription;
@@ -44,7 +44,6 @@ export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 	}
 
 	ngAfterViewInit() {
-		this.dataSourceGateways.paginator = this.paginator;
 		this.dataSourceGateways.sort = this.sort;
 	}
 
@@ -56,7 +55,7 @@ export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 			this.intercomService.tenantList = tenantList;
 		});
 
-		// get the gateway id parameter and ensure data is loaded
+		// get the gateway id parameter and make sure data is loaded
 		this.routingService.route.queryParamMap
 			.pipe(
 				switchMap((params) => {
@@ -86,14 +85,24 @@ export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 			});
 	}
 
-	/** Whether the number of selected elements matches the total number of rows. */
+	toggleLayer(selectedViewMode: { name: string, active: boolean, icon: string, tabIndex: number }) {
+		// Deactivate all layers
+		this.intercomService.viewModes.forEach(layer => layer.active = false);
+
+		// Activate the selected layer
+		selectedViewMode.active = true;
+
+		this.viewTabGroup.selectedIndex = selectedViewMode.tabIndex;
+	  }
+
+	// Whether the number of selected elements matches the total number of rows.
 	isAllSelected() {
 		const numSelected = this.selectionGateways.selected.length;
 		const numRows = this.dataSourceGateways.data.length;
 		return numSelected === numRows;
 	}
 
-	/** Selects all rows if they are not all selected; otherwise clear selection. */
+	// Selects all rows if they are not all selected; otherwise clear selection.
 	toggleAllRows() {
 		if (this.isAllSelected()) {
 			this.selectionGateways.clear();
@@ -103,7 +112,7 @@ export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 		this.selectionGateways.select(...this.dataSourceGateways.data);
 	}
 
-	/** The label for the checkbox on the passed row */
+	// The label for the checkbox on the passed row
 	checkboxLabel(row?: GatewayVO): string {
 		if (!row) {
 			return `${this.isAllSelected() ? "deselect" : "select"} all`;
@@ -114,11 +123,6 @@ export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 		const filter = filterValue?.trim().toLowerCase() || "";
 
 		this.dataSourceGateways.filter = filter;
-
-		// Update the paginators after applying the filter
-		if (this.dataSourceGateways.paginator) {
-			this.dataSourceGateways.paginator.length = this.dataSourceGateways.filteredData.length;
-		}
 	}
 	// does not work yet since gatewayVO does not yet have an associated tenantID but once that is taken care of this will return the correct name
 	getTenantNameById(id: string): string {

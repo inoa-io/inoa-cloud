@@ -5,6 +5,8 @@ import { MatDialog, MatDialogRef } from "@angular/material/dialog";
 import { ThingTypesService } from "@inoa/api";
 import { RenameSatelliteDialogComponent } from "../dialogs/rename-satellite-dialog/rename-satellite-dialog.component";
 import { ConfigEditDialogComponent, ConfigEditDialogData } from "../dialogs/config-edit-dialog/config-edit-dialog.component";
+import { LocationEditorDialogComponent } from "../dialogs/location-editor-dialog/location-editor-dialog.component";
+import { GatewayLocationDataVO } from "src/openapi/model/gatewayLocationData";
 
 @Injectable({
 	providedIn: "root"
@@ -41,6 +43,18 @@ export class DialogService {
 	openConfigEditDialog(data: ConfigEditDialogData): MatDialogRef<ConfigEditDialogComponent> | null {
 		const dialogRef = this.dialog.open(ConfigEditDialogComponent, {
 			data: data
+		});
+
+		return dialogRef;
+	}
+
+	openLocationEditorDialog(oldLocation: GatewayLocationDataVO | null): MatDialogRef<LocationEditorDialogComponent> | null {
+		const dialogRef = this.dialog.open(LocationEditorDialogComponent, {
+			height: "100%",
+			width: "100%",
+			maxHeight: "100%",
+			maxWidth: "100%",
+			data: { location: oldLocation }
 		});
 
 		return dialogRef;

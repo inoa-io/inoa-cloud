@@ -84,6 +84,7 @@
 .config-table-column-actions {
 	width: 50px;
 	height: 40px;
+	transform: translateY(-5px);
 }
 
 .config-checkbox-grid {
@@ -93,4 +94,8 @@
 }
 .config-button {
 	transform: translate(-10px, -10px);
+}
+
+.config-button-icon {
+	transform: translateX(5px);
 }

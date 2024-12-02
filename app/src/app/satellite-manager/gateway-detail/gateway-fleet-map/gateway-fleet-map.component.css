@@ -1,0 +1,95 @@
+.map-uber-container {
+	width: 100%;
+	height: calc(100vh - 295px);
+	overflow: hidden;
+}
+
+.map-uber-container-mini {
+	width: 100%;
+	height: calc(100vh - 220px);
+	overflow: hidden;
+}
+
+.map-container {
+	position: relative;
+	width: 100%;
+	height: calc(100% - 85px);
+	border: 1px solid;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.map-container-mini {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	border: 1px solid;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.formfield-longitude {
+	width: 200px;
+}
+
+.formfield-latitude {
+	width: 200px;
+}
+
+.formfield-map-tpye {
+	width: 200px;
+}
+
+.formfield-city-select {
+    width: 200px;
+}
+
+.formfield-address {
+	min-width: 300px;
+	width: 300px;
+}
+
+.leaflet-popup-content {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.leaflet-popup-content strong {
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.map-actions-container {
+	margin-top: 20px;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+}
+
+.input-custom {
+	transform: translateY(4px);
+}
+
+.search-spinner {
+	margin: 8px;
+}
+
+.address-suggestion {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.primary-line {
+	margin-top: 10px;
+	color: rgba(0, 0, 0, 0.87);
+	font-weight: 500;
+}
+
+.secondary-line {
+	margin-bottom: 5px;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 0.85em;
+}

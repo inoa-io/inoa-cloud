@@ -23,5 +23,7 @@ kafka:
     servers: localhost:9092
 logger:
   levels:
+    # Change to TRACE logging when needed
     io.micronaut: INFO
-    io.inoa: TRACE
+    io.micronaut.data.query: INFO
+    io.inoa: INFO

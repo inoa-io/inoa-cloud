@@ -1,0 +1,98 @@
+<div #mapRef class="location-map">
+	<!-- overlay that gives a fade out to white effect -->
+	<div class="fadeout-overlay"></div>
+
+	<!-- cancel button -->
+	<button class="cancel-button" mat-fab (click)="close()">
+		<mat-icon>close</mat-icon>
+	</button>
+</div>
+
+<mat-dialog-actions>
+	<div class="map-actions-container">
+		<!-- Input latitude -->
+		<mat-form-field class="formfield-latitude" appearance="outline">
+			<mat-label>Latitude</mat-label>
+			<input
+				class="input-custom"
+				matInput
+				[(ngModel)] = "latitudeCurrent"
+				placeholder = "Latitude"
+				(change) = "mapService.onCoordsChanged(map, latitudeCurrent, longitudeCurrent)">
+		</mat-form-field>
+
+		<!-- Input longitude -->
+		<mat-form-field class="formfield-longitude" appearance="outline">
+			<mat-label>Longitude</mat-label>
+			<input
+				class="input-custom"
+				matInput
+				[(ngModel)] = "longitudeCurrent"
+				placeholder = "Longitude"
+				(change) = "mapService.onCoordsChanged(map, latitudeCurrent, longitudeCurrent)">
+		</mat-form-field>
+
+		<!-- Geocoding address input with autocomplete -->
+		<mat-form-field class="formfield-address" appearance="outline">
+			<mat-label>Search Address</mat-label>
+			<input
+				class="input-custom"
+				matInput
+				[formControl]="mapService.addressSearchControl"
+				[matAutocomplete]="auto"
+				placeholder="Enter address">
+
+			<mat-autocomplete #auto="matAutocomplete" 
+				(optionSelected)="onAddressSelected($event)"
+				[displayWith]="mapService.displayFn">
+				
+				<mat-option *ngFor="let option of mapService.addressSuggestions; let i = index" [value]="option">
+					<div class="address-suggestion">
+
+						<div class="primary-line">
+							<span class="street">{{ option.street }}</span>
+							<span *ngIf="option.houseNumber"> {{ option.houseNumber }}</span>
+						</div>
+
+						<div class="secondary-line">
+							<span class="postcode" *ngIf="option.postcode">{{ option.postcode }}, </span>
+							<span class="city">{{ option.city }}</span>
+							<span class="district" *ngIf="option.district"> ({{ option.district }})</span>
+						</div>
+
+						<mat-divider *ngIf="i < mapService.addressSuggestions.length - 2"></mat-divider>
+					</div>
+				</mat-option>
+			</mat-autocomplete>
+
+			<mat-spinner 
+				matSuffix 
+				diameter="20" 
+				*ngIf="mapService.isSearching"
+				class="search-spinner">
+			</mat-spinner>
+		</mat-form-field>
+
+		<!-- filler -->
+		<div style="flex: 1"></div>
+
+		<!-- Selection map type -->
+		<mat-form-field class="formfield-map-tpye" appearance="outline">
+			<mat-label>Map type</mat-label>
+			<mat-select [(value)] = "mapService.mapType" [formControl] = "mapService.mapTypeFormControl">
+			<mat-option value="normal">Normal</mat-option>
+			<mat-option value="sat">Satellite</mat-option>
+			<mat-option value="opvn">ÖPVN</mat-option>
+			<mat-option value="topo">Topography</mat-option>
+			<mat-option value="gray">Grey</mat-option>
+			<mat-option value="clear">Clear</mat-option>
+			<mat-option value="dark">Dark</mat-option>
+			</mat-select>
+		</mat-form-field>
+
+		<!-- save button -->
+		<button class="action-button" mat-raised-button color="primary" [mat-dialog-close]="data" (click)="save()">
+			Save
+		</button>
+	</div>
+</mat-dialog-actions>

@@ -1,16 +1,8 @@
 package io.inoa.fleet.registry.rest.management;
 
-import io.inoa.fleet.registry.domain.Gateway;
-import io.inoa.fleet.registry.domain.GatewayGroup;
-import io.inoa.fleet.registry.domain.GatewayGroupRepository;
-import io.inoa.fleet.registry.domain.GatewayPropertyRepository;
-import io.inoa.fleet.registry.domain.GatewayRepository;
-import io.inoa.fleet.registry.domain.GatewayStatus;
-import io.inoa.fleet.registry.domain.GatewayStatusMqtt;
-import io.inoa.fleet.registry.domain.Group;
-import io.inoa.fleet.registry.domain.GroupRepository;
-import io.inoa.fleet.registry.domain.Tenant;
+import io.inoa.fleet.registry.domain.*;
 import io.inoa.fleet.registry.rest.mapper.GatewayMapper;
+import io.inoa.fleet.registry.rest.mapper.LocationMapper;
 import io.inoa.rest.GatewayCreateVO;
 import io.inoa.rest.GatewayDetailVO;
 import io.inoa.rest.GatewayPageVO;
@@ -55,7 +47,8 @@ public class GatewaysController extends AbstractManagementController implements 
           GatewayVO.JSON_PROPERTY_UPDATED);
 
   private final Security security;
-  private final GatewayMapper mapper;
+  private final GatewayMapper gatewayMapper;
+  private final LocationMapper locationMapper;
   private final GroupRepository groupRepository;
   private final GatewayRepository gatewayRepository;
   private final GatewayGroupRepository gatewayGroupRepository;
@@ -73,7 +66,7 @@ public class GatewaysController extends AbstractManagementController implements 
         pageableProvider.getPageable(SORT_ORDER_PROPERTIES, GatewayVO.JSON_PROPERTY_NAME);
     var gatewayPage =
         gatewayRepository.findByTenantInList(security.getGrantedTenants(), filter, pageable);
-    return HttpResponse.ok(mapper.toGatewayPage(gatewayPage));
+    return HttpResponse.ok(gatewayMapper.toGatewayPage(gatewayPage));
   }
 
   @Override
@@ -140,6 +133,7 @@ public class GatewaysController extends AbstractManagementController implements 
                 .setGatewayId(vo.getGatewayId())
                 .setName(vo.getName())
                 .setEnabled(vo.getEnabled())
+                .setLocation(locationMapper.toLocation(vo.getLocation()))
                 .setGroups(groups)
                 .setStatus(
                     new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));
@@ -154,7 +148,7 @@ public class GatewaysController extends AbstractManagementController implements 
     }
 
     log.info("Gateway created: {}", gateway);
-    return HttpResponse.created(mapper.toGatewayDetail(gateway));
+    return HttpResponse.created(gatewayMapper.toGatewayDetail(gateway));
   }
 
   @Override
@@ -213,6 +207,12 @@ public class GatewaysController extends AbstractManagementController implements 
       changed |= !addedGroups.isEmpty() || !removedGroups.isEmpty();
     }
 
+    // Update location data
+    if (vo.getLocation() != null) {
+      gateway.setLocation(locationMapper.toLocation(vo.getLocation()));
+      changed = true;
+    }
+
     if (changed) {
       gatewayRepository.update(gateway);
     }
@@ -251,7 +251,7 @@ public class GatewaysController extends AbstractManagementController implements 
   }
 
   private GatewayDetailVO toGatewayDetail(Gateway gateway) {
-    return mapper.toGatewayDetail(
+    return gatewayMapper.toGatewayDetail(
         gateway
             .setProperties(gatewayPropertyRepository.findByGateway(gateway))
             .setGroups(gatewayGroupRepository.findGroupByGateway(gateway)));
