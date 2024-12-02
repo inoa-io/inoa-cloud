@@ -1,7 +1,8 @@
 ###
 ### this is our build image with maven, java 17,node 18 and other stuff
 ###
-
+FROM ghcr.io/grayc-de/base/java:17-jdk as JAVA
+FROM ghcr.io/grayc-de/plugins/maven as MAVEN
 FROM ghcr.io/grayc-de/plugins/node:20
 
 ### curl
@@ -12,12 +13,12 @@ RUN apt-get -qq update \
 
 ### java 17
 
-COPY --from=ghcr.io/grayc-de/base/java:17-jdk /opt/java /opt/java
+COPY --from=JAVA /opt/java /opt/java
 ENV PATH=${PATH}:/opt/java/bin
 
 ### maven
 
-COPY --from=ghcr.io/grayc-de/plugins/maven /opt/maven /opt/maven
+COPY --from=MAVEN /opt/maven /opt/maven
 COPY settings.xml /opt/maven/settings.xml
 ENV MAVEN_ARGS="--batch-mode --no-transfer-progress --fail-at-end --settings /opt/maven/settings.xml --color=always"
 ENV MAVEN_OPTS="-Dorg.slf4j.simpleLogger.showDateTime=true"
