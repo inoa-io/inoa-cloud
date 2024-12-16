@@ -183,7 +183,7 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut}</version>
+							<version>${version.io.micronaut.core}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

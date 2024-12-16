@@ -96,9 +96,10 @@
 		<version.io.kokuwa.maven.k3s>1.5.0</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>4.4.2</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut>4.5.1</version.io.micronaut>
+		<version.io.micronaut.platform>4.5.1</version.io.micronaut.platform>
+		<version.io.micronaut.core>4.5.1</version.io.micronaut.core>
 		<version.io.micronaut.data>4.9.7</version.io.micronaut.data>
-		<version.io.micronaut.validation-processor>4.8.0</version.io.micronaut.validation-processor>
+		<version.io.micronaut.validation>4.8.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.79</version.org.bouncycastle>
@@ -117,7 +118,28 @@
 			<dependency>
 				<groupId>io.micronaut.platform</groupId>
 				<artifactId>micronaut-platform</artifactId>
-				<version>${version.io.micronaut}</version>
+				<version>${version.io.micronaut.platform}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.micronaut</groupId>
+				<artifactId>micronaut-core-bom</artifactId>
+				<version>${version.io.micronaut.core}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.micronaut.data</groupId>
+				<artifactId>micronaut-data-bom</artifactId>
+				<version>${version.io.micronaut.data}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.micronaut.validation</groupId>
+				<artifactId>micronaut-validation-bom</artifactId>
+				<version>${version.io.micronaut.validation}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
