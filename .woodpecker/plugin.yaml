@@ -13,8 +13,8 @@ when:
 steps:
   build:
     image: ghcr.io/grayc-de/plugins/kaniko
-    secrets:
-      - DOCKER_CONFIG_JSON
+    environment:
+      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
     settings:
       context: .woodpecker/plugin
       destination: ghcr.io/grayc-de/plugins/inoa

@@ -6,13 +6,13 @@ when:
 
 variables:
   - &when-path
-    path:
-      [api/**, app/**, service/**, image/**, test/**, pom.xml, lombok.config]
+    path: [api/**, app/**, service/**, image/**, test/**, pom.xml, lombok.config]
   - &maven
     image: ghcr.io/grayc-de/plugins/inoa
     depends_on: []
-    environment:
-      [DOCKER_HOST=tcp://dockerd:2375, TESTCONTAINERS_RYUK_DISABLED=true]
+    environment: 
+      DOCKER_HOST: tcp://dockerd:2375
+      TESTCONTAINERS_RYUK_DISABLED: true
     when:
       <<: *when-path
 
@@ -25,16 +25,14 @@ services:
     # 8883 k3s mqtt api
     ports: [2375, 6443, 8080, 8883]
     privileged: true
-    backend_options:
-      kubernetes:
-        securityContext:
-          privileged: true
     when: { <<: *when-path }
 
 steps:
   # speed up later steps by preloading used images
   preload-images:
     <<: *maven
+    environment:
+      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
       # docker build
@@ -49,7 +47,6 @@ steps:
       - docker pull --quiet ghcr.io/grayc-de/kafka:3.6.1 &
       - docker pull --quiet ghcr.io/inoa-io/mcnoize:0.0.1 &
       - wait
-    secrets: [DOCKER_CONFIG_JSON]
   # Build the API packages for TypeScript (Client) and Java (Service) via Maven
   build-api:
     <<: *maven

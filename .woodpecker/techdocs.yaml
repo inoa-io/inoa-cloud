@@ -7,7 +7,9 @@ when:
 
 steps:
   generate:
-    image: ghcr.io/grayc-de/techdocs:latest
+    image: ghcr.io/grayc-de/techdocs
+    environment:
+      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
     entrypoint:
       [
         /techdocs/entrypoint-generate.sh,
@@ -16,10 +18,12 @@ steps:
         --output-dir,
         docs/target,
       ]
-    secrets: [DOCKER_CONFIG_JSON]
 
   publish:
-    image: ghcr.io/grayc-de/techdocs:latest
+    image: ghcr.io/grayc-de/techdocs
+    environment:
+      PUBLISH_TECHDOCS_SECRET: {from_secret: GRAYC_TECHDOCS}
+      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
     entrypoint:
       [
         /techdocs/entrypoint-publish.sh,
@@ -32,10 +36,6 @@ steps:
         --directory,
         docs/target,
       ]
-    environment:
-      PUBLISH_TECHDOCS_SECRET:
-        from_secret: GRAYC_TECHDOCS
-    secrets: [DOCKER_CONFIG_JSON, GRAYC_TECHDOCS]
     when:
       - event: [manual, push]
         branch: main
