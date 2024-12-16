@@ -97,16 +97,12 @@
 		<version.io.kokuwa.micronaut.codegen>4.4.2</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut.platform>4.5.1</version.io.micronaut.platform>
-		<version.io.micronaut.core>4.5.1</version.io.micronaut.core>
-		<version.io.micronaut.data>4.9.7</version.io.micronaut.data>
-		<version.io.micronaut.validation>4.8.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.79</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>26.0.7</version.org.keycloak>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
-		<version.org.projectlombok>1.18.36</version.org.projectlombok>
 		<version.com.diffplug.spotless.spotless-maven-plugin>2.44.0.BETA4</version.com.diffplug.spotless.spotless-maven-plugin>
 
 	</properties>
@@ -119,27 +115,6 @@
 				<groupId>io.micronaut.platform</groupId>
 				<artifactId>micronaut-platform</artifactId>
 				<version>${version.io.micronaut.platform}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-core-bom</artifactId>
-				<version>${version.io.micronaut.core}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.micronaut.data</groupId>
-				<artifactId>micronaut-data-bom</artifactId>
-				<version>${version.io.micronaut.data}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.micronaut.validation</groupId>
-				<artifactId>micronaut-validation-bom</artifactId>
-				<version>${version.io.micronaut.validation}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -236,11 +211,6 @@
 				<groupId>org.mapstruct</groupId>
 				<artifactId>mapstruct-processor</artifactId>
 				<version>${version.org.mapstruct}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${version.org.projectlombok}</version>
 			</dependency>
 
 		</dependencies>
