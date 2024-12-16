@@ -15,22 +15,24 @@ services:
     image: ghcr.io/grayc-de/plugins/dockerd
     ports: [2375]
     privileged: true
-    backend_options:
-      kubernetes:
-        securityContext:
-          privileged: true
 
 steps:
   deploy:
     image: ghcr.io/grayc-de/plugins/inoa
-    environment: [DOCKER_HOST=tcp://dockerd:2375]
+    environment:
+      DOCKER_HOST: tcp://dockerd:2375
+      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
       - mvn deploy -pl image -am -Dcheck.skip -DskipTests -T1C
-    secrets: [DOCKER_CONFIG_JSON]
 
   restart:
     image: ghcr.io/grayc-de/plugins/kubectl
+    environment: 
+      # stored as repo secret in https://ci.grayc.io/repos/inoa/cloud/settings
+      # definition: https://git.grayc.io/grayc/inoa/src/branch/main/fluxcd/live/dev/service-account/rbac.yaml
+      # token: kubectl --namespace inoa-dev get secret restarter -ojson | jq -r .data.token | base64 -d
+      KUBE_TOKEN: {from_secret: KUBE_TOKEN}
     commands:
       - echo $KUBE_CERTIFICATE | base64 -d > ca-certificate
       - kubectl config set-cluster grayc-live --server=https://$KUBE_HOST --certificate-authority=ca-certificate
@@ -39,7 +41,3 @@ steps:
       - kubectl config use-context inoa-dev
       - kubectl rollout restart deployment/inoa
       - kubectl rollout status deployment/inoa --timeout=10m
-    # stored as repo secret in https://ci.grayc.io/repos/inoa/cloud/settings
-    # definition: https://git.grayc.io/grayc/inoa/src/branch/main/fluxcd/live/dev/service-account/rbac.yaml
-    # token: kubectl --namespace inoa-dev get secret restarter -ojson | jq -r .data.token | base64 -d
-    secrets: [KUBE_TOKEN]

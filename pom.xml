@@ -375,6 +375,7 @@
 								<!-- By now, we would corrupt the replica setting as string -->
 								<exclude>**/mcnoize/*.yaml</exclude>
 								<exclude>**/dist/**/*.yaml</exclude>
+								<exclude>**/.woodpecker/*.yaml</exclude>
 								<exclude>**/node_modules/**/*.yaml</exclude>
 							</excludes>
 							<prettier />
