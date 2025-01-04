@@ -2,6 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: inoa-cloud
+  namespace: inoa
   title: INOA Cloud
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/
@@ -17,5 +18,5 @@ metadata:
       title: Ground Control - Development
       icon: dashboard
 spec:
-  owner: grayc
+  owner: default/grayc
   domain: inoa

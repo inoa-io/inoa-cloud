@@ -2,6 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: inoa-influxdb
+  namespace: inoa
   title: INOA Influx Database
   description: The time series database for measured data in context of INOA Fleet
   annotations:
@@ -9,7 +10,7 @@ metadata:
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=influxdb
     simpleicons.org/icon-slug: influxdb
 spec:
-  owner: grayc
-  system: default/inoa-cloud
+  owner: default/grayc
+  system: inoa/inoa-cloud
   lifecycle: productive
   type: service
