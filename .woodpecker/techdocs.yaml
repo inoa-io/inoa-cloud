@@ -32,7 +32,7 @@ steps:
         --storage-name,
         grayc-techdocs,
         --entity,
-        default/System/inoa-cloud,
+        inoa/System/inoa-cloud,
         --directory,
         docs/target,
       ]
