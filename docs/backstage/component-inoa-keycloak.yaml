@@ -6,7 +6,7 @@ metadata:
   title: INOA Keycloak
   description: The authorization service in context of INOA.
   annotations:
-    backstage.io/techdocs-entity: system:default/inoa-cloud
+    backstage.io/techdocs-entity: system:inoa/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
     simpleicons.org/icon-slug: keycloak
 spec:

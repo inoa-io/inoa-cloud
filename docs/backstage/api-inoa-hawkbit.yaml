@@ -6,7 +6,8 @@ metadata:
   title: INOA Hawkbit API
   description: The API to manage software rollouts for INOA IoT fleets.
   annotations:
-    backstage.io/source-location: url:https://git.grayc.io/inoa/api/
+    backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/api
+    backstage.io/techdocs-entity: system:inoa/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
 spec:
   owner: default/grayc
