@@ -47,6 +47,21 @@
 	border-spacing: 0;
 }
 
+.overview-table-row-location {
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	margin-bottom: 0px;
+	border-bottom: 1px solid #e0e0e0;
+	border-spacing: 0;
+}
+
+.overview-location-container {
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 20px;
+}
+
 .overview-table-row-no-border {
 	display: flex;
 	flex-direction: row;
@@ -100,4 +115,20 @@
 	to {
 		transform: rotate(0deg);
 	}
+}
+
+.tiny-map {
+	width: 100%;
+	height: 150px;
+	border: solid 1px black;
+	transform: translateY(-1px);
+}
+
+.invisible-map {
+	width: 0px;
+	height: 0px;
+}
+
+.overview-button-icon {
+	transform: translateX(5px);
 }

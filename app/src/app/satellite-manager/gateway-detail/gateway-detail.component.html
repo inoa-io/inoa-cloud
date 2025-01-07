@@ -45,7 +45,6 @@
 		class="gateway-table-tab-group"
 		mat-stretch-tabs="false"
 		mat-align-tabs="start"
-		[(selectedIndex)]="selectedTabIndex"
 		headerPosition="above"
 		animationDuration="300ms"
 		backgroundColor="primary"
@@ -83,7 +82,8 @@
 			<gc-gateway-datapoints></gc-gateway-datapoints>
 		</mat-tab>
 
-		<mat-tab label="RPC Console" *ngIf="intercomService.selectedGatewayId && intercomService.expertMode">
+		<!-- rpc console -->
+		<mat-tab label="RPC Console" *ngIf="intercomService.expertMode">
 			<div class="gateway-card-container">
 				<mat-card class="card-gateway-console card-gateway-shadow">
 					<mat-card-header>

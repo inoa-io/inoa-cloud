@@ -1,0 +1,103 @@
+.full-width {
+	width: 100%;
+}
+
+.toolbar-icon {
+	height: 32px;
+	margin-right: 10px;
+	background-color: white;
+	border-radius: 50%;
+	padding: 5px;
+}
+
+.location-map {
+	width: 100%;
+	height: calc(100% - 110px);
+	position: relative;
+	z-index: 0;
+}
+
+.map-actions-container {
+	margin: 0 7px;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	gap: 15px;
+	transform: translateY(20px);
+}
+
+.formfield-longitude {
+	width: 200px;
+}
+
+.formfield-latitude {
+	width: 200px;
+}
+
+.formfield-map-tpye {
+	width: 200px;
+}
+
+.formfield-address {
+	min-width: 500px;
+	width: 500px;
+}
+
+.leaflet-popup-content {
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.leaflet-popup-content strong {
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.input-custom {
+	transform: translateY(4px);
+}
+
+.address-suggestion {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.primary-line {
+	margin-top: 10px;
+	color: rgba(0, 0, 0, 0.87);
+	font-weight: 500;
+}
+
+.secondary-line {
+	margin-bottom: 5px;
+	color: rgba(0, 0, 0, 0.6);
+	font-size: 0.85em;
+}
+
+.search-spinner {
+	margin: 8px;
+}
+
+.action-button {
+	height: 55px;
+	width: 200px;
+}
+
+.fadeout-overlay {
+	width: 100%;
+	height: 100px;
+	position: absolute;
+	background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+	bottom: 0;
+	z-index: 1000;
+}
+
+.cancel-button {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	z-index: 1000;
+}

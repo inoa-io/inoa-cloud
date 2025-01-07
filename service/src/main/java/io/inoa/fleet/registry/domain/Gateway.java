@@ -17,7 +17,7 @@ import lombok.Data;
 /**
  * A gateway.
  *
- * @author Stephan Schnabel
+ * @author Stephan Schnabel, Ronny Schlegel
  */
 @MappedEntity
 @Data
@@ -30,6 +30,10 @@ public class Gateway {
 
   @MappedProperty private String gatewayId;
   @MappedProperty private String name;
+
+  @Relation(Relation.Kind.EMBEDDED)
+  private GatewayLocationData location;
+
   @MappedProperty private Boolean enabled;
 
   @Relation(Relation.Kind.EMBEDDED)

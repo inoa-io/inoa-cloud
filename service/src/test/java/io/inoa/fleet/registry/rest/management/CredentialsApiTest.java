@@ -382,7 +382,7 @@ public class CredentialsApiTest extends AbstractUnitTest implements CredentialsA
   @Override
   public void updateCredential400() {
     var tenant = data.tenant();
-    var gateway = data.gateway(tenant);
+    var gateway = data.gateway(tenant).setLocation(data.getNullLocation());
     var gatewayId = gateway.getGatewayId();
     var credentialId = data.credentialPSK(gateway).getCredentialId();
     var vo = new CredentialUpdateVO().name("");
@@ -400,7 +400,7 @@ public class CredentialsApiTest extends AbstractUnitTest implements CredentialsA
   @Override
   public void updateCredential401() {
     var tenant = data.tenant();
-    var gateway = data.gateway(tenant);
+    var gateway = data.gateway(tenant).setLocation(data.getNullLocation());
     var gatewayId = gateway.getGatewayId();
     var credentialId = data.credentialPSK(gateway).getCredentialId();
     var vo = new CredentialUpdateVO().name(data.gatewayName());

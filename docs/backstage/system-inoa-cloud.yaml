@@ -2,12 +2,11 @@ apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: inoa-cloud
+  namespace: inoa
   title: INOA Cloud
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/
-    backstage.io/techdocs-entity: system:default/inoa-cloud
-    backstage.io/techdocs-ref: url:https://git.grayc.io/inoa/cloud/src/branch/main/docs/techdocs
-    backstage.io/edit-url: https://git.grayc.io/inoa/cloud/_edit/main/docs/backstage/system-inoa-cloud.yaml
+    backstage.io/techdocs-ref: dir:../techdocs
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
   links:
     - url: https://groundcontrol.inoa.io
@@ -17,5 +16,5 @@ metadata:
       title: Ground Control - Development
       icon: dashboard
 spec:
-  owner: grayc
-  domain: inoa
+  owner: default/grayc
+  domain: inoa/inoa

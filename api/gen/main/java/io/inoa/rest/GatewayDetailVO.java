@@ -6,6 +6,7 @@ public class GatewayDetailVO {
 
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID = "gateway_id";
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
+	public static final java.lang.String JSON_PROPERTY_LOCATION = "location";
 	public static final java.lang.String JSON_PROPERTY_ENABLED = "enabled";
 	public static final java.lang.String JSON_PROPERTY_GROUP_IDS = "group_ids";
 	public static final java.lang.String JSON_PROPERTY_PROPERTIES = "properties";
@@ -25,6 +26,11 @@ public class GatewayDetailVO {
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
+
+	@jakarta.validation.Valid
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_LOCATION)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private GatewayLocationDataVO location;
 
 	/** Flag if enabled or not. */
 	@jakarta.validation.constraints.NotNull
@@ -69,6 +75,7 @@ public class GatewayDetailVO {
 		GatewayDetailVO other = (GatewayDetailVO) object;
 		return java.util.Objects.equals(gatewayId, other.gatewayId)
 				&& java.util.Objects.equals(name, other.name)
+				&& java.util.Objects.equals(location, other.location)
 				&& java.util.Objects.equals(enabled, other.enabled)
 				&& java.util.Objects.equals(groupIds, other.groupIds)
 				&& java.util.Objects.equals(properties, other.properties)
@@ -78,7 +85,7 @@ public class GatewayDetailVO {
 
 	@Override
 	public int hashCode() {
-		return java.util.Objects.hash(gatewayId, name, enabled, groupIds, properties, created, updated);
+		return java.util.Objects.hash(gatewayId, name, location, enabled, groupIds, properties, created, updated);
 	}
 
 	@Override
@@ -87,6 +94,7 @@ public class GatewayDetailVO {
 				.append("GatewayDetailVO[")
 				.append("gatewayId=").append(gatewayId).append(",")
 				.append("name=").append(name).append(",")
+				.append("location=").append(location).append(",")
 				.append("enabled=").append(enabled).append(",")
 				.append("groupIds=").append(groupIds).append(",")
 				.append("properties=").append(properties).append(",")
@@ -105,6 +113,11 @@ public class GatewayDetailVO {
 
 	public GatewayDetailVO name(java.lang.String newName) {
 		this.name = newName;
+		return this;
+	}
+
+	public GatewayDetailVO location(GatewayLocationDataVO newLocation) {
+		this.location = newLocation;
 		return this;
 	}
 
@@ -179,6 +192,14 @@ public class GatewayDetailVO {
 
 	public void setName(java.lang.String newName) {
 		this.name = newName;
+	}
+
+	public GatewayLocationDataVO getLocation() {
+		return location;
+	}
+
+	public void setLocation(GatewayLocationDataVO newLocation) {
+		this.location = newLocation;
 	}
 
 	public java.lang.Boolean getEnabled() {

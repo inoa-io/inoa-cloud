@@ -1,8 +1,0 @@
-apiVersion: backstage.io/v1alpha1
-kind: Domain
-metadata:
-  name: inoa
-  description: INOA is the domain where all the IoT use cases live.
-spec:
-  owner: grayc
-#  subdomainOf: audio-domain

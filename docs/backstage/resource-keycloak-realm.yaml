@@ -2,6 +2,7 @@ apiVersion: backstage.io/v1alpha1
 kind: Resource
 metadata:
   name: keycloak-realm-inoa
+  namespace: inoa
   title: Keycloak Realm INOA
   links:
     - title: Admin Console
@@ -10,8 +11,8 @@ metadata:
     backstage.io/kubernetes-namespace: infrastructure
     backstage.io/kubernetes-label-selector: app.kubernetes.io/name=keycloak
 spec:
-  owner: grayc
-  system: default/inoa-cloud
+  owner: default/grayc
+  system: inoa/inoa-cloud
   lifecycle: production
   type: keycloak-realm
   dependsOn:
