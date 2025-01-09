@@ -23,8 +23,8 @@ configMapGenerator:
       - GF_USERS_AUTO_ASSIGN_ORG_ROLE=Admin
       - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
       - GF_SECURITY_DISABLE_GRAVATAR=false
-      - GF_SECURITY_COOKIE_SECURE=false
-      - GF_SECURITY_COOKIE_SAMESITE=lax
+      - GF_SECURITY_COOKIE_SECURE=true
+      - GF_SECURITY_COOKIE_SAMESITE=none
       - GF_SECURITY_CONTENT_SECURITY_POLICY=false
       - GF_SECURITY_STRICT_TRANSPORT_SECURITY=true
       - GF_SECURITY_ALLOW_EMBEDDING=true
@@ -38,6 +38,8 @@ configMapGenerator:
       - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
       - GF_AUTH_GENERIC_OAUTH_API_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/userinfo
       - GF_AUTH_GENERIC_OAUTH_SCOPES=openid
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
       - GF_PLUGINS_PLUGIN_ADMIN_ENABLED=true
       - GF_SMTP_ENABLED=false
       - GF_SNAPSHOTS_EXTERNAL_ENABLED=false
