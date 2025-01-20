@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
   selector: "gc-ems-dashboard",
@@ -6,8 +7,14 @@ import { Component } from "@angular/core";
   styleUrl: "./ems-dashboard.component.css"
 })
 export class EmsDashboardComponent {
+  safeUrl: SafeResourceUrl | null = null;
+  constructor(private sanitizer: DomSanitizer) { }
+  
+  ngOnInit() {
+    const dynamicUrl = this.getGrafanaDashboardUrl();
+    this.safeUrl = this.sanitizer.bypassSecurityTrustResourceUrl(dynamicUrl);
+  }
   getGrafanaDashboardUrl(): string {
-
     const currentUrl = window.location.href;
     const newUrl = currentUrl.replace("inoa", "grafana");
     const baseUrl = newUrl.split("/")[0] + "//" + newUrl.split("/")[2];
