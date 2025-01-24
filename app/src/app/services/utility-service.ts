@@ -25,6 +25,6 @@ export class UtilityService {
 	getThingType(thingTypeId: string | undefined): string {
 		if (thingTypeId == undefined) return "unknown";
 
-		return this.intercomService.thingTypes.find((type) => type.id === thingTypeId)?.name || "unknown";
+		return this.intercomService.thingTypes.find((type) => type.identifier === thingTypeId)?.name || "unknown";
 	}
 }

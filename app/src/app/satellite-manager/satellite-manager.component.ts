@@ -16,8 +16,8 @@ export class SatelliteManagerComponent implements OnInit {
 		console.log("Initializing Satellite Manager...");
 
 		// get all thingTypes from the database
-		this.thingTypesService.findThingTypes().subscribe((thingTypeList) => {
-			this.intercomService.thingTypes = thingTypeList.content;
+		this.thingTypesService.getThingTypes().subscribe((thingTypeList) => {
+			this.intercomService.thingTypes = thingTypeList;
 		});
 	}
 }

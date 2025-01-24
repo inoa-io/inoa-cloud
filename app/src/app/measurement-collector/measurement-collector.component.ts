@@ -120,8 +120,8 @@ export class MeasurementCollectorComponent implements OnInit {
 			map((satellite) => (satellite ? this.filterGateways(satellite) : this.intercomService.gateways.slice()))
 		);
 
-		this.thingTypesService.findThingTypes().subscribe((data) => {
-			this.intercomService.thingTypes = data.content;
+		this.thingTypesService.getThingTypes().subscribe((data) => {
+			this.intercomService.thingTypes = data;
 		});
 	}
 

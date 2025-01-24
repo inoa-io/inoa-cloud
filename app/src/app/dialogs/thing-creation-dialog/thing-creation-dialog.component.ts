@@ -30,7 +30,7 @@ export class ThingCreationDialogComponent implements OnDestroy {
 
 	// extract from json_schema for display in dialog
 	thingTitle = "";
-	thingDescription = "";
+	thingDescription: string | undefined = "";
 
 	constructor(
 		public dialogRef: MatDialogRef<ThingCreationDialogComponent>,
@@ -54,22 +54,16 @@ export class ThingCreationDialogComponent implements OnDestroy {
 
 	loadThingType(type: ThingTypeVO) {
 		// Extract title and description to display them separately (these are always present, so that's ok)
-		if (type.json_schema) {
-			this.thingTitle = type.json_schema["title"] || "";
-			this.thingDescription = type.json_schema["description"] || "";
+		if (type) {
+			this.thingTitle = type.name;
+			this.thingDescription = type.description;
 		}
 
 		this.selectedThingType = type;
 		this.form = new FormGroup({});
 		this.options = {};
 
-		// Create a copy of the json_schema without title and description for fields
-		const fieldSchema = type.json_schema ? { ...type.json_schema } : {};
-		delete fieldSchema["title"];
-		delete fieldSchema["description"];
-
-		this.fields = fieldSchema ? [this.formlyJsonschema.toFieldConfig(fieldSchema)] : [];
-		this.category = type.category ? this.thingCategoryService.getCategory(type.id) : { key: "error", image: "", title: "none" };
+		this.category = type.category ? this.thingCategoryService.getCategory(type.identifier) : { key: "error", image: "", title: "none" };
 		this.model = {};
 
 		this.addOutlineAppearanceToFields(this.fields);
@@ -77,8 +71,7 @@ export class ThingCreationDialogComponent implements OnDestroy {
 		const thing: ThingCreateVO = {
 			name: type.name,
 			gateway_id: this.data.gateway.gateway_id,
-			thing_type_id: type.id,
-			config: {}
+			thing_type_id: type.identifier
 		};
 
 		this.data.thing = thing;
@@ -105,39 +98,11 @@ export class ThingCreationDialogComponent implements OnDestroy {
 	onCreateClick() {
 		if (this.form.valid && this.selectedThingType) {
 			if (this.data.thing) {
-				this.data.thing.thing_type_id = this.selectedThingType.id;
+				this.data.thing.thing_type_id = this.selectedThingType.identifier;
 				this.data.thing.name = this.form.get("name")?.value;
 
-				let dataPointParams = undefined;
+				// TODO
 
-				switch (this.data.thing.thing_type_id) {
-					case "shellyplug-s":
-						dataPointParams = {
-							id: "urn:shellyplug-s:" + this.data.thing.name.replace(/\s/g, "").toLocaleLowerCase() + ":status",
-							name: this.data.thing.name,
-							enabled: true,
-							uri: "http://" + this.form.get("host")?.value + "/status"
-						};
-						break;
-					case "shellyplusplugs":
-						dataPointParams = {
-							id: "urn:shellyplusplugs:" + this.data.thing.name.replace(/\s/g, "").toLocaleLowerCase() + ":status",
-							name: this.data.thing.name,
-							enabled: true,
-							uri: "http://" + this.form.get("host")?.value + "/rpc/Shelly.GetStatus"
-						};
-						break;
-					case "s0":
-						dataPointParams = {
-							id: "urn:s0:" + this.data.thing.name.replace(/\s/g, "").toLocaleLowerCase() + ":gas",
-							interface: this.form.get("port")?.value,
-							name: this.data.thing.name,
-							enabled: true
-						};
-						break;
-				}
-
-				this.data.thing.config = dataPointParams;
 			}
 		}
 	}

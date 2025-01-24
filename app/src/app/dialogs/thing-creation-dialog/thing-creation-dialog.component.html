@@ -12,7 +12,7 @@
 
 			<mat-select (selectionChange)="loadThingType($event.value)" [(value)]="selectedThingType">
 				<mat-option *ngFor="let thingType of intercomService.thingTypes" [value]="thingType">
-					<img style="vertical-align: middle" width="24" src="{{ utilityService.getThingImage(thingType.id) }}" alt="{{ thingType.name }}" />
+					<img style="vertical-align: middle" width="24" src="{{ utilityService.getThingImage(thingType.identifier) }}" alt="{{ thingType.name }}" />
 					<span style="padding-left: 10pt">{{ thingType.name }}</span>
 				</mat-option>
 			</mat-select>
