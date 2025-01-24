@@ -8,24 +8,29 @@ import io.micronaut.data.annotation.Relation;
 import io.micronaut.data.annotation.sql.JoinColumn;
 import io.micronaut.data.annotation.sql.JoinTable;
 import java.util.List;
+import lombok.Data;
 
 @MappedEntity
-public record ThingType(
-    @Id @GeneratedValue Long id,
-    String identifier,
-    String name,
-    String description,
-    @Nullable String version,
-    @Relation(value = Relation.Kind.ONE_TO_MANY, cascade = Relation.Cascade.ALL)
-        @JoinTable(
-            name = "thing_type_measurand_type",
-            inverseJoinColumns =
-                @JoinColumn(name = "measurand_type_id", referencedColumnName = "id"),
-            joinColumns = @JoinColumn(name = "thing_type_id", referencedColumnName = "id"))
-        List<MeasurandType> measurandTypes,
-    @Relation(
-            value = Relation.Kind.ONE_TO_MANY,
-            mappedBy = "thingType",
-            cascade = Relation.Cascade.ALL)
-        List<ThingConfiguration> thingConfigurations,
-    MeasurandProtocol protocol) {}
+@Data
+public class ThingType {
+  private @Id @GeneratedValue Long id;
+  private String identifier;
+  private String name;
+  private String description;
+  @Nullable private String version;
+
+  @Relation(value = Relation.Kind.ONE_TO_MANY, cascade = Relation.Cascade.ALL)
+  @JoinTable(
+      name = "thing_type_measurand_type",
+      inverseJoinColumns = @JoinColumn(name = "measurand_type_id", referencedColumnName = "id"),
+      joinColumns = @JoinColumn(name = "thing_type_id", referencedColumnName = "id"))
+  private List<MeasurandType> measurandTypes;
+
+  @Relation(
+      value = Relation.Kind.ONE_TO_MANY,
+      mappedBy = "thingType",
+      cascade = Relation.Cascade.ALL)
+  private List<ThingConfiguration> thingConfigurations;
+
+  private MeasurandProtocol protocol;
+}

@@ -20,7 +20,7 @@ public class ShellyBuilder extends HttpBuilderBase implements ConfigCreator {
     Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
     String serial = (String) properties.get("serial");
     String uri = (String) properties.get("uri");
-    datapoints.add(createHttpGetJsonNode(serial, thingType.identifier(), thing, uri));
+    datapoints.add(createHttpGetJsonNode(serial, thingType.getIdentifier(), thing, uri));
     return datapoints;
   }
 
@@ -31,7 +31,7 @@ public class ShellyBuilder extends HttpBuilderBase implements ConfigCreator {
     Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
     String serial = (String) properties.get("serial");
     String uri = (String) properties.get("uri");
-    datapoints.add(createHttpGetJsonNodeLegacy(serial, thingType.identifier(), thing, uri));
+    datapoints.add(createHttpGetJsonNodeLegacy(serial, thingType.getIdentifier(), thing, uri));
     return datapoints;
   }
 

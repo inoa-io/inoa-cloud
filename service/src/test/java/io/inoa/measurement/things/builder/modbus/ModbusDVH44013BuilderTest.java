@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import io.inoa.measurement.things.domain.MeasurandType;
 import io.inoa.measurement.things.domain.Thing;
+import io.inoa.measurement.things.domain.ThingConfigurationType;
 import io.inoa.measurement.things.domain.ThingType;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -21,21 +22,17 @@ public class ModbusDVH44013BuilderTest {
     ModbusDVH4013Builder builder = new ModbusDVH4013Builder(new ObjectMapper());
     Thing thing = new Thing();
     thing.setName("schrank");
-    HashMap<String, Object> config = new HashMap<>();
-    HashMap<String, Object> properties = new HashMap<>();
-    HashMap<String, Object> channels = new HashMap<>();
-    properties.put("serial", 100022);
-    properties.put("modbus_interface", 1);
 
-    channels.put("obis_1_8_0", true);
-    channels.put("obis_2_8_0", true);
-    channels.put("power_in", true);
-    channels.put("power_out", true);
-    config.put("properties", properties);
-    config.put("channels", channels);
-    thing.setConfig(config);
+    thing.addConfig("serial", ThingConfigurationType.STRING, "100022");
+    thing.addConfig("modbus_interface", ThingConfigurationType.NUMBER, "1");
+
+    thing.addMeasurand(new MeasurandType().setObisId("obis_1_8_0"));
+    thing.addMeasurand(new MeasurandType().setObisId("obis_2_8_0"));
+    thing.addMeasurand(new MeasurandType().setObisId("power_in"));
+    thing.addMeasurand(new MeasurandType().setObisId("power_out"));
+
     ThingType thingType = new ThingType();
-    thingType.setThingTypeId("dvh4013");
+    thingType.setIdentifier("dvh4013");
     ArrayNode build = builder.buildLegacy(thing, thingType);
     List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
 

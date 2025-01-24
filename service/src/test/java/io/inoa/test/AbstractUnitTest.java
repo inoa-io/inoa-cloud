@@ -55,7 +55,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
         c ->
             c.createStatement()
                 .execute(
-                    Stream.of("thing_type", "gateway", "tenant")
+                    Stream.of("thing_type", "gateway", "tenant", "thing")
                         .map(table -> "TRUNCATE TABLE " + table + " CASCADE;")
                         .collect(Collectors.joining())));
     kafka.reset();

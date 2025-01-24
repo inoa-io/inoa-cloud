@@ -6,9 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import io.inoa.measurement.things.domain.MeasurandType;
 import io.inoa.measurement.things.domain.Thing;
+import io.inoa.measurement.things.domain.ThingConfigurationType;
 import io.inoa.measurement.things.domain.ThingType;
-import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
@@ -22,24 +23,20 @@ public class ModbusMDVH4006BuilderTest {
     ModbusMDVH4006Builder builder = new ModbusMDVH4006Builder(new ObjectMapper());
     Thing thing = new Thing();
     thing.setName("schrank");
-    HashMap<String, Object> config = new HashMap<>();
-    HashMap<String, Object> properties = new HashMap<>();
-    HashMap<String, Object> channels = new HashMap<>();
-    properties.put("serial", 39000976);
-    properties.put("modbus_interface", 1);
 
-    channels.put("obis_1_8_0", true);
-    channels.put("obis_1_8_1", true);
-    channels.put("obis_1_8_2", true);
-    channels.put("obis_2_8_0", true);
-    channels.put("obis_2_8_1", true);
-    channels.put("obis_2_8_2", true);
-    channels.put("obis_1_7_0", true);
-    config.put("properties", properties);
-    config.put("channels", channels);
-    thing.setConfig(config);
+    thing.addConfig("serial", ThingConfigurationType.STRING, "39000976");
+    thing.addConfig("modbus_interface", ThingConfigurationType.NUMBER, "1");
+
+    thing.addMeasurand(new MeasurandType().setObisId("obis_1_8_0"));
+    thing.addMeasurand(new MeasurandType().setObisId("obis_1_8_1"));
+    thing.addMeasurand(new MeasurandType().setObisId("obis_1_8_2"));
+    thing.addMeasurand(new MeasurandType().setObisId("obis_2_8_0"));
+    thing.addMeasurand(new MeasurandType().setObisId("obis_2_8_1"));
+    thing.addMeasurand(new MeasurandType().setObisId("obis_2_8_2"));
+    thing.addMeasurand(new MeasurandType().setObisId("obis_1_7_0"));
+
     ThingType thingType = new ThingType();
-    thingType.setThingTypeId("mdvh4006");
+    thingType.setIdentifier("mdvh4006");
     ArrayNode build = builder.buildLegacy(thing, thingType);
     List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
 

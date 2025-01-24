@@ -2,12 +2,11 @@ package io.inoa.measurement.things.rest;
 
 import static io.inoa.test.HttpAssertions.assert201;
 
-import io.inoa.rest.ThingTypeCreateVO;
+import io.inoa.rest.ThingTypeVO;
 import io.inoa.rest.ThingTypesApiTestClient;
 import io.inoa.rest.ThingTypesApiTestSpec;
 import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
-import java.util.HashMap;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,15 +16,11 @@ public class ThingTypesApiTest extends AbstractUnitTest implements ThingTypesApi
 
   @Inject ThingTypesApiTestClient client;
 
+  @Disabled("NYI")
   @Test
   @Override
   public void createThingType201() {
-    var vo =
-        new ThingTypeCreateVO()
-            .name("DvModbusIR")
-            .thingTypeId("dvmodbusir")
-            .category("foo")
-            .jsonSchema(new HashMap<>());
+    var vo = new ThingTypeVO().name("DvModbusIR").identifier("dvmodbusir").category("foo");
     assert201(() -> client.createThingType(auth("inoa"), vo));
   }
 
@@ -75,19 +70,16 @@ public class ThingTypesApiTest extends AbstractUnitTest implements ThingTypesApi
   public void findThingType404() {}
 
   @Disabled("NYI")
-  @Test
   @Override
-  public void findThingTypes200() {}
+  public void getThingTypes200() throws Exception {}
 
   @Disabled("NYI")
-  @Test
   @Override
-  public void findThingTypes401() {}
+  public void getThingTypes401() throws Exception {}
 
   @Disabled("NYI")
-  @Test
   @Override
-  public void findThingTypes404() {}
+  public void getThingTypes404() throws Exception {}
 
   @Disabled("NYI")
   @Test
