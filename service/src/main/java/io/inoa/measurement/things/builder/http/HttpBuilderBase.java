@@ -25,7 +25,7 @@ public abstract class HttpBuilderBase {
     ObjectNode node = getObjectMapper().createObjectNode();
     ObjectNode header = getObjectMapper().createObjectNode();
     header.put("id", Utils.buildUrn(serial, thingTypeReference, "status"));
-    header.put("name", thing.getName());
+    header.put("name", thing.name());
     header.put("type", "HTTP_GET");
     header.put("interval", 30000);
     node.set("header", header);
@@ -46,7 +46,7 @@ public abstract class HttpBuilderBase {
       String serial, String thingTypeReference, Thing thing, String uri) {
     ObjectNode node = getObjectMapper().createObjectNode();
     node.put("id", Utils.buildUrn(serial, thingTypeReference, "status"));
-    node.put("name", thing.getName());
+    node.put("name", thing.name());
     node.put("type", "HTTP_GET");
     node.put("interval", 30000);
     node.put("enabled", true);

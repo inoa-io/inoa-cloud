@@ -33,7 +33,7 @@ public abstract class ModbusBuilderBase {
             serial.toString(),
             thingTypeReference,
             String.format("0x%04X", registerSetting.getRegisterOffset())));
-    header.put("name", thing.getName());
+    header.put("name", thing.name());
     header.put("type", "RS485");
     header.put("interval", 30000);
     node.set("header", header);
@@ -66,7 +66,7 @@ public abstract class ModbusBuilderBase {
                         serial.toString(),
                         thingTypeReference,
                         String.format("0x%04X", registerSetting.getRegisterOffset())))
-                .name(thing.getName())
+                .name(thing.name())
                 .enabled(true)
                 .type(DatapointVO.Type.RS485)
                 .interval(30000)
@@ -96,7 +96,7 @@ public abstract class ModbusBuilderBase {
       ObjectNode node =
           createModbusJsonNodeLegacy(
               serial,
-              thingType.getThingTypeId(),
+              thingType.identifier(),
               registerSetting,
               thing,
               modbusInterface,
@@ -119,7 +119,7 @@ public abstract class ModbusBuilderBase {
       ObjectNode node =
           createModbusJsonNode(
               serial,
-              thingType.getThingTypeId(),
+              thingType.identifier(),
               registerSetting,
               thing,
               modbusInterface,

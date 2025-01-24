@@ -26,7 +26,7 @@ public class S0Builder implements ConfigCreator {
     String serial = (String) properties.get("serial");
     String sensor = (String) properties.get("sensor");
     Integer iface = (Integer) properties.get("interface");
-    datapoints.add(createS0JsonNode(serial, thingType.getThingTypeId(), thing, sensor, iface));
+    datapoints.add(createS0JsonNode(serial, thingType.identifier(), thing, sensor, iface));
     return datapoints;
   }
 
@@ -38,8 +38,7 @@ public class S0Builder implements ConfigCreator {
     String serial = (String) properties.get("serial");
     String sensor = (String) properties.get("sensor");
     Integer iface = (Integer) properties.get("interface");
-    datapoints.add(
-        createS0JsonNodeLegacy(serial, thingType.getThingTypeId(), thing, sensor, iface));
+    datapoints.add(createS0JsonNodeLegacy(serial, thingType.identifier(), thing, sensor, iface));
     return datapoints;
   }
 
@@ -54,7 +53,7 @@ public class S0Builder implements ConfigCreator {
         .valueToTree(
             new DatapointVO()
                 .id(Utils.buildUrn(serial, thingTypeReference, sensor))
-                .name(thing.getName())
+                .name(thing.name())
                 .type(DatapointVO.Type.S0)
                 .interval(30)
                 ._interface(iface));
@@ -65,7 +64,7 @@ public class S0Builder implements ConfigCreator {
     ObjectNode node = objectMapper.createObjectNode();
     ObjectNode header = objectMapper.createObjectNode();
     header.put("id", Utils.buildUrn(serial, thingTypeReference, sensor));
-    header.put("name", thing.getName());
+    header.put("name", thing.name());
     header.put("type", "S0");
     header.put("interval", 30000);
     node.set("header", header);
