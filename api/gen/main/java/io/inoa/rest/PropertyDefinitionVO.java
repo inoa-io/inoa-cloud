@@ -8,7 +8,8 @@ public class PropertyDefinitionVO {
 	public static final java.lang.String JSON_PROPERTY_KEY = "key";
 	public static final java.lang.String JSON_PROPERTY_INPUT_TYPE = "input_type";
 
-	/** Name. */
+	/** Human readable name. */
+	@jakarta.validation.constraints.Size(max = 64)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
@@ -98,6 +99,7 @@ public class PropertyDefinitionVO {
 		this.inputType = newInputType;
 	}
 
+@io.micronaut.serde.annotation.Serdeable
 public enum InputType {
 
 	TEXT("text"),

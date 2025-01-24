@@ -22,6 +22,14 @@
 		<git.branch />
 	</properties>
 
+	<dependencies>
+		<dependency>
+			<groupId>io.inoa</groupId>
+			<artifactId>inoa-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<!-- Version shown in UI -->

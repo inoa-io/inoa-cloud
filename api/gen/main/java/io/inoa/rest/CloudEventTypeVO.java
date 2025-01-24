@@ -1,6 +1,7 @@
 package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
+@io.micronaut.serde.annotation.Serdeable
 public enum CloudEventTypeVO {
 
 	LOG_EMITTED("io.inoa.log.emitted"),

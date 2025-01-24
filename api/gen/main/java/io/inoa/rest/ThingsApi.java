@@ -110,7 +110,7 @@ public interface ThingsApi {
 			@jakarta.validation.constraints.Size(min = 4, max = 20)
 			java.lang.String gatewayId);
 
-	@io.micronaut.http.annotation.Put(PATH_UPDATE_THING)
+	@io.micronaut.http.annotation.Patch(PATH_UPDATE_THING)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
 	@io.micronaut.http.annotation.Produces({ "application/json" })
 	io.micronaut.http.HttpResponse<ThingVO> updateThing(

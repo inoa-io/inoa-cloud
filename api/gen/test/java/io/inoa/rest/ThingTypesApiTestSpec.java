@@ -30,13 +30,13 @@ public interface ThingTypesApiTestSpec {
 
 	void findThingType404() throws java.lang.Exception;
 
-	// findThingTypes
+	// getThingTypes
 
-	void findThingTypes200() throws java.lang.Exception;
+	void getThingTypes200() throws java.lang.Exception;
 
-	void findThingTypes401() throws java.lang.Exception;
+	void getThingTypes401() throws java.lang.Exception;
 
-	void findThingTypes404() throws java.lang.Exception;
+	void getThingTypes404() throws java.lang.Exception;
 
 	// updateThingType
 

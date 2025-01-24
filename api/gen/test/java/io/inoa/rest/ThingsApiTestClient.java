@@ -117,7 +117,7 @@ public interface ThingsApiTestClient {
 			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
 			java.lang.String gatewayId);
 
-	@io.micronaut.http.annotation.Put("/things/{thing_id}")
+	@io.micronaut.http.annotation.Patch("/things/{thing_id}")
 	@io.micronaut.http.annotation.Produces({ "application/json" })
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
 	io.micronaut.http.HttpResponse<ThingVO> updateThing(

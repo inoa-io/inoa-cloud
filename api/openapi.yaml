@@ -23,15 +23,15 @@ security:
   - BearerAuth: []
 tags:
   - name: tenants
-    description: Tenants can be used to divide INOA resources for different groups of interest
+    description: Tenants can be used to divide INOA resources for different groups of interest.
   - name: groups
-    description: Groups are a logical structure to arrange gateways and their configuration
+    description: Groups are a logical structure to arrange gateways and their configuration.
   - name: gateways
-    description: Gateways are representations of IoT devices
+    description: Gateways are representations of IoT devices.
   - name: credentials
-    description: Credential definitions, types and values
+    description: Credential definitions, types and values.
   - name: configuration
-    description: Gateway configuration for system setup
+    description: Gateway configuration for system setup.
   - name: gateway
     description: Resources accessible by the physical gateway.
   - name: properties
@@ -40,6 +40,8 @@ tags:
     description: Remote control of gateways.
   - name: things
     description: Thing definitions and assignments.
+  - name: thing-types
+    description: Thing type management.
 paths:
   /whoami:
     get:
@@ -940,7 +942,7 @@ paths:
 
   /thing-types:
     get:
-      tags: [things]
+      tags: [thing-types]
       summary: Find thing types.
       description: Find all thing types.
       operationId: getThingTypes
@@ -958,7 +960,7 @@ paths:
         404:
           description: No thing types found.
     post:
-      tags: [things]
+      tags: [thing-types]
       summary: Create thing type.
       description: Creates a new thing type.
       operationId: createThingType
@@ -986,7 +988,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/ThingTypeId"
     get:
-      tags: [things]
+      tags: [thing-types]
       summary: Find Thing type.
       description: return a single thing type
       operationId: findThingType
@@ -1001,8 +1003,8 @@ paths:
           description: Unauthorized.
         404:
           description: Thing Type not found.
-    post:
-      tags: [things]
+    patch:
+      tags: [thing-types]
       summary: Update Thing type.
       description: Updates existing thing type.
       operationId: updateThingType
@@ -1011,7 +1013,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ThingType"
+              $ref: "#/components/schemas/ThingTypeUpdate"
       responses:
         200:
           description: Thing type updated.
@@ -1026,7 +1028,7 @@ paths:
         404:
           description: Thing type not found.
     delete:
-      tags: [things]
+      tags: [thing-types]
       summary: Delete thing type.
       description: Deletes a thing type and corresponding things.
       operationId: deleteThingType
@@ -1076,7 +1078,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Thing"
+              $ref: "#/components/schemas/ThingCreate"
       responses:
         201:
           description: Thing created.
@@ -1110,7 +1112,7 @@ paths:
           description: Unauthorized.
         404:
           description: Thing not found.
-    put:
+    patch:
       tags: [things]
       summary: Update Thing.
       description: Updates an existing thing.
@@ -1120,7 +1122,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Thing"
+              $ref: "#/components/schemas/ThingUpdate"
       responses:
         200:
           description: Thing updated.
@@ -2037,6 +2039,11 @@ components:
       description: Representation of a measurand belonging to a thing
       type: object
       properties:
+        uri:
+          description: URI for the measurand which is unique per gateway
+          type: string
+          format: uri
+          example: urn:dvmodbusir-dvze:1DZG0024008251:0x000D
         measurand_type:
           $ref: "#/components/schemas/MeasurandType"
         enabled:
@@ -2132,6 +2139,46 @@ components:
         - identifier
         - name
         - protocol
+    ThingTypeUpdate:
+      description: Representation of a type / class of things.
+      type: object
+      properties:
+        identifier:
+          $ref: "#/components/schemas/ThingTypeId"
+        name:
+          $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/Category"
+        description:
+          description: Additional description of the thing type
+          type: string
+          maxLength: 4096
+          example: Includes all members of the meter family
+        version:
+          description: An optional version of the thing type (e.g. firmware, revision, ...)
+          type: string
+          maxLength: 256
+          example: v1.7
+        protocol:
+          description: The protocol the thing type uses. If a thing supports several protocols, one may define several thing types.
+          type: string
+          enum:
+            - JSON_REST_HTTP
+            - MODBUS_RS458
+            - MODBUS_TCP
+            - S0
+            - MBUS
+            - WMBUS
+        measurands:
+          description: List of measurands this type of thing supports
+          type: array
+          items:
+            $ref: "#/components/schemas/MeasurandType"
+        configurations:
+          description: List of settings that can be configured for things of this type
+          type: array
+          items:
+            $ref: "#/components/schemas/ThingConfiguration"
 
     ###
     ### Thing
@@ -2194,6 +2241,76 @@ components:
         - name
         - gateway_id
         - thing_type_id
+    ThingCreate:
+      description: Thing with fields.
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        description:
+          description: Long description of the thing
+        gateway_id:
+          $ref: "#/components/schemas/GatewayId"
+        thing_type_id:
+          $ref: "#/components/schemas/ThingTypeId"
+        measurands:
+          description: List of measurands and its configuration
+          type: array
+          items:
+            $ref: "#/components/schemas/Measurand"
+        configurations:
+          description: List of thing configurations
+          type: array
+          items:
+            type: object
+            properties:
+              configuration:
+                $ref: "#/components/schemas/ThingConfiguration"
+              value:
+                description: Value of the configuration
+                type: string
+                maxLength: 4096
+                example: 98
+            required:
+              - configuration
+              - value
+      required:
+        - name
+        - gateway_id
+        - thing_type_id
+    ThingUpdate:
+      description: Thing with fields.
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        description:
+          description: Long description of the thing
+        gateway_id:
+          $ref: "#/components/schemas/GatewayId"
+        thing_type_id:
+          $ref: "#/components/schemas/ThingTypeId"
+        measurands:
+          description: List of measurands and its configuration
+          type: array
+          items:
+            $ref: "#/components/schemas/Measurand"
+        configurations:
+          description: List of thing configurations
+          type: array
+          items:
+            type: object
+            properties:
+              configuration:
+                $ref: "#/components/schemas/ThingConfiguration"
+              value:
+                description: Value of the configuration
+                type: string
+                maxLength: 4096
+                example: 98
+            required:
+              - configuration
+              - value
 
     ###
     ### Common

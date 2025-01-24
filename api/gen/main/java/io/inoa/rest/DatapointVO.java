@@ -233,6 +233,7 @@ public class DatapointVO {
 		this.uri = newUri;
 	}
 
+@io.micronaut.serde.annotation.Serdeable
 public enum Type {
 
 	RS485("RS485"),

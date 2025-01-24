@@ -7,19 +7,14 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ThingConfigurationVO } from './thingConfiguration';
 
 
-/**
- * Error response
- */
-export interface RpcResponseErrorVO { 
+export interface ThingConfigurationsInnerVO { 
+    configuration: ThingConfigurationVO;
     /**
-     * Error code
+     * Value of the configuration
      */
-    code?: number;
-    /**
-     * Error message
-     */
-    message?: string;
+    value: string;
 }
 

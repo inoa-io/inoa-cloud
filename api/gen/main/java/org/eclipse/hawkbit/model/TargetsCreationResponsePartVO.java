@@ -334,6 +334,7 @@ public class TargetsCreationResponsePartVO {
 		this.targetTypeName = newTargetTypeName;
 	}
 
+@io.micronaut.serde.annotation.Serdeable
 public enum UpdateStatus {
 
 	ERROR("error"),

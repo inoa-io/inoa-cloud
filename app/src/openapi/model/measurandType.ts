@@ -10,24 +10,20 @@
 
 
 /**
- * Log event.
+ * Type of the measurand
  */
-export interface LogEventVO { 
+export interface MeasurandTypeVO { 
     /**
-     * Log tag
+     * The OBIS code
      */
-    tag: string;
+    obis_id: string;
     /**
-     * Log level
+     * Name of the measurand type
      */
-    level: number;
+    name: string;
     /**
-     * Log time
+     * Description of the measurand type
      */
-    time: number;
-    /**
-     * Log message
-     */
-    msg: string;
+    description?: string;
 }
 

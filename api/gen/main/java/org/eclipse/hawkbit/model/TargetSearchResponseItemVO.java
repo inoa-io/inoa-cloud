@@ -333,6 +333,7 @@ public class TargetSearchResponseItemVO {
 		this.targetType = newTargetType;
 	}
 
+@io.micronaut.serde.annotation.Serdeable
 public enum UpdateStatus {
 
 	ERROR("error"),

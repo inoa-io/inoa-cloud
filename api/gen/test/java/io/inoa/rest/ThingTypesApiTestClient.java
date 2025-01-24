@@ -14,7 +14,7 @@ public interface ThingTypesApiTestClient {
 			java.lang.String authorization,
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Body
-			ThingTypeCreateVO thingTypeCreateVO);
+			ThingTypeVO thingTypeVO);
 
 	@io.micronaut.http.annotation.Delete("/thing-types/{thing_type_id}")
 	io.micronaut.http.HttpResponse<?> deleteThingType(
@@ -35,29 +35,14 @@ public interface ThingTypesApiTestClient {
 			@io.micronaut.http.annotation.PathVariable(value = "thing_type_id")
 			java.lang.String thingTypeId);
 
-	@io.micronaut.http.annotation.Get("/thing-types?{&sort*}")
+	@io.micronaut.http.annotation.Get("/thing-types")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<ThingTypePageVO> findThingTypes(
+	io.micronaut.http.HttpResponse<java.util.List<ThingTypeVO>> getThingTypes(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
-			java.lang.String authorization,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "page")
-			java.lang.Integer page,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "size")
-			java.lang.Integer size,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "sort")
-			java.util.List<java.lang.String> sort,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "name_filter")
-			java.lang.String nameFilter,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "reference_filter")
-			java.lang.String referenceFilter);
+			java.lang.String authorization);
 
-	@io.micronaut.http.annotation.Post("/thing-types/{thing_type_id}")
+	@io.micronaut.http.annotation.Patch("/thing-types/{thing_type_id}")
 	@io.micronaut.http.annotation.Produces({ "application/json" })
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
 	io.micronaut.http.HttpResponse<ThingTypeVO> updateThingType(
