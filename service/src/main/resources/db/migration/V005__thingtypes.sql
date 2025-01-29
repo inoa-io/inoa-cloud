@@ -148,9 +148,9 @@ INSERT
         measurand_type
     VALUES(
         1,
-        '1-0:1.8.0',
-        'Electric Energy In',
-        'Active energy consumed from the grid in kWh'
+        '0.2.0',
+        'Firmware version',
+        'Firmware of the meter'
     );
 
 INSERT
@@ -158,9 +158,9 @@ INSERT
         measurand_type
     VALUES(
         2,
-        '1-0:2.8.0',
-        'Electric Energy Out',
-        'Active energy returned to the grid in kWh'
+        'C.1.0',
+        'Meter serial number',
+        'Serial number of the meter'
     );
 
 INSERT
@@ -168,6 +168,86 @@ INSERT
         measurand_type
     VALUES(
         3,
+        'S.1.1.9',
+        'Temperature',
+        'Environmental temperature of the meter in °C'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        4,
+        '1-0:1.8.0',
+        'Electric energy in',
+        'Active energy consumed from the grid in kWh'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        5,
+        '1-0:2.8.0',
+        'Electric energy out',
+        'Active energy returned to the grid in kWh'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        6,
+        '1-0:1.7.0',
+        'Electric power in',
+        'Positive active instantaneous power in kW'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        7,
+        '1-0:2.7.0',
+        'Electric power out',
+        'Negative active instantaneous power in kW'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        8,
+        '1-0:11.7.0',
+        'Current',
+        'Instantaneous current in A'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        9,
+        '1-0:12.7.0',
+        'Voltage',
+        'Instantaneous voltage in V'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        10,
+        '1-0:14.7.0',
+        'AC frequency',
+        'Frequency of signal in the installation in Hz'
+    );
+
+INSERT
+    INTO
+        measurand_type
+    VALUES(
+        11,
         '7-20:3.0.0',
         'Gas In',
         'Gas consumed from the grid in m³'
@@ -175,34 +255,73 @@ INSERT
 
 INSERT
     INTO
-        thing_type_measurand_type
+        thing_type_measurand_type(
+            thing_type_id,
+            measurand_type_id
+        )
     VALUES(
         1,
         1
-    );
-
-INSERT
-    INTO
-        thing_type_measurand_type
-    VALUES(
+    ),
+    (
         1,
-        2
-    );
-
-INSERT
-    INTO
-        thing_type_measurand_type
-    VALUES(
-        2,
+        4
+    ),
+    (
+        1,
+        5
+    ),
+    (
+        1,
+        6
+    ),
+    (
+        1,
+        7
+    ),
+    (
+        1,
+        8
+    ),
+    (
+        1,
+        9
+    ),
+    (
+        1,
+        10
+    ),
+    (
+        1,
         1
-    );
-
-INSERT
-    INTO
-        thing_type_measurand_type
-    VALUES(
+    ),
+    (
         2,
-        2
+        4
+    ),
+    (
+        2,
+        5
+    ),
+    (
+        2,
+        6
+    ),
+    (
+        2,
+        7
+    ),
+    (
+        2,
+        8
+    ),
+    (
+        2,
+        9
+    ),
+    (
+        2,
+        10
     );
 
 INSERT

@@ -1,9 +1,5 @@
 package io.inoa.measurement.things.domain;
 
-import static io.inoa.measurement.things.domain.ThingConfigurationType.BOOLEAN;
-import static io.inoa.measurement.things.domain.ThingConfigurationType.NUMBER;
-import static io.inoa.measurement.things.domain.ThingConfigurationType.STRING;
-
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.Tenant;
 import io.micronaut.data.annotation.GeneratedValue;
@@ -38,27 +34,16 @@ public class Thing {
   private Set<Measurand> measurands;
 
   /**
-   * Returns the thing configuration as key/object map.
+   * Returns the thing configuration as key/value map.
    *
-   * @return A key/object map.
-   * @throws NumberFormatException thrown if key declared as number cannot be parsed.
+   * @return A key/value map.
    */
-  public Map<String, Object> getConfig() throws NumberFormatException {
-    var config = new HashMap<String, Object>();
+  public Map<String, String> getConfig() throws NumberFormatException {
+    var config = new HashMap<String, String>();
     for (ThingConfigurationValue thingConfigurationValue : thingConfigurationValues) {
-      var key = thingConfigurationValue.getThingConfiguration().getName();
-      var value = thingConfigurationValue.getValue();
-      switch (thingConfigurationValue.getThingConfiguration().getType()) {
-        case NUMBER:
-          config.put(key, Double.parseDouble(value));
-          break;
-        case BOOLEAN:
-          config.put(key, Boolean.parseBoolean(value));
-          break;
-        case STRING:
-        default:
-          config.put(key, value);
-      }
+      config.put(
+          thingConfigurationValue.getThingConfiguration().getName(),
+          thingConfigurationValue.getValue());
     }
     return Collections.unmodifiableMap(config);
   }

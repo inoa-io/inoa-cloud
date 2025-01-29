@@ -82,11 +82,6 @@ public class ThingsController implements ThingsApi {
   }
 
   @Override
-  public HttpResponse<Object> downloadConfigToGatewayLegacy(String gatewayId) {
-    return HttpResponse.status(500, "Not implemented yet");
-  }
-
-  @Override
   public HttpResponse<Object> downloadConfigToGateway(String gatewayId) {
     return HttpResponse.status(500, "Not implemented yet");
   }
