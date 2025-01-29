@@ -1239,26 +1239,6 @@ paths:
         404:
           description: Gateway does not exist.
 
-  /gateways/{gateway_id}/things/json-legacy:
-    parameters:
-      - $ref: "#/components/parameters/GatewayId"
-    get:
-      tags: [things]
-      summary: Downloads things as JSON configuration in legacy format (OS version <0.4.0)
-      description: Downloads the thing configuration of the given gateway as JSON string in legacy format (OS version <0.4.0).
-      operationId: downloadConfigToGatewayLegacy
-      responses:
-        200:
-          description: json with thing config.
-          content:
-            application/json:
-              schema:
-                type: object
-        401:
-          description: Unauthorized.
-        404:
-          description: Gateway does not exist.
-
 components:
   schemas:
     Timestamp:

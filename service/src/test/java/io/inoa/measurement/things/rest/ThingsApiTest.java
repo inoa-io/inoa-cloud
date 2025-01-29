@@ -66,21 +66,6 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Disabled("NYI")
   @Test
   @Override
-  public void downloadConfigToGatewayLegacy200() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void downloadConfigToGatewayLegacy401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void downloadConfigToGatewayLegacy404() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
   public void findThing200() {}
 
   @Disabled("NYI")

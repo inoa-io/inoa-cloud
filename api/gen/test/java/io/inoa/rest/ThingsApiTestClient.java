@@ -35,16 +35,6 @@ public interface ThingsApiTestClient {
 			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
 			java.lang.String gatewayId);
 
-	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things/json-legacy")
-	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<java.lang.Object> downloadConfigToGatewayLegacy(
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
-			java.lang.String authorization,
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
-			java.lang.String gatewayId);
-
 	@io.micronaut.http.annotation.Get("/things/{thing_id}")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
 	io.micronaut.http.HttpResponse<ThingVO> findThing(

@@ -30,14 +30,6 @@ public interface ThingsApiTestSpec {
 
 	void downloadConfigToGateway404() throws java.lang.Exception;
 
-	// downloadConfigToGatewayLegacy
-
-	void downloadConfigToGatewayLegacy200() throws java.lang.Exception;
-
-	void downloadConfigToGatewayLegacy401() throws java.lang.Exception;
-
-	void downloadConfigToGatewayLegacy404() throws java.lang.Exception;
-
 	// findThing
 
 	void findThing200() throws java.lang.Exception;

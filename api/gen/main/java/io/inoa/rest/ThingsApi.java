@@ -6,7 +6,6 @@ public interface ThingsApi {
 	java.lang.String PATH_CREATE_THING = "/things";
 	java.lang.String PATH_DELETE_THING = "/things/{thing_id:[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]}";
 	java.lang.String PATH_DOWNLOAD_CONFIG_TO_GATEWAY = "/gateways/{gateway_id:20}/things/json";
-	java.lang.String PATH_DOWNLOAD_CONFIG_TO_GATEWAY_LEGACY = "/gateways/{gateway_id:20}/things/json-legacy";
 	java.lang.String PATH_FIND_THING = "/things/{thing_id:[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]}";
 	java.lang.String PATH_FIND_THINGS = "/things";
 	java.lang.String PATH_FIND_THINGS_BY_GATEWAY_ID = "/gateways/{gateway_id:20}/things";
@@ -32,15 +31,6 @@ public interface ThingsApi {
 	@io.micronaut.http.annotation.Get(PATH_DOWNLOAD_CONFIG_TO_GATEWAY)
 	@io.micronaut.http.annotation.Produces({ "application/json" })
 	io.micronaut.http.HttpResponse<java.lang.Object> downloadConfigToGateway(
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
-			@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
-			@jakarta.validation.constraints.Size(min = 4, max = 20)
-			java.lang.String gatewayId);
-
-	@io.micronaut.http.annotation.Get(PATH_DOWNLOAD_CONFIG_TO_GATEWAY_LEGACY)
-	@io.micronaut.http.annotation.Produces({ "application/json" })
-	io.micronaut.http.HttpResponse<java.lang.Object> downloadConfigToGatewayLegacy(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
 			@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
