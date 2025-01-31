@@ -8,6 +8,7 @@ metadata:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/
     backstage.io/techdocs-ref: dir:../techdocs
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+    gitea.com/repo-slug: inoa/cloud
   links:
     - url: https://groundcontrol.inoa.io
       title: Ground Control - Production
