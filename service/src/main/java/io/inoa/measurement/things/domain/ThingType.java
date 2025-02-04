@@ -13,7 +13,7 @@ import lombok.Data;
 @MappedEntity
 @Data
 public class ThingType {
-  private @Id @GeneratedValue Long id;
+  private @Nullable @Id @GeneratedValue Long id;
   private String identifier;
   private String name;
   private String description;

@@ -2,7 +2,7 @@ package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 @io.micronaut.serde.annotation.Serdeable
-public class ThingTypeVO {
+public class ThingTypeCreateVO {
 
 	public static final java.lang.String JSON_PROPERTY_IDENTIFIER = "identifier";
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
@@ -51,7 +51,7 @@ public class ThingTypeVO {
 	/** List of measurands this type of thing supports */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MEASURANDS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> measurands;
+	private java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> measurands;
 
 	/** List of settings that can be configured for things of this type */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIGURATIONS)
@@ -68,7 +68,7 @@ public class ThingTypeVO {
 		if (object == null || getClass() != object.getClass()) {
 			return false;
 		}
-		ThingTypeVO other = (ThingTypeVO) object;
+		ThingTypeCreateVO other = (ThingTypeCreateVO) object;
 		return java.util.Objects.equals(identifier, other.identifier)
 				&& java.util.Objects.equals(name, other.name)
 				&& java.util.Objects.equals(category, other.category)
@@ -87,7 +87,7 @@ public class ThingTypeVO {
 	@Override
 	public java.lang.String toString() {
 		return new java.lang.StringBuilder()
-				.append("ThingTypeVO[")
+				.append("ThingTypeCreateVO[")
 				.append("identifier=").append(identifier).append(",")
 				.append("name=").append(name).append(",")
 				.append("category=").append(category).append(",")
@@ -102,42 +102,42 @@ public class ThingTypeVO {
 
 	// fluent
 
-	public ThingTypeVO identifier(java.lang.String newIdentifier) {
+	public ThingTypeCreateVO identifier(java.lang.String newIdentifier) {
 		this.identifier = newIdentifier;
 		return this;
 	}
 
-	public ThingTypeVO name(java.lang.String newName) {
+	public ThingTypeCreateVO name(java.lang.String newName) {
 		this.name = newName;
 		return this;
 	}
 
-	public ThingTypeVO category(ThingTypeCategoryVO newCategory) {
+	public ThingTypeCreateVO category(ThingTypeCategoryVO newCategory) {
 		this.category = newCategory;
 		return this;
 	}
 
-	public ThingTypeVO description(java.lang.String newDescription) {
+	public ThingTypeCreateVO description(java.lang.String newDescription) {
 		this.description = newDescription;
 		return this;
 	}
 
-	public ThingTypeVO version(java.lang.String newVersion) {
+	public ThingTypeCreateVO version(java.lang.String newVersion) {
 		this.version = newVersion;
 		return this;
 	}
 
-	public ThingTypeVO protocol(ThingTypeProtocolVO newProtocol) {
+	public ThingTypeCreateVO protocol(ThingTypeProtocolVO newProtocol) {
 		this.protocol = newProtocol;
 		return this;
 	}
 
-	public ThingTypeVO measurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> newMeasurands) {
+	public ThingTypeCreateVO measurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
 		this.measurands = newMeasurands;
 		return this;
 	}
 	
-	public ThingTypeVO addMeasurandsItem(MeasurandTypeVO measurandsItem) {
+	public ThingTypeCreateVO addMeasurandsItem(java.lang.String measurandsItem) {
 		if (this.measurands == null) {
 			this.measurands = new java.util.ArrayList<>();
 		}
@@ -145,19 +145,19 @@ public class ThingTypeVO {
 		return this;
 	}
 
-	public ThingTypeVO removeMeasurandsItem(MeasurandTypeVO measurandsItem) {
+	public ThingTypeCreateVO removeMeasurandsItem(java.lang.String measurandsItem) {
 		if (this.measurands != null) {
 			this.measurands.remove(measurandsItem);
 		}
 		return this;
 	}
 
-	public ThingTypeVO configurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationVO> newConfigurations) {
+	public ThingTypeCreateVO configurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationVO> newConfigurations) {
 		this.configurations = newConfigurations;
 		return this;
 	}
 	
-	public ThingTypeVO addConfigurationsItem(ThingConfigurationVO configurationsItem) {
+	public ThingTypeCreateVO addConfigurationsItem(ThingConfigurationVO configurationsItem) {
 		if (this.configurations == null) {
 			this.configurations = new java.util.ArrayList<>();
 		}
@@ -165,7 +165,7 @@ public class ThingTypeVO {
 		return this;
 	}
 
-	public ThingTypeVO removeConfigurationsItem(ThingConfigurationVO configurationsItem) {
+	public ThingTypeCreateVO removeConfigurationsItem(ThingConfigurationVO configurationsItem) {
 		if (this.configurations != null) {
 			this.configurations.remove(configurationsItem);
 		}
@@ -222,11 +222,11 @@ public class ThingTypeVO {
 		this.protocol = newProtocol;
 	}
 
-	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> getMeasurands() {
+	public java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> getMeasurands() {
 		return measurands;
 	}
 
-	public void setMeasurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> newMeasurands) {
+	public void setMeasurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
 		this.measurands = newMeasurands;
 	}
 

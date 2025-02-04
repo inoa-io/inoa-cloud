@@ -9,22 +9,21 @@
  */
 import { ThingTypeCategoryVO } from './thingTypeCategory';
 import { ThingConfigurationVO } from './thingConfiguration';
-import { MeasurandTypeVO } from './measurandType';
 import { ThingTypeProtocolVO } from './thingTypeProtocol';
 
 
 /**
  * Representation of a type / class of things.
  */
-export interface ThingTypeUpdateVO { 
+export interface ThingTypeCreateVO { 
     /**
      * Id as technical reference (never changes).
      */
-    identifier?: string;
+    identifier: string;
     /**
      * Human readable name.
      */
-    name?: string;
+    name: string;
     category?: ThingTypeCategoryVO;
     /**
      * Additional description of the thing type
@@ -34,17 +33,17 @@ export interface ThingTypeUpdateVO {
      * An optional version of the thing type (e.g. firmware, revision, ...)
      */
     version?: string;
-    protocol?: ThingTypeProtocolVO;
+    protocol: ThingTypeProtocolVO;
     /**
      * List of measurands this type of thing supports
      */
-    measurands?: Array<MeasurandTypeVO>;
+    measurands?: Array<string>;
     /**
      * List of settings that can be configured for things of this type
      */
     configurations?: Array<ThingConfigurationVO>;
 }
-export namespace ThingTypeUpdateVO {
+export namespace ThingTypeCreateVO {
 }
 
 

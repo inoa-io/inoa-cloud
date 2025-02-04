@@ -14,7 +14,7 @@ public interface ThingTypesApiTestClient {
 			java.lang.String authorization,
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Body
-			ThingTypeVO thingTypeVO);
+			ThingTypeCreateVO thingTypeCreateVO);
 
 	@io.micronaut.http.annotation.Delete("/thing-types/{thing_type_id}")
 	io.micronaut.http.HttpResponse<?> deleteThingType(

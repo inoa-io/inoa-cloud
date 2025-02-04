@@ -969,7 +969,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ThingType"
+              $ref: "#/components/schemas/ThingTypeCreate"
       responses:
         201:
           description: Thing type created.
@@ -1988,15 +1988,17 @@ components:
     ### Thing Type
     ###
 
+    ObisId:
+      description: The OBIS code
+      type: string
+      pattern: ^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\*\&](?P<f>[0-9A-F]{1,3}))?$
+      example: 1.8.0
     MeasurandType:
       description: Type of the measurand
       type: object
       properties:
         obis_id:
-          description: The OBIS code
-          type: string
-          pattern: ^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\*\&](?P<f>[0-9A-F]{1,3}))?$
-          example: 1.8.0
+          $ref: "#/components/schemas/ObisId"
         name:
           description: Name of the measurand type
           type: string
@@ -2070,6 +2072,25 @@ components:
       required:
         - name
         - type
+    ThingTypeCategory:
+      description: Category for logical grouping.
+      type: string
+      enum:
+        - NONE
+        - ELECTRIC_METER
+        - GAS_METER
+        - CURRENT_TRANSFORMER
+        - SMART_PLUG
+    ThingTypeProtocol:
+      description: The protocol the thing type uses. If a thing supports several protocols, one may define several thing types.
+      type: string
+      enum:
+        - JSON_REST_HTTP
+        - MODBUS_RS458
+        - MODBUS_TCP
+        - S0
+        - MBUS
+        - WMBUS
     ThingType:
       description: Representation of a type / class of things.
       type: object
@@ -2079,14 +2100,7 @@ components:
         name:
           $ref: "#/components/schemas/Name"
         category:
-          description: Category for logical grouping.
-          type: string
-          enum:
-            - NONE
-            - ELECTRIC_METER
-            - GAS_METER
-            - CURRENT_TRANSFORMER
-            - SMART_PLUG
+          $ref: "#/components/schemas/ThingTypeCategory"
         description:
           description: Additional description of the thing type
           type: string
@@ -2098,20 +2112,48 @@ components:
           maxLength: 256
           example: v1.7
         protocol:
-          description: The protocol the thing type uses. If a thing supports several protocols, one may define several thing types.
-          type: string
-          enum:
-            - JSON_REST_HTTP
-            - MODBUS_RS458
-            - MODBUS_TCP
-            - S0
-            - MBUS
-            - WMBUS
+          $ref: "#/components/schemas/ThingTypeProtocol"
         measurands:
           description: List of measurands this type of thing supports
           type: array
           items:
             $ref: "#/components/schemas/MeasurandType"
+        configurations:
+          description: List of settings that can be configured for things of this type
+          type: array
+          items:
+            $ref: "#/components/schemas/ThingConfiguration"
+      required:
+        - identifier
+        - name
+        - protocol
+    ThingTypeCreate:
+      description: Representation of a type / class of things.
+      type: object
+      properties:
+        identifier:
+          $ref: "#/components/schemas/ThingTypeId"
+        name:
+          $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/ThingTypeCategory"
+        description:
+          description: Additional description of the thing type
+          type: string
+          maxLength: 4096
+          example: Includes all members of the meter family
+        version:
+          description: An optional version of the thing type (e.g. firmware, revision, ...)
+          type: string
+          maxLength: 256
+          example: v1.7
+        protocol:
+          $ref: "#/components/schemas/ThingTypeProtocol"
+        measurands:
+          description: List of measurands this type of thing supports
+          type: array
+          items:
+            $ref: "#/components/schemas/ObisId"
         configurations:
           description: List of settings that can be configured for things of this type
           type: array
@@ -2130,14 +2172,7 @@ components:
         name:
           $ref: "#/components/schemas/Name"
         category:
-          description: Category for logical grouping.
-          type: string
-          enum:
-            - NONE
-            - ELECTRIC_METER
-            - GAS_METER
-            - CURRENT_TRANSFORMER
-            - SMART_PLUG
+          $ref: "#/components/schemas/ThingTypeCategory"
         description:
           description: Additional description of the thing type
           type: string
@@ -2149,15 +2184,7 @@ components:
           maxLength: 256
           example: v1.7
         protocol:
-          description: The protocol the thing type uses. If a thing supports several protocols, one may define several thing types.
-          type: string
-          enum:
-            - JSON_REST_HTTP
-            - MODBUS_RS458
-            - MODBUS_TCP
-            - S0
-            - MBUS
-            - WMBUS
+          $ref: "#/components/schemas/ThingTypeProtocol"
         measurands:
           description: List of measurands this type of thing supports
           type: array

@@ -17,6 +17,8 @@ import { CustomHttpParameterCodec }                          from '../encoder';
 import { Observable }                                        from 'rxjs';
 
 // @ts-ignore
+import { ThingTypeCreateVO } from '../model/thingTypeCreate';
+// @ts-ignore
 import { ThingTypeUpdateVO } from '../model/thingTypeUpdate';
 // @ts-ignore
 import { ThingTypeVO } from '../model/thingType';
@@ -95,16 +97,16 @@ export class ThingTypesService {
     /**
      * Create thing type.
      * Creates a new thing type.
-     * @param thingTypeVO 
+     * @param thingTypeCreateVO 
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public createThingType(thingTypeVO: ThingTypeVO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ThingTypeVO>;
-    public createThingType(thingTypeVO: ThingTypeVO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ThingTypeVO>>;
-    public createThingType(thingTypeVO: ThingTypeVO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ThingTypeVO>>;
-    public createThingType(thingTypeVO: ThingTypeVO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
-        if (thingTypeVO === null || thingTypeVO === undefined) {
-            throw new Error('Required parameter thingTypeVO was null or undefined when calling createThingType.');
+    public createThingType(thingTypeCreateVO: ThingTypeCreateVO, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ThingTypeVO>;
+    public createThingType(thingTypeCreateVO: ThingTypeCreateVO, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ThingTypeVO>>;
+    public createThingType(thingTypeCreateVO: ThingTypeCreateVO, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ThingTypeVO>>;
+    public createThingType(thingTypeCreateVO: ThingTypeCreateVO, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+        if (thingTypeCreateVO === null || thingTypeCreateVO === undefined) {
+            throw new Error('Required parameter thingTypeCreateVO was null or undefined when calling createThingType.');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -163,7 +165,7 @@ export class ThingTypesService {
         return this.httpClient.request<ThingTypeVO>('post', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                body: thingTypeVO,
+                body: thingTypeCreateVO,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

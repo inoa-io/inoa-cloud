@@ -25,10 +25,9 @@ public class ThingTypeUpdateVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String name;
 
-	/** Category for logical grouping. */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CATEGORY)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private Category category;
+	private ThingTypeCategoryVO category;
 
 	/** Additional description of the thing type */
 	@jakarta.validation.constraints.Size(max = 4096)
@@ -42,10 +41,9 @@ public class ThingTypeUpdateVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String version;
 
-	/** The protocol the thing type uses. If a thing supports several protocols, one may define several thing types. */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_PROTOCOL)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private Protocol protocol;
+	private ThingTypeProtocolVO protocol;
 
 	/** List of measurands this type of thing supports */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MEASURANDS)
@@ -111,7 +109,7 @@ public class ThingTypeUpdateVO {
 		return this;
 	}
 
-	public ThingTypeUpdateVO category(Category newCategory) {
+	public ThingTypeUpdateVO category(ThingTypeCategoryVO newCategory) {
 		this.category = newCategory;
 		return this;
 	}
@@ -126,7 +124,7 @@ public class ThingTypeUpdateVO {
 		return this;
 	}
 
-	public ThingTypeUpdateVO protocol(Protocol newProtocol) {
+	public ThingTypeUpdateVO protocol(ThingTypeProtocolVO newProtocol) {
 		this.protocol = newProtocol;
 		return this;
 	}
@@ -189,11 +187,11 @@ public class ThingTypeUpdateVO {
 		this.name = newName;
 	}
 
-	public Category getCategory() {
+	public ThingTypeCategoryVO getCategory() {
 		return category;
 	}
 
-	public void setCategory(Category newCategory) {
+	public void setCategory(ThingTypeCategoryVO newCategory) {
 		this.category = newCategory;
 	}
 
@@ -213,11 +211,11 @@ public class ThingTypeUpdateVO {
 		this.version = newVersion;
 	}
 
-	public Protocol getProtocol() {
+	public ThingTypeProtocolVO getProtocol() {
 		return protocol;
 	}
 
-	public void setProtocol(Protocol newProtocol) {
+	public void setProtocol(ThingTypeProtocolVO newProtocol) {
 		this.protocol = newProtocol;
 	}
 
@@ -236,84 +234,4 @@ public class ThingTypeUpdateVO {
 	public void setConfigurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationVO> newConfigurations) {
 		this.configurations = newConfigurations;
 	}
-
-@io.micronaut.serde.annotation.Serdeable
-public enum Category {
-
-	NONE("NONE"),
-	ELECTRIC_METER("ELECTRIC_METER"),
-	GAS_METER("GAS_METER"),
-	CURRENT_TRANSFORMER("CURRENT_TRANSFORMER"),
-	SMART_PLUG("SMART_PLUG");
-
-	public static final java.lang.String NONE_VALUE = "NONE";
-	public static final java.lang.String ELECTRIC_METER_VALUE = "ELECTRIC_METER";
-	public static final java.lang.String GAS_METER_VALUE = "GAS_METER";
-	public static final java.lang.String CURRENT_TRANSFORMER_VALUE = "CURRENT_TRANSFORMER";
-	public static final java.lang.String SMART_PLUG_VALUE = "SMART_PLUG";
-
-	private final java.lang.String value;
-
-	private Category(java.lang.String value) {
-		this.value = value;
-	}
-
-	@com.fasterxml.jackson.annotation.JsonCreator
-	public static Category toEnum(java.lang.String value) {
-		return toOptional(value).orElseThrow(() -> new IllegalArgumentException("Unknown value '" + value + "'."));
-	}
-
-	public static java.util.Optional<Category> toOptional(java.lang.String value) {
-		return java.util.Arrays
-				.stream(values())
-				.filter(e -> e.value.equals(value))
-				.findAny();
-	}
-
-	@com.fasterxml.jackson.annotation.JsonValue
-	public java.lang.String getValue() {
-		return value;
-	}
-}
-
-@io.micronaut.serde.annotation.Serdeable
-public enum Protocol {
-
-	JSON_REST_HTTP("JSON_REST_HTTP"),
-	MODBUS_RS458("MODBUS_RS458"),
-	MODBUS_TCP("MODBUS_TCP"),
-	S0("S0"),
-	MBUS("MBUS"),
-	WMBUS("WMBUS");
-
-	public static final java.lang.String JSON_REST_HTTP_VALUE = "JSON_REST_HTTP";
-	public static final java.lang.String MODBUS_RS458_VALUE = "MODBUS_RS458";
-	public static final java.lang.String MODBUS_TCP_VALUE = "MODBUS_TCP";
-	public static final java.lang.String S0_VALUE = "S0";
-	public static final java.lang.String MBUS_VALUE = "MBUS";
-	public static final java.lang.String WMBUS_VALUE = "WMBUS";
-
-	private final java.lang.String value;
-
-	private Protocol(java.lang.String value) {
-		this.value = value;
-	}
-
-	@com.fasterxml.jackson.annotation.JsonCreator
-	public static Protocol toEnum(java.lang.String value) {
-		return toOptional(value).orElseThrow(() -> new IllegalArgumentException("Unknown value '" + value + "'."));
-	}
-
-	public static java.util.Optional<Protocol> toOptional(java.lang.String value) {
-		return java.util.Arrays
-				.stream(values())
-				.filter(e -> e.value.equals(value))
-				.findAny();
-	}
-
-	@com.fasterxml.jackson.annotation.JsonValue
-	public java.lang.String getValue() {
-		return value;
-	}
-}
 }

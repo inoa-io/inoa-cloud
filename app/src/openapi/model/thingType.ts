@@ -7,8 +7,10 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { ThingTypeCategoryVO } from './thingTypeCategory';
 import { ThingConfigurationVO } from './thingConfiguration';
 import { MeasurandTypeVO } from './measurandType';
+import { ThingTypeProtocolVO } from './thingTypeProtocol';
 
 
 /**
@@ -23,10 +25,7 @@ export interface ThingTypeVO {
      * Human readable name.
      */
     name: string;
-    /**
-     * Category for logical grouping.
-     */
-    category?: ThingTypeVO.CategoryEnum;
+    category?: ThingTypeCategoryVO;
     /**
      * Additional description of the thing type
      */
@@ -35,10 +34,7 @@ export interface ThingTypeVO {
      * An optional version of the thing type (e.g. firmware, revision, ...)
      */
     version?: string;
-    /**
-     * The protocol the thing type uses. If a thing supports several protocols, one may define several thing types.
-     */
-    protocol: ThingTypeVO.ProtocolEnum;
+    protocol: ThingTypeProtocolVO;
     /**
      * List of measurands this type of thing supports
      */
@@ -49,23 +45,6 @@ export interface ThingTypeVO {
     configurations?: Array<ThingConfigurationVO>;
 }
 export namespace ThingTypeVO {
-    export type CategoryEnum = 'NONE' | 'ELECTRIC_METER' | 'GAS_METER' | 'CURRENT_TRANSFORMER' | 'SMART_PLUG';
-    export const CategoryEnum = {
-        None: 'NONE' as CategoryEnum,
-        ElectricMeter: 'ELECTRIC_METER' as CategoryEnum,
-        GasMeter: 'GAS_METER' as CategoryEnum,
-        CurrentTransformer: 'CURRENT_TRANSFORMER' as CategoryEnum,
-        SmartPlug: 'SMART_PLUG' as CategoryEnum
-    };
-    export type ProtocolEnum = 'JSON_REST_HTTP' | 'MODBUS_RS458' | 'MODBUS_TCP' | 'S0' | 'MBUS' | 'WMBUS';
-    export const ProtocolEnum = {
-        JsonRestHttp: 'JSON_REST_HTTP' as ProtocolEnum,
-        ModbusRs458: 'MODBUS_RS458' as ProtocolEnum,
-        ModbusTcp: 'MODBUS_TCP' as ProtocolEnum,
-        S0: 'S0' as ProtocolEnum,
-        Mbus: 'MBUS' as ProtocolEnum,
-        Wmbus: 'WMBUS' as ProtocolEnum
-    };
 }
 
 

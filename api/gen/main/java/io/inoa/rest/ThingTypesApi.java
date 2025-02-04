@@ -16,7 +16,7 @@ public interface ThingTypesApi {
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.Body
 			@jakarta.validation.Valid
-			ThingTypeVO thingTypeVO);
+			ThingTypeCreateVO thingTypeCreateVO);
 
 	@io.micronaut.http.annotation.Delete(PATH_DELETE_THING_TYPE)
 	io.micronaut.http.HttpResponse<Object> deleteThingType(
