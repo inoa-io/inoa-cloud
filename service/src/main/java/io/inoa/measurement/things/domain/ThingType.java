@@ -18,6 +18,7 @@ public class ThingType {
   private String name;
   private String description;
   @Nullable private String version;
+  @Nullable private ThingTypeCategory category;
 
   @Relation(value = Relation.Kind.ONE_TO_MANY, cascade = Relation.Cascade.ALL)
   @JoinTable(

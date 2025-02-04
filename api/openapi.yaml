@@ -1983,11 +1983,6 @@ components:
       type: string
       maxLength: 64
       example: DZG DVH4013
-    Category:
-      description: Category for logical grouping.
-      type: string
-      maxLength: 64
-      example: Energy Meter
 
     ###
     ### Thing Type
@@ -2084,7 +2079,14 @@ components:
         name:
           $ref: "#/components/schemas/Name"
         category:
-          $ref: "#/components/schemas/Category"
+          description: Category for logical grouping.
+          type: string
+          enum:
+            - NONE
+            - ELECTRIC_METER
+            - GAS_METER
+            - CURRENT_TRANSFORMER
+            - SMART_PLUG
         description:
           description: Additional description of the thing type
           type: string
@@ -2128,7 +2130,14 @@ components:
         name:
           $ref: "#/components/schemas/Name"
         category:
-          $ref: "#/components/schemas/Category"
+          description: Category for logical grouping.
+          type: string
+          enum:
+            - NONE
+            - ELECTRIC_METER
+            - GAS_METER
+            - CURRENT_TRANSFORMER
+            - SMART_PLUG
         description:
           description: Additional description of the thing type
           type: string
@@ -2191,6 +2200,9 @@ components:
           $ref: "#/components/schemas/Name"
         description:
           description: Long description of the thing
+          type: string
+          maxLength: 4096
+          example: Garage fuse box meter
         gateway_id:
           $ref: "#/components/schemas/GatewayId"
         thing_type_id:

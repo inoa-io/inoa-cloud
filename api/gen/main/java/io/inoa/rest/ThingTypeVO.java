@@ -28,10 +28,9 @@ public class ThingTypeVO {
 	private java.lang.String name;
 
 	/** Category for logical grouping. */
-	@jakarta.validation.constraints.Size(max = 64)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CATEGORY)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.lang.String category;
+	private Category category;
 
 	/** Additional description of the thing type */
 	@jakarta.validation.constraints.Size(max = 4096)
@@ -115,7 +114,7 @@ public class ThingTypeVO {
 		return this;
 	}
 
-	public ThingTypeVO category(java.lang.String newCategory) {
+	public ThingTypeVO category(Category newCategory) {
 		this.category = newCategory;
 		return this;
 	}
@@ -193,11 +192,11 @@ public class ThingTypeVO {
 		this.name = newName;
 	}
 
-	public java.lang.String getCategory() {
+	public Category getCategory() {
 		return category;
 	}
 
-	public void setCategory(java.lang.String newCategory) {
+	public void setCategory(Category newCategory) {
 		this.category = newCategory;
 	}
 
@@ -240,6 +239,45 @@ public class ThingTypeVO {
 	public void setConfigurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationVO> newConfigurations) {
 		this.configurations = newConfigurations;
 	}
+
+@io.micronaut.serde.annotation.Serdeable
+public enum Category {
+
+	NONE("NONE"),
+	ELECTRIC_METER("ELECTRIC_METER"),
+	GAS_METER("GAS_METER"),
+	CURRENT_TRANSFORMER("CURRENT_TRANSFORMER"),
+	SMART_PLUG("SMART_PLUG");
+
+	public static final java.lang.String NONE_VALUE = "NONE";
+	public static final java.lang.String ELECTRIC_METER_VALUE = "ELECTRIC_METER";
+	public static final java.lang.String GAS_METER_VALUE = "GAS_METER";
+	public static final java.lang.String CURRENT_TRANSFORMER_VALUE = "CURRENT_TRANSFORMER";
+	public static final java.lang.String SMART_PLUG_VALUE = "SMART_PLUG";
+
+	private final java.lang.String value;
+
+	private Category(java.lang.String value) {
+		this.value = value;
+	}
+
+	@com.fasterxml.jackson.annotation.JsonCreator
+	public static Category toEnum(java.lang.String value) {
+		return toOptional(value).orElseThrow(() -> new IllegalArgumentException("Unknown value '" + value + "'."));
+	}
+
+	public static java.util.Optional<Category> toOptional(java.lang.String value) {
+		return java.util.Arrays
+				.stream(values())
+				.filter(e -> e.value.equals(value))
+				.findAny();
+	}
+
+	@com.fasterxml.jackson.annotation.JsonValue
+	public java.lang.String getValue() {
+		return value;
+	}
+}
 
 @io.micronaut.serde.annotation.Serdeable
 public enum Protocol {

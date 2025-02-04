@@ -109,6 +109,11 @@
 
 		<!-- libraries -->
 		<dependency>
+			<groupId>org.openapitools</groupId>
+			<artifactId>jackson-databind-nullable</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.influxdb</groupId>
 			<artifactId>influxdb-client-java</artifactId>
 		</dependency>

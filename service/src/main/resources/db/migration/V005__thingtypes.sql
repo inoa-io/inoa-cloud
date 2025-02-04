@@ -13,6 +13,7 @@ CREATE
             identifier VARCHAR(128) NOT NULL,
             name VARCHAR(256) NOT NULL,
             description VARCHAR(4096),
+            category VARCHAR(19) NOT NULL DEFAULT 'NONE',
             version VARCHAR(128),
             protocol VARCHAR(16) NOT NULL,
             CONSTRAINT pk_thing_type PRIMARY KEY(id),
@@ -22,6 +23,9 @@ CREATE
             ),
             CONSTRAINT chk_protocol CHECK(
                 protocol ~ '^JSON_REST_HTTP|MODBUS_RS458|MODBUS_TCP|S0|MBUS|WMBUS$'
+            ),
+            CONSTRAINT chk_category CHECK(
+                category ~ '^NONE|ELECTRIC_METER|GAS_METER|CURRENT_TRANSFORMER|SMART_PLUG$'
             )
         );
 
@@ -127,6 +131,7 @@ INSERT
         'dvh4013',
         'DZG DVH4013',
         'DZG DVH4013 bi-directional power meter',
+        'ELECTRIC_METER',
         NULL,
         'MODBUS_RS458'
     );
@@ -139,6 +144,7 @@ INSERT
         'mdvh4006',
         'DZG MDVH4006',
         'DZG MDVH4006 bi-directional load profile power meter',
+        'ELECTRIC_METER',
         NULL,
         'MODBUS_RS458'
     );
@@ -292,7 +298,7 @@ INSERT
         10
     ),
     (
-        1,
+        2,
         1
     ),
     (

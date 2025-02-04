@@ -1,6 +1,8 @@
 package io.inoa.measurement.things.rest;
 
+import static io.inoa.test.HttpAssertions.assert200;
 import static io.inoa.test.HttpAssertions.assert201;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.inoa.rest.ThingTypeVO;
 import io.inoa.rest.ThingTypesApiTestClient;
@@ -16,11 +18,14 @@ public class ThingTypesApiTest extends AbstractUnitTest implements ThingTypesApi
 
   @Inject ThingTypesApiTestClient client;
 
-  @Disabled("NYI")
   @Test
   @Override
   public void createThingType201() {
-    var vo = new ThingTypeVO().name("DvModbusIR").identifier("dvmodbusir").category("foo");
+    var vo =
+        new ThingTypeVO()
+            .name("DvModbusIR")
+            .identifier("dvmodbusir")
+            .category(ThingTypeVO.Category.ELECTRIC_METER);
     assert201(() -> client.createThingType(auth("inoa"), vo));
   }
 
@@ -54,10 +59,24 @@ public class ThingTypesApiTest extends AbstractUnitTest implements ThingTypesApi
   @Override
   public void deleteThingType404() {}
 
-  @Disabled("NYI")
   @Test
   @Override
-  public void findThingType200() {}
+  public void findThingType200() {
+    var thingType = assert200(() -> client.findThingType(auth("inoa"), "dvh4013"));
+    assertEquals("dvh4013", thingType.getIdentifier(), "Identifier shall be dvh3013");
+    assertEquals("DZG DVH4013", thingType.getName(), "Name shall match.");
+    assertEquals(
+        "DZG DVH4013 bi-directional power meter",
+        thingType.getDescription(),
+        "Description shall match.");
+    assertEquals(null, thingType.getVersion(), "Version shall be null");
+    assertEquals(
+        ThingTypeVO.Category.ELECTRIC_METER, thingType.getCategory(), "Category shall match.");
+    assertEquals(
+        ThingTypeVO.Protocol.MODBUS_RS458, thingType.getProtocol(), "Protocol shall match.");
+    assertEquals(2, thingType.getConfigurations().size(), "Configurations shall be loaded.");
+    assertEquals(8, thingType.getMeasurands().size(), "Measurands shall be loaded.");
+  }
 
   @Disabled("NYI")
   @Test

@@ -26,7 +26,7 @@ export interface ThingVO {
     /**
      * Long description of the thing
      */
-    description?: any | null;
+    description?: string;
     /**
      * Id as technical reference (never changes).
      */

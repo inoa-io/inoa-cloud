@@ -107,6 +107,7 @@
 		<version.org.mapstruct>1.5.5.Final</version.org.mapstruct>
 		<version.org.projectlombok>1.18.32</version.org.projectlombok>
 		<version.com.diffplug.spotless.spotless-maven-plugin>2.44.0.BETA3</version.com.diffplug.spotless.spotless-maven-plugin>
+		<version.org.openapitools.jackson.databind.nullable>0.2.6</version.org.openapitools.jackson.databind.nullable>
 
 	</properties>
 
@@ -220,7 +221,11 @@
 				<artifactId>lombok</artifactId>
 				<version>${version.org.projectlombok}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.openapitools</groupId>
+				<artifactId>jackson-databind-nullable</artifactId>
+				<version>${version.org.openapitools.jackson.databind.nullable}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>

@@ -2,6 +2,7 @@ package io.inoa.measurement.things.domain;
 
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.Tenant;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
@@ -23,7 +24,7 @@ public class Thing {
   private Tenant tenant;
   private String urn;
   private String name;
-  private String description;
+  @Nullable private String description;
   private Gateway gateway;
   private ThingType thingType;
 

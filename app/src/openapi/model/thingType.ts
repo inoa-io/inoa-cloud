@@ -26,7 +26,7 @@ export interface ThingTypeVO {
     /**
      * Category for logical grouping.
      */
-    category?: string;
+    category?: ThingTypeVO.CategoryEnum;
     /**
      * Additional description of the thing type
      */
@@ -49,6 +49,14 @@ export interface ThingTypeVO {
     configurations?: Array<ThingConfigurationVO>;
 }
 export namespace ThingTypeVO {
+    export type CategoryEnum = 'NONE' | 'ELECTRIC_METER' | 'GAS_METER' | 'CURRENT_TRANSFORMER' | 'SMART_PLUG';
+    export const CategoryEnum = {
+        None: 'NONE' as CategoryEnum,
+        ElectricMeter: 'ELECTRIC_METER' as CategoryEnum,
+        GasMeter: 'GAS_METER' as CategoryEnum,
+        CurrentTransformer: 'CURRENT_TRANSFORMER' as CategoryEnum,
+        SmartPlug: 'SMART_PLUG' as CategoryEnum
+    };
     export type ProtocolEnum = 'JSON_REST_HTTP' | 'MODBUS_RS458' | 'MODBUS_TCP' | 'S0' | 'MBUS' | 'WMBUS';
     export const ProtocolEnum = {
         JsonRestHttp: 'JSON_REST_HTTP' as ProtocolEnum,
