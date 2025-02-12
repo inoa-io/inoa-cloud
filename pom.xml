@@ -102,7 +102,7 @@
 		<version.io.micronaut.validation>4.8.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
-		<version.org.bouncycastle>1.79</version.org.bouncycastle>
+		<version.org.bouncycastle>1.80</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>26.0.8</version.org.keycloak>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
