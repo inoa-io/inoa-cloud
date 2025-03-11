@@ -9,6 +9,9 @@ metadata:
     backstage.io/techdocs-entity: system:inoa/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
     simpleicons.org/icon-slug: keycloak
+  links:
+    - title: Admin Console
+      url: https://auth.grayc.io/admin/inoa/console/
 spec:
   owner: default/grayc
   system: inoa/inoa-cloud
