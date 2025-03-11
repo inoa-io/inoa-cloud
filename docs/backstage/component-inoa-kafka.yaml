@@ -9,6 +9,9 @@ metadata:
     backstage.io/techdocs-entity: system:inoa/inoa-cloud
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa,app.kubernetes.io/name=kafka
     simpleicons.org/icon-slug: kafka
+  links:
+    - title: Kafka Console
+      url: https://kafka-console.inoa.io/
 spec:
   owner: default/grayc
   system: inoa/inoa-cloud
