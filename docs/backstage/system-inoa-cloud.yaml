@@ -16,6 +16,12 @@ metadata:
     - url: https://groundcontrol.dev.inoa.io
       title: Ground Control - Development
       icon: dashboard
+    - url: https://cloud.inoa.io/
+      title: Legacy INOA
+    - title: Keycloak Console
+      url: https://auth.grayc.io/admin/inoa/console/
+    - title: Kafka Console
+      url: https://kafka-console.inoa.io/
 spec:
   owner: default/grayc
   domain: inoa/inoa
