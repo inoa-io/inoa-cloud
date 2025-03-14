@@ -25,6 +25,7 @@ import { MeasurementCollectorComponent } from "./measurement-collector/measureme
 import { SatelliteManagerComponent } from "./satellite-manager/satellite-manager.component";
 import { InstallationMonitorComponent } from "./installation-monitor/installation-monitor.component";
 import { SetupConfiguratorComponent } from "./setup-configurator/setup-configurator.component";
+import { EmsDashboardComponent } from "./ems-dashboard/ems-dashboard.component";
 
 import { RpcHistoryComponent } from "./satellite-manager/gateway-detail/rpc-history-panel/rpc-history-panel.component";
 import { GatewayTableComponent } from "./satellite-manager/gateway-table/gateway-table.component";
@@ -56,6 +57,7 @@ export function fleetApiConfigFactory(): FleetConfiguration {
 		SatelliteManagerComponent,
 		InstallationMonitorComponent,
 		SetupConfiguratorComponent,
+		EmsDashboardComponent,
 		RpcHistoryComponent,
 		GatewayTableComponent,
 		GatewayDetailComponent,

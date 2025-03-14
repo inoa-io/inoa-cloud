@@ -1,0 +1,14 @@
+<div class="ems-dashboard-container" tabindex="0">
+	<mat-card class="card-ems-dashboard">
+		<mat-card-header>
+			<div mat-card-avatar style="background-image: url('assets/inoa/inoa-color.png'); background-size: cover;"></div>
+			<mat-card-title>EMS-Dashboard</mat-card-title>
+			<mat-card-subtitle>Heatmap & More.</mat-card-subtitle>
+		</mat-card-header>
+
+		<mat-card-content class="ems-dashboard-card-content">
+			<iframe *ngIf="safeUrl" [attr.src]="safeUrl" class="grafana-dashboard-container"></iframe>
+			<!-- <iframe src="http://grafana.192.168.1.229.nip.io:8080/d/aed25ae6-bcfd-4d5b-9571-adad2755e486/ems-power-data?orgId=1&refresh=15m&theme=light&kiosk" class="grafana-dashboard-container"></iframe> -->
+		</mat-card-content>
+	</mat-card>
+</div>

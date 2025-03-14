@@ -1,0 +1,25 @@
+.ems-dashboard-container {
+	height: calc(100vh - 92px);
+	display: flex;
+}
+
+.card-ems-dashboard {
+	flex: 1 1;
+	height: 100%;
+	padding: 15px;
+	margin-left: 15px;
+	margin-right: 15px;
+	position: relative;
+}
+
+.ems-dashboard-card-content {
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.grafana-dashboard-container {
+	width: 100%;
+	height: 100%;
+}

@@ -3,7 +3,7 @@ apiVersion: 1
 datasources:
   - name: InfluxDB
     type: influxdb
-    url: http://influxdb
+    url: http://influxdb.${inoa.domain}:8080/
     jsonData:
       defaultBucket: default
       organization: inoa

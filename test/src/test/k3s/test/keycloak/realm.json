@@ -10,6 +10,7 @@
 	"duplicateEmailsAllowed": false,
 	"loginWithEmailAllowed": true,
 	"verifyEmail": true,
+	"sslRequired": "none",
 	"accessTokenLifespan": 86400,
 	"accessTokenLifespanForImplicitFlow": 86400,
 	"ssoSessionIdleTimeout": 86400,
