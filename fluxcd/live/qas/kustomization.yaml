@@ -8,9 +8,12 @@ labels:
 images:
   - name: docker.io/library/postgres
     newTag: '14.11'
+  - name: docker.io/kokuwaio/keycloak
+    newTag: '26.0.8'
 
 resources:
   - namespace.yaml
   - ../../base/fluxcd
   - service-account
   - postgres
+  - keycloak
