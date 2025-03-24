@@ -1,0 +1,9 @@
+labels:
+  - pairs:
+      app.kubernetes.io/name: postgres
+      app.kubernetes.io/technology: c
+
+resources:
+  - disk.yaml
+  - deployment.yaml
+  - service.yaml

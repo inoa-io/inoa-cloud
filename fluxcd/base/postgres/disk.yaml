@@ -1,0 +1,11 @@
+apiVersion: compute.cnrm.cloud.google.com/v1beta1
+kind: ComputeDisk
+metadata:
+  name: postgres
+  annotations:
+    cnrm.cloud.google.com/deletion-policy: abandon
+spec:
+  location: europe-west3-c
+  resourceID: <patched>
+  size: 20
+  type: pd-ssd

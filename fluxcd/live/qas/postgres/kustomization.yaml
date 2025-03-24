@@ -1,0 +1,23 @@
+resources:
+  - ../../../base/postgres
+  - secrets.yaml
+  - config.yaml
+
+patches:
+  - target:
+      kind: Deployment
+      name: postgres
+    patch: |-
+      - op: test
+        path: /spec/template/spec/volumes/1/name
+        value: storage
+      - op: replace
+        path: /spec/template/spec/volumes/1/gcePersistentDisk/pdName
+        value: live-inoa-postgres-qas
+  - target:
+      kind: ComputeDisk
+      name: postgres
+    patch: |-
+      - op: replace
+        path: /spec/resourceID
+        value: live-inoa-postgres-qas
