@@ -17,3 +17,4 @@ resources:
   - service-account
   - postgres
   - keycloak
+  - hawkbit
