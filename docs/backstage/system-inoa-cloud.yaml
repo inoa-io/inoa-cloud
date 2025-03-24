@@ -23,5 +23,5 @@ metadata:
     - title: Kafka Console
       url: https://kafka-console.inoa.io/
 spec:
-  owner: default/grayc
+  owner: user:default/fabian.schlegel_grayc.de
   domain: inoa/inoa
