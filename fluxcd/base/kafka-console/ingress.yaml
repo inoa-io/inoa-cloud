@@ -5,11 +5,11 @@ metadata:
   annotations:
     kubernetes.io/tls-acme: true
     traefik.ingress.kubernetes.io/router.tls: true
-    traefik.ingress.kubernetes.io/router.middlewares: auth-grayc-de@file
+    traefik.ingress.kubernetes.io/router.middlewares: auth-inoa-io@file
 spec:
   ingressClassName: traefik
   rules:
-    - host: kafka-console.<patched>.inoa.io
+    - host: kafka.${inoa_domain}
       http:
         paths:
           - path: /
@@ -20,5 +20,6 @@ spec:
                 port:
                   name: http
   tls:
-    - hosts: [kafka-console.<patched>.inoa.io]
+    - hosts:
+      - kafka.${inoa_domain}
       secretName: kafka-console-tls
