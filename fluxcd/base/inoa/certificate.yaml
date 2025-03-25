@@ -3,7 +3,8 @@ kind: Certificate
 metadata:
   name: inoa-mqtt-tls
 spec:
-  dnsNames: [mqtt.<patched>.inoa.io]
+  dnsNames:
+    - mqtt.${inoa_domain}
   secretName: inoa-mqtt-tls
   issuerRef:
     kind: ClusterIssuer

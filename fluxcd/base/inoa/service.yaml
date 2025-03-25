@@ -15,7 +15,7 @@ kind: Service
 metadata:
   name: inoa-mqtt
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: mqtt.<patched>.inoa.io
+    external-dns.alpha.kubernetes.io/hostname: mqtt.${inoa_domain}
 spec:
   type: LoadBalancer
   ports:
