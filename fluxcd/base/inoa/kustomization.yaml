@@ -1,9 +1,9 @@
-commonLabels:
-  app.kubernetes.io/part-of: inoa
-  app.kubernetes.io/name: inoa
+labels:
+  - pairs:
+      app.kubernetes.io/name: inoa
+      app.kubernetes.io/technology: micronaut
 
 resources:
-  - cloudsql.yaml
   - certificate.yaml
   - deployment.yaml
   - service.yaml
@@ -13,11 +13,11 @@ configMapGenerator:
   - name: inoa-env
     literals:
       - MICRONAUT_ENVIRONMENTS=postgres
-      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak.infrastructure:8080/realms/inoa/protocol/openid-connect/certs
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
       - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit
-      - DATASOURCES_DEFAULT_HOST=sqlproxy.infrastructure
-      - DATASOURCES_DEFAULT_DATABASE=inoa-<patched>
-      - DATASOURCES_DEFAULT_USERNAME=inoa-<patched>
+      - DATASOURCES_DEFAULT_HOST=postgres
+      - DATASOURCES_DEFAULT_DATABASE=inoa
+      - DATASOURCES_DEFAULT_USERNAME=inoa
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - INFLUXDB_URL=http://influxdb:8086
       - INFLUXDB_ORGANISATION=inoa
@@ -27,7 +27,7 @@ configMapGenerator:
       - INOA_MQTT_TLS_CERT=/tls/tls.crt
       - INOA_MQTT_DATA_PATH=/moquette
       # custom log levels
-      - LOGGER_LEVELS_IO_INOA=TRACE
+      - LOGGER_LEVELS_IO_INOA=INFO
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=WARN
 
 secretGenerator:
