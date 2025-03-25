@@ -20,4 +20,4 @@ configMapGenerator:
       - OAUTH_APP_NAME=Keycloak
   - name: swagger-ui-spec
     files:
-      - ./../../../api/openapi.yaml
+      - files/openapi.yaml

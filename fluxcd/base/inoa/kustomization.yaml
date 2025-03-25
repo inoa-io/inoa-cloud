@@ -29,9 +29,3 @@ configMapGenerator:
       # custom log levels
       - LOGGER_LEVELS_IO_INOA=INFO
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=WARN
-
-secretGenerator:
-  - name: inoa-env
-    literals:
-      - DATASOURCES_DEFAULT_PASSWORD=<patched>
-      - INFLUXDB_TOKEN=<patched>
