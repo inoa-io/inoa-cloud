@@ -10,6 +10,12 @@ images:
     newTag: '14.11'
   - name: docker.io/kokuwaio/keycloak
     newTag: '26.0.8'
+  - name: docker.io/hawkbit/hawkbit-update-server
+    newTag: '0.3.0M8'
+  - name: docker.io/library/influxdb
+    newTag: '2.7.11'
+  - name: docker.io/grafana/grafana
+    newTag: '10.2.4'
 
 resources:
   - namespace.yaml
@@ -18,3 +24,5 @@ resources:
   - postgres
   - keycloak
   - hawkbit
+  - influxdb
+  - grafana

@@ -1,0 +1,10 @@
+resources:
+  - ../../../base/grafana
+  - secrets.yaml
+
+configMapGenerator:
+  - name: grafana-env
+    behavior: merge
+    literals:
+      - GF_DATABASE_HOST=grafana
+      - GF_DATABASE_USER=grafana
