@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: swagger-ui
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: auth-inoa-io@file
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: swagger.${inoa_domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: swagger-ui
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - swagger.${inoa_domain}
+      secretName: grafana-tls

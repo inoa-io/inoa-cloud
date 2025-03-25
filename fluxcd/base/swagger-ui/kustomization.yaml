@@ -1,0 +1,23 @@
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+configMapGenerator:
+  - name: swagger-ui-env
+    literals:
+      - URLS=[{url:'/openapi.yaml',name:'INOA'}]
+      - DISPLAY_OPERATION_ID=true
+      - DISPLAY_REQUEST_DURATION=true
+      - SHOW_EXTENSIONS=true
+      - SHOW_COMMON_EXTENSIONS=true
+      - DEEP_LINKING=true
+      - DEFAULT_MODELS_EXPAND_DEPTH=-1
+      - TRY_IT_OUT_ENABLED=true
+      - WITH_CREDENTIALS=true
+      - VALIDATOR_URL=
+      - OAUTH_CLIENT_ID=inoa-swagger
+      - OAUTH_APP_NAME=Keycloak
+  - name: swagger-ui-spec
+    files:
+      - ./../../../api/openapi.yaml
