@@ -260,6 +260,30 @@
 							</execution>
 						</executions>
 					</plugin>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>copy-resources</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${basedir}/../fluxcd/base/swagger-ui/files</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${basedir}</directory>
+											<filtering>false</filtering>
+											<includes>
+												<include>openapi.yaml</include>
+											</includes>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
