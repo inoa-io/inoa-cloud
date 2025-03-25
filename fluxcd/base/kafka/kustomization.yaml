@@ -1,6 +1,7 @@
-commonLabels:
-  app.kubernetes.io/part-of: inoa
-  app.kubernetes.io/name: kafka
+labels:
+  - pairs:
+      app.kubernetes.io/name: kafka
+      app.kubernetes.io/technology: java
 
 resources:
   - pdb.yaml
