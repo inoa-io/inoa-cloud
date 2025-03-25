@@ -21,5 +21,5 @@ spec:
                   name: http
   tls:
     - hosts:
-      - kafka.${inoa_domain}
+        - kafka.${inoa_domain}
       secretName: kafka-console-tls

@@ -13,9 +13,7 @@ steps:
   kustomize:
     image: ghcr.io/grayc-de/plugins/kubectl
     commands:
-      - kubectl kustomize ./fluxcd/kiste/dev
-      - kubectl kustomize ./fluxcd/kiste/prod
-      - kubectl kustomize ./fluxcd/live/dev
+      - kubectl kustomize ./fluxcd/live/qas
       - kubectl kustomize ./fluxcd/live/prod
     when: [path: [fluxcd/**]]
 

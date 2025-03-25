@@ -1,20 +1,20 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: postgres-config
+  name: postgres-config
 data:
-    init.sh: ENC[AES256_GCM,data:1DvfQmigsv7+Ccp25e8d9gA2oYd4AAEDmsuc/nSuxHE6vBonJVUleiXUsvombdWEFcMc1l0SSBcGjhCQU4QIx0pkKRY8x4HBonNJvFgPRGF1UceAFMz/S74IYJIOmq9kpAQBu8RpM9dgko2xTHUL+gETovkhfNw6cx+tTgWR7n+CRSeubFnoBcAT2xqGdu7Aq56INLWJyHsTbzb7r+Apby6WnmWGBdvtlmyrGfBeMsWwgkPr+ghNo62a+aj5+g49lYSGnsmvaCHdxrd8a286mz9BbRwXwGvdyFdqtTxfphnW8sNhCk0tElizZi5lskf1shhVdX1oM7TF8bw/t/WwB6ouFq2nLT8kXhMGels/rPhvF/9jDOfmvSPXt6U6GEGFeOGz+8jo2lp/8Ql+oz7zWT8p7IySKI8gi265wZ+RTqFWRF5p2zmqentjQro/qRBfmIwVARlc7xbvz8XA+W37lNgrM+gl2tvIO9ym9Z6yr5yUBK/14Gk17sSOvzcbAnAVFzQDkgGqXnJ7LPNw2AC6r0aurB5HRVivpJzqbH1LIrPGkAMDubFQfmshbPnmKAdfGgGg8QXNV915dlZHgFJ5aMFOEQUiXvGl9n6aK6fWj7kKylizyR1YLgMDEbwe2FRWEJPXSqOruALUSyj1cjgxiHzN1fomgeGnLlHdJC3yYVvBtyZnKgZ5mqyVDfdOGiTv5DLyqjecRtVuEOv5tpPWY3jbc5C7LJfsLHSu85yIR+5Zkr/CWIswMfR8Bis=,iv:hDW0y/7xtkhA1PPLAdqKNS1QoA8kL9LCzqk0KA6ywz0=,tag:iZ9b+UWN0Cc+xXBSs0fZGw==,type:str]
+  init.sh: ENC[AES256_GCM,data:1DvfQmigsv7+Ccp25e8d9gA2oYd4AAEDmsuc/nSuxHE6vBonJVUleiXUsvombdWEFcMc1l0SSBcGjhCQU4QIx0pkKRY8x4HBonNJvFgPRGF1UceAFMz/S74IYJIOmq9kpAQBu8RpM9dgko2xTHUL+gETovkhfNw6cx+tTgWR7n+CRSeubFnoBcAT2xqGdu7Aq56INLWJyHsTbzb7r+Apby6WnmWGBdvtlmyrGfBeMsWwgkPr+ghNo62a+aj5+g49lYSGnsmvaCHdxrd8a286mz9BbRwXwGvdyFdqtTxfphnW8sNhCk0tElizZi5lskf1shhVdX1oM7TF8bw/t/WwB6ouFq2nLT8kXhMGels/rPhvF/9jDOfmvSPXt6U6GEGFeOGz+8jo2lp/8Ql+oz7zWT8p7IySKI8gi265wZ+RTqFWRF5p2zmqentjQro/qRBfmIwVARlc7xbvz8XA+W37lNgrM+gl2tvIO9ym9Z6yr5yUBK/14Gk17sSOvzcbAnAVFzQDkgGqXnJ7LPNw2AC6r0aurB5HRVivpJzqbH1LIrPGkAMDubFQfmshbPnmKAdfGgGg8QXNV915dlZHgFJ5aMFOEQUiXvGl9n6aK6fWj7kKylizyR1YLgMDEbwe2FRWEJPXSqOruALUSyj1cjgxiHzN1fomgeGnLlHdJC3yYVvBtyZnKgZ5mqyVDfdOGiTv5DLyqjecRtVuEOv5tpPWY3jbc5C7LJfsLHSu85yIR+5Zkr/CWIswMfR8Bis=,iv:hDW0y/7xtkhA1PPLAdqKNS1QoA8kL9LCzqk0KA6ywz0=,tag:iZ9b+UWN0Cc+xXBSs0fZGw==,type:str]
 sops:
-    kms: []
-    gcp_kms:
-        - resource_id: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd
-          created_at: "2025-03-24T15:14:09Z"
-          enc: CiQAIt230Gl9Iu9zkrVqmepDl85J39kvdu7jz4hX47CNkQXrjh8SSQD2lEBUQ3s/+1oOaj23F3NDTCmS2ddrVzGguwsG7+bjyb2fyM3mZ+pZbafI5BdJyNFKA7g8Lsm8RnLW32T/xK0Bv3XGbRgXu1c=
-    azure_kv: []
-    hc_vault: []
-    age: []
-    lastmodified: "2025-03-24T15:14:09Z"
-    mac: ENC[AES256_GCM,data:3L0MI17o3y+UD4tGqDyGuFriJDqYjMllbID1DcOlo4It/fFOeHM/IAkFXGNAp7uI5McsTwLfF6o4yBsFCH8jpifXweluZVcMWqMNdAuemcHPYUj6ks+T6atGrQY0NmFYdcyTmMHd8yGwUcnJB46LDsQmqiwJm3MWagyrKw/zMgE=,iv:47N3QFRAVZnnm8yvyWaAKbzq9XnvzGeNIzxJ0cqu9m4=,tag:bB30rtTdyM1iSmtTwemALQ==,type:str]
-    pgp: []
-    encrypted_regex: ^(data|stringData)$
-    version: 3.9.0
+  kms: []
+  gcp_kms:
+    - resource_id: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd
+      created_at: "2025-03-24T15:14:09Z"
+      enc: CiQAIt230Gl9Iu9zkrVqmepDl85J39kvdu7jz4hX47CNkQXrjh8SSQD2lEBUQ3s/+1oOaj23F3NDTCmS2ddrVzGguwsG7+bjyb2fyM3mZ+pZbafI5BdJyNFKA7g8Lsm8RnLW32T/xK0Bv3XGbRgXu1c=
+  azure_kv: []
+  hc_vault: []
+  age: []
+  lastmodified: "2025-03-24T15:14:09Z"
+  mac: ENC[AES256_GCM,data:3L0MI17o3y+UD4tGqDyGuFriJDqYjMllbID1DcOlo4It/fFOeHM/IAkFXGNAp7uI5McsTwLfF6o4yBsFCH8jpifXweluZVcMWqMNdAuemcHPYUj6ks+T6atGrQY0NmFYdcyTmMHd8yGwUcnJB46LDsQmqiwJm3MWagyrKw/zMgE=,iv:47N3QFRAVZnnm8yvyWaAKbzq9XnvzGeNIzxJ0cqu9m4=,tag:bB30rtTdyM1iSmtTwemALQ==,type:str]
+  pgp: []
+  encrypted_regex: ^(data|stringData)$
+  version: 3.9.0
