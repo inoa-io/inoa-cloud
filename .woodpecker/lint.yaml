@@ -13,10 +13,7 @@ steps:
   kustomize:
     image: ghcr.io/grayc-de/plugins/kubectl
     commands:
-      - kubectl kustomize ./fluxcd/kiste/dev
-      - kubectl kustomize ./fluxcd/kiste/prod
-      - kubectl kustomize ./fluxcd/live/dev
-      - kubectl kustomize ./fluxcd/live/prod
+      - kubectl kustomize ./fluxcd/live/qas
     when: [path: [fluxcd/**]]
 
   # Linting for dockerfiles

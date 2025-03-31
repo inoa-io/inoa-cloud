@@ -1,0 +1,13 @@
+labels:
+  - pairs:
+      app.kubernetes.io/name: postgres
+      app.kubernetes.io/technology: c
+
+resources:
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+
+images:
+  - name: docker.io/library/postgres
+    newTag: "17.4"

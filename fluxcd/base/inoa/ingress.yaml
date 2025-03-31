@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: inoa
+  name: inoa-api
   annotations:
     kubernetes.io/tls-acme: true
     traefik.ingress.kubernetes.io/router.tls: true
 spec:
   ingressClassName: traefik
   rules:
-    - host: api.<patched>.inoa.io
+    - host: api.${inoa_domain}
       http:
         paths:
           - path: /
@@ -19,5 +19,31 @@ spec:
                 port:
                   name: http
   tls:
-    - hosts: [api.<patched>.inoa.io]
+    - hosts:
+        - api.${inoa_domain}
       secretName: inoa-api-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: inoa-groundcontrol
+  annotations:
+    kubernetes.io/tls-acme: true
+    traefik.ingress.kubernetes.io/router.tls: true
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: groundcontrol.${inoa_domain}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: inoa
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - groundcontrol.${inoa_domain}
+      secretName: inoa-groundcontrol-tls

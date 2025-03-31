@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grayc-inoa-qas
+  annotations:
+    cnrm.cloud.google.com/project-id: grayc-infrastructure
+    kustomize.toolkit.fluxcd.io/prune: disabled

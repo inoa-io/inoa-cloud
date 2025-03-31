@@ -1,0 +1,70 @@
+labels:
+  - pairs:
+      app.kubernetes.io/name: grafana
+      app.kubernetes.io/technology: golang
+
+resources:
+  - dashboards
+  - deployment.yaml
+  - ingress.yaml
+  - rbac.yaml
+  - service.yaml
+
+configMapGenerator:
+  - name: grafana-env
+    literals:
+      - GF_PATHS_DATA=/tmp/grafana
+      - GF_SERVER_PROTOCOL=http
+      - GF_SERVER_HTTP_PORT=8080
+      - GF_SERVER_ENFORCE_DOMAIN=false
+      - GF_SERVER_DOMAIN=grafana.${inoa_domain}
+      - GF_SERVER_ROOT_URL=https://grafana.${inoa_domain}
+      - GF_SERVER_ROUTER_LOGGING=false
+      - GF_SERVER_ENABLE_GZIP=false
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=<patched>
+      - GF_DATABASE_USER=<patched>
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_USERS_AUTO_ASSIGN_ORG_ROLE=Admin
+      - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
+      - GF_SECURITY_DISABLE_GRAVATAR=true
+      - GF_SECURITY_COOKIE_SECURE=false
+      - GF_SECURITY_COOKIE_SAMESITE=lax
+      - GF_SECURITY_CONTENT_SECURITY_POLICY=false
+      - GF_SECURITY_STRICT_TRANSPORT_SECURITY=true
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+      - GF_AUTH_OAUTH_AUTO_LOGIN=true
+      - GF_AUTH_GENERIC_OAUTH_ENABLED=true
+      - GF_AUTH_GENERIC_OAUTH_NAME=Keycloak
+      - GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP=true
+      - GF_AUTH_GENERIC_OAUTH_CLIENT_ID=grafana
+      - GF_AUTH_GENERIC_OAUTH_AUTH_URL=http://keycloak.${inoa_domain}/realms/inoa/protocol/openid-connect/auth
+      - GF_AUTH_GENERIC_OAUTH_TOKEN_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
+      - GF_AUTH_GENERIC_OAUTH_API_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/userinfo
+      - GF_AUTH_GENERIC_OAUTH_SCOPES=openid
+      - GF_PLUGINS_PLUGIN_ADMIN_ENABLED=true
+      - GF_SMTP_ENABLED=false
+      - GF_SNAPSHOTS_EXTERNAL_ENABLED=false
+      - GF_ALERTING_ENABLED=false
+      - GF_UNIFIED_ALERTING_ENABLED=false
+      - GF_HELP_ENABLED=true
+      - GF_METRICS_ENABLED=true
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+      - GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES=false
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_ANALYTICS_ENABLE_DEEDBACK_LINKS=false
+  - name: grafana-sidecar-env
+    literals:
+      - LABEL=grafana.io/instance
+      - LABEL_VALUE=inoa
+      - FOLDER=/dashboards
+      - FOLDER_ANNOTATION=grafana.io/folder
+      - LOG_FORMAT=LOGFMT
+      - LOG_LEVEL=INFO
+  - name: grafana-config
+    literals:
+      - INOA_DOMAIN=${inoa_domain}
+    files:
+      - files/datasources.yaml
+      - files/dashboards.yaml

@@ -1,25 +1,25 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: hawkbit
+  name: swagger-ui
   annotations:
-    kubernetes.io/tls-acme: true
-    traefik.ingress.kubernetes.io/router.tls: true
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.middlewares: auth-inoa-io@file
 spec:
   ingressClassName: traefik
   rules:
-    - host: hawkbit.${inoa_domain}
+    - host: swagger.${inoa_domain}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: hawkbit
+                name: swagger-ui
                 port:
                   name: http
   tls:
     - hosts:
-        - hawkbit.${inoa_domain}
-      secretName: hawkbit-tls
+        - swagger.${inoa_domain}
+      secretName: grafana-tls

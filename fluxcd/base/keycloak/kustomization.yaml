@@ -1,0 +1,9 @@
+labels:
+  - pairs:
+      app.kubernetes.io/name: keycloak
+      app.kubernetes.io/technology: spring-boot
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml

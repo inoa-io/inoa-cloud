@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: keycloak.${inoa_domain}
+      http:
+        paths:
+          - backend:
+              service:
+                name: keycloak
+                port:
+                  name: http
+            path: /realms/inoa
+            pathType: Prefix
+          - backend:
+              service:
+                name: keycloak
+                port:
+                  name: http
+            path: /admin
+            pathType: Prefix
+          - backend:
+              service:
+                name: keycloak
+                port:
+                  name: http
+            path: /resources
+            pathType: Prefix
+          - backend:
+              service:
+                name: keycloak
+                port:
+                  name: http
+            path: /js
+            pathType: Prefix
+  tls:
+    - hosts:
+        - keycloak.${inoa_domain}
+      secretName: keycloak-tls

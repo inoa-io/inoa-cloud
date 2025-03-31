@@ -1,0 +1,3 @@
+resources:
+  - ../../../base/influxdb
+  - secrets.yaml
