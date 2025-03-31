@@ -13,25 +13,6 @@ spec:
       labels:
         app.kubernetes.io/name: swagger-ui
     spec:
-      initContainers:
-        - name: wait-for-keycloak
-          image: mwendler/wget
-          imagePullPolicy: IfNotPresent
-          command:
-            [
-              sh,
-              -c,
-              until echo "`date '+%T'` connect keycloak ..." && wget http://keycloak:8080/realms/inoa/protocol/openid-connect/certs --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done,
-            ]
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            privileged: false
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: [ALL]
       containers:
         - name: swagger-ui
           image: docker.io/swaggerapi/swagger-ui
