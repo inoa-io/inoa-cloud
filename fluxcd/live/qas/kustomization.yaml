@@ -6,8 +6,6 @@ labels:
       app.kubernetes.io/env: ${inoa_env}
 
 images:
-  - name: docker.io/library/postgres
-    newTag: "14.11"
   - name: docker.io/kokuwaio/keycloak
     newTag: "26.0.8"
   - name: docker.io/hawkbit/hawkbit-update-server
@@ -30,11 +28,11 @@ resources:
   - ../../base/fluxcd
   - service-account
   - postgres
-  - keycloak
-  - hawkbit
-  - influxdb
-  - grafana
-  - kafka
-  - kafka-console
-  - swagger-ui
-  - inoa
+#  - keycloak
+#  - hawkbit
+#  - influxdb
+#  - grafana
+#  - kafka
+#  - kafka-console
+#  - swagger-ui
+#  - inoa

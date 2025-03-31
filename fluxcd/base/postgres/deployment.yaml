@@ -71,9 +71,9 @@ spec:
               - key: init.sh
                 path: init.sh
         - name: storage
-          gcePersistentDisk:
-            fsType: ext4
-            pdName: <patched>
+          persistentVolumeClaim:
+            readOnly: false
+            claimName: postgres
         - name: tmp
           emptyDir:
             sizeLimit: 100Mi

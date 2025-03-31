@@ -4,6 +4,10 @@ labels:
       app.kubernetes.io/technology: c
 
 resources:
-  - disk.yaml
+  - pvc.yaml
   - deployment.yaml
   - service.yaml
+
+images:
+  - name: docker.io/library/postgres
+    newTag: "17.4"
