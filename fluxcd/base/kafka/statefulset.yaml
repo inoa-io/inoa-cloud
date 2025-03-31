@@ -22,6 +22,10 @@ spec:
       labels:
         app.kubernetes.io/name: kafka
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       imagePullSecrets:
         - name: dockerconfigjson-ghcr-io
       initContainers:
@@ -63,7 +67,7 @@ spec:
               drop: [ALL]
         - name: kafka-init-storage
           image: ghcr.io/grayc-de/kafka
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           command: [/opt/kafka/bin/kafka-init-storage.sh]
           env:
             - name: KAFKA_CLUSTER_ID
@@ -94,7 +98,7 @@ spec:
       containers:
         - name: kafka
           image: ghcr.io/grayc-de/kafka
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           env:
             - name: KAFKA_HEAP_OPTS
               value: -Xms400m -Xmx400m -XX:+ExitOnOutOfMemoryError
@@ -157,7 +161,6 @@ spec:
             medium: Memory
             sizeLimit: 1Mi
         - name: kafka-data
-          emptyDir: {}
-#  volumeClaimTemplates:
-#    - metadata:
-#        name: kafka-data
+          persistentVolumeClaim:
+            readOnly: false
+            claimName: kafka

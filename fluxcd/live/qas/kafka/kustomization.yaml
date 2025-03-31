@@ -1,6 +1,5 @@
 resources:
   - ../../../base/kafka
-  - pvc.yaml
 
 patches:
   - target:
@@ -21,3 +20,7 @@ patches:
       - op: replace
         path: /spec/replicas
         value: 1
+
+images:
+  - name: ghcr.io/grayc-de/kafka
+    newTag: "3.6.1"
