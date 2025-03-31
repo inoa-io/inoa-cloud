@@ -1,3 +1,7 @@
 resources:
   - ../../../base/inoa
   - secrets.yaml
+
+images:
+  - name: ghcr.io/inoa-io/inoa
+    newTag: "snapshot"

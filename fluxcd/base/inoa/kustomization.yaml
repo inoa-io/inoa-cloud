@@ -13,7 +13,7 @@ configMapGenerator:
   - name: inoa-env
     literals:
       - MICRONAUT_ENVIRONMENTS=postgres
-      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/certs
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=https://auth.{inoa_domain}/realms/inoa/protocol/openid-connect/certs
       - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit
       - DATASOURCES_DEFAULT_HOST=postgres
       - DATASOURCES_DEFAULT_DATABASE=inoa
@@ -21,7 +21,7 @@ configMapGenerator:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
       - INFLUXDB_URL=http://influxdb:8086
       - INFLUXDB_ORGANISATION=inoa
-      - INFLUXDB_BUCKET=default
+      - INFLUXDB_BUCKET=inoa
       - INOA_MQTT_TLS_GENERATE_KEY=false
       - INOA_MQTT_TLS_KEY=/tls/tls.key
       - INOA_MQTT_TLS_CERT=/tls/tls.crt

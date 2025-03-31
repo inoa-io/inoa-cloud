@@ -5,10 +5,6 @@ labels:
       app.kubernetes.io/part-of: inoa
       app.kubernetes.io/env: ${inoa_env}
 
-images:
-  - name: ghcr.io/inoa-io/inoa
-    newTag: "snapshot"
-
 resources:
   - namespace.yaml
   - ../../base/fluxcd
@@ -21,4 +17,4 @@ resources:
   - kafka-console
   - grafana
   - swagger-ui
-#  - inoa
+  - inoa
