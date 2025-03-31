@@ -8,3 +8,7 @@ configMapGenerator:
     literals:
       - GF_DATABASE_HOST=postgres
       - GF_DATABASE_USER=grafana
+
+images:
+  - name: docker.io/grafana/grafana
+    newTag: "10.2.4"

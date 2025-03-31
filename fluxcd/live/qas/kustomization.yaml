@@ -6,8 +6,6 @@ labels:
       app.kubernetes.io/env: ${inoa_env}
 
 images:
-  - name: docker.io/grafana/grafana
-    newTag: "10.2.4"
   - name: ghcr.io/inoa-io/inoa
     newTag: "snapshot"
 
