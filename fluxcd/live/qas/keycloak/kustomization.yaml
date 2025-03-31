@@ -6,7 +6,7 @@ resources:
 configMapGenerator:
   - name: keycloak-config
     literals:
-      - KC_HOSTNAME=https://keycloak.${inoa_domain}
+      - KC_HOSTNAME=https://auth.${inoa_domain}
       - KC_HOSTNAME_DEBUG=true
       - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
       - KC_PROXY_HEADERS=xforwarded
