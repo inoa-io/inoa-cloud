@@ -5,6 +5,7 @@ labels:
 
 resources:
   - pdb.yaml
+  - pvc.yaml
   - service.yaml
   - statefulset.yaml
 

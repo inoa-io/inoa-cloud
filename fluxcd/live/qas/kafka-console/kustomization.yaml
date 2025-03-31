@@ -1,2 +1,6 @@
 resources:
   - ../../../base/kafka-console
+
+images:
+  - name: docker.io/redpandadata/console
+    newTag: "v2.8.4"

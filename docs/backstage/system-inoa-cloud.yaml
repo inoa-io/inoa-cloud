@@ -21,6 +21,8 @@ metadata:
       url: https://kafka.qas.inoa.io/
     - title: "[QAS] SwaggerUI"
       url: https://swagger.qas.inoa.io/
+    - title: "[QAS] Kafka Console"
+      url: https://kafka.qas.inoa.io/
     - title: "[LEGACY] Ground Control"
       url: https://cloud.inoa.io/
       icon: dashboard
