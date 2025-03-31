@@ -10,8 +10,6 @@ images:
     newTag: "2.7.11"
   - name: docker.io/grafana/grafana
     newTag: "10.2.4"
-  - name: ghcr.io/grayc-de/kafka
-    newTag: "3.6.1"
   - name: docker.io/redpandadata/console
     newTag: "v2.8.4"
   - name: ghcr.io/inoa-io/inoa
@@ -26,7 +24,7 @@ resources:
   - hawkbit
 #  - influxdb
 #  - grafana
-#  - kafka
+  - kafka
 #  - kafka-console
   - swagger-ui
 #  - inoa
