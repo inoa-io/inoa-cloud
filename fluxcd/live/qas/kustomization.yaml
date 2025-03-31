@@ -28,7 +28,7 @@ resources:
   - ../../base/fluxcd
   - service-account
   - postgres
-#  - keycloak
+  - keycloak
 #  - hawkbit
 #  - influxdb
 #  - grafana

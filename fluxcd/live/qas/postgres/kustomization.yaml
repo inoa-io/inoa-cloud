@@ -2,3 +2,7 @@ resources:
   - ../../../base/postgres
   - secrets.yaml
   - config.yaml
+
+images:
+  - name: docker.io/library/postgres
+    newTag: "17.4"

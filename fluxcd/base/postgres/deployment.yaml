@@ -65,6 +65,7 @@ spec:
               readOnly: true
             - name: storage
               mountPath: /var/lib/postgresql/data
+              subPath: pgdata
             - name: tmp
               mountPath: /var/run/postgresql
       enableServiceLinks: false
