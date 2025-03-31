@@ -13,25 +13,35 @@ metadata:
     - title: "[QAS] Ground Control"
       url: https://groundcontrol.qas.inoa.io
       icon: dashboard
+      type: "[QAS]"
     - title: "[QAS] Keycloak Console"
       url: https://auth.qas.inoa.io/admin/inoa/console/
+      type: "[QAS]"
     - title: "[QAS] Hawkbit"
       url: https://hawkbit.qas.inoa.io/UI/
+      type: "[QAS]"
     - title: "[QAS] Kafka Console"
       url: https://kafka.qas.inoa.io/
+      type: "[QAS]"
     - title: "[QAS] SwaggerUI"
       url: https://swagger.qas.inoa.io/
+      type: "[QAS]"
     - title: "[QAS] Kafka Console"
       url: https://kafka.qas.inoa.io/
+      type: "[QAS]"
     - title: "[LEGACY] Ground Control"
       url: https://cloud.inoa.io/
       icon: dashboard
+      type: "[LEGACY]"
     - title: "[LEGACY] Keycloak Console"
       url: https://auth.grayc.io/admin/inoa/console/
+      type: "[LEGACY]"
     - title: "[LEGACY] Hawkbit"
       url: https://cloud.inoa.io/update/inoa/UI/
+      type: "[LEGACY]"
     - title: "[LEGACY] Kafka Console"
       url: https://kafka-console.inoa.io/
+      type: "[LEGACY]"
 spec:
   owner: user:default/fabian.schlegel_grayc.de
   domain: inoa/inoa
