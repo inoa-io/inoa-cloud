@@ -16,7 +16,7 @@ metadata:
     - title: "[QAS] Keycloak Console"
       url: https://auth.qas.inoa.io/admin/inoa/console/
     - title: "[QAS] Hawkbit"
-      url: https://hawkbit.qas.inoa.io/
+      url: https://hawkbit.qas.inoa.io/UI/
     - title: "[QAS] Kafka Console"
       url: https://kafka.qas.inoa.io/
     - title: "[LEGACY] Ground Control"
@@ -24,6 +24,8 @@ metadata:
       icon: dashboard
     - title: "[LEGACY] Keycloak Console"
       url: https://auth.grayc.io/admin/inoa/console/
+    - title: "[LEGACY] Hawkbit"
+      url: https://cloud.inoa.io/update/inoa/UI/
     - title: "[LEGACY] Kafka Console"
       url: https://kafka-console.inoa.io/
 spec:

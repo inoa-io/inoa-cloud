@@ -12,7 +12,7 @@ configMapGenerator:
   - name: hawkbit-env
     literals:
       - SPRING_PROFILES_ACTIVE=postgresql
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/hawkbit
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hawkbit
       - SPRING_DATASOURCE_USERNAME=hawkbit
       - SPRING_SECURITY_USER_NAME=admin
       - HAWKBIT_DMF_RABBITMQ_ENABLED=false
