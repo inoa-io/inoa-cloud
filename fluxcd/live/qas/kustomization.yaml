@@ -6,8 +6,6 @@ labels:
       app.kubernetes.io/env: ${inoa_env}
 
 images:
-  - name: docker.io/library/influxdb
-    newTag: "2.7.11"
   - name: docker.io/grafana/grafana
     newTag: "10.2.4"
   - name: ghcr.io/inoa-io/inoa
@@ -20,7 +18,7 @@ resources:
   - postgres
   - keycloak
   - hawkbit
-#  - influxdb
+  - influxdb
   - kafka
   - kafka-console
   - grafana

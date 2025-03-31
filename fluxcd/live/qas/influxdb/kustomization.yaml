@@ -1,3 +1,7 @@
 resources:
   - ../../../base/influxdb
   - secrets.yaml
+
+images:
+  - name: docker.io/library/influxdb
+    newTag: "2.7.11"

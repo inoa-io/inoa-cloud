@@ -32,6 +32,9 @@ metadata:
     - title: "[QAS] Kafka Console"
       url: https://kafka.qas.inoa.io/
       type: "[QAS]"
+    - title: "[QAS] InfluxDB UI"
+      url: https://influx.qas.inoa.io/
+      type: "[QAS]"
     - title: "[LEGACY] Ground Control"
       url: https://cloud.inoa.io/
       icon: dashboard
