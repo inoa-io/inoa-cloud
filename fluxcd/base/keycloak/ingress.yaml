@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: traefik
   rules:
-    - host: keycloak.${inoa_domain}
+    - host: auth.${inoa_domain}
       http:
         paths:
           - backend:
@@ -41,5 +41,5 @@ spec:
             pathType: Prefix
   tls:
     - hosts:
-        - keycloak.${inoa_domain}
+        - auth.${inoa_domain}
       secretName: keycloak-tls
