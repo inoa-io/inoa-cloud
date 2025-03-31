@@ -14,6 +14,9 @@ metadata:
       url: https://groundcontrol.qas.inoa.io
       icon: dashboard
       type: "[QAS]"
+    - title: "[QAS] Grafana"
+      url: https://grafana.qas.inoa.io/
+      type: "[QAS]"
     - title: "[QAS] Keycloak Console"
       url: https://auth.qas.inoa.io/admin/inoa/console/
       type: "[QAS]"
