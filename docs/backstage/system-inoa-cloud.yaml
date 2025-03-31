@@ -10,21 +10,21 @@ metadata:
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
     gitea.com/repo-slug: inoa/cloud
   links:
-    - title: [QAS] Ground Control
+    - title: "[QAS] Ground Control"
       url: https://groundcontrol.qas.inoa.io
       icon: dashboard
-    - title: [QAS] Keycloak Console
+    - title: "[QAS] Keycloak Console"
       url: https://auth.qas.inoa.io/admin/inoa/console/
-    - title: [QAS] Hawkbit
+    - title: "[QAS] Hawkbit"
       url: https://hawkbit.qas.inoa.io/
-    - title: [QAS] Kafka Console
+    - title: "[QAS] Kafka Console"
       url: https://kafka.qas.inoa.io/
-    - title: [LEGACY] Ground Control
+    - title: "[LEGACY] Ground Control"
       url: https://cloud.inoa.io/
       icon: dashboard
-    - title: [LEGACY] Keycloak Console
+    - title: "[LEGACY] Keycloak Console"
       url: https://auth.grayc.io/admin/inoa/console/
-    - title: [LEGACY] Kafka Console
+    - title: "[LEGACY] Kafka Console"
       url: https://kafka-console.inoa.io/
 spec:
   owner: user:default/fabian.schlegel_grayc.de
