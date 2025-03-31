@@ -1,3 +1,7 @@
 resources:
   - ../../../base/hawkbit
   - secrets.yaml
+
+images:
+  - name: docker.io/hawkbit/hawkbit-update-server
+    newTag: "0.3.0M8"
