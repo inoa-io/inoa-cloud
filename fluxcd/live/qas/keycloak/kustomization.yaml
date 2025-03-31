@@ -11,3 +11,7 @@ configMapGenerator:
       - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
       - KC_PROXY_HEADERS=xforwarded
       - KC_LOG_CONSOLE_OUTPUT=default
+
+images:
+  - name: docker.io/kokuwaio/keycloak
+    newTag: "26.0.8"
