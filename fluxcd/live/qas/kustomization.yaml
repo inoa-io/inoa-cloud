@@ -14,8 +14,6 @@ images:
     newTag: "3.6.1"
   - name: docker.io/redpandadata/console
     newTag: "v2.8.4"
-  - name: docker.io/swaggerapi/swagger-ui
-    newTag: "v5.4.2"
   - name: ghcr.io/inoa-io/inoa
     newTag: "snapshot"
 
@@ -30,5 +28,5 @@ resources:
 #  - grafana
 #  - kafka
 #  - kafka-console
-#  - swagger-ui
+  - swagger-ui
 #  - inoa
