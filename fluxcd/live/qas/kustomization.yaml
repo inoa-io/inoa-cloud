@@ -23,8 +23,8 @@ resources:
   - keycloak
   - hawkbit
 #  - influxdb
-#  - grafana
   - kafka
+  - grafana
 #  - kafka-console
   - swagger-ui
 #  - inoa
