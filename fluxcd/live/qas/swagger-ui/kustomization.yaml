@@ -1,2 +1,6 @@
 resources:
   - ../../../base/swagger-ui
+
+images:
+  - name: docker.io/swaggerapi/swagger-ui
+    newTag: "v5.4.2"
