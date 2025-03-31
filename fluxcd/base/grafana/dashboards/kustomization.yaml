@@ -9,10 +9,12 @@ configMapGenerator:
       - fleet/inoa-fleet-temperature.json
     options:
       annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
         grafana.io/folder: fleet
   - name: grafana-dashboards-ems
     files:
       - ems/inoa-ems-power-data.json
     options:
       annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
         grafana.io/folder: ems
