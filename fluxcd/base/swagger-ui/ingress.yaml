@@ -22,4 +22,4 @@ spec:
   tls:
     - hosts:
         - swagger.${inoa_domain}
-      secretName: grafana-tls
+      secretName: swagger-ui-tls
