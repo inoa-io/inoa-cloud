@@ -6,5 +6,5 @@ configMapGenerator:
   - name: grafana-env
     behavior: merge
     literals:
-      - GF_DATABASE_HOST=grafana
+      - GF_DATABASE_HOST=postgres
       - GF_DATABASE_USER=grafana
