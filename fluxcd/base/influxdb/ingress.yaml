@@ -2,7 +2,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: influxdb
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+    traefik.ingress.kubernetes.io/router.middlewares: auth-grayc-de@file
 spec:
+  ingressClassName: traefik
   rules:
     - host: influx.${inoa_domain}
       http:
@@ -14,3 +19,7 @@ spec:
                 name: influxdb
                 port:
                   name: http
+  tls:
+    - hosts:
+        - influx.${inoa_domain}
+      secretName: influxdb-tls
