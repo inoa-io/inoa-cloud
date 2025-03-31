@@ -14,9 +14,9 @@ configMapGenerator:
     literals:
       - INOA_DOMAIN=${inoa_domain}
       - MICRONAUT_ENVIRONMENTS=gcp,postgres
-      - MICRONAUT_HTTP_SERVICES_KEYCLOAK_URL=https://auth.{inoa_domain}
+      - MICRONAUT_HTTP_SERVICES_KEYCLOAK_URL=https://auth.${inoa_domain}
       - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit:8080/UI/login
-      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=https://auth.{inoa_domain}/realms/inoa/protocol/openid-connect/certs
+      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/certs
       - DATASOURCES_DEFAULT_HOST=postgres
       - DATASOURCES_DEFAULT_DATABASE=inoa
       - DATASOURCES_DEFAULT_USERNAME=inoa
