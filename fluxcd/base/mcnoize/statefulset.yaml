@@ -3,11 +3,13 @@ kind: StatefulSet
 metadata:
   name: mcnoize
 spec:
-  replicas: ${mcnoise.replicas}
+  podManagementPolicy: Parallel
+  replicas: 1
+  revisionHistoryLimit: 0
+  serviceName: mcnoize
   selector:
     matchLabels:
       app.kubernetes.io/name: mcnoize
-  podManagementPolicy: Parallel
   template:
     metadata:
       annotations:
@@ -15,33 +17,6 @@ spec:
       labels:
         app.kubernetes.io/name: mcnoize
     spec:
-      initContainers:
-        - name: wait-for-inoa
-          image: mwendler/wget:latest
-          imagePullPolicy: IfNotPresent
-          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://inoa/endpoints/health --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done]
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            privileged: false
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: [ALL]
-        - name: wait-for-hawkbit
-          image: mwendler/wget:latest
-          imagePullPolicy: IfNotPresent
-          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://hawkbit/UI/login --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done && sleep 2]
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            runAsNonRoot: true
-            readOnlyRootFilesystem: true
-            privileged: false
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: [ALL]
       containers:
         - name: mcnoize
           image: ghcr.io/inoa-io/mcnoize
