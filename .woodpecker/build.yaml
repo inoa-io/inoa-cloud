@@ -28,16 +28,16 @@ steps:
 
   restart:
     image: ghcr.io/grayc-de/plugins/kubectl
-    environment: 
+    environment:
       # stored as repo secret in https://ci.grayc.io/repos/inoa/cloud/settings
       # definition: https://git.grayc.io/grayc/inoa/src/branch/main/fluxcd/live/dev/service-account/rbac.yaml
-      # token: kubectl --namespace inoa-dev get secret restarter -ojson | jq -r .data.token | base64 -d
+      # token: kubectl --namespace grayc-inoa-qas get secret restarter -ojson | jq -r .data.token | base64 -d
       KUBE_TOKEN: {from_secret: KUBE_TOKEN}
     commands:
       - echo $KUBE_CERTIFICATE | base64 -d > ca-certificate
       - kubectl config set-cluster grayc-live --server=https://$KUBE_HOST --certificate-authority=ca-certificate
       - kubectl config set-credentials restarter --token=$KUBE_TOKEN
-      - kubectl config set-context inoa-dev --cluster=grayc-live --namespace=inoa-dev --user=restarter
-      - kubectl config use-context inoa-dev
+      - kubectl config set-context grayc-inoa-qas --cluster=grayc-live --namespace=grayc-inoa-qas --user=restarter
+      - kubectl config use-context grayc-inoa-qas
       - kubectl rollout restart deployment/inoa
       - kubectl rollout status deployment/inoa --timeout=10m

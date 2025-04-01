@@ -22,6 +22,9 @@ configMapGenerator:
       - HAWKBIT_SERVER_DDI_SECURITY_AUTHENTICATION_TARGETTOKEN_ENABLED=true
       - HAWKBIT_SERVER_TENANT_CONFIGURATION_AUTHENTICATION-TARGETTOKEN-ENABLED_DEFAULTVALUE=true
       - HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_REF=https://{hostnameRequest}/update/inoa/controller/v1/{controllerId}/softwaremodules/{softwareModuleId}/artifacts/{artifactFileName}
+      # Service Account User
+      - HAWKBIT_SECURITY_USER_INOA_TENANT=DEFAULT
+      - HAWKBIT_SECURITY_USER_INOA_ROLES=TENANT_ADMIN
   - name: hawkbit-config
     files:
       - logback-spring.xml

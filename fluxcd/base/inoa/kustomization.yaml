@@ -12,22 +12,22 @@ resources:
 configMapGenerator:
   - name: inoa-env
     literals:
+      # INOA Settings
       - INOA_DOMAIN=${inoa_domain}
-      - MICRONAUT_ENVIRONMENTS=gcp,postgres
-      - MICRONAUT_HTTP_SERVICES_KEYCLOAK_URL=https://auth.${inoa_domain}
-      - MICRONAUT_HTTP_SERVICES_HAWKBIT_URL=http://hawkbit:8080/UI/login
-      - MICRONAUT_SECURITY_TOKEN_JWT_SIGNATURES_JWKS_KEYCLOAK_URL=https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/certs
-      - DATASOURCES_DEFAULT_HOST=postgres
-      - DATASOURCES_DEFAULT_DATABASE=inoa
-      - DATASOURCES_DEFAULT_USERNAME=inoa
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-      - INFLUXDB_URL=http://influxdb:8086
-      - INFLUXDB_ORGANISATION=inoa
-      - INFLUXDB_BUCKET=inoa
       - INOA_MQTT_TLS_GENERATE_KEY=false
       - INOA_MQTT_TLS_KEY=/tls/tls.key
       - INOA_MQTT_TLS_CERT=/tls/tls.crt
       - INOA_MQTT_DATA_PATH=/moquette
-      # custom log levels
+      # Database settings
+      - DATASOURCES_DEFAULT_HOST=postgres
+      - DATASOURCES_DEFAULT_DATABASE=inoa
+      - DATASOURCES_DEFAULT_USERNAME=inoa
+      # Kafka settings
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      # Influx settings
+      - INFLUXDB_URL=http://influxdb:8086
+      - INFLUXDB_ORGANISATION=inoa
+      - INFLUXDB_BUCKET=inoa
+      # Log levels
       - LOGGER_LEVELS_IO_INOA=INFO
       - LOGGER_LEVELS_ORG_APACHE_KAFKA=WARN

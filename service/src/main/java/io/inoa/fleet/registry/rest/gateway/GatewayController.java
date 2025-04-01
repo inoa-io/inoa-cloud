@@ -91,7 +91,7 @@ public class GatewayController implements GatewayApi {
         if (!otaService.checkGatewayRegistered(vo.getGatewayId())) {
           otaService.registerGateway(vo.getGatewayId(), new String(vo.getCredentialValue()));
         }
-      } catch (IllegalStateException e) {
+      } catch (Exception e) {
         // We do not stop here, but just log the error to at least register the gateway
         // in database
         log.error("Unable to register gateway in Hawkbit.", e);

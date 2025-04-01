@@ -1,0 +1,142 @@
+micronaut:
+  application:
+    name: INOA Cloud
+  server:
+    port: 8080
+  # https://docs.micronaut.io/latest/guide/#clientConfiguration
+  http:
+    services:
+      keycloak:
+        url: https://auth.${inoa.domain}
+        path: /
+        follow-redirects: false
+        connect-timeout: ${keycloak.connect-timeout:1000ms}
+        read-timeout: ${keycloak.read-timeout:2000ms}
+      hawkbit:
+        url: https://hawkbit.${inoa.domain}
+  # https://micronaut-projects.github.io/micronaut-security/latest/guide/#securityConfiguration
+  security:
+    authentication: idtoken
+    oauth2:
+      openid:
+        logout-uri: /oauth/logout
+      clients:
+        inoa-cloud:
+          openid:
+            issuer: ${micronaut.http.services.keycloak.url}${micronaut.http.services.keycloak.path}realms/inoa
+          client-id: inoa-cloud
+          client-secret: ${inoa-cloud.client-secret:changeMe}
+          grant-type: CLIENT_CREDENTIALS
+          client-credentials:
+            service-id-regex: inoa-cloud|inoa-groundcontrol
+            # https://micronaut-projects.github.io/micronaut-security/latest/guide/#oauth
+        inoa-groundcontrol:
+          openid:
+            issuer: ${micronaut.http.services.keycloak.url}${micronaut.http.services.keycloak.path}realms/inoa
+            end-session.enabled: true
+          client-id: inoa-groundcontrol
+          client-secret: ${inoa-groundcontrol.client-secret:changeMe}
+          scopes:
+            - openid
+            - email
+            - profile
+    # https://micronaut-projects.github.io/micronaut-security/latest/guide/#securityConfiguration
+    token:
+      name-key: sub
+      roles-key: roles
+      # https://micronaut-projects.github.io/micronaut-security/latest/guide/#cookieToken
+      cookie:
+        cookie-http-only: true
+        cookie-same-site: lax
+        # https://micronaut-projects.github.io/micronaut-security/latest/guide/#jwt
+      jwt:
+        claims-validators:
+          audience: inoa-cloud
+        signatures:
+          jwks:
+            keycloak:
+              url: ${micronaut.http.services.keycloak.url}${micronaut.http.services.keycloak.path}realms/inoa/protocol/openid-connect/certs
+    redirect:
+      unauthorized:
+        url: /oauth/login/inoa-groundcontrol
+      prior-to-login: true
+    # https://micronaut-projects.github.io/micronaut-security/latest/guide/#logoutHandler
+    endpoints:
+      logout:
+        enabled: true
+        path: /logout
+        get-allowed: true
+  router:
+    static-resources:
+      app:
+        mapping: /**
+        paths: file:/${static.path}
+  # https://micronaut-projects.github.io/micronaut-micrometer/latest/guide/#metricsAndReportersPrometheus
+  metrics:
+    enabled: true
+    http:
+      path: /**
+    binders:
+      executor:
+        enabled: false
+      files:
+        enabled: false
+        jdbc:
+          enabled: false
+        jvm:
+          enabled: false
+        logback:
+          enabled: true
+        processor:
+          enabled: false
+        uptime:
+          enabled: false
+        web:
+          enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1m
+        descriptions: false
+inoa:
+  domain: ${inoa.domain}
+  fleet:
+    # allow audience test access to all tenants
+    security:
+      tenant-audience-whitelist: inoa
+    # add some default configurations
+    # TODO: remove redundant definitions of configuration definitions
+    tenant:
+      configurations:
+        - definition:
+            key: ntp.host
+            description: Host of ntp server to use.
+            type: STRING
+            pattern: "[a-z0-9\\.]{8,20}"
+          value: pool.ntp.org
+        - definition:
+            key: mqtt.url
+            description: URI of mqtt server.
+            type: STRING
+            pattern: (tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}
+          value: tcp://mqtt.${inoa.domain}:${inoa.mqtt.port:8883}
+        - definition:
+            key: mqtt.insecure
+            description: Should the client accept unsecure mqtt connections?
+            type: BOOLEAN
+          value: true
+    gateway:
+      token:
+        audience: inoa-cloud
+  mqtt:
+    port: 1883
+    tls:
+      port: 8883
+      generateKey: false
+      key: /tls/key.pem
+      cert: /tls/cert.pem
+
+logger:
+  levels:
+    io.micronaut: WARN
+    io.inoa: INFO
