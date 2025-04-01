@@ -13,7 +13,7 @@ micronaut:
         connect-timeout: ${keycloak.connect-timeout:1000ms}
         read-timeout: ${keycloak.read-timeout:2000ms}
       hawkbit:
-        url: https://hawkbit.${inoa.domain}/UI/login
+        url: https://hawkbit.${inoa.domain}
   # https://micronaut-projects.github.io/micronaut-security/latest/guide/#securityConfiguration
   security:
     authentication: idtoken
