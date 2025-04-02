@@ -74,7 +74,7 @@ spec:
             successThreshold: 1
             failureThreshold: 25
           volumeMounts:
-            - name: config
+            - name: datasources
               mountPath: /etc/grafana/provisioning/datasources/datasources.yaml
               subPath: datasources.yaml
               readOnly: true
@@ -121,6 +121,9 @@ spec:
         - name: config
           configMap:
             name: grafana-config
+        - name: datasources
+          configMap:
+            name: grafana-datasources
         - name: dashboards
           emptyDir: {}
         - name: tmp
