@@ -4,7 +4,8 @@ metadata:
   name: mcnoize
 spec:
   podManagementPolicy: Parallel
-  replicas: 1
+  # We may scale up McNoizes as needed in specific stages
+  replicas: 0
   revisionHistoryLimit: 0
   serviceName: mcnoize
   selector:
@@ -17,6 +18,8 @@ spec:
       labels:
         app.kubernetes.io/name: mcnoize
     spec:
+      imagePullSecrets:
+        - name: dockerconfigjson-ghcr-io
       containers:
         - name: mcnoize
           image: ghcr.io/inoa-io/mcnoize
