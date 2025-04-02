@@ -66,5 +66,4 @@ configMapGenerator:
     literals:
       - INOA_DOMAIN=${inoa_domain}
     files:
-      - files/datasources.yaml
       - files/dashboards.yaml
