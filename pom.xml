@@ -107,7 +107,7 @@
 		<version.org.keycloak>26.0.8</version.org.keycloak>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
 		<version.org.projectlombok>1.18.36</version.org.projectlombok>
-		<version.com.diffplug.spotless.spotless-maven-plugin>2.44.0.BETA4</version.com.diffplug.spotless.spotless-maven-plugin>
+		<version.com.diffplug.spotless.spotless-maven-plugin>2.44.3</version.com.diffplug.spotless.spotless-maven-plugin>
 
 	</properties>
 
