@@ -47,3 +47,29 @@ spec:
     - hosts:
         - groundcontrol.${inoa_domain}
       secretName: inoa-groundcontrol-tls
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: inoa-registry
+  annotations:
+    kubernetes.io/tls-acme: true
+    traefik.ingress.kubernetes.io/router.tls: true
+    traefik.ingress.kubernetes.io/router.tls.options: satellite@file
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: registry.${inoa_domain}
+      http:
+        paths:
+          - path: /gateway
+            pathType: Prefix
+            backend:
+              service:
+                name: inoa
+                port:
+                  name: http
+  tls:
+    - hosts:
+        - registry.${inoa_domain}
+      secretName: inoa-registry-tls
