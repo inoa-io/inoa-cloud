@@ -4014,11 +4014,11 @@ __metadata:
   linkType: hard
 
 "@types/leaflet@npm:^1":
-  version: 1.9.16
-  resolution: "@types/leaflet@npm:1.9.16"
+  version: 1.9.17
+  resolution: "@types/leaflet@npm:1.9.17"
   dependencies:
     "@types/geojson": "npm:*"
-  checksum: 10c0/80403093b918ed19911997dc8ebe1aac44f49ada065f5b60ea451f6b8c92ffc942ef49706f7faa1a4e7c62824390a44d407bd5b1a9cfbbaea82c1501129c919a
+  checksum: 10c0/b03c98921a1874212d456f5bddb2e2eda87c1a82b458a73d2df844af2ebe59eba869294b563637f4e52b38a5cd8f88c84febd519feb4bc6f3d14768822c1189c
   languageName: node
   linkType: hard
 
