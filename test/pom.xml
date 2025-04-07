@@ -139,7 +139,6 @@
 				</executions>
 				<configuration>
 					<!-- Expose ports to host for usage from outside k3s or host -->
-					<!-- TODO Check if this could make trouble in CI/CD environment with port clashes. -->
 					<portBindings>
 						<!-- Traefik -->
 						<portBinding>8080:8080</portBinding>
@@ -178,12 +177,10 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>${version.org.projectlombok}</version>
 						</path>
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut.core}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
