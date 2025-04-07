@@ -72,11 +72,11 @@ public class MessageHandler extends AbstractInterceptHandler {
     // Check for valid topics
     var topicOut =
         switch (topicIn) {
-          case MqttBroker.TELEMETRY_TOPIC_SHORT_NAME, MqttBroker
-              .TELEMETRY_TOPIC_LONG_NAME -> "hono.telemetry." + tenantId;
-          case MqttBroker.EVENT_TOPIC_SHORT_NAME, MqttBroker.EVENT_TOPIC_LONG_NAME -> "hono.event."
-              + tenantId;
-            // should not happen because `InoaAuthorizator#canWrite` will not allow this
+          case MqttBroker.TELEMETRY_TOPIC_SHORT_NAME, MqttBroker.TELEMETRY_TOPIC_LONG_NAME ->
+              "hono.telemetry." + tenantId;
+          case MqttBroker.EVENT_TOPIC_SHORT_NAME, MqttBroker.EVENT_TOPIC_LONG_NAME ->
+              "hono.event." + tenantId;
+          // should not happen because `InoaAuthorizator#canWrite` will not allow this
           default -> null;
         };
     if (topicOut == null) {

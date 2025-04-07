@@ -77,7 +77,7 @@ public class GroupsController extends AbstractManagementController implements Gr
 
     if (vo.getName() != null) {
       if (group.getName().equals(vo.getName())) {
-        log.trace("Group {}: skip update of name ecause not changed.", group.getName());
+        log.trace("Group {}: skip update of name because not changed.", group.getName());
       } else {
         if (repository.existsByTenantAndName(group.getTenant(), vo.getName())) {
           throw new HttpStatusException(HttpStatus.CONFLICT, "Already exists.");

@@ -86,21 +86,23 @@ public interface ConfigurationMapper {
       case STRING -> toDefinitionString(configurationDefinition);
       case INTEGER -> toDefinitionInteger(configurationDefinition);
       case URL -> toDefinitionUrl(configurationDefinition);
-      default -> throw new IllegalArgumentException(
-          "Unsupported type: " + configurationDefinition.getType());
+      default ->
+          throw new IllegalArgumentException(
+              "Unsupported type: " + configurationDefinition.getType());
     };
   }
 
   default ConfigurationDefinition toDefinition(ConfigurationDefinitionVO configurationDefinition) {
     return switch (configurationDefinition.getType()) {
-      case BOOLEAN -> toDefinitionBoolean(
-          (ConfigurationDefinitionBooleanVO) configurationDefinition);
+      case BOOLEAN ->
+          toDefinitionBoolean((ConfigurationDefinitionBooleanVO) configurationDefinition);
       case STRING -> toDefinitionString((ConfigurationDefinitionStringVO) configurationDefinition);
-      case INTEGER -> toDefinitionInteger(
-          (ConfigurationDefinitionIntegerVO) configurationDefinition);
+      case INTEGER ->
+          toDefinitionInteger((ConfigurationDefinitionIntegerVO) configurationDefinition);
       case URL -> toDefinitionUrl((ConfigurationDefinitionUrlVO) configurationDefinition);
-      default -> throw new IllegalArgumentException(
-          "Unsupported type: " + configurationDefinition.getType());
+      default ->
+          throw new IllegalArgumentException(
+              "Unsupported type: " + configurationDefinition.getType());
     };
   }
 
