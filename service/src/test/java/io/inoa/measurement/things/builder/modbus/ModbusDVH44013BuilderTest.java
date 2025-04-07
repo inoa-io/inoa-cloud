@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 
-public class ModbusDVH44013BuilderTest {
+public class ModbusDVH44013BuilderTest extends AbstractBuilderTest {
 
   @Test
   public void testBuildDefinition() throws JsonProcessingException, ConfigException {
@@ -29,13 +29,13 @@ public class ModbusDVH44013BuilderTest {
     Thing thing = new Thing();
     thing.setName("schrank");
 
-    thing.addConfig("serial", ThingConfigurationType.NUMBER, "100022");
-    thing.addConfig("modbus_interface", ThingConfigurationType.NUMBER, "1");
+    addConfig(thing, "serial", ThingConfigurationType.NUMBER, "100022");
+    addConfig(thing, "modbus_interface", ThingConfigurationType.NUMBER, "1");
 
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_1_7_0.getObisId()));
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_2_7_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_7_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_2_7_0.getObisId()));
 
     thing.setThingType(new ThingType().setIdentifier("dvh4013"));
     ArrayNode build = builder.build(thing);

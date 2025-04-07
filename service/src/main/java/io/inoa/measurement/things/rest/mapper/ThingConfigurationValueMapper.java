@@ -15,4 +15,9 @@ public interface ThingConfigurationValueMapper {
   @Mapping(source = "thingConfiguration", target = "_configuration")
   ThingConfigurationsInnerVO toThingConfigurationsInnerVO(
       ThingConfigurationValue thingConfigurationValue);
+
+  @Mapping(target = "thing", ignore = true)
+  @Mapping(source = "configuration", target = "thingConfiguration")
+  ThingConfigurationValue toThingConfigurationValue(
+      ThingConfigurationsInnerVO thingConfigurationsInnerVO);
 }

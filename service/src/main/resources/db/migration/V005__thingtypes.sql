@@ -22,7 +22,7 @@ CREATE
                 version
             ),
             CONSTRAINT chk_protocol CHECK(
-                protocol ~ '^JSON_REST_HTTP|MODBUS_RS458|MODBUS_TCP|S0|MBUS|WMBUS$'
+                protocol ~ '^JSON_REST_HTTP|MODBUS_RS458|MODBUS_TCP|S0|MBUS|WMBUS|ADC|RMS$'
             ),
             CONSTRAINT chk_category CHECK(
                 category ~ '^NONE|ELECTRIC_METER|GAS_METER|CURRENT_TRANSFORMER|SMART_PLUG$'
@@ -35,15 +35,14 @@ CREATE
             id SERIAL NOT NULL,
             thing_id UUID NOT NULL,
             tenant_id INTEGER NOT NULL,
-            urn VARCHAR(256) NOT NULL,
             name VARCHAR(256) NOT NULL,
             description VARCHAR(4096),
             gateway_id INTEGER NOT NULL,
-            thing_type INTEGER NOT NULL,
+            thing_type_id INTEGER NOT NULL,
             CONSTRAINT pk_thing PRIMARY KEY(id),
             CONSTRAINT uq_thing_thing_id UNIQUE(thing_id),
             CONSTRAINT fk_thing_thing_tenant FOREIGN KEY(tenant_id) REFERENCES tenant(id),
-            CONSTRAINT fk_thing_thing_type FOREIGN KEY(thing_type) REFERENCES thing_type(id),
+            CONSTRAINT fk_thing_thing_type FOREIGN KEY(thing_type_id) REFERENCES thing_type(id),
             CONSTRAINT fk_thing_gateway FOREIGN KEY(gateway_id) REFERENCES gateway(id)
         );
 
@@ -68,14 +67,16 @@ CREATE
             TYPE VARCHAR(8) NOT NULL,
             validation_regex VARCHAR(4096),
             CONSTRAINT pk_thing_configuration PRIMARY KEY(id),
-            CONSTRAINT fk_thing_configuration_thing_type FOREIGN KEY(thing_type_id) REFERENCES thing_type(id),
-            CONSTRAINT uq_thing_configuration_name_thing_type UNIQUE(
-                name,
-                thing_type_id
-            ),
-            CONSTRAINT chk_type CHECK(
-                TYPE ~ '^STRING|NUMBER|BOOLEAN$'
-            )
+            CONSTRAINT fk_thing_configuration_thing_type FOREIGN KEY(thing_type_id) REFERENCES thing_type(id) ON
+            DELETE
+                CASCADE,
+                CONSTRAINT uq_thing_configuration_name_thing_type UNIQUE(
+                    name,
+                    thing_type_id
+                ),
+                CONSTRAINT chk_type CHECK(
+                    TYPE ~ '^STRING|NUMBER|BOOLEAN$'
+                )
         );
 
 CREATE
@@ -88,8 +89,12 @@ CREATE
                 thing_id,
                 thing_configuration_id
             ),
-            CONSTRAINT fk_thing_configuration_value_thing FOREIGN KEY(thing_id) REFERENCES thing(id),
-            CONSTRAINT fk_thing_configuration_value_thing_configuration FOREIGN KEY(thing_configuration_id) REFERENCES thing_configuration(id)
+            CONSTRAINT fk_thing_configuration_value_thing FOREIGN KEY(thing_id) REFERENCES thing(id) ON
+            DELETE
+                CASCADE,
+                CONSTRAINT fk_thing_configuration_value_thing_configuration FOREIGN KEY(thing_configuration_id) REFERENCES thing_configuration(id) ON
+                DELETE
+                    CASCADE
         );
 
 CREATE
@@ -101,8 +106,12 @@ CREATE
                 thing_type_id,
                 measurand_type_id
             ),
-            CONSTRAINT fk_thing_type_measurand_types_thing_type FOREIGN KEY(thing_type_id) REFERENCES thing_type(id),
-            CONSTRAINT fk_thing_type_measurand_types_measurand_type FOREIGN KEY(measurand_type_id) REFERENCES measurand_type(id)
+            CONSTRAINT fk_thing_type_measurand_types_thing_type FOREIGN KEY(thing_type_id) REFERENCES thing_type(id) ON
+            DELETE
+                CASCADE,
+                CONSTRAINT fk_thing_type_measurand_types_measurand_type FOREIGN KEY(measurand_type_id) REFERENCES measurand_type(id) ON
+                DELETE
+                    CASCADE
         );
 
 CREATE
@@ -115,12 +124,16 @@ CREATE
             INTERVAL INTEGER NOT NULL,
             timeout INTEGER NOT NULL,
             CONSTRAINT pk_measurand PRIMARY KEY(id),
-            CONSTRAINT fk_measurand_measurand_type FOREIGN KEY(measurand_type_id) REFERENCES measurand_type(id),
-            CONSTRAINT fk_measurand_thing FOREIGN KEY(thing_id) REFERENCES thing(id),
-            CONSTRAINT uq_measurand_thing_measurand_type UNIQUE(
-                thing_id,
-                measurand_type_id
-            )
+            CONSTRAINT fk_measurand_measurand_type FOREIGN KEY(measurand_type_id) REFERENCES measurand_type(id) ON
+            DELETE
+                CASCADE,
+                CONSTRAINT fk_measurand_thing FOREIGN KEY(thing_id) REFERENCES thing(id) ON
+                DELETE
+                    CASCADE,
+                    CONSTRAINT uq_measurand_thing_measurand_type UNIQUE(
+                        thing_id,
+                        measurand_type_id
+                    )
         );
 
 INSERT

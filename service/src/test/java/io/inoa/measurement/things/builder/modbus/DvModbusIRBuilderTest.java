@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 
-public class DvModbusIRBuilderTest {
+public class DvModbusIRBuilderTest extends AbstractBuilderTest {
 
   @Test
   public void testBuildDefinition() throws JsonProcessingException, ConfigException {
@@ -31,12 +31,12 @@ public class DvModbusIRBuilderTest {
     thing.setThingConfigurationValues(new HashSet<>());
     thing.setMeasurands(new HashSet<>());
 
-    thing.addConfig("serial", ThingConfigurationType.NUMBER, "22");
-    thing.addConfig("modbus_interface", ThingConfigurationType.NUMBER, "1");
+    addConfig(thing, "serial", ThingConfigurationType.NUMBER, "22");
+    addConfig(thing, "modbus_interface", ThingConfigurationType.NUMBER, "1");
 
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_1_7_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_7_0.getObisId()));
 
     thing.setThingType(new ThingType().setIdentifier("bla"));
 

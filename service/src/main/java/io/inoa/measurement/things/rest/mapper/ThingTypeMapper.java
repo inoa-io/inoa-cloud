@@ -2,6 +2,7 @@ package io.inoa.measurement.things.rest.mapper;
 
 import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.rest.ThingTypeCreateVO;
+import io.inoa.rest.ThingTypeUpdateVO;
 import io.inoa.rest.ThingTypeVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -22,4 +23,10 @@ public interface ThingTypeMapper {
   @Mapping(target = "measurandTypes", ignore = true)
   @Mapping(source = "configurations", target = "thingConfigurations")
   ThingType toThingType(ThingTypeCreateVO thingTypeCreateVO);
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "identifier", ignore = true)
+  @Mapping(target = "measurandTypes", ignore = true)
+  @Mapping(source = "configurations", target = "thingConfigurations")
+  ThingType toThingType(ThingTypeUpdateVO thingTypeUpdateVO);
 }

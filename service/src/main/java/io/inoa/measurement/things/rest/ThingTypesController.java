@@ -3,7 +3,9 @@ package io.inoa.measurement.things.rest;
 import io.inoa.measurement.things.domain.MeasurandType;
 import io.inoa.measurement.things.domain.MeasurandTypeRepository;
 import io.inoa.measurement.things.domain.ThingTypeRepository;
+import io.inoa.measurement.things.rest.mapper.MeasurandTypeMapper;
 import io.inoa.measurement.things.rest.mapper.ThingTypeMapper;
+import io.inoa.rest.MeasurandTypeVO;
 import io.inoa.rest.ThingTypeCreateVO;
 import io.inoa.rest.ThingTypeUpdateVO;
 import io.inoa.rest.ThingTypeVO;
@@ -14,6 +16,7 @@ import io.micronaut.http.annotation.Controller;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,13 +25,19 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ThingTypesController implements ThingTypesApi {
 
-  private final ThingTypeMapper mapper;
+  private final ThingTypeMapper thingTypeMapper;
+  private final MeasurandTypeMapper measurandTypeMapper;
 
   @Inject private ThingTypeRepository thingTypeRepository;
   @Inject private MeasurandTypeRepository measurandTypeRepository;
 
   @Override
   public HttpResponse<ThingTypeVO> createThingType(ThingTypeCreateVO thingTypeCreateVO) {
+    // Check Duplicates
+    if (!thingTypeRepository.findByIdentifier(thingTypeCreateVO.getIdentifier()).isEmpty()) {
+      return HttpResponse.status(HttpStatus.CONFLICT);
+    }
+
     // Check Measurands
     var measurands = new ArrayList<MeasurandType>();
     for (var measurand : thingTypeCreateVO.getMeasurands()) {
@@ -40,19 +49,21 @@ public class ThingTypesController implements ThingTypesApi {
       measurands.add(measurandType);
     }
 
-    var thingType = mapper.toThingType(thingTypeCreateVO);
+    var thingType = thingTypeMapper.toThingType(thingTypeCreateVO);
     thingType.setMeasurandTypes(measurands);
-    // thingType.getThingConfigurations().forEach(thingConfiguration ->
-    // {thingConfiguration.setThingType(thingType);});
 
-    thingTypeRepository.save(thingType);
-
-    return findThingType(thingTypeCreateVO.getIdentifier());
+    return HttpResponse.created(thingTypeMapper.toThingTypeVO(thingTypeRepository.save(thingType)));
   }
 
   @Override
   public HttpResponse<Object> deleteThingType(String thingTypeId) {
-    return HttpResponse.status(500, "Not implemented yet");
+    // Check existing
+    if (thingTypeRepository.findByIdentifier(thingTypeId).isEmpty()) {
+      return HttpResponse.status(HttpStatus.NOT_FOUND);
+    }
+
+    thingTypeRepository.deleteByIdentifier(thingTypeId);
+    return HttpResponse.status(HttpStatus.NO_CONTENT);
   }
 
   @Override
@@ -62,17 +73,45 @@ public class ThingTypesController implements ThingTypesApi {
       return HttpResponse.notFound();
     }
     // TODO: Multiple thing type versions not supported yet
-    return HttpResponse.ok(mapper.toThingTypeVO(result.iterator().next()));
+    return HttpResponse.ok(thingTypeMapper.toThingTypeVO(result.iterator().next()));
   }
 
   @Override
   public HttpResponse<List<ThingTypeVO>> getThingTypes() {
-    return HttpResponse.status(500, "Not implemented yet");
+    return HttpResponse.ok(
+        thingTypeRepository.findAll().stream()
+            .map(thingTypeMapper::toThingTypeVO)
+            .collect(Collectors.toList()));
   }
 
   @Override
   public HttpResponse<ThingTypeVO> updateThingType(
       String thingTypeId, ThingTypeUpdateVO thingTypeUpdateVO) {
-    return HttpResponse.status(500, "Not implemented yet");
+    // Check existing
+    var thingTypes = thingTypeRepository.findByIdentifier(thingTypeId);
+    if (thingTypes.isEmpty()) {
+      return HttpResponse.status(HttpStatus.NOT_FOUND);
+    }
+    // TODO: No tenant in scope here yet
+    var thingType = thingTypes.iterator().next();
+    var thingTypeUpdate = thingTypeMapper.toThingType(thingTypeUpdateVO);
+
+    thingType.setName(thingTypeUpdate.getName());
+    thingType.setDescription(thingTypeUpdate.getDescription());
+    thingType.setCategory(thingTypeUpdate.getCategory());
+    thingType.setProtocol(thingTypeUpdate.getProtocol());
+    thingType.setVersion(thingTypeUpdate.getVersion());
+    thingType.setMeasurandTypes(thingTypeUpdate.getMeasurandTypes());
+    thingType.setThingConfigurations(thingTypeUpdate.getThingConfigurations());
+
+    return HttpResponse.ok(thingTypeMapper.toThingTypeVO(thingTypeRepository.update(thingType)));
+  }
+
+  @Override
+  public HttpResponse<List<MeasurandTypeVO>> findMeasurandTypes() {
+    return HttpResponse.ok(
+        measurandTypeRepository.findAll().stream()
+            .map(measurandTypeMapper::toMeasurandTypeVO)
+            .toList());
   }
 }

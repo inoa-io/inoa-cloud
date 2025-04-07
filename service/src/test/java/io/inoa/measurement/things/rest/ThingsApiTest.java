@@ -1,160 +1,201 @@
 package io.inoa.measurement.things.rest;
 
+import static io.inoa.test.HttpAssertions.assert201;
+import static io.inoa.test.HttpAssertions.assert400;
+import static io.inoa.test.HttpAssertions.assert401;
+import static io.inoa.test.HttpAssertions.assert404;
+
+import io.inoa.rest.MeasurandVO;
+import io.inoa.rest.ThingCreateVO;
+import io.inoa.rest.ThingUpdateVO;
 import io.inoa.rest.ThingsApiTestClient;
 import io.inoa.rest.ThingsApiTestSpec;
 import io.inoa.test.AbstractUnitTest;
 import jakarta.inject.Inject;
+import java.util.UUID;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 @DisplayName("Things API Tests")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec {
 
   @Inject ThingsApiTestClient client;
 
-  @Disabled("NYI")
   @Test
+  @Order(1)
   @Override
-  public void createThing201() {}
+  public void createThing201() {
+    var tenant = data.tenant();
+    var gateway = data.gateway();
+    var thingCreateVO =
+        new ThingCreateVO()
+            .name("New Thing")
+            .description("New created Thing for testing.")
+            .gatewayId(gateway.getGatewayId())
+            .thingTypeId("dvh4013")
+            .addMeasurandsItem(new MeasurandVO().enabled(true).interval(60000).timeout(1000))
+            .configurations(null);
+
+    assert201(() -> client.createThing(auth(tenant), thingCreateVO));
+  }
 
   @Disabled("NYI")
   @Test
+  @Order(2)
   @Override
-  public void createThing400() {}
+  public void createThing400() {
+    var tenant = data.tenant();
+    var thingCreateVO = new ThingCreateVO();
+    assert400(() -> client.createThing(auth(tenant), thingCreateVO));
+  }
+
+  @Test
+  @Order(3)
+  @Override
+  public void createThing401() {
+    assert401(() -> client.createThing(null, new ThingCreateVO()));
+  }
 
   @Disabled("NYI")
   @Test
-  @Override
-  public void createThing401() {}
-
-  @Disabled("NYI")
-  @Test
+  @Order(4)
   @Override
   public void createThing409() {}
 
   @Disabled("NYI")
   @Test
-  @Override
-  public void deleteThing204() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void deleteThing401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void deleteThing404() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void downloadConfigToGateway200() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void downloadConfigToGateway401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void downloadConfigToGateway404() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThing200() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThing401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThing404() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThings200() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThings401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThings404() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThingsByGatewayId200() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThingsByGatewayId401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void findThingsByGatewayId404() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void syncConfigToGateway204() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void syncConfigToGateway401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void syncConfigToGateway404() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void syncConfigToGatewaySequential204() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void syncConfigToGatewaySequential401() {}
-
-  @Disabled("NYI")
-  @Test
-  @Override
-  public void syncConfigToGatewaySequential404() {}
-
-  @Disabled("NYI")
-  @Test
+  @Order(5)
   @Override
   public void updateThing200() {}
 
   @Disabled("NYI")
   @Test
+  @Order(6)
   @Override
   public void updateThing400() {}
 
-  @Disabled("NYI")
   @Test
+  @Order(7)
   @Override
-  public void updateThing401() {}
+  public void updateThing401() {
+    assert401(() -> client.updateThing(null, UUID.randomUUID(), new ThingUpdateVO()));
+  }
 
   @Disabled("NYI")
   @Test
+  @Order(8)
   @Override
   public void updateThing404() {}
+
+  @Disabled("NYI")
+  @Test
+  @Order(9)
+  @Override
+  public void findThing200() {}
+
+  @Test
+  @Order(10)
+  @Override
+  public void findThing401() {
+    assert401(() -> client.findThing(null, UUID.randomUUID()));
+  }
+
+  @Test
+  @Order(11)
+  @Override
+  public void findThing404() {
+    assert404(() -> client.findThing(auth("inoa"), UUID.randomUUID()));
+  }
+
+  @Disabled("NYI")
+  @Test
+  @Order(12)
+  @Override
+  public void findThings200() {}
+
+  @Test
+  @Order(13)
+  @Override
+  public void findThings401() {
+    assert401(() -> client.findThings(null, null, null, null, null));
+  }
+
+  @Test
+  @Order(14)
+  @Override
+  @Disabled("NYI")
+  public void findThings404() {
+    assert404(() -> client.findThings(auth("inoa"), null, null, null, null));
+  }
+
+  @Disabled("NYI")
+  @Test
+  @Order(15)
+  @Override
+  public void findThingsByGatewayId200() {}
+
+  @Test
+  @Order(16)
+  @Override
+  public void findThingsByGatewayId401() {
+    assert401(
+        () -> client.findThingsByGatewayId(null, data.gatewayId(), null, null, null, null, null));
+  }
+
+  @Test
+  @Order(17)
+  @Override
+  @Disabled("NYI")
+  public void findThingsByGatewayId404() {
+    assert404(
+        () ->
+            client.findThingsByGatewayId(
+                auth("inoa"), data.gatewayId(), null, null, null, null, null));
+  }
+
+  @Disabled("NYI")
+  @Test
+  @Order(18)
+  @Override
+  public void deleteThing204() {}
+
+  @Test
+  @Order(19)
+  @Override
+  public void deleteThing401() {
+    assert401(() -> client.deleteThing(null, UUID.randomUUID()));
+  }
+
+  @Test
+  @Order(20)
+  @Override
+  public void deleteThing404() {
+    assert404(() -> client.deleteThing(auth("inoa"), UUID.randomUUID()));
+  }
+
+  @Disabled("NYI")
+  @Order(21)
+  @Test
+  @Override
+  public void syncThingsToGateway204() {}
+
+  @Test
+  @Order(22)
+  @Override
+  public void syncThingsToGateway401() {
+    assert401(() -> client.syncThingsToGateway(null, "unknown"));
+  }
+
+  @Test
+  @Order(23)
+  @Override
+  @Disabled("NYI")
+  public void syncThingsToGateway404() {
+    assert404(() -> client.syncThingsToGateway(auth("inoa"), data.gatewayId()));
+  }
 }

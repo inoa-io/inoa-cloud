@@ -91,8 +91,7 @@ public class Security {
     // read tenant from http header if audience claim is in whitelist
 
     var audienceWhitelist = properties.getSecurity().getTenantAudienceWhitelist();
-    var audience =
-        get(attributes, Claims.AUDIENCE).filter(a -> audienceWhitelist.contains(a)).findFirst();
+    var audience = get(attributes, Claims.AUDIENCE).filter(audienceWhitelist::contains).findFirst();
     if (audience.isPresent()) {
       var tenantId =
           ServerRequestContext.currentRequest()

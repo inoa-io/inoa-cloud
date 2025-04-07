@@ -12,5 +12,11 @@ import org.mapstruct.MappingConstants;
 public interface MeasurandMapper {
 
   @Mapping(target = "uri", ignore = true)
+  @Mapping(source = "measurandType.obisId", target = "measurandType")
   MeasurandVO toMeasurandVO(Measurand measurand);
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "thing", ignore = true)
+  @Mapping(target = "measurandType", ignore = true)
+  Measurand toMeasurand(MeasurandVO measurandVO);
 }

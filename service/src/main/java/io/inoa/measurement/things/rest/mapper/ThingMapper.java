@@ -1,6 +1,7 @@
 package io.inoa.measurement.things.rest.mapper;
 
 import io.inoa.measurement.things.domain.Thing;
+import io.inoa.rest.ThingCreateVO;
 import io.inoa.rest.ThingVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -18,4 +19,12 @@ public interface ThingMapper {
   @Mapping(target = "removeMeasurandsItem", ignore = true)
   @Mapping(target = "removeConfigurationsItem", ignore = true)
   ThingVO toThingVO(Thing thing);
+
+  @Mapping(target = "id", ignore = true)
+  @Mapping(target = "tenant", ignore = true)
+  @Mapping(target = "thingId", ignore = true)
+  @Mapping(target = "gateway", ignore = true)
+  @Mapping(target = "thingType", ignore = true)
+  @Mapping(source = "configurations", target = "thingConfigurationValues")
+  Thing toThing(ThingCreateVO thingVO);
 }

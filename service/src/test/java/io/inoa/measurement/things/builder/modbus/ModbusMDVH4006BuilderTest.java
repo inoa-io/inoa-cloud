@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.stream.StreamSupport;
 import org.junit.jupiter.api.Test;
 
-public class ModbusMDVH4006BuilderTest {
+public class ModbusMDVH4006BuilderTest extends AbstractBuilderTest {
 
   @Test
   public void testBuildDefinition() throws ConfigException {
@@ -27,12 +27,12 @@ public class ModbusMDVH4006BuilderTest {
     Thing thing = new Thing();
     thing.setName("schrank");
 
-    thing.addConfig("serial", ThingConfigurationType.NUMBER, "39000976");
-    thing.addConfig("modbus_interface", ThingConfigurationType.NUMBER, "1");
+    addConfig(thing, "serial", ThingConfigurationType.NUMBER, "39000976");
+    addConfig(thing, "modbus_interface", ThingConfigurationType.NUMBER, "1");
 
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));
-    thing.addMeasurand(new MeasurandType().setObisId(OBIS_1_7_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));
+    addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_7_0.getObisId()));
 
     thing.setThingType(new ThingType().setIdentifier("mdvh4006"));
     ArrayNode build = builder.build(thing);

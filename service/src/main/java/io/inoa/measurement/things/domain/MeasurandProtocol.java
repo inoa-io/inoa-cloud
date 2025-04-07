@@ -6,5 +6,7 @@ public enum MeasurandProtocol {
   MODBUS_TCP,
   S0,
   MBUS,
-  WMBUS
+  WMBUS,
+  ADC,
+  RMS
 }
