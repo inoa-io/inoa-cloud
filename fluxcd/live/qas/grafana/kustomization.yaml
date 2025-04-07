@@ -12,4 +12,4 @@ configMapGenerator:
 
 images:
   - name: docker.io/grafana/grafana
-    newTag: "10.2.4"
+    newTag: "10.2.9"
