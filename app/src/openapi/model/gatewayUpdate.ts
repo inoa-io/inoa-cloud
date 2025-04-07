@@ -7,6 +7,8 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
+import { GatewayLocationDataVO } from './gatewayLocationData';
+
 
 
 /**
@@ -17,6 +19,7 @@ export interface GatewayUpdateVO {
      * Human friendly description (can change).
      */
     name?: string;
+    location?: GatewayLocationDataVO;
     /**
      * Flag if enabled or not.
      */

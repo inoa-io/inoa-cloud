@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+data:
+  datasources.yaml: ENC[AES256_GCM,data:cruP9iK2Uu0howhwv06bIKhgQFsdADF+JPudsEvWGG9sW4khNRvTTU4Lbb5TahcpG/g+eQ+a3j8gsZWFHnSFQcyrNGV6IsjOSQfPf5Llik9ZGBCrL6WoFu3hAqDjkO8/eYCVbR5e4HxNHDFzsMZDKR9ysgtbsi5yFDbaEm6zvNrgfAZxxo2eWkzlcSexJiwXbTyyyegJyBmg73HKMPckkBLxDE2OzjFLdkO+DhnlmFS+cS/RoOdJiRFKTp+842zFcn/vfe2ErBtdyYRyYz0XSfUGRe5R4Y6oORo1fMu3y4hV+bzb55c18cgzJC+JB4e5UYX8Aq/YmNRaCfPeEY9oTR+2rz1Vcxa12aMaJ7ftlW8jo1p05QStZ3xan9oh7JMELV3X3QQPwgvTBRssGxNQS6n1+b+wdCYTDry0AKPY6+9F7BhwtrE6xSJFL5CRSklk3jX3IdruchS+roqIlBVDQQaieY0KdjC6GjWSp7JosqF8QP0J+Tm6CQYVcEFQlcwQbPNzpG1/Oko6TiwVvdrpBDxNdXguxk3imFlGBnJnpVp9OUe5ByWL7JJBOX7ZosHdJg7b02ZX54nHzwa1x3AGkQWuPsTtuQa/NHhYDShR8x8al0smP4WMvnyPAKS0pQJnw1DKvklrAsSWyTaa0UE0Wj1UTsgKVXwN9qFJySHQWtP/HJXeGhSn/NfiDman6Hz7oQZ50D9e4AjzQ9TPJTsj/CSgFyCsFKxtlOOSz6IxLvm7izKdvv9i4LOq1sym49yNks2vDVjjs4L+F9/37/EIXlPdkIf5fUHdzG59l6/o9oHIiw4eA1lFnkiKT4mlaypQf5du3v1P8LgUuEaSQRsYErt9KDvP15bDcDtsTgjRCAH3WAsYxNx7TWGkYOZAZ59GkAKC+mR2bE1rNNvvEZMXDV+sMp5EnrCqLY6b0jzFtxX/x4xZMEuX5p6vArHR7FE=,iv:uveShESXoUXUVjkbZecB2YdJHyd1KFPKbPs4nmd17v8=,tag:urqzwAsKwcxwyj2HO0Y9EQ==,type:str]
+sops:
+  kms: []
+  gcp_kms:
+    - resource_id: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd
+      created_at: "2025-04-02T12:40:13Z"
+      enc: CiQAIt230Gmw0LE6BTjAQK5RQWSZWhK23N+9uvoijWHZnDQ0ogwSSQD2lEBU0K7mG2sl70xoTJAGwUKxYtlFLquhxx0+WOt1JLv4fPD84cDmBGR6w+uuDrsEbVNNifGPPIak99xjJbyqUgLf7BZqoRg=
+  azure_kv: []
+  hc_vault: []
+  age: []
+  lastmodified: "2025-04-02T12:40:13Z"
+  mac: ENC[AES256_GCM,data:5CuCwbsTAsdd8laSAIwMR8QmQjtkjy+umASfpea3Tc4c4EHBTELasSQiFz207R4ow18DRIAkOz+uHbMmg9aH/coDQUJUqfxRYpoiCLJscOSHfRYicQAd9tBLi7wFzA4ml9M2qWuvb/hrtFAh1LpxkcuAypG4lzeSuJepjpNze6U=,iv:9fCMYP6/VbsytO8Uru03JVLo2JDOUlOY+OqmG30FMOA=,tag:Ix/egOpgCZIVCiEYvE0Ijw==,type:str]
+  pgp: []
+  encrypted_regex: ^(data|stringData)$
+  version: 3.9.0

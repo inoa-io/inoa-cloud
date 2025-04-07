@@ -1,4 +1,5 @@
 <div class="home-container" tabindex="0">
+	<!-- Satellite Manager Card -->
 	<mat-card class="wizard-card" (click)="routingService.navigateName('satellite-manager')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover;"></div>
@@ -9,6 +10,7 @@
 		</mat-card-content>
 	</mat-card>
 
+	<!-- Measurement Collector Card -->
 	<mat-card class="wizard-card" (click)="routingService.navigateName('measurement-collector')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/measurement-color.png'); background-size: cover;"></div>
@@ -19,6 +21,7 @@
 		</mat-card-content>
 	</mat-card>
 
+	<!-- Setup Configurator Card -->
 	<mat-card class="wizard-card" (click)="routingService.navigateName('setup-configurator')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/groundcontrol-color.png'); background-size: cover;"></div>
@@ -29,6 +32,7 @@
 		</mat-card-content>
 	</mat-card>
 
+	<!-- Installation Monitor Card -->
 	<mat-card class="wizard-card" (click)="routingService.navigateName('installation-monitor')">
 		<mat-card-header>
 			<div mat-card-avatar style="background-image: url('assets/inoa/fleet-color.png'); background-size: cover;"></div>
@@ -36,6 +40,17 @@
 		</mat-card-header>
 		<mat-card-content routerLink="installation-monitor">
 			<p>View the data measured by your fleet.</p>
+		</mat-card-content>
+	</mat-card>
+
+	<!-- EMS Dashboard Card -->
+	<mat-card class="wizard-card" (click)="routingService.navigateName('ems-dashboard')">
+		<mat-card-header>
+			<div mat-card-avatar style="background-image: url('assets/inoa/inoa-color.png'); background-size: cover;"></div>
+			<mat-card-title>EMS Data</mat-card-title>
+		</mat-card-header>
+		<mat-card-content routerLink="ems-dashboard">
+			<p>View your EMS Dashboard.</p>
 		</mat-card-content>
 	</mat-card>
 </div>

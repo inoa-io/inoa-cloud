@@ -1,7 +1,0 @@
-namespace: inoa-prod
-
-commonLabels:
-  app.kubernetes.io/part-of: inoa
-  app.kubernetes.io/env: prod
-
-resources: []

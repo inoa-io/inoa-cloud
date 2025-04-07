@@ -1,3 +1,6 @@
+// needs to be imported in order to render leaflet maps correctly
+@import "~leaflet/dist/leaflet.css"
+
 /* You can add global styles to this file, and also import other style files */
 
 // global variables (can be used in all other css / sass files)
@@ -31,3 +34,12 @@ body
   background-size: contain
   background-position: right
   background-repeat: no-repeat
+
+.device-icon-green
+  filter: hue-rotate(120deg)
+
+.device-icon-red
+  filter: hue-rotate(0deg) brightness(1.5)
+
+.device-icon-blue
+  filter: hue-rotate(240deg)

@@ -6,31 +6,10 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import io.inoa.fleet.registry.domain.Configuration;
-import io.inoa.fleet.registry.domain.ConfigurationDefinition;
-import io.inoa.fleet.registry.domain.ConfigurationDefinitionRepository;
-import io.inoa.fleet.registry.domain.Credential;
-import io.inoa.fleet.registry.domain.CredentialRepository;
-import io.inoa.fleet.registry.domain.Gateway;
-import io.inoa.fleet.registry.domain.GatewayConfiguration;
-import io.inoa.fleet.registry.domain.GatewayConfigurationRepository;
-import io.inoa.fleet.registry.domain.GatewayGroup;
-import io.inoa.fleet.registry.domain.GatewayGroupRepository;
-import io.inoa.fleet.registry.domain.GatewayProperty;
-import io.inoa.fleet.registry.domain.GatewayPropertyRepository;
-import io.inoa.fleet.registry.domain.GatewayRepository;
-import io.inoa.fleet.registry.domain.GatewayStatus;
-import io.inoa.fleet.registry.domain.GatewayStatusMqtt;
-import io.inoa.fleet.registry.domain.Group;
-import io.inoa.fleet.registry.domain.GroupConfiguration;
-import io.inoa.fleet.registry.domain.GroupConfigurationRepository;
-import io.inoa.fleet.registry.domain.GroupRepository;
-import io.inoa.fleet.registry.domain.Tenant;
-import io.inoa.fleet.registry.domain.TenantConfiguration;
-import io.inoa.fleet.registry.domain.TenantConfigurationRepository;
-import io.inoa.fleet.registry.domain.TenantRepository;
+import io.inoa.fleet.registry.domain.*;
 import io.inoa.rest.ConfigurationTypeVO;
 import io.inoa.rest.CredentialTypeVO;
+import io.inoa.rest.GatewayLocationDataVO;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
@@ -124,6 +103,24 @@ public class Data {
     return tenant(tenantId(), true, false);
   }
 
+  public GatewayLocationData getNullLocation() {
+    var nullLocation = new GatewayLocationData();
+    nullLocation.setHouseNumber(null);
+    nullLocation.setRoad(null);
+    nullLocation.setNeighbourhood(null);
+    nullLocation.setSuburb(null);
+    nullLocation.setCityDistrict(null);
+    nullLocation.setCity(null);
+    nullLocation.setState(null);
+    nullLocation.setPostcode(null);
+    nullLocation.setCountry(null);
+    nullLocation.setCountryCode(null);
+    nullLocation.setLatitude(null);
+    nullLocation.setLongitude(null);
+
+    return nullLocation;
+  }
+
   public Tenant tenant(String tenantId) {
     return tenant(tenantId, true, false);
   }
@@ -161,6 +158,82 @@ public class Data {
     return UUID.randomUUID().toString().substring(0, 32);
   }
 
+  public GatewayLocationDataVO gatewayLocationVO() {
+    var location = new GatewayLocationDataVO();
+
+    location.setLatitude(new Random().nextDouble() * 180 - 90);
+    location.setLongitude(new Random().nextDouble() * 180 - 90);
+    location.setRoad("Main Street Road");
+    location.setHouseNumber("" + new Random().nextInt(1, 99));
+    location.setPostcode("" + new Random().nextInt(10000, 99000));
+    location.setCity("Royville");
+    location.setCityDistrict("City Center");
+    location.setNeighbourhood("Himitsu");
+    location.setSuburb("Hanabi East");
+    location.setState("Hikiboshi");
+    location.setCountry("Japan");
+    location.setCountryCode("JP");
+
+    return location;
+  }
+
+  public GatewayLocationDataVO toGatewayLocationVO(GatewayLocationData locationData) {
+    var location = new GatewayLocationDataVO();
+
+    location.setLatitude(locationData.getLatitude());
+    location.setLongitude(locationData.getLongitude());
+    location.setRoad(locationData.getRoad());
+    location.setHouseNumber(locationData.getHouseNumber());
+    location.setPostcode(locationData.getPostcode());
+    location.setCity(locationData.getCity());
+    location.setCityDistrict(locationData.getCityDistrict());
+    location.setNeighbourhood(locationData.getNeighbourhood());
+    location.setSuburb(locationData.getSuburb());
+    location.setState(locationData.getState());
+    location.setCountry(locationData.getCountry());
+    location.setCountryCode(locationData.getCountryCode());
+
+    return location;
+  }
+
+  public GatewayLocationData toGatewayLocation(GatewayLocationDataVO locationData) {
+    var location = new GatewayLocationData();
+
+    location.setLatitude(locationData.getLatitude());
+    location.setLongitude(locationData.getLongitude());
+    location.setRoad(locationData.getRoad());
+    location.setHouseNumber(locationData.getHouseNumber());
+    location.setPostcode(locationData.getPostcode());
+    location.setCity(locationData.getCity());
+    location.setCityDistrict(locationData.getCityDistrict());
+    location.setNeighbourhood(locationData.getNeighbourhood());
+    location.setSuburb(locationData.getSuburb());
+    location.setState(locationData.getState());
+    location.setCountry(locationData.getCountry());
+    location.setCountryCode(locationData.getCountryCode());
+
+    return location;
+  }
+
+  public GatewayLocationData gatewayLocation() {
+    var location = new GatewayLocationData();
+
+    location.setLatitude(new Random().nextDouble() * 180 - 90);
+    location.setLongitude(new Random().nextDouble() * 180 - 90);
+    location.setRoad("Main Street Road");
+    location.setHouseNumber("" + new Random().nextInt(1, 99));
+    location.setPostcode("" + new Random().nextInt(10000, 99000));
+    location.setCity("Royville");
+    location.setCityDistrict("City Center");
+    location.setNeighbourhood("Himitsu");
+    location.setSuburb("Hanabi East");
+    location.setState("Hikiboshi");
+    location.setCountry("Japan");
+    location.setCountryCode("JP");
+
+    return location;
+  }
+
   public Gateway gateway() {
     return gateway(tenant());
   }
@@ -175,6 +248,10 @@ public class Data {
 
   public Gateway gateway(Tenant tenant) {
     return gateway(tenant, gatewayName(), true, List.of());
+  }
+
+  public Gateway gateway(Tenant tenant, GatewayLocationData location) {
+    return gateway(tenant, gatewayName(), location, true, List.of());
   }
 
   public Gateway gateway(Tenant tenant, String name) {
@@ -198,6 +275,31 @@ public class Data {
                 .setGatewayId(gatewayId())
                 .setTenant(tenant)
                 .setName(name)
+                .setEnabled(enabled)
+                .setStatus(
+                    new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));
+    if (!groups.isEmpty()) {
+      gatewayGroupRepository.saveAll(
+          groups.stream()
+              .map(group -> new GatewayGroup().setGateway(gateway).setGroup(group))
+              .collect(Collectors.toSet()));
+    }
+    return gateway;
+  }
+
+  public Gateway gateway(
+      Tenant tenant,
+      String name,
+      GatewayLocationData location,
+      boolean enabled,
+      List<Group> groups) {
+    var gateway =
+        gatewayRepository.save(
+            new Gateway()
+                .setGatewayId(gatewayId())
+                .setTenant(tenant)
+                .setName(name)
+                .setLocation(location)
                 .setEnabled(enabled)
                 .setStatus(
                     new GatewayStatus().setMqtt(new GatewayStatusMqtt().setConnected(false))));

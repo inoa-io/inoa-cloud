@@ -22,9 +22,7 @@ public class MqttProperties {
 
   @NotNull private String host = BrokerConstants.HOST;
 
-  @Min(0)
-  @Max(65535)
-  private int port = BrokerConstants.PORT;
+  @Min(0) @Max(65535) private int port = BrokerConstants.PORT;
 
   private String dataPath = BrokerConstants.DEFAULT_PERSISTENT_PATH;
 
@@ -33,9 +31,7 @@ public class MqttProperties {
   @Setter
   public static class Tls {
 
-    @Min(0)
-    @Max(65535)
-    private int port = 8883;
+    @Min(0) @Max(65535) private int port = 8883;
 
     /** Generate key if no key was defined. */
     private boolean generateKey = false;
@@ -44,8 +40,7 @@ public class MqttProperties {
     private Path cert;
   }
 
-  @AssertTrue(message = "configure tls cert or generate self signed cert for testing")
-  public boolean getTlsValid() {
+  @AssertTrue(message = "configure tls cert or generate self signed cert for testing") public boolean getTlsValid() {
     if (tls.isGenerateKey()) {
       log.warn("Generate self signed tls cert. Do not use in Production!");
       return true;
@@ -66,8 +61,7 @@ public class MqttProperties {
     return true;
   }
 
-  @AssertTrue(message = "port for tcp and tls must differ")
-  public boolean getPortsValid() {
+  @AssertTrue(message = "port for tcp and tls must differ") public boolean getPortsValid() {
     return tls.port != port;
   }
 }

@@ -58,6 +58,8 @@ configMapGenerator:
       - LOG_FORMAT=LOGFMT
       - LOG_LEVEL=INFO
   - name: grafana-config
+    literals:
+      - INOA_DOMAIN=${inoa.domain}
     files:
       - files/datasources.yaml
       - files/dashboards.yaml

@@ -1,0 +1,21 @@
+namespace: grayc-inoa-qas
+
+labels:
+  - pairs:
+      app.kubernetes.io/part-of: inoa
+      app.kubernetes.io/env: ${inoa_env}
+
+resources:
+  - namespace.yaml
+  - ../../base/fluxcd
+  - service-account
+  - postgres
+  - keycloak
+  - hawkbit
+  - influxdb
+  - kafka
+  - kafka-console
+  - grafana
+  - swagger-ui
+  - inoa
+  - mcnoize

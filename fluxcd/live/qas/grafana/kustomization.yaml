@@ -1,0 +1,15 @@
+resources:
+  - ../../../base/grafana
+  - datasources.yaml
+  - secrets.yaml
+
+configMapGenerator:
+  - name: grafana-env
+    behavior: merge
+    literals:
+      - GF_DATABASE_HOST=postgres
+      - GF_DATABASE_USER=grafana
+
+images:
+  - name: docker.io/grafana/grafana
+    newTag: "10.2.9"

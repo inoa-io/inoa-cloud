@@ -8,6 +8,7 @@
  * Do not edit the class manually.
  */
 import { GatewayStatusVO } from './gatewayStatus';
+import { GatewayLocationDataVO } from './gatewayLocationData';
 
 
 /**
@@ -22,6 +23,7 @@ export interface GatewayVO {
      * Human friendly description (can change).
      */
     name?: string;
+    location?: GatewayLocationDataVO;
     /**
      * Flag if enabled or not.
      */

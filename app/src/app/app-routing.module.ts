@@ -5,6 +5,7 @@ import { MeasurementCollectorComponent } from "./measurement-collector/measureme
 import { SatelliteManagerComponent } from "./satellite-manager/satellite-manager.component";
 import { SetupConfiguratorComponent } from "./setup-configurator/setup-configurator.component";
 import { InstallationMonitorComponent } from "./installation-monitor/installation-monitor.component";
+import { EmsDashboardComponent } from "./ems-dashboard/ems-dashboard.component";
 
 export const routes = [
 	{
@@ -43,6 +44,14 @@ export const routes = [
 		label: "Monitor Installations",
 		type: "wizard",
 		subTitle: "View the data measured by your fleet.",
+		icon: ""
+	},
+	{
+		path: "ems-dashboard",
+		component: EmsDashboardComponent,
+		label: "EMS Data",
+		type: "wizard",
+		subTitle: "View your EMS Dashboard.",
 		icon: ""
 	}
 ];

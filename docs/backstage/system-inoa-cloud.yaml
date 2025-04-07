@@ -2,21 +2,52 @@ apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
   name: inoa-cloud
+  namespace: inoa
   title: INOA Cloud
   annotations:
     backstage.io/source-location: url:https://git.grayc.io/inoa/cloud/src/branch/main/
-    backstage.io/techdocs-entity: system:default/inoa-cloud
-    backstage.io/techdocs-ref: url:https://git.grayc.io/inoa/cloud/src/branch/main/docs/techdocs
-    #    backstage.io/view-url: https://git.grayc.io/inoa/cloud/src/branch/main/catalog-info.yaml
-    backstage.io/edit-url: https://git.grayc.io/inoa/cloud/_edit/main/docs/backstage/system-inoa-cloud.yaml
+    backstage.io/techdocs-ref: dir:../techdocs
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
+    gitea.com/repo-slug: inoa/cloud
   links:
-    - url: https://groundcontrol.inoa.io
-      title: Ground Control - Production
+    - title: "[QAS] Ground Control"
+      url: https://groundcontrol.qas.inoa.io
       icon: dashboard
-    - url: https://groundcontrol.dev.inoa.io
-      title: Ground Control - Development
+      type: "[QAS]"
+    - title: "[QAS] Grafana"
+      url: https://grafana.qas.inoa.io/
+      type: "[QAS]"
+    - title: "[QAS] Keycloak Console"
+      url: https://auth.qas.inoa.io/admin/inoa/console/
+      type: "[QAS]"
+    - title: "[QAS] Hawkbit"
+      url: https://hawkbit.qas.inoa.io/UI/
+      type: "[QAS]"
+    - title: "[QAS] Kafka Console"
+      url: https://kafka.qas.inoa.io/
+      type: "[QAS]"
+    - title: "[QAS] SwaggerUI"
+      url: https://swagger.qas.inoa.io/
+      type: "[QAS]"
+    - title: "[QAS] Kafka Console"
+      url: https://kafka.qas.inoa.io/
+      type: "[QAS]"
+    - title: "[QAS] InfluxDB UI"
+      url: https://influx.qas.inoa.io/
+      type: "[QAS]"
+    - title: "[LEGACY] Ground Control"
+      url: https://cloud.inoa.io/
       icon: dashboard
+      type: "[LEGACY]"
+    - title: "[LEGACY] Keycloak Console"
+      url: https://auth.grayc.io/admin/inoa/console/
+      type: "[LEGACY]"
+    - title: "[LEGACY] Hawkbit"
+      url: https://cloud.inoa.io/update/inoa/UI/
+      type: "[LEGACY]"
+    - title: "[LEGACY] Kafka Console"
+      url: https://kafka-console.inoa.io/
+      type: "[LEGACY]"
 spec:
-  owner: grayc
-  domain: inoa
+  owner: user:default/fabian.schlegel_grayc.de
+  domain: inoa/inoa

@@ -1,9 +1,9 @@
-commonLabels:
-  app.kubernetes.io/part-of: inoa
-  app.kubernetes.io/name: hawkbit
+labels:
+  - pairs:
+      app.kubernetes.io/name: hawkbit
+      app.kubernetes.io/technology: spring-boot
 
 resources:
-  - cloudsql.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
@@ -12,18 +12,19 @@ configMapGenerator:
   - name: hawkbit-env
     literals:
       - SPRING_PROFILES_ACTIVE=postgresql
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://sqlproxy.infrastructure:5432/inoa-<patched>-hawkbit
-      - SPRING_DATASOURCE_USERNAME=inoa-<patched>-hawkbit
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/hawkbit
+      - SPRING_DATASOURCE_USERNAME=hawkbit
+      - SPRING_SECURITY_USER_NAME=admin
       - HAWKBIT_DMF_RABBITMQ_ENABLED=false
       - HAWKBIT_DMF_HONO_ENABLED=false
       - HAWKBIT_CONTROLLER_POLLINGTIME=00:10:00
       - HAWKBIT_CONTROLLER_POLLING_OVERDUE_TIME=00:05:00
       - HAWKBIT_SERVER_DDI_SECURITY_AUTHENTICATION_TARGETTOKEN_ENABLED=true
       - HAWKBIT_SERVER_TENANT_CONFIGURATION_AUTHENTICATION-TARGETTOKEN-ENABLED_DEFAULTVALUE=true
-      - HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_REF=http://{hostnameRequest}/update/inoa/controller/v1/{controllerId}/softwaremodules/{softwareModuleId}/artifacts/{artifactFileName}
+      - HAWKBIT_ARTIFACT_URL_PROTOCOLS_DOWNLOAD-HTTP_REF=https://{hostnameRequest}/update/inoa/controller/v1/{controllerId}/softwaremodules/{softwareModuleId}/artifacts/{artifactFileName}
+      # Service Account User
+      - HAWKBIT_SECURITY_USER_INOA_TENANT=DEFAULT
+      - HAWKBIT_SECURITY_USER_INOA_ROLES=TENANT_ADMIN
   - name: hawkbit-config
-    files: [logback-spring.xml]
-
-secretGenerator:
-  - name: hawkbit-env
-    literals: [SPRING_DATASOURCE_PASSWORD=<patched>]
+    files:
+      - logback-spring.xml

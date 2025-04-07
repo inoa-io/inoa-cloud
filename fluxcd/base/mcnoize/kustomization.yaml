@@ -1,0 +1,18 @@
+labels:
+  - pairs:
+      app.kubernetes.io/name: mcnoize
+      app.kubernetes.io/technology: micronaut
+
+resources:
+  - statefulset.yaml
+
+configMapGenerator:
+  - name: mcnoize-env
+    literals:
+      - MCNOIZE_DEBUG=true
+      - MCNOIZE_KEYCLOAK_TOKEN_URL=http://keycloak:8080/realms/inoa/protocol/openid-connect/token
+      - MCNOIZE_KEYCLOAK_CLIENT_ID=inoa-mcnoize
+      - MCNOIZE_INOA_URL=http://inoa:80
+      - MCNOIZE_MQTT_URL=ssl://inoa-mqtt:443
+      - MCNOIZE_SLEEP_DURATION=PT10s
+      - MCNOIZE_PAST_DURATION=PT24h

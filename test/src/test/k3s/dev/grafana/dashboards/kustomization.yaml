@@ -5,6 +5,13 @@ configMapGenerator:
   - name: grafana-dashboards-fleet
     files:
       - fleet/inoa-fleet-iot.json
+      - fleet/inoa-fleet-temperature.json
     options:
       annotations:
         grafana.io/folder: fleet
+  - name: grafana-dashboards-ems
+    files:
+      - ems/inoa-ems-power-data.json
+    options:
+      annotations:
+        grafana.io/folder: ems

@@ -127,8 +127,7 @@ public class LogEventListener {
       case 2 -> Level.WARN;
       case 3 -> Level.INFO;
       case 4 -> Level.DEBUG;
-      case 5 -> Level.TRACE;
-      default -> Level.ALL;
+      default -> Level.TRACE;
     };
   }
 }

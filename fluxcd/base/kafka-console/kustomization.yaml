@@ -1,6 +1,7 @@
-commonLabels:
-  app.kubernetes.io/part-of: inoa
-  app.kubernetes.io/name: kafka-console
+labels:
+  - pairs:
+      app.kubernetes.io/name: kafka-console
+      app.kubernetes.io/technology: golang
 
 resources:
   - deployment.yaml

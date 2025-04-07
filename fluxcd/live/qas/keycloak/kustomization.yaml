@@ -1,0 +1,17 @@
+resources:
+  - ../../../base/keycloak
+  - secrets.yaml
+  - realm.yaml
+
+configMapGenerator:
+  - name: keycloak-config
+    literals:
+      - KC_HOSTNAME=https://auth.${inoa_domain}
+      - KC_HOSTNAME_DEBUG=true
+      - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_LOG_CONSOLE_OUTPUT=default
+
+images:
+  - name: docker.io/kokuwaio/keycloak
+    newTag: "26.0.8"
