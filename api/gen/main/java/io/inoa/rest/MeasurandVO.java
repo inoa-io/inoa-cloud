@@ -15,11 +15,12 @@ public class MeasurandVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.net.URI uri;
 
-	@jakarta.validation.Valid
+	/** The OBIS code */
 	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MEASURAND_TYPE)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private MeasurandTypeVO measurandType;
+	private java.lang.String measurandType;
 
 	/** Indicates if the measurand is measured */
 	@jakarta.validation.constraints.NotNull
@@ -82,7 +83,7 @@ public class MeasurandVO {
 		return this;
 	}
 
-	public MeasurandVO measurandType(MeasurandTypeVO newMeasurandType) {
+	public MeasurandVO measurandType(java.lang.String newMeasurandType) {
 		this.measurandType = newMeasurandType;
 		return this;
 	}
@@ -112,11 +113,11 @@ public class MeasurandVO {
 		this.uri = newUri;
 	}
 
-	public MeasurandTypeVO getMeasurandType() {
+	public java.lang.String getMeasurandType() {
 		return measurandType;
 	}
 
-	public void setMeasurandType(MeasurandTypeVO newMeasurandType) {
+	public void setMeasurandType(java.lang.String newMeasurandType) {
 		this.measurandType = newMeasurandType;
 	}
 

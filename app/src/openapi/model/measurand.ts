@@ -7,7 +7,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { MeasurandTypeVO } from './measurandType';
 
 
 /**
@@ -18,7 +17,10 @@ export interface MeasurandVO {
      * URI for the measurand which is unique per gateway
      */
     uri?: string;
-    measurand_type: MeasurandTypeVO;
+    /**
+     * The OBIS code
+     */
+    measurand_type: string;
     /**
      * Indicates if the measurand is measured
      */

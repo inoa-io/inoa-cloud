@@ -25,16 +25,6 @@ public interface ThingsApiTestClient {
 			@io.micronaut.http.annotation.PathVariable(value = "thing_id")
 			java.util.UUID thingId);
 
-	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things/json")
-	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<java.lang.Object> downloadConfigToGateway(
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
-			java.lang.String authorization,
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
-			java.lang.String gatewayId);
-
 	@io.micronaut.http.annotation.Get("/things/{thing_id}")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
 	io.micronaut.http.HttpResponse<ThingVO> findThing(
@@ -90,16 +80,7 @@ public interface ThingsApiTestClient {
 			java.lang.String referenceFilter);
 
 	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things/upload")
-	io.micronaut.http.HttpResponse<?> syncConfigToGateway(
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
-			java.lang.String authorization,
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
-			java.lang.String gatewayId);
-
-	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things/upload-sequential")
-	io.micronaut.http.HttpResponse<?> syncConfigToGatewaySequential(
+	io.micronaut.http.HttpResponse<?> syncThingsToGateway(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
 			java.lang.String authorization,

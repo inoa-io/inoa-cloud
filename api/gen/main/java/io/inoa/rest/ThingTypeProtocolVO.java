@@ -9,7 +9,9 @@ public enum ThingTypeProtocolVO {
 	MODBUS_TCP("MODBUS_TCP"),
 	S0("S0"),
 	MBUS("MBUS"),
-	WMBUS("WMBUS");
+	WMBUS("WMBUS"),
+	ADC("ADC"),
+	RMS("RMS");
 
 	public static final java.lang.String JSON_REST_HTTP_VALUE = "JSON_REST_HTTP";
 	public static final java.lang.String MODBUS_RS458_VALUE = "MODBUS_RS458";
@@ -17,6 +19,8 @@ public enum ThingTypeProtocolVO {
 	public static final java.lang.String S0_VALUE = "S0";
 	public static final java.lang.String MBUS_VALUE = "MBUS";
 	public static final java.lang.String WMBUS_VALUE = "WMBUS";
+	public static final java.lang.String ADC_VALUE = "ADC";
+	public static final java.lang.String RMS_VALUE = "RMS";
 
 	private final java.lang.String value;
 

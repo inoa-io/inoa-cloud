@@ -13,7 +13,7 @@ import { ThingTypeProtocolVO } from './thingTypeProtocol';
 
 
 /**
- * Representation of a type / class of things.
+ * Representation of a type / class of things to be created.
  */
 export interface ThingTypeCreateVO { 
     /**

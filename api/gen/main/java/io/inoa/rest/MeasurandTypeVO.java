@@ -10,7 +10,7 @@ public class MeasurandTypeVO {
 
 	/** The OBIS code */
 	@jakarta.validation.constraints.NotNull
-	@jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$")
+	@jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_OBIS_ID)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String obisId;

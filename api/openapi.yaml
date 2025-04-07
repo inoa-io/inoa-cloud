@@ -940,6 +940,23 @@ paths:
         401:
           description: Unauthorized
 
+  /measurand-types:
+    get:
+      tags: [thing-types]
+      summary: Find measurand types.
+      description: Find all defined measurand types.
+      operationId: findMeasurandTypes
+      responses:
+        200:
+          description: List of thing types.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MeasurandType"
+        401:
+          description: Unauthorized.
   /thing-types:
     get:
       tags: [thing-types]
@@ -957,8 +974,6 @@ paths:
                   $ref: "#/components/schemas/ThingType"
         401:
           description: Unauthorized.
-        404:
-          description: No thing types found.
     post:
       tags: [thing-types]
       summary: Create thing type.
@@ -1192,48 +1207,12 @@ paths:
       - $ref: "#/components/parameters/GatewayId"
     get:
       tags: [things]
-      summary: Sync configuration to gateway.
-      description: Uploads the things configuration to the given gateway
-      operationId: syncConfigToGateway
+      summary: Sync things to gateway.
+      description: Uploads the things and measurands to the given gateway
+      operationId: syncThingsToGateway
       responses:
         204:
           description: accepted sync request.
-        401:
-          description: Unauthorized.
-        404:
-          description: Gateway does not exist.
-
-  /gateways/{gateway_id}/things/upload-sequential:
-    parameters:
-      - $ref: "#/components/parameters/GatewayId"
-    get:
-      tags: [things]
-      summary: Sync configuration sequentially to gateway.
-      description: Uploads the things configuration to the given gateway sequentially.
-      operationId: syncConfigToGatewaySequential
-      responses:
-        204:
-          description: accepted sync request.
-        401:
-          description: Unauthorized.
-        404:
-          description: The given gateway does not exist.
-
-  /gateways/{gateway_id}/things/json:
-    parameters:
-      - $ref: "#/components/parameters/GatewayId"
-    get:
-      tags: [things]
-      summary: Downloads things as JSON configuration.
-      description: Downloads the thing configuration of the given gateway as JSON string.
-      operationId: downloadConfigToGateway
-      responses:
-        200:
-          description: json with thing config.
-          content:
-            application/json:
-              schema:
-                type: object
         401:
           description: Unauthorized.
         404:
@@ -1991,7 +1970,7 @@ components:
     ObisId:
       description: The OBIS code
       type: string
-      pattern: ^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\*\&](?P<f>[0-9A-F]{1,3}))?$
+      pattern: ^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\*\&](?<f>[0-9A-F]{1,3}))?$
       example: 1.8.0
     MeasurandType:
       description: Type of the measurand
@@ -2022,7 +2001,7 @@ components:
           format: uri
           example: urn:dvmodbusir-dvze:1DZG0024008251:0x000D
         measurand_type:
-          $ref: "#/components/schemas/MeasurandType"
+          $ref: "#/components/schemas/ObisId"
         enabled:
           description: Indicates if the measurand is measured
           type: boolean
@@ -2091,6 +2070,8 @@ components:
         - S0
         - MBUS
         - WMBUS
+        - ADC
+        - RMS
     ThingType:
       description: Representation of a type / class of things.
       type: object
@@ -2128,7 +2109,7 @@ components:
         - name
         - protocol
     ThingTypeCreate:
-      description: Representation of a type / class of things.
+      description: Representation of a type / class of things to be created.
       type: object
       properties:
         identifier:
@@ -2164,11 +2145,9 @@ components:
         - name
         - protocol
     ThingTypeUpdate:
-      description: Representation of a type / class of things.
+      description: Representation of a type / class of things to be updated.
       type: object
       properties:
-        identifier:
-          $ref: "#/components/schemas/ThingTypeId"
         name:
           $ref: "#/components/schemas/Name"
         category:
@@ -2189,12 +2168,15 @@ components:
           description: List of measurands this type of thing supports
           type: array
           items:
-            $ref: "#/components/schemas/MeasurandType"
+            $ref: "#/components/schemas/ObisId"
         configurations:
           description: List of settings that can be configured for things of this type
           type: array
           items:
             $ref: "#/components/schemas/ThingConfiguration"
+      required:
+        - name
+        - protocol
 
     ###
     ### Thing
@@ -2268,6 +2250,9 @@ components:
           $ref: "#/components/schemas/Name"
         description:
           description: Long description of the thing
+          type: string
+          maxLength: 4096
+          example: Garage fuse box meter
         gateway_id:
           $ref: "#/components/schemas/GatewayId"
         thing_type_id:
@@ -2305,6 +2290,9 @@ components:
           $ref: "#/components/schemas/Name"
         description:
           description: Long description of the thing
+          type: string
+          maxLength: 4096
+          example: Garage fuse box meter
         gateway_id:
           $ref: "#/components/schemas/GatewayId"
         thing_type_id:

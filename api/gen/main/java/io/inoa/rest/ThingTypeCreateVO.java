@@ -51,7 +51,7 @@ public class ThingTypeCreateVO {
 	/** List of measurands this type of thing supports */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MEASURANDS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> measurands;
+	private java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> measurands;
 
 	/** List of settings that can be configured for things of this type */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIGURATIONS)
@@ -132,7 +132,7 @@ public class ThingTypeCreateVO {
 		return this;
 	}
 
-	public ThingTypeCreateVO measurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
+	public ThingTypeCreateVO measurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
 		this.measurands = newMeasurands;
 		return this;
 	}
@@ -222,11 +222,11 @@ public class ThingTypeCreateVO {
 		this.protocol = newProtocol;
 	}
 
-	public java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> getMeasurands() {
+	public java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> getMeasurands() {
 		return measurands;
 	}
 
-	public void setMeasurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?P<a>[0-9]{1,3})-)?((?P<b>[0-9]{1,3}):)?(?P<cde>(?P<c>[0-9A-F]{1,3}).(?P<d>[0-9A-F]{1,3})(.(?P<e>[0-9A-F]{1,3}))?)([\\*\\&](?P<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
+	public void setMeasurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
 		this.measurands = newMeasurands;
 	}
 

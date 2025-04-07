@@ -4,7 +4,6 @@ package io.inoa.rest;
 @io.micronaut.serde.annotation.Serdeable
 public class ThingTypeUpdateVO {
 
-	public static final java.lang.String JSON_PROPERTY_IDENTIFIER = "identifier";
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
 	public static final java.lang.String JSON_PROPERTY_CATEGORY = "category";
 	public static final java.lang.String JSON_PROPERTY_DESCRIPTION = "description";
@@ -13,16 +12,11 @@ public class ThingTypeUpdateVO {
 	public static final java.lang.String JSON_PROPERTY_MEASURANDS = "measurands";
 	public static final java.lang.String JSON_PROPERTY_CONFIGURATIONS = "configurations";
 
-	/** Id as technical reference (never changes). */
-	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\_]{1,64}$")
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_IDENTIFIER)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.lang.String identifier;
-
 	/** Human readable name. */
+	@jakarta.validation.constraints.NotNull
 	@jakarta.validation.constraints.Size(max = 64)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CATEGORY)
@@ -41,14 +35,15 @@ public class ThingTypeUpdateVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String version;
 
+	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_PROTOCOL)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private ThingTypeProtocolVO protocol;
 
 	/** List of measurands this type of thing supports */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MEASURANDS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> measurands;
+	private java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> measurands;
 
 	/** List of settings that can be configured for things of this type */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIGURATIONS)
@@ -66,8 +61,7 @@ public class ThingTypeUpdateVO {
 			return false;
 		}
 		ThingTypeUpdateVO other = (ThingTypeUpdateVO) object;
-		return java.util.Objects.equals(identifier, other.identifier)
-				&& java.util.Objects.equals(name, other.name)
+		return java.util.Objects.equals(name, other.name)
 				&& java.util.Objects.equals(category, other.category)
 				&& java.util.Objects.equals(description, other.description)
 				&& java.util.Objects.equals(version, other.version)
@@ -78,14 +72,13 @@ public class ThingTypeUpdateVO {
 
 	@Override
 	public int hashCode() {
-		return java.util.Objects.hash(identifier, name, category, description, version, protocol, measurands, configurations);
+		return java.util.Objects.hash(name, category, description, version, protocol, measurands, configurations);
 	}
 
 	@Override
 	public java.lang.String toString() {
 		return new java.lang.StringBuilder()
 				.append("ThingTypeUpdateVO[")
-				.append("identifier=").append(identifier).append(",")
 				.append("name=").append(name).append(",")
 				.append("category=").append(category).append(",")
 				.append("description=").append(description).append(",")
@@ -98,11 +91,6 @@ public class ThingTypeUpdateVO {
 	}
 
 	// fluent
-
-	public ThingTypeUpdateVO identifier(java.lang.String newIdentifier) {
-		this.identifier = newIdentifier;
-		return this;
-	}
 
 	public ThingTypeUpdateVO name(java.lang.String newName) {
 		this.name = newName;
@@ -129,12 +117,12 @@ public class ThingTypeUpdateVO {
 		return this;
 	}
 
-	public ThingTypeUpdateVO measurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> newMeasurands) {
+	public ThingTypeUpdateVO measurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
 		this.measurands = newMeasurands;
 		return this;
 	}
 	
-	public ThingTypeUpdateVO addMeasurandsItem(MeasurandTypeVO measurandsItem) {
+	public ThingTypeUpdateVO addMeasurandsItem(java.lang.String measurandsItem) {
 		if (this.measurands == null) {
 			this.measurands = new java.util.ArrayList<>();
 		}
@@ -142,7 +130,7 @@ public class ThingTypeUpdateVO {
 		return this;
 	}
 
-	public ThingTypeUpdateVO removeMeasurandsItem(MeasurandTypeVO measurandsItem) {
+	public ThingTypeUpdateVO removeMeasurandsItem(java.lang.String measurandsItem) {
 		if (this.measurands != null) {
 			this.measurands.remove(measurandsItem);
 		}
@@ -170,14 +158,6 @@ public class ThingTypeUpdateVO {
 	}
 
 	// getter/setter
-
-	public java.lang.String getIdentifier() {
-		return identifier;
-	}
-
-	public void setIdentifier(java.lang.String newIdentifier) {
-		this.identifier = newIdentifier;
-	}
 
 	public java.lang.String getName() {
 		return name;
@@ -219,11 +199,11 @@ public class ThingTypeUpdateVO {
 		this.protocol = newProtocol;
 	}
 
-	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> getMeasurands() {
+	public java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> getMeasurands() {
 		return measurands;
 	}
 
-	public void setMeasurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandTypeVO> newMeasurands) {
+	public void setMeasurands(java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\\*\\&](?<f>[0-9A-F]{1,3}))?$") String> newMeasurands) {
 		this.measurands = newMeasurands;
 	}
 

@@ -19,9 +19,10 @@ public class ThingCreateVO {
 	private java.lang.String name;
 
 	/** Long description of the thing */
+	@jakarta.validation.constraints.Size(max = 4096)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DESCRIPTION)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_ABSENT)
-	private org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> description = org.openapitools.jackson.nullable.JsonNullable.of(null);
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private java.lang.String description;
 
 	/** Id as technical reference (never changes). */
 	@jakarta.validation.constraints.NotNull
@@ -93,7 +94,7 @@ public class ThingCreateVO {
 		return this;
 	}
 
-	public ThingCreateVO description(org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> newDescription) {
+	public ThingCreateVO description(java.lang.String newDescription) {
 		this.description = newDescription;
 		return this;
 	}
@@ -158,11 +159,11 @@ public class ThingCreateVO {
 		this.name = newName;
 	}
 
-	public org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> getDescription() {
+	public java.lang.String getDescription() {
 		return description;
 	}
 
-	public void setDescription(org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> newDescription) {
+	public void setDescription(java.lang.String newDescription) {
 		this.description = newDescription;
 	}
 

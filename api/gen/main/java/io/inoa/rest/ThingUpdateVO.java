@@ -18,9 +18,10 @@ public class ThingUpdateVO {
 	private java.lang.String name;
 
 	/** Long description of the thing */
+	@jakarta.validation.constraints.Size(max = 4096)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DESCRIPTION)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_ABSENT)
-	private org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> description = org.openapitools.jackson.nullable.JsonNullable.of(null);
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private java.lang.String description;
 
 	/** Id as technical reference (never changes). */
 	@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
@@ -90,7 +91,7 @@ public class ThingUpdateVO {
 		return this;
 	}
 
-	public ThingUpdateVO description(org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> newDescription) {
+	public ThingUpdateVO description(java.lang.String newDescription) {
 		this.description = newDescription;
 		return this;
 	}
@@ -155,11 +156,11 @@ public class ThingUpdateVO {
 		this.name = newName;
 	}
 
-	public org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> getDescription() {
+	public java.lang.String getDescription() {
 		return description;
 	}
 
-	public void setDescription(org.openapitools.jackson.nullable.JsonNullable<java.lang.Object> newDescription) {
+	public void setDescription(java.lang.String newDescription) {
 		this.description = newDescription;
 	}
 

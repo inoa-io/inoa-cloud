@@ -25,6 +25,13 @@ public interface ThingTypesApiTestClient {
 			@io.micronaut.http.annotation.PathVariable(value = "thing_type_id")
 			java.lang.String thingTypeId);
 
+	@io.micronaut.http.annotation.Get("/measurand-types")
+	@io.micronaut.http.annotation.Consumes({ "application/json" })
+	io.micronaut.http.HttpResponse<java.util.List<MeasurandTypeVO>> findMeasurandTypes(
+			@io.micronaut.core.annotation.Nullable
+			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
+			java.lang.String authorization);
+
 	@io.micronaut.http.annotation.Get("/thing-types/{thing_type_id}")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
 	io.micronaut.http.HttpResponse<ThingTypeVO> findThingType(

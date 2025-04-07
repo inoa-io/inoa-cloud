@@ -12,7 +12,7 @@
 /**
  * The protocol the thing type uses. If a thing supports several protocols, one may define several thing types.
  */
-export type ThingTypeProtocolVO = 'JSON_REST_HTTP' | 'MODBUS_RS458' | 'MODBUS_TCP' | 'S0' | 'MBUS' | 'WMBUS';
+export type ThingTypeProtocolVO = 'JSON_REST_HTTP' | 'MODBUS_RS458' | 'MODBUS_TCP' | 'S0' | 'MBUS' | 'WMBUS' | 'ADC' | 'RMS';
 
 export const ThingTypeProtocolVO = {
     JsonRestHttp: 'JSON_REST_HTTP' as ThingTypeProtocolVO,
@@ -20,6 +20,8 @@ export const ThingTypeProtocolVO = {
     ModbusTcp: 'MODBUS_TCP' as ThingTypeProtocolVO,
     S0: 'S0' as ThingTypeProtocolVO,
     Mbus: 'MBUS' as ThingTypeProtocolVO,
-    Wmbus: 'WMBUS' as ThingTypeProtocolVO
+    Wmbus: 'WMBUS' as ThingTypeProtocolVO,
+    Adc: 'ADC' as ThingTypeProtocolVO,
+    Rms: 'RMS' as ThingTypeProtocolVO
 };
 
