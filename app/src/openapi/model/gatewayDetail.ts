@@ -10,7 +10,6 @@
 import { GatewayLocationDataVO } from './gatewayLocationData';
 
 
-
 /**
  * Gateway with detailed fields.
  */

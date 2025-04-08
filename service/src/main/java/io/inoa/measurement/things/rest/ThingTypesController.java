@@ -13,6 +13,7 @@ import io.inoa.rest.ThingTypesApi;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +42,13 @@ public class ThingTypesController implements ThingTypesApi {
     // Check Measurands
     var measurands = new ArrayList<MeasurandType>();
     for (var measurand : thingTypeCreateVO.getMeasurands()) {
-      var measurandType = measurandTypeRepository.findByObisId(measurand);
+      var measurandType =
+          measurandTypeRepository
+              .findByObisId(measurand)
+              .orElseThrow(
+                  () ->
+                      new HttpStatusException(
+                          HttpStatus.BAD_REQUEST, "Unknown measurand type: " + measurand));
       if (measurandType == null) {
         return HttpResponse.status(
             HttpStatus.BAD_REQUEST, "Measurand '" + measurand + "'not found");

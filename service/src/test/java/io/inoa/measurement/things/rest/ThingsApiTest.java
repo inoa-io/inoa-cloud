@@ -5,6 +5,7 @@ import static io.inoa.test.HttpAssertions.assert400;
 import static io.inoa.test.HttpAssertions.assert401;
 import static io.inoa.test.HttpAssertions.assert404;
 
+import io.inoa.measurement.things.domain.ObisId;
 import io.inoa.rest.MeasurandVO;
 import io.inoa.rest.ThingCreateVO;
 import io.inoa.rest.ThingUpdateVO;
@@ -32,14 +33,20 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   public void createThing201() {
     var tenant = data.tenant();
     var gateway = data.gateway();
+
     var thingCreateVO =
         new ThingCreateVO()
             .name("New Thing")
             .description("New created Thing for testing.")
             .gatewayId(gateway.getGatewayId())
             .thingTypeId("dvh4013")
-            .addMeasurandsItem(new MeasurandVO().enabled(true).interval(60000).timeout(1000))
-            .configurations(null);
+            .addMeasurandsItem(
+                new MeasurandVO()
+                    .measurandType(ObisId.OBIS_1_8_0.getObisId())
+                    .enabled(true)
+                    .interval(60000)
+                    .timeout(1000))
+            .putConfigurationsItem("Serial", "33065393");
 
     assert201(() -> client.createThing(auth(tenant), thingCreateVO));
   }
@@ -51,6 +58,8 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   public void createThing400() {
     var tenant = data.tenant();
     var thingCreateVO = new ThingCreateVO();
+
+    // TODO: Duplicate thing, config key does not exist, obis code cannot be used for this thing
     assert400(() -> client.createThing(auth(tenant), thingCreateVO));
   }
 

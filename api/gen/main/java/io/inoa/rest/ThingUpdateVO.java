@@ -44,7 +44,7 @@ public class ThingUpdateVO {
 	/** List of thing configurations */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIGURATIONS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> configurations;
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingUpdateConfigurationsInnerVO> configurations;
 
 	// methods
 
@@ -126,12 +126,12 @@ public class ThingUpdateVO {
 		return this;
 	}
 
-	public ThingUpdateVO configurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> newConfigurations) {
+	public ThingUpdateVO configurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingUpdateConfigurationsInnerVO> newConfigurations) {
 		this.configurations = newConfigurations;
 		return this;
 	}
 	
-	public ThingUpdateVO addConfigurationsItem(ThingConfigurationsInnerVO configurationsItem) {
+	public ThingUpdateVO addConfigurationsItem(ThingUpdateConfigurationsInnerVO configurationsItem) {
 		if (this.configurations == null) {
 			this.configurations = new java.util.ArrayList<>();
 		}
@@ -139,7 +139,7 @@ public class ThingUpdateVO {
 		return this;
 	}
 
-	public ThingUpdateVO removeConfigurationsItem(ThingConfigurationsInnerVO configurationsItem) {
+	public ThingUpdateVO removeConfigurationsItem(ThingUpdateConfigurationsInnerVO configurationsItem) {
 		if (this.configurations != null) {
 			this.configurations.remove(configurationsItem);
 		}
@@ -188,11 +188,11 @@ public class ThingUpdateVO {
 		this.measurands = newMeasurands;
 	}
 
-	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> getConfigurations() {
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingUpdateConfigurationsInnerVO> getConfigurations() {
 		return configurations;
 	}
 
-	public void setConfigurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> newConfigurations) {
+	public void setConfigurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingUpdateConfigurationsInnerVO> newConfigurations) {
 		this.configurations = newConfigurations;
 	}
 }

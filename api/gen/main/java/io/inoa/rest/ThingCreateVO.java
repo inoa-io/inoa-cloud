@@ -44,10 +44,10 @@ public class ThingCreateVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> measurands;
 
-	/** List of thing configurations */
+	/** Key / value map of thing configurations */
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIGURATIONS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> configurations;
+	private java.util.Map<String, java.lang.String> configurations;
 
 	// methods
 
@@ -129,22 +129,22 @@ public class ThingCreateVO {
 		return this;
 	}
 
-	public ThingCreateVO configurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> newConfigurations) {
+	public ThingCreateVO configurations(java.util.Map<String, java.lang.String> newConfigurations) {
 		this.configurations = newConfigurations;
 		return this;
 	}
 	
-	public ThingCreateVO addConfigurationsItem(ThingConfigurationsInnerVO configurationsItem) {
+	public ThingCreateVO putConfigurationsItem(java.lang.String key, java.lang.String configurationsItem) {
 		if (this.configurations == null) {
-			this.configurations = new java.util.ArrayList<>();
+			this.configurations = new java.util.HashMap<>();
 		}
-		this.configurations.add(configurationsItem);
+		this.configurations.put(key, configurationsItem);
 		return this;
 	}
 
-	public ThingCreateVO removeConfigurationsItem(ThingConfigurationsInnerVO configurationsItem) {
+	public ThingCreateVO removeConfigurationsItem(java.lang.String key) {
 		if (this.configurations != null) {
-			this.configurations.remove(configurationsItem);
+			this.configurations.remove(key);
 		}
 		return this;
 	}
@@ -191,11 +191,11 @@ public class ThingCreateVO {
 		this.measurands = newMeasurands;
 	}
 
-	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> getConfigurations() {
+	public java.util.Map<String, java.lang.String> getConfigurations() {
 		return configurations;
 	}
 
-	public void setConfigurations(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid ThingConfigurationsInnerVO> newConfigurations) {
+	public void setConfigurations(java.util.Map<String, java.lang.String> newConfigurations) {
 		this.configurations = newConfigurations;
 	}
 }

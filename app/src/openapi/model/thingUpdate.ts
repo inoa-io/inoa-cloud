@@ -7,7 +7,7 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ThingConfigurationsInnerVO } from './thingConfigurationsInner';
+import { ThingUpdateConfigurationsInnerVO } from './thingUpdateConfigurationsInner';
 import { MeasurandVO } from './measurand';
 
 
@@ -38,6 +38,6 @@ export interface ThingUpdateVO {
     /**
      * List of thing configurations
      */
-    configurations?: Array<ThingConfigurationsInnerVO>;
+    configurations?: Array<ThingUpdateConfigurationsInnerVO>;
 }
 

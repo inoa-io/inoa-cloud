@@ -2072,11 +2072,6 @@ components:
       description: Representation of a measurand belonging to a thing
       type: object
       properties:
-        uri:
-          description: URI for the measurand which is unique per gateway
-          type: string
-          format: uri
-          example: urn:dvmodbusir-dvze:1DZG0024008251:0x000D
         measurand_type:
           $ref: "#/components/schemas/ObisId"
         enabled:
@@ -2299,21 +2294,13 @@ components:
           items:
             $ref: "#/components/schemas/Measurand"
         configurations:
-          description: List of thing configurations
-          type: array
-          items:
-            type: object
-            properties:
-              configuration:
-                $ref: "#/components/schemas/ThingConfiguration"
-              value:
-                description: Value of the configuration
-                type: string
-                maxLength: 4096
-                example: 98
-            required:
-              - configuration
-              - value
+          description: Key / value map of thing configurations
+          type: object
+          additionalProperties:
+            type: string
+            description: Value of the configuration
+            maxLength: 4096
+            example: 98
       required:
         - id
         - name
@@ -2340,21 +2327,13 @@ components:
           items:
             $ref: "#/components/schemas/Measurand"
         configurations:
-          description: List of thing configurations
-          type: array
-          items:
-            type: object
-            properties:
-              configuration:
-                $ref: "#/components/schemas/ThingConfiguration"
-              value:
-                description: Value of the configuration
-                type: string
-                maxLength: 4096
-                example: 98
-            required:
-              - configuration
-              - value
+          description: Key / value map of thing configurations
+          type: object
+          additionalProperties:
+            type: string
+            description: Value of the configuration
+            maxLength: 4096
+            example: 98
       required:
         - name
         - gateway_id

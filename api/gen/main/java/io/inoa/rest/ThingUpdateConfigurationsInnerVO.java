@@ -2,7 +2,7 @@ package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 @io.micronaut.serde.annotation.Serdeable
-public class ThingConfigurationsInnerVO {
+public class ThingUpdateConfigurationsInnerVO {
 
 	public static final java.lang.String JSON_PROPERTY_CONFIGURATION = "configuration";
 	public static final java.lang.String JSON_PROPERTY_VALUE = "value";
@@ -30,7 +30,7 @@ public class ThingConfigurationsInnerVO {
 		if (object == null || getClass() != object.getClass()) {
 			return false;
 		}
-		ThingConfigurationsInnerVO other = (ThingConfigurationsInnerVO) object;
+		ThingUpdateConfigurationsInnerVO other = (ThingUpdateConfigurationsInnerVO) object;
 		return java.util.Objects.equals(_configuration, other._configuration)
 				&& java.util.Objects.equals(value, other.value);
 	}
@@ -43,7 +43,7 @@ public class ThingConfigurationsInnerVO {
 	@Override
 	public java.lang.String toString() {
 		return new java.lang.StringBuilder()
-				.append("ThingConfigurationsInnerVO[")
+				.append("ThingUpdateConfigurationsInnerVO[")
 				.append("_configuration=").append(_configuration).append(",")
 				.append("value=").append(value)
 				.append("]")
@@ -52,12 +52,12 @@ public class ThingConfigurationsInnerVO {
 
 	// fluent
 
-	public ThingConfigurationsInnerVO _configuration(ThingConfigurationVO newConfiguration) {
+	public ThingUpdateConfigurationsInnerVO _configuration(ThingConfigurationVO newConfiguration) {
 		this._configuration = newConfiguration;
 		return this;
 	}
 
-	public ThingConfigurationsInnerVO value(java.lang.String newValue) {
+	public ThingUpdateConfigurationsInnerVO value(java.lang.String newValue) {
 		this.value = newValue;
 		return this;
 	}

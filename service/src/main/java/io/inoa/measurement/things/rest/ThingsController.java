@@ -2,9 +2,12 @@ package io.inoa.measurement.things.rest;
 
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.registry.domain.TenantRepository;
+import io.inoa.measurement.things.domain.MeasurandTypeRepository;
 import io.inoa.measurement.things.domain.ThingRepository;
 import io.inoa.measurement.things.domain.ThingTypeRepository;
+import io.inoa.measurement.things.rest.mapper.MeasurandMapper;
 import io.inoa.measurement.things.rest.mapper.ThingMapper;
+import io.inoa.rest.MeasurandVO;
 import io.inoa.rest.ThingCreateVO;
 import io.inoa.rest.ThingPageVO;
 import io.inoa.rest.ThingUpdateVO;
@@ -13,10 +16,14 @@ import io.inoa.rest.ThingsApi;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
+import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,13 +36,15 @@ public class ThingsController implements ThingsApi {
   private final TenantRepository tenantRepository;
   private final ThingRepository thingRepository;
   private final ThingTypeRepository thingTypeRepository;
-  private final ThingMapper mapper;
+  private final MeasurandTypeRepository measurandTypeRepository;
+  private final ThingMapper thingMapper;
+  private final MeasurandMapper measurandMapper;
   private final Security security;
 
   @Override
   public HttpResponse<ThingVO> createThing(@Valid ThingCreateVO thingCreateVO) {
 
-    var thing = mapper.toThing(thingCreateVO);
+    var thing = thingMapper.toThing(thingCreateVO);
 
     // ThingID
     thing.setThingId(UUID.randomUUID());
@@ -59,14 +68,96 @@ public class ThingsController implements ThingsApi {
 
     // ThingType
     // TODO: Multiple versions not supported yet
-    var thingType = thingTypeRepository.findByIdentifier(thingCreateVO.getThingTypeId());
-    if (thingType.isEmpty()) {
+    var thingTypes = thingTypeRepository.findByIdentifier(thingCreateVO.getThingTypeId());
+    if (thingTypes.isEmpty()) {
       return HttpResponse.status(
           HttpStatus.BAD_REQUEST, "No such thing type: " + thingCreateVO.getThingTypeId());
     }
-    thing.setThingType(thingType.iterator().next());
+    var thingType = thingTypes.iterator().next();
+    thing.setThingType(thingTypes.iterator().next());
 
-    return HttpResponse.created(mapper.toThingVO(thingRepository.save(thing)));
+    // Check measurands
+    var invalidMeasurandTypes =
+        thingCreateVO.getMeasurands().stream()
+            .filter(
+                m ->
+                    thingType.getMeasurandTypes().stream()
+                        .noneMatch(mt -> Objects.equals(m.getMeasurandType(), mt.getObisId())))
+            .toList();
+    if (!invalidMeasurandTypes.isEmpty()) {
+      return HttpResponse.status(
+          HttpStatus.BAD_REQUEST,
+          "Invalid measurand types not supported by given thing type: "
+              + invalidMeasurandTypes.stream().map(MeasurandVO::getMeasurandType).toList());
+    }
+
+    // Check config keys
+    var invalidConfigurationKeys =
+        thingCreateVO.getConfigurations().keySet().stream()
+            .filter(
+                key ->
+                    thingType.getThingConfigurations().stream()
+                        .noneMatch(config -> Objects.equals(key, config.getName())))
+            .toList();
+    if (!invalidConfigurationKeys.isEmpty()) {
+      return HttpResponse.status(
+          HttpStatus.BAD_REQUEST,
+          "Configuration keys that do not exist for given thing type: " + invalidConfigurationKeys);
+    }
+
+    // Check config values
+    var invalidConfigurationVaules =
+        thingCreateVO.getConfigurations().entrySet().stream()
+            .filter(
+                entry ->
+                    thingType.getThingConfigurations().stream()
+                        .noneMatch(
+                            config ->
+                                Objects.equals(entry.getKey(), config.getName())
+                                    && Pattern.compile(config.getValidationRegex())
+                                        .matcher(entry.getValue())
+                                        .matches()))
+            .map(
+                (entry) ->
+                    "'"
+                        + entry.getValue()
+                        + "' does not match regular expression: "
+                        + thingType.getThingConfigurations().stream()
+                            .filter(config -> Objects.equals(entry.getKey(), config.getName()))
+                            .findFirst()
+                            .orElseThrow()
+                            .getName())
+            .toList();
+    if (!invalidConfigurationVaules.isEmpty()) {
+      return HttpResponse.status(
+          HttpStatus.BAD_REQUEST,
+          "Some configuration values are invalid: " + invalidConfigurationVaules);
+    }
+
+    // Add measurands
+    var measurands =
+        thingCreateVO.getMeasurands().stream()
+            .map(
+                (measurandVO) -> {
+                  var measurand = measurandMapper.toMeasurand(measurandVO);
+                  measurand.setThing(thing);
+                  measurand.setMeasurandType(
+                      measurandTypeRepository
+                          .findByObisId(measurandVO.getMeasurandType())
+                          .orElseThrow(
+                              () ->
+                                  new HttpStatusException(
+                                      HttpStatus.BAD_REQUEST,
+                                      "Unknown measurand type: "
+                                          + measurandVO.getMeasurandType())));
+                  return measurand;
+                })
+            .collect(Collectors.toSet());
+    thing.setMeasurands(measurands);
+
+    // TODO: Add configs
+
+    return HttpResponse.created(thingMapper.toThingVO(thingRepository.save(thing)));
   }
 
   @Override
@@ -82,7 +173,7 @@ public class ThingsController implements ThingsApi {
     if (thing.isEmpty()) {
       return HttpResponse.status(HttpStatus.NOT_FOUND);
     }
-    return HttpResponse.ok(mapper.toThingVO(thing.get()));
+    return HttpResponse.ok(thingMapper.toThingVO(thing.get()));
   }
 
   // TODO filter

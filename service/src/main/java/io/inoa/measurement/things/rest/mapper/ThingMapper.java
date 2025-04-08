@@ -8,14 +8,14 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
 @Mapper(
-    uses = {ThingTypeMapper.class, MeasurandMapper.class, ThingConfigurationValueMapper.class},
+    uses = {ThingTypeMapper.class, MeasurandMapper.class},
     componentModel = MappingConstants.ComponentModel.JAKARTA)
 public interface ThingMapper {
 
   @Mapping(source = "thingId", target = "id")
   @Mapping(source = "gateway.gatewayId", target = "gatewayId")
   @Mapping(source = "thingType.identifier", target = "thingTypeId")
-  @Mapping(source = "thingConfigurationValues", target = "configurations")
+  @Mapping(target = "configurations", ignore = true)
   @Mapping(target = "removeMeasurandsItem", ignore = true)
   @Mapping(target = "removeConfigurationsItem", ignore = true)
   ThingVO toThingVO(Thing thing);
@@ -25,6 +25,6 @@ public interface ThingMapper {
   @Mapping(target = "thingId", ignore = true)
   @Mapping(target = "gateway", ignore = true)
   @Mapping(target = "thingType", ignore = true)
-  @Mapping(source = "configurations", target = "thingConfigurationValues")
+  @Mapping(target = "thingConfigurationValues", ignore = true)
   Thing toThing(ThingCreateVO thingVO);
 }

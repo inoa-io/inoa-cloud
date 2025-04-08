@@ -14,10 +14,6 @@
  */
 export interface MeasurandVO { 
     /**
-     * URI for the measurand which is unique per gateway
-     */
-    uri?: string;
-    /**
      * The OBIS code
      */
     measurand_type: string;

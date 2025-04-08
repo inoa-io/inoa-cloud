@@ -7,7 +7,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ThingConfigurationsInnerVO } from './thingConfigurationsInner';
 import { MeasurandVO } from './measurand';
 
 
@@ -40,8 +39,8 @@ export interface ThingVO {
      */
     measurands?: Array<MeasurandVO>;
     /**
-     * List of thing configurations
+     * Key / value map of thing configurations
      */
-    configurations?: Array<ThingConfigurationsInnerVO>;
+    configurations?: { [key: string]: string; };
 }
 

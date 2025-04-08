@@ -10,7 +10,7 @@
 import { ThingConfigurationVO } from './thingConfiguration';
 
 
-export interface ThingConfigurationsInnerVO { 
+export interface ThingUpdateConfigurationsInnerVO { 
     configuration: ThingConfigurationVO;
     /**
      * Value of the configuration

@@ -11,7 +11,6 @@ import org.mapstruct.MappingConstants;
     componentModel = MappingConstants.ComponentModel.JAKARTA)
 public interface MeasurandMapper {
 
-  @Mapping(target = "uri", ignore = true)
   @Mapping(source = "measurandType.obisId", target = "measurandType")
   MeasurandVO toMeasurandVO(Measurand measurand);
 

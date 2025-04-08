@@ -28,7 +28,7 @@ import { Configuration }                                     from '../configurat
 })
 export class PropertiesService {
 
-    protected basePath = 'https://api.inoa.io';
+    protected basePath = 'https://api.qas.inoa.io';
     public defaultHeaders = new HttpHeaders();
     public configuration = new Configuration();
     public encoder: HttpParameterCodec;
