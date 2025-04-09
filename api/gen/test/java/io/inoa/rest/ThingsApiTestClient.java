@@ -54,30 +54,15 @@ public interface ThingsApiTestClient {
 			@io.micronaut.http.annotation.QueryValue(value = "filter")
 			java.lang.String filter);
 
-	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things?{&sort*}")
+	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things")
 	@io.micronaut.http.annotation.Consumes({ "application/json" })
-	io.micronaut.http.HttpResponse<ThingPageVO> findThingsByGatewayId(
+	io.micronaut.http.HttpResponse<java.util.List<ThingVO>> findThingsByGatewayId(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
 			java.lang.String authorization,
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
-			java.lang.String gatewayId,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "page")
-			java.lang.Integer page,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "size")
-			java.lang.Integer size,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "sort")
-			java.util.List<java.lang.String> sort,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "name_filter")
-			java.lang.String nameFilter,
-			@io.micronaut.core.annotation.Nullable
-			@io.micronaut.http.annotation.QueryValue(value = "reference_filter")
-			java.lang.String referenceFilter);
+			java.lang.String gatewayId);
 
 	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things/upload")
 	io.micronaut.http.HttpResponse<?> syncThingsToGateway(

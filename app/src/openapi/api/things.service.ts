@@ -414,44 +414,15 @@ export class ThingsService {
      * Find all things for a gateway.
      * Returns all things of given gateway.
      * @param gatewayId 
-     * @param page Page number for pagination.
-     * @param size Page size for pagination.
-     * @param sort Sorting.
-     * @param nameFilter Search in name. Supports wildcard *, is case insensitive.
-     * @param referenceFilter Search matching reference name. Is case sensitive.
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public findThingsByGatewayId(gatewayId: string, page?: number, size?: number, sort?: Array<string>, nameFilter?: string, referenceFilter?: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<ThingPageVO>;
-    public findThingsByGatewayId(gatewayId: string, page?: number, size?: number, sort?: Array<string>, nameFilter?: string, referenceFilter?: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<ThingPageVO>>;
-    public findThingsByGatewayId(gatewayId: string, page?: number, size?: number, sort?: Array<string>, nameFilter?: string, referenceFilter?: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<ThingPageVO>>;
-    public findThingsByGatewayId(gatewayId: string, page?: number, size?: number, sort?: Array<string>, nameFilter?: string, referenceFilter?: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
+    public findThingsByGatewayId(gatewayId: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<ThingVO>>;
+    public findThingsByGatewayId(gatewayId: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<ThingVO>>>;
+    public findThingsByGatewayId(gatewayId: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<ThingVO>>>;
+    public findThingsByGatewayId(gatewayId: string, observe: any = 'body', reportProgress: boolean = false, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<any> {
         if (gatewayId === null || gatewayId === undefined) {
             throw new Error('Required parameter gatewayId was null or undefined when calling findThingsByGatewayId.');
-        }
-
-        let localVarQueryParameters = new HttpParams({encoder: this.encoder});
-        if (page !== undefined && page !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>page, 'page');
-        }
-        if (size !== undefined && size !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>size, 'size');
-        }
-        if (sort) {
-            sort.forEach((element) => {
-                localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-                  <any>element, 'sort');
-            })
-        }
-        if (nameFilter !== undefined && nameFilter !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>nameFilter, 'name_filter');
-        }
-        if (referenceFilter !== undefined && referenceFilter !== null) {
-          localVarQueryParameters = this.addToHttpParams(localVarQueryParameters,
-            <any>referenceFilter, 'reference_filter');
         }
 
         let localVarHeaders = this.defaultHeaders;
@@ -498,10 +469,9 @@ export class ThingsService {
         }
 
         let localVarPath = `/gateways/${this.configuration.encodeParam({name: "gatewayId", value: gatewayId, in: "path", style: "simple", explode: false, dataType: "string", dataFormat: undefined})}/things`;
-        return this.httpClient.request<ThingPageVO>('get', `${this.configuration.basePath}${localVarPath}`,
+        return this.httpClient.request<Array<ThingVO>>('get', `${this.configuration.basePath}${localVarPath}`,
             {
                 context: localVarHttpContext,
-                params: localVarQueryParameters,
                 responseType: <any>responseType_,
                 withCredentials: this.configuration.withCredentials,
                 headers: localVarHeaders,

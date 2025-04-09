@@ -232,8 +232,8 @@ export class GatewayDatapointsComponent implements OnInit {
 
 		//get things from database
 		this.thingsService.findThingsByGatewayId(satellite.gateway_id).subscribe((data) => {
-			this.dataSourceThingsDatabase.data = data.content;
-			this.intercomService.thingsList = data.content;
+			this.dataSourceThingsDatabase.data = data;
+			this.intercomService.thingsList = data;
 			this.intercomService.isLoadingDB = false;
 		});
 	}

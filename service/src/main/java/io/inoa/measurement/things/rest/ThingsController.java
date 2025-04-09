@@ -1,8 +1,10 @@
 package io.inoa.measurement.things.rest;
 
+import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.registry.domain.TenantRepository;
 import io.inoa.measurement.things.domain.MeasurandTypeRepository;
+import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingConfigurationValue;
 import io.inoa.measurement.things.domain.ThingRepository;
 import io.inoa.measurement.things.domain.ThingTypeRepository;
@@ -71,7 +73,7 @@ public class ThingsController implements ThingsApi {
     thing.setGateway(gateway.get());
 
     // Name
-    if (thingRepository.findByNameAndGateway(thingCreateVO.getName(), gateway.get()).isPresent()) {
+    if (thingRepository.existsByNameAndGateway(thingCreateVO.getName(), gateway.get())) {
       throw new HttpStatusException(
           HttpStatus.CONFLICT, "Thing with same name already exists: " + thingCreateVO.getName());
     }
@@ -193,19 +195,15 @@ public class ThingsController implements ThingsApi {
 
   @Override
   public HttpResponse<ThingVO> updateThing(UUID thingId, @Valid ThingUpdateVO thingUpdateVO) {
+    var thing = checkThing(thingId);
     // TODO: Check if Gateway is visible to user! Otherwise send 404
     return HttpResponse.status(500, "Not implemented yet");
   }
 
   @Override
   public HttpResponse<ThingVO> findThing(UUID thingId) {
-    var thing = thingRepository.findByThingId(thingId);
-    if (thing.isEmpty()
-        || !Objects.equals(
-            security.getTenantId(), thing.get().getGateway().getTenant().getTenantId())) {
-      return HttpResponse.status(HttpStatus.NOT_FOUND);
-    }
-    return HttpResponse.ok(thingMapper.toThingVO(thing.get()));
+    var thing = checkThing(thingId);
+    return HttpResponse.ok(thingMapper.toThingVO(thing));
   }
 
   // TODO filter
@@ -219,33 +217,39 @@ public class ThingsController implements ThingsApi {
     return HttpResponse.status(500, "Not implemented yet");
   }
 
-  // TODO filter
   @Override
-  public HttpResponse<ThingPageVO> findThingsByGatewayId(
-      String gatewayId,
-      Optional<Integer> page,
-      Optional<Integer> size,
-      Optional<List<String>> sort,
-      Optional<String> nameFilter,
-      Optional<String> referenceFilter) {
-    // TODO: Check if Gateway is visible to user! Otherwise send 404
-    return HttpResponse.status(500, "Not implemented yet");
+  public HttpResponse<List<ThingVO>> findThingsByGatewayId(String gatewayId) {
+		var gateway = checkGateway(gatewayId);
+    return HttpResponse.ok(thingMapper.toThingVOs(thingRepository.findByGateway(gateway)));
   }
 
   @Override
   public HttpResponse<Object> syncThingsToGateway(String gatewayId) {
-    // TODO: Check if Gateway is visible to user! Otherwise send 404
+		var gateway = checkGateway(gatewayId);
     return HttpResponse.status(500, "Not implemented yet");
   }
 
   @Override
   public HttpResponse<Object> deleteThing(UUID thingId) {
-    // TODO: Check if Thing is visible to user! Otherwise send 404
-    var thing = thingRepository.findByThingId(thingId);
-    if (thing.isEmpty()) {
-      return HttpResponse.status(HttpStatus.NOT_FOUND);
-    }
-    thingRepository.delete(thing.get());
+    thingRepository.delete(checkThing(thingId));
     return HttpResponse.status(HttpStatus.NO_CONTENT);
   }
+
+	private Thing checkThing(UUID thingId) {
+		var thing = thingRepository.findByThingId(thingId);
+		if (thing.isEmpty()
+						|| !Objects.equals(
+						security.getTenantId(), thing.get().getGateway().getTenant().getTenantId())) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "No such thing.");
+		}
+		return thing.get();
+	}
+
+	private Gateway checkGateway(String gatewayId) {
+		var gateway = gatewayRepository.findByGatewayId(gatewayId);
+		if (gateway.isEmpty() || !Objects.equals(security.getTenantId(), gateway.get().getTenant().getTenantId())) {
+			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
+		}
+		return gateway.get();
+	}
 }

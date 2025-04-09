@@ -2,6 +2,7 @@ package io.inoa.measurement.things.rest;
 
 import static io.inoa.test.HttpAssertions.assert200;
 import static io.inoa.test.HttpAssertions.assert201;
+import static io.inoa.test.HttpAssertions.assert204;
 import static io.inoa.test.HttpAssertions.assert400;
 import static io.inoa.test.HttpAssertions.assert401;
 import static io.inoa.test.HttpAssertions.assert404;
@@ -170,11 +171,12 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     assert401(() -> client.updateThing(null, UUID.randomUUID(), new ThingUpdateVO()));
   }
 
-  @Disabled("NYI")
   @Test
   @Order(8)
   @Override
-  public void updateThing404() {}
+  public void updateThing404() {
+    assert404(() -> client.updateThing(auth(tenant), UUID.randomUUID(), new ThingUpdateVO()));
+  }
 
   @Test
   @Order(9)
@@ -242,18 +244,20 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     assert404(() -> client.findThings(auth(tenant), null, null, null, null));
   }
 
-  @Disabled("NYI")
   @Test
   @Order(15)
   @Override
-  public void findThingsByGatewayId200() {}
+  public void findThingsByGatewayId200() {
+		var result = assert200(() -> client.findThingsByGatewayId(auth(tenant), gateway.getGatewayId()));
+		assertEquals(1, result.size(), "Expected 1 found thing");
+		assertEquals(thingId, result.get(0).getId(), "Expected correct thing id to be found");
+	}
 
   @Test
   @Order(16)
   @Override
   public void findThingsByGatewayId401() {
-    assert401(
-        () -> client.findThingsByGatewayId(null, data.gatewayId(), null, null, null, null, null));
+    assert401(() -> client.findThingsByGatewayId(null, data.gatewayId()));
   }
 
   @Test
@@ -261,17 +265,15 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Override
   @Disabled("NYI")
   public void findThingsByGatewayId404() {
-    assert404(
-        () ->
-            client.findThingsByGatewayId(
-                auth("inoa"), data.gatewayId(), null, null, null, null, null));
+    assert404(() -> client.findThingsByGatewayId(auth(tenant), data.gatewayId()));
   }
 
-  @Disabled("NYI")
   @Test
   @Order(18)
   @Override
-  public void deleteThing204() {}
+  public void deleteThing204() {
+		assert204(() -> client.deleteThing(auth(tenant), thingId));
+	}
 
   @Test
   @Order(19)

@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Inoa API
   description: Definitions for managing fleet, things and measurands.
-  version: 0.0.1
+  version: ${project.version}
   license:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
@@ -10,7 +10,15 @@ info:
     name: inoa.io
     url: https://github.com/inoa-io
 servers:
-  - url: https://api.${inoa_domain}
+  - url: https://api.qas.inoa.io
+  - url: https://api.inoa.io
+  - url: http://inoa.127.0.0.1.nip.io:8080
+  - url: http://inoa.{inoa.domain}:8080
+    variables:
+      inoa.domain:
+        default: 127.0.0.1.nip.io
+        description: Your local ip where INOA is running
+  - url: http://localhost:4300
 security:
   - Keycloak: []
   - BearerAuth: []
@@ -1162,24 +1170,6 @@ paths:
       - $ref: "#/components/parameters/GatewayId"
     get:
       tags: [things]
-      parameters:
-        - $ref: "#/components/parameters/PageablePage"
-        - $ref: "#/components/parameters/PageableSize"
-        - $ref: "#/components/parameters/Sort"
-        - name: name_filter
-          description: Search in name. Supports wildcard *, is case insensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 100
-            example: DZG*
-        - name: reference_filter
-          description: Search matching reference name. Is case sensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 100
-            example: dvh4013
       summary: Find all things for a gateway.
       description: Returns all things of given gateway.
       operationId: findThingsByGatewayId
@@ -1189,7 +1179,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ThingPage"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Thing"
         401:
           description: Unauthorized.
         404:
@@ -2632,4 +2624,4 @@ components:
       scheme: bearer
     Keycloak:
       type: openIdConnect
-      openIdConnectUrl: https://auth.${inoa_domain}/realms/inoa/.well-known/openid-configuration
+      openIdConnectUrl: http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/.well-known/openid-configuration

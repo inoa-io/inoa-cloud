@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import java.util.List;
+
 @Mapper(
     uses = {ThingTypeMapper.class, MeasurandMapper.class},
     componentModel = MappingConstants.ComponentModel.JAKARTA)
@@ -25,6 +27,8 @@ public interface ThingMapper {
               + " -> t.getThingConfiguration().getName(),"
               + " io.inoa.measurement.things.domain.ThingConfigurationValue::getValue)))")
   ThingVO toThingVO(Thing thing);
+
+  List<ThingVO> toThingVOs(List<Thing> things);
 
   @Mapping(target = "id", ignore = true)
   @Mapping(target = "thingId", ignore = true)
