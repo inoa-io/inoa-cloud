@@ -41,6 +41,7 @@ CREATE
             thing_type_id INTEGER NOT NULL,
             CONSTRAINT pk_thing PRIMARY KEY(id),
             CONSTRAINT uq_thing_thing_id UNIQUE(thing_id),
+            CONSTRAINT uq_thing_name_tenant UNIQUE(name, tenant_id),
             CONSTRAINT fk_thing_thing_tenant FOREIGN KEY(tenant_id) REFERENCES tenant(id),
             CONSTRAINT fk_thing_thing_type FOREIGN KEY(thing_type_id) REFERENCES thing_type(id),
             CONSTRAINT fk_thing_gateway FOREIGN KEY(gateway_id) REFERENCES gateway(id)

@@ -15,9 +15,14 @@ public interface ThingMapper {
   @Mapping(source = "thingId", target = "id")
   @Mapping(source = "gateway.gatewayId", target = "gatewayId")
   @Mapping(source = "thingType.identifier", target = "thingTypeId")
-  @Mapping(target = "configurations", ignore = true)
   @Mapping(target = "removeMeasurandsItem", ignore = true)
   @Mapping(target = "removeConfigurationsItem", ignore = true)
+  @Mapping(
+      target = "configurations",
+      expression =
+          "java(thing.getThingConfigurationValues().stream().collect(java.util.stream.Collectors.toMap(t"
+              + " -> t.getThingConfiguration().getName(),"
+              + " io.inoa.measurement.things.domain.ThingConfigurationValue::getValue)))")
   ThingVO toThingVO(Thing thing);
 
   @Mapping(target = "id", ignore = true)

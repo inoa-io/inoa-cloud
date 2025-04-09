@@ -1,10 +1,15 @@
 package io.inoa.measurement.things.rest;
 
+import static io.inoa.test.HttpAssertions.assert200;
 import static io.inoa.test.HttpAssertions.assert201;
 import static io.inoa.test.HttpAssertions.assert400;
 import static io.inoa.test.HttpAssertions.assert401;
 import static io.inoa.test.HttpAssertions.assert404;
+import static io.inoa.test.HttpAssertions.assert409;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.inoa.fleet.registry.domain.Gateway;
+import io.inoa.fleet.registry.domain.Tenant;
 import io.inoa.measurement.things.domain.ObisId;
 import io.inoa.rest.MeasurandVO;
 import io.inoa.rest.ThingCreateVO;
@@ -12,7 +17,10 @@ import io.inoa.rest.ThingUpdateVO;
 import io.inoa.rest.ThingsApiTestClient;
 import io.inoa.rest.ThingsApiTestSpec;
 import io.inoa.test.AbstractUnitTest;
+import io.micronaut.data.jdbc.runtime.JdbcOperations;
 import jakarta.inject.Inject;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -25,14 +33,23 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec {
 
+  private static Tenant tenant;
+  private static Gateway gateway;
+  private static UUID thingId;
+
   @Inject ThingsApiTestClient client;
+
+  @Override
+  protected void cleanupDatabase(JdbcOperations jdbc) {
+    // Do nothing
+  }
 
   @Test
   @Order(1)
   @Override
   public void createThing201() {
-    var tenant = data.tenant();
-    var gateway = data.gateway();
+    tenant = data.tenant();
+    gateway = data.gateway(tenant);
 
     var thingCreateVO =
         new ThingCreateVO()
@@ -48,19 +65,70 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
                     .timeout(1000))
             .putConfigurationsItem("Serial", "33065393");
 
-    assert201(() -> client.createThing(auth(tenant), thingCreateVO));
+    var thingVO = assert201(() -> client.createThing(auth(tenant), thingCreateVO));
+
+    thingId = thingVO.getId();
+    assertEquals(
+        thingCreateVO.getName(), thingVO.getName(), "Expected correct thing name to be created.");
+    assertEquals(
+        thingCreateVO.getDescription(),
+        thingVO.getDescription(),
+        "Expected correct thing description to be created.");
+    assertEquals(
+        thingCreateVO.getGatewayId(),
+        gateway.getGatewayId(),
+        "Expected correct gatewayId to be created.");
+    assertEquals(
+        thingCreateVO.getThingTypeId(),
+        thingVO.getThingTypeId(),
+        "Expected correct thingType to be created.");
+    assertEquals(
+        thingCreateVO.getMeasurands(),
+        thingVO.getMeasurands(),
+        "Expected correct measurands to be created.");
+    assertEquals(
+        thingCreateVO.getConfigurations(),
+        thingVO.getConfigurations(),
+        "Expected correct configs to be created.");
   }
 
-  @Disabled("NYI")
   @Test
   @Order(2)
   @Override
   public void createThing400() {
     var tenant = data.tenant();
+    var gateway = data.gateway(tenant);
     var thingCreateVO = new ThingCreateVO();
+    thingCreateVO.setName("New Thing");
+    thingCreateVO.setThingTypeId("dvh4013");
 
-    // TODO: Duplicate thing, config key does not exist, obis code cannot be used for this thing
-    assert400(() -> client.createThing(auth(tenant), thingCreateVO));
+    // Gateway does not exist
+    thingCreateVO.setGatewayId("ISRL02-1234567890");
+    assertEquals(
+        "No such gateway: ISRL02-1234567890",
+        assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
+    thingCreateVO.setGatewayId(gateway.getGatewayId());
+
+    // ThingType does not exist
+    thingCreateVO.setThingTypeId("bielefeld");
+    assertEquals(
+        "No such thing type: bielefeld",
+        assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
+    thingCreateVO.setThingTypeId("dvh4013");
+
+    // MeasurandType does not exist
+    var measurand = new MeasurandVO().measurandType("bielefeld");
+    thingCreateVO.addMeasurandsItem(measurand);
+    assertEquals(
+        "Invalid measurand types not supported by given thing type: [bielefeld]",
+        assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
+    thingCreateVO.removeMeasurandsItem(measurand);
+
+    // ConfigKey does not exists
+    thingCreateVO.putConfigurationsItem("bielefeld", "bielefeld");
+    assertEquals(
+        "Configuration keys that do not exist for given thing type: [bielefeld]",
+        assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
   }
 
   @Test
@@ -70,11 +138,18 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     assert401(() -> client.createThing(null, new ThingCreateVO()));
   }
 
-  @Disabled("NYI")
   @Test
   @Order(4)
   @Override
-  public void createThing409() {}
+  public void createThing409() {
+		var thingCreateVO =
+						new ThingCreateVO()
+										.name("New Thing")
+										.description("New created Thing for testing.")
+										.gatewayId(gateway.getGatewayId())
+										.thingTypeId("dvh4013");
+		assert409(() -> client.createThing(auth(tenant), thingCreateVO));
+	}
 
   @Disabled("NYI")
   @Test
@@ -101,11 +176,33 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Override
   public void updateThing404() {}
 
-  @Disabled("NYI")
   @Test
   @Order(9)
   @Override
-  public void findThing200() {}
+  public void findThing200() {
+    var thing = assert200(() -> client.findThing(auth(tenant), thingId));
+    assertEquals("New Thing", thing.getName(), "Expected correct thing name to be created.");
+    assertEquals(
+        "New created Thing for testing.",
+        thing.getDescription(),
+        "Expected correct thing description to be created.");
+    assertEquals(
+        gateway.getGatewayId(), thing.getGatewayId(), "Expected correct gatewayId to be created.");
+    assertEquals("dvh4013", thing.getThingTypeId(), "Expected correct thingType to be created.");
+    assertEquals(
+        List.of(
+            new MeasurandVO()
+                .measurandType(ObisId.OBIS_1_8_0.getObisId())
+                .enabled(true)
+                .interval(60000)
+                .timeout(1000)),
+        thing.getMeasurands(),
+        "Expected correct measurands to be created.");
+    assertEquals(
+        Map.of("Serial", "33065393"),
+        thing.getConfigurations(),
+        "Expected correct configs to be created.");
+  }
 
   @Test
   @Order(10)
@@ -118,14 +215,17 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Order(11)
   @Override
   public void findThing404() {
-    assert404(() -> client.findThing(auth("inoa"), UUID.randomUUID()));
+    assert404(() -> client.findThing(auth(tenant), UUID.randomUUID()));
   }
 
   @Disabled("NYI")
   @Test
   @Order(12)
   @Override
-  public void findThings200() {}
+  public void findThings200() {
+    var things = assert200(() -> client.findThings(auth(tenant), null, null, null, null));
+    assertEquals(1, things.getTotalSize(), "Expected 1 created thing");
+  }
 
   @Test
   @Order(13)
@@ -139,7 +239,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Override
   @Disabled("NYI")
   public void findThings404() {
-    assert404(() -> client.findThings(auth("inoa"), null, null, null, null));
+    assert404(() -> client.findThings(auth(tenant), null, null, null, null));
   }
 
   @Disabled("NYI")
@@ -184,7 +284,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Order(20)
   @Override
   public void deleteThing404() {
-    assert404(() -> client.deleteThing(auth("inoa"), UUID.randomUUID()));
+    assert404(() -> client.deleteThing(auth(tenant), UUID.randomUUID()));
   }
 
   @Disabled("NYI")
@@ -205,6 +305,6 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Override
   @Disabled("NYI")
   public void syncThingsToGateway404() {
-    assert404(() -> client.syncThingsToGateway(auth("inoa"), data.gatewayId()));
+    assert404(() -> client.syncThingsToGateway(auth(tenant), data.gatewayId()));
   }
 }
