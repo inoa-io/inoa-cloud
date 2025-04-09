@@ -56,13 +56,6 @@ public class ThingsController implements ThingsApi {
       throw new HttpStatusException(
           HttpStatus.BAD_REQUEST, "No such tenant: " + security.getTenantId());
     }
-    thing.setTenant(tenant.get());
-
-		// Name
-		if(thingRepository.findByNameAndTenant(thingCreateVO.getName(), tenant.get()).isPresent()) {
-			throw new HttpStatusException(
-							HttpStatus.CONFLICT, "Thing with same name already exists: " + thingCreateVO.getName());
-		}
 
     // Gateway
     var gateway = gatewayRepository.findByGatewayId(thingCreateVO.getGatewayId());
@@ -77,6 +70,12 @@ public class ThingsController implements ThingsApi {
     }
     thing.setGateway(gateway.get());
 
+    // Name
+    if (thingRepository.findByNameAndGateway(thingCreateVO.getName(), gateway.get()).isPresent()) {
+      throw new HttpStatusException(
+          HttpStatus.CONFLICT, "Thing with same name already exists: " + thingCreateVO.getName());
+    }
+
     // ThingType
     // TODO: Multiple versions not supported yet
     var thingTypes = thingTypeRepository.findByIdentifier(thingCreateVO.getThingTypeId());
@@ -88,103 +87,106 @@ public class ThingsController implements ThingsApi {
     thing.setThingType(thingTypes.iterator().next());
 
     // Check measurands
-		if (thingCreateVO.getMeasurands() != null) {
-			var invalidMeasurandTypes =
-							thingCreateVO.getMeasurands().stream()
-											.filter(
-															m ->
-																			thingType.getMeasurandTypes().stream()
-																							.noneMatch(mt -> Objects.equals(m.getMeasurandType(), mt.getObisId())))
-											.toList();
-			if (!invalidMeasurandTypes.isEmpty()) {
-				throw new HttpStatusException(
-								HttpStatus.BAD_REQUEST,
-								"Invalid measurand types not supported by given thing type: "
-												+ invalidMeasurandTypes.stream().map(MeasurandVO::getMeasurandType).toList());
-			}
-			// Add measurands
-			var measurands =
-							thingCreateVO.getMeasurands().stream()
-											.map(
-															(measurandVO) -> {
-																var measurand = measurandMapper.toMeasurand(measurandVO);
-																measurand.setMeasurandType(
-																				measurandTypeRepository
-																								.findByObisId(measurandVO.getMeasurandType())
-																								.orElseThrow(
-																												() ->
-																																new HttpStatusException(
-																																				HttpStatus.BAD_REQUEST,
-																																				"Unknown measurand type: "
-																																								+ measurandVO.getMeasurandType())));
-																return measurand;
-															})
-											.collect(Collectors.toSet());
-			thing.setMeasurands(measurands);
-		}
+    if (thingCreateVO.getMeasurands() != null) {
+      var invalidMeasurandTypes =
+          thingCreateVO.getMeasurands().stream()
+              .filter(
+                  m ->
+                      thingType.getMeasurandTypes().stream()
+                          .noneMatch(mt -> Objects.equals(m.getMeasurandType(), mt.getObisId())))
+              .toList();
+      if (!invalidMeasurandTypes.isEmpty()) {
+        throw new HttpStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Invalid measurand types not supported by given thing type: "
+                + invalidMeasurandTypes.stream().map(MeasurandVO::getMeasurandType).toList());
+      }
+      // Add measurands
+      var measurands =
+          thingCreateVO.getMeasurands().stream()
+              .map(
+                  (measurandVO) -> {
+                    var measurand = measurandMapper.toMeasurand(measurandVO);
+                    // measurand.setThing(thing);
+                    measurand.setMeasurandType(
+                        measurandTypeRepository
+                            .findByObisId(measurandVO.getMeasurandType())
+                            .orElseThrow(
+                                () ->
+                                    new HttpStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Unknown measurand type: "
+                                            + measurandVO.getMeasurandType())));
+                    return measurand;
+                  })
+              .collect(Collectors.toSet());
+      thing.setMeasurands(measurands);
+    }
 
-		if (thingCreateVO.getConfigurations() != null) {
-			// Check config keys
-			var invalidConfigurationKeys =
-							thingCreateVO.getConfigurations().keySet().stream()
-											.filter(
-															key ->
-																			thingType.getThingConfigurations().stream()
-																							.noneMatch(config -> Objects.equals(key, config.getName())))
-											.toList();
-			if (!invalidConfigurationKeys.isEmpty()) {
-				throw new HttpStatusException(
-								HttpStatus.BAD_REQUEST,
-								"Configuration keys that do not exist for given thing type: " + invalidConfigurationKeys);
-			}
-			// Check config values
-			var invalidConfigurationVaules =
-							thingCreateVO.getConfigurations().entrySet().stream()
-											.filter(
-															entry ->
-																			thingType.getThingConfigurations().stream()
-																							.noneMatch(
-																											config ->
-																															Objects.equals(entry.getKey(), config.getName())
-																																			&& Pattern.compile(config.getValidationRegex())
-																																			.matcher(entry.getValue())
-																																			.matches()))
-											.map(
-															(entry) ->
-																			"'"
-																							+ entry.getValue()
-																							+ "' does not match regular expression: "
-																							+ thingType.getThingConfigurations().stream()
-																							.filter(config -> Objects.equals(entry.getKey(), config.getName()))
-																							.findFirst()
-																							.orElseThrow()
-																							.getName())
-											.toList();
-			if (!invalidConfigurationVaules.isEmpty()) {
-				throw new HttpStatusException(
-								HttpStatus.BAD_REQUEST,
-								"Some configuration values are invalid: " + invalidConfigurationVaules);
-			}
-			// Add configurations
-			var configs =
-							thingCreateVO.getConfigurations().entrySet().stream()
-											.map(
-															(configVO) ->
-																			new ThingConfigurationValue()
-																							.setValue(configVO.getValue())
-																							.setThingConfiguration(
-																											thingType.getThingConfigurations().stream()
-																															.filter(
-																																			config -> Objects.equals(configVO.getKey(), config.getName()))
-																															.findFirst()
-																															.orElseThrow(
-																																			() ->
-																																							new HttpStatusException(
-																																											HttpStatus.BAD_REQUEST,
-																																											"Unknown config key: " + configVO.getKey()))))
-											.collect(Collectors.toSet());
-			thing.setThingConfigurationValues(configs);
-		}
+    if (thingCreateVO.getConfigurations() != null) {
+      // Check config keys
+      var invalidConfigurationKeys =
+          thingCreateVO.getConfigurations().keySet().stream()
+              .filter(
+                  key ->
+                      thingType.getThingConfigurations().stream()
+                          .noneMatch(config -> Objects.equals(key, config.getName())))
+              .toList();
+      if (!invalidConfigurationKeys.isEmpty()) {
+        throw new HttpStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Configuration keys that do not exist for given thing type: "
+                + invalidConfigurationKeys);
+      }
+      // Check config values
+      var invalidConfigurationVaules =
+          thingCreateVO.getConfigurations().entrySet().stream()
+              .filter(
+                  entry ->
+                      thingType.getThingConfigurations().stream()
+                          .noneMatch(
+                              config ->
+                                  Objects.equals(entry.getKey(), config.getName())
+                                      && Pattern.compile(config.getValidationRegex())
+                                          .matcher(entry.getValue())
+                                          .matches()))
+              .map(
+                  (entry) ->
+                      "'"
+                          + entry.getValue()
+                          + "' does not match regular expression: "
+                          + thingType.getThingConfigurations().stream()
+                              .filter(config -> Objects.equals(entry.getKey(), config.getName()))
+                              .findFirst()
+                              .orElseThrow()
+                              .getName())
+              .toList();
+      if (!invalidConfigurationVaules.isEmpty()) {
+        throw new HttpStatusException(
+            HttpStatus.BAD_REQUEST,
+            "Some configuration values are invalid: " + invalidConfigurationVaules);
+      }
+      // Add configurations
+      var configs =
+          thingCreateVO.getConfigurations().entrySet().stream()
+              .map(
+                  (configVO) ->
+                      new ThingConfigurationValue()
+                          // .setThing(thing)
+                          .setValue(configVO.getValue())
+                          .setThingConfiguration(
+                              thingType.getThingConfigurations().stream()
+                                  .filter(
+                                      config -> Objects.equals(configVO.getKey(), config.getName()))
+                                  .findFirst()
+                                  .orElseThrow(
+                                      () ->
+                                          new HttpStatusException(
+                                              HttpStatus.BAD_REQUEST,
+                                              "Unknown config key: " + configVO.getKey()))))
+              .collect(Collectors.toSet());
+      thing.setThingConfigurationValues(configs);
+    }
 
     return HttpResponse.created(thingMapper.toThingVO(thingRepository.save(thing)));
   }
@@ -199,7 +201,8 @@ public class ThingsController implements ThingsApi {
   public HttpResponse<ThingVO> findThing(UUID thingId) {
     var thing = thingRepository.findByThingId(thingId);
     if (thing.isEmpty()
-        || !Objects.equals(security.getTenantId(), thing.get().getTenant().getTenantId())) {
+        || !Objects.equals(
+            security.getTenantId(), thing.get().getGateway().getTenant().getTenantId())) {
       return HttpResponse.status(HttpStatus.NOT_FOUND);
     }
     return HttpResponse.ok(thingMapper.toThingVO(thing.get()));

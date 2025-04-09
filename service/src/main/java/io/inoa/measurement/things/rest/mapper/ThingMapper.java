@@ -20,13 +20,13 @@ public interface ThingMapper {
   @Mapping(
       target = "configurations",
       expression =
-          "java(thing.getThingConfigurationValues().stream().collect(java.util.stream.Collectors.toMap(t"
+          "java(thing.getThingConfigurationValues() == null ? null :"
+              + " thing.getThingConfigurationValues().stream().collect(java.util.stream.Collectors.toMap(t"
               + " -> t.getThingConfiguration().getName(),"
               + " io.inoa.measurement.things.domain.ThingConfigurationValue::getValue)))")
   ThingVO toThingVO(Thing thing);
 
   @Mapping(target = "id", ignore = true)
-  @Mapping(target = "tenant", ignore = true)
   @Mapping(target = "thingId", ignore = true)
   @Mapping(target = "gateway", ignore = true)
   @Mapping(target = "thingType", ignore = true)

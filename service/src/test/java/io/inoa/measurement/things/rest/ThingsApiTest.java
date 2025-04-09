@@ -142,14 +142,14 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Order(4)
   @Override
   public void createThing409() {
-		var thingCreateVO =
-						new ThingCreateVO()
-										.name("New Thing")
-										.description("New created Thing for testing.")
-										.gatewayId(gateway.getGatewayId())
-										.thingTypeId("dvh4013");
-		assert409(() -> client.createThing(auth(tenant), thingCreateVO));
-	}
+    var thingCreateVO =
+        new ThingCreateVO()
+            .name("New Thing")
+            .description("New created Thing for testing.")
+            .gatewayId(gateway.getGatewayId())
+            .thingTypeId("dvh4013");
+    assert409(() -> client.createThing(auth(tenant), thingCreateVO));
+  }
 
   @Disabled("NYI")
   @Test

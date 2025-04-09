@@ -34,15 +34,16 @@ CREATE
         thing(
             id SERIAL NOT NULL,
             thing_id UUID NOT NULL,
-            tenant_id INTEGER NOT NULL,
             name VARCHAR(256) NOT NULL,
             description VARCHAR(4096),
             gateway_id INTEGER NOT NULL,
             thing_type_id INTEGER NOT NULL,
             CONSTRAINT pk_thing PRIMARY KEY(id),
             CONSTRAINT uq_thing_thing_id UNIQUE(thing_id),
-            CONSTRAINT uq_thing_name_tenant UNIQUE(name, tenant_id),
-            CONSTRAINT fk_thing_thing_tenant FOREIGN KEY(tenant_id) REFERENCES tenant(id),
+            CONSTRAINT uq_thing_name_tenant UNIQUE(
+                name,
+                gateway_id
+            ),
             CONSTRAINT fk_thing_thing_type FOREIGN KEY(thing_type_id) REFERENCES thing_type(id),
             CONSTRAINT fk_thing_gateway FOREIGN KEY(gateway_id) REFERENCES gateway(id)
         );
@@ -83,13 +84,11 @@ CREATE
 CREATE
     TABLE
         thing_configuration_value(
+            id SERIAL NOT NULL,
             thing_id INTEGER NOT NULL,
             thing_configuration_id INTEGER NOT NULL,
             value VARCHAR(8192),
-            CONSTRAINT pk_thing_configuration_value PRIMARY KEY(
-                thing_id,
-                thing_configuration_id
-            ),
+            CONSTRAINT pk_thing_configuration_value PRIMARY KEY(id),
             CONSTRAINT fk_thing_configuration_value_thing FOREIGN KEY(thing_id) REFERENCES thing(id) ON
             DELETE
                 CASCADE,
