@@ -7,6 +7,7 @@ import io.inoa.measurement.things.domain.MeasurandTypeRepository;
 import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingConfigurationValue;
 import io.inoa.measurement.things.domain.ThingRepository;
+import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.measurement.things.domain.ThingTypeRepository;
 import io.inoa.measurement.things.rest.mapper.MeasurandMapper;
 import io.inoa.measurement.things.rest.mapper.ThingMapper;
@@ -101,7 +102,6 @@ public class ThingsController implements ThingsApi {
               .map(
                   (measurandVO) -> {
                     var measurand = measurandMapper.toMeasurand(measurandVO);
-                    // measurand.setThing(thing);
                     measurand.setMeasurandType(
                         measurandTypeRepository
                             .findByObisId(measurandVO.getMeasurandType())
@@ -141,9 +141,10 @@ public class ThingsController implements ThingsApi {
                           .noneMatch(
                               config ->
                                   Objects.equals(entry.getKey(), config.getName())
-                                      && Pattern.compile(config.getValidationRegex())
-                                          .matcher(entry.getValue())
-                                          .matches()))
+                                      && (config.getValidationRegex() == null
+                                          || Pattern.compile(config.getValidationRegex())
+                                              .matcher(entry.getValue())
+                                              .matches())))
               .map(
                   (entry) ->
                       "'"
@@ -153,7 +154,7 @@ public class ThingsController implements ThingsApi {
                               .filter(config -> Objects.equals(entry.getKey(), config.getName()))
                               .findFirst()
                               .orElseThrow()
-                              .getName())
+                              .getValidationRegex())
               .toList();
       if (!invalidConfigurationVaules.isEmpty()) {
         throw new HttpStatusException(
@@ -166,7 +167,6 @@ public class ThingsController implements ThingsApi {
               .map(
                   (configVO) ->
                       new ThingConfigurationValue()
-                          // .setThing(thing)
                           .setValue(configVO.getValue())
                           .setThingConfiguration(
                               thingType.getThingConfigurations().stream()
@@ -281,10 +281,12 @@ public class ThingsController implements ThingsApi {
           .getThingConfigurationValues()
           .forEach(
               (oldConfig) -> {
-                oldConfig.setValue(
-                    thingUpdateVO
-                        .getConfigurations()
-                        .get(oldConfig.getThingConfiguration().getName()));
+                var configName = oldConfig.getThingConfiguration().getName();
+                var newValue = thingUpdateVO.getConfigurations().get(configName);
+                // Check value
+                checkConfigValue(configName, newValue, oldThing.getThingType());
+                // Update
+                oldConfig.setValue(newValue);
               });
       // Created - add new configs if they have no corresponding match in old thing
       oldThing
@@ -374,5 +376,30 @@ public class ThingsController implements ThingsApi {
       throw new HttpStatusException(status, "Gateway not found: " + gatewayId);
     }
     return gateway.get();
+  }
+
+  private void checkConfigValue(String configName, String configValue, ThingType thingType) {
+    var thingConfiguration =
+        thingType.getThingConfigurations().stream()
+            .filter(config -> Objects.equals(config.getName(), configName))
+            .findFirst()
+            .orElseThrow(
+                () ->
+                    new HttpStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "No such config '"
+                            + configName
+                            + "' for thing type '"
+                            + thingType.getName()
+                            + "'"));
+    if (!Pattern.compile(thingConfiguration.getValidationRegex()).matcher(configValue).matches()) {
+      throw new HttpStatusException(
+          HttpStatus.BAD_REQUEST,
+          "Config value '"
+              + configValue
+              + "' does not match regex '"
+              + thingConfiguration.getValidationRegex()
+              + "'");
+    }
   }
 }

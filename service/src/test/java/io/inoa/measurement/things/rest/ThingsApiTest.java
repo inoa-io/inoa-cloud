@@ -36,6 +36,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 
   private static Tenant tenant;
   private static Gateway gateway;
+  private static Gateway updatedGateway;
   private static UUID thingId;
 
   @Inject ThingsApiTestClient client;
@@ -64,7 +65,14 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
                     .enabled(true)
                     .interval(60000L)
                     .timeout(1000L))
-            .putConfigurationsItem("Serial", "33065393");
+            .addMeasurandsItem(
+                new MeasurandVO()
+                    .measurandType(ObisId.OBIS_2_8_0.getObisId())
+                    .enabled(true)
+                    .interval(60000L)
+                    .timeout(1000L))
+            .putConfigurationsItem("Serial", "33065393")
+            .putConfigurationsItem("Modbus Interface", "1");
 
     var thingVO = assert201(() -> client.createThing(auth(tenant), thingCreateVO));
 
@@ -97,10 +105,8 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Order(2)
   @Override
   public void createThing400() {
-    var tenant = data.tenant();
-    var gateway = data.gateway(tenant);
     var thingCreateVO = new ThingCreateVO();
-    thingCreateVO.setName("New Thing");
+    thingCreateVO.setName("New Thing2");
     thingCreateVO.setThingTypeId("dvh4013");
 
     // Gateway does not exist
@@ -130,6 +136,14 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     assertEquals(
         "Configuration keys that do not exist for given thing type: [bielefeld]",
         assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
+    thingCreateVO.removeConfigurationsItem("bielefeld");
+
+    // ConfigKey does not match regex
+    thingCreateVO.putConfigurationsItem("Serial", "bielefeld");
+    assertEquals(
+        "Some configuration values are invalid: ['bielefeld' does not match regular expression:"
+            + " [0-9]*]",
+        assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
   }
 
   @Test
@@ -152,19 +166,41 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     assert409(() -> client.createThing(auth(tenant), thingCreateVO));
   }
 
-  @Disabled("NYI")
   @Test
   @Order(5)
   @Override
-  public void updateThing200() {}
+  public void updateThing200() {
+    updatedGateway = data.gateway(tenant);
+    ThingUpdateVO thingUpdateVO = new ThingUpdateVO();
+    thingUpdateVO.setName("Updated Thing");
+    thingUpdateVO.setDescription("Updated description");
+    thingUpdateVO.setGatewayId(updatedGateway.getGatewayId());
+    thingUpdateVO
+        .addMeasurandsItem(
+            new MeasurandVO()
+                .measurandType(ObisId.OBIS_1_8_0.getObisId())
+                .enabled(true)
+                .interval(30000L)
+                .timeout(2000L))
+        .addMeasurandsItem(
+            new MeasurandVO()
+                .measurandType(ObisId.OBIS_FREQUENCY.getObisId())
+                .enabled(true)
+                .interval(60000L)
+                .timeout(1000L))
+        .putConfigurationsItem("Serial", "33065394");
+
+    var updatedThing = assert200(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO));
+    // TODO: Check
+  }
 
   @Test
   @Order(6)
   @Override
   public void updateThing400() {
     var thingUpdateVO = new ThingUpdateVO();
-    thingUpdateVO.setName("Updated");
-    thingUpdateVO.setDescription("Updated description");
+    thingUpdateVO.setName("Invalid");
+    thingUpdateVO.setDescription("Invalid description");
 
     // Gateway does not exist
     thingUpdateVO.setGatewayId("ISRL01-0123456789");
@@ -191,6 +227,12 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     assertEquals(
         "No such config name: bielefeld",
         assert400(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO)).getMessage());
+
+    // ConfigKey does not match regex
+    thingUpdateVO.setConfigurations(Map.of("Serial", "bielefeld"));
+    assertEquals(
+        "No such config name: bielefeld",
+        assert400(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO)).getMessage());
   }
 
   @Test
@@ -205,8 +247,8 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Override
   public void updateThing404() {
     var thingUpdateVO = new ThingUpdateVO();
-    thingUpdateVO.setName("Updated");
-    thingUpdateVO.setDescription("Updated description");
+    thingUpdateVO.setName("Unknown");
+    thingUpdateVO.setDescription("Unknown description");
     thingUpdateVO.setGatewayId(gateway.getGatewayId());
 
     assert404(() -> client.updateThing(auth(tenant), UUID.randomUUID(), thingUpdateVO));
@@ -217,18 +259,25 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Override
   public void findThing200() {
     var thing = assert200(() -> client.findThing(auth(tenant), thingId));
-    assertEquals("New Thing", thing.getName(), "Expected correct thing name to be created.");
+    assertEquals("Updated Thing", thing.getName(), "Expected correct thing name to be created.");
     assertEquals(
-        "New created Thing for testing.",
+        "Updated description",
         thing.getDescription(),
         "Expected correct thing description to be created.");
     assertEquals(
-        gateway.getGatewayId(), thing.getGatewayId(), "Expected correct gatewayId to be created.");
+        updatedGateway.getGatewayId(),
+        thing.getGatewayId(),
+        "Expected correct gatewayId to be created.");
     assertEquals("dvh4013", thing.getThingTypeId(), "Expected correct thingType to be created.");
     assertEquals(
         List.of(
             new MeasurandVO()
                 .measurandType(ObisId.OBIS_1_8_0.getObisId())
+                .enabled(true)
+                .interval(30000L)
+                .timeout(2000L),
+            new MeasurandVO()
+                .measurandType(ObisId.OBIS_FREQUENCY.getObisId())
                 .enabled(true)
                 .interval(60000L)
                 .timeout(1000L)),
