@@ -7,7 +7,6 @@
  * https://openapi-generator.tech
  * Do not edit the class manually.
  */
-import { ThingUpdateConfigurationsInnerVO } from './thingUpdateConfigurationsInner';
 import { MeasurandVO } from './measurand';
 
 
@@ -18,7 +17,7 @@ export interface ThingUpdateVO {
     /**
      * Human readable name.
      */
-    name?: string;
+    name: string;
     /**
      * Long description of the thing
      */
@@ -26,18 +25,14 @@ export interface ThingUpdateVO {
     /**
      * Id as technical reference (never changes).
      */
-    gateway_id?: string;
-    /**
-     * Id as technical reference (never changes).
-     */
-    thing_type_id?: string;
+    gateway_id: string;
     /**
      * List of measurands and its configuration
      */
     measurands?: Array<MeasurandVO>;
     /**
-     * List of thing configurations
+     * Key / value map of thing configurations
      */
-    configurations?: Array<ThingUpdateConfigurationsInnerVO>;
+    configurations?: { [key: string]: string; };
 }
 

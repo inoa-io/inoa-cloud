@@ -62,8 +62,8 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
                 new MeasurandVO()
                     .measurandType(ObisId.OBIS_1_8_0.getObisId())
                     .enabled(true)
-                    .interval(60000)
-                    .timeout(1000))
+                    .interval(60000L)
+                    .timeout(1000L))
             .putConfigurationsItem("Serial", "33065393");
 
     var thingVO = assert201(() -> client.createThing(auth(tenant), thingCreateVO));
@@ -106,7 +106,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     // Gateway does not exist
     thingCreateVO.setGatewayId("ISRL02-1234567890");
     assertEquals(
-        "No such gateway: ISRL02-1234567890",
+        "Gateway not found: ISRL02-1234567890",
         assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
     thingCreateVO.setGatewayId(gateway.getGatewayId());
 
@@ -125,7 +125,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
         assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
     thingCreateVO.removeMeasurandsItem(measurand);
 
-    // ConfigKey does not exists
+    // ConfigKey does not exist
     thingCreateVO.putConfigurationsItem("bielefeld", "bielefeld");
     assertEquals(
         "Configuration keys that do not exist for given thing type: [bielefeld]",
@@ -158,11 +158,40 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Override
   public void updateThing200() {}
 
-  @Disabled("NYI")
   @Test
   @Order(6)
   @Override
-  public void updateThing400() {}
+  public void updateThing400() {
+    var thingUpdateVO = new ThingUpdateVO();
+    thingUpdateVO.setName("Updated");
+    thingUpdateVO.setDescription("Updated description");
+
+    // Gateway does not exist
+    thingUpdateVO.setGatewayId("ISRL01-0123456789");
+    assertEquals(
+        "Gateway not found: ISRL01-0123456789",
+        assert400(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO)).getMessage());
+    thingUpdateVO.setGatewayId(gateway.getGatewayId());
+
+    // MeasurandType does not exist
+    thingUpdateVO.setMeasurands(
+        List.of(
+            new MeasurandVO()
+                .measurandType("bielefeld")
+                .enabled(true)
+                .timeout(1000L)
+                .interval(30000L)));
+    assertEquals(
+        "No such measurand type: bielefeld",
+        assert400(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO)).getMessage());
+    thingUpdateVO.setMeasurands(null);
+
+    // ConfigKey does not exist
+    thingUpdateVO.setConfigurations(Map.of("bielefeld", "bielefeld"));
+    assertEquals(
+        "No such config name: bielefeld",
+        assert400(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO)).getMessage());
+  }
 
   @Test
   @Order(7)
@@ -175,7 +204,12 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Order(8)
   @Override
   public void updateThing404() {
-    assert404(() -> client.updateThing(auth(tenant), UUID.randomUUID(), new ThingUpdateVO()));
+    var thingUpdateVO = new ThingUpdateVO();
+    thingUpdateVO.setName("Updated");
+    thingUpdateVO.setDescription("Updated description");
+    thingUpdateVO.setGatewayId(gateway.getGatewayId());
+
+    assert404(() -> client.updateThing(auth(tenant), UUID.randomUUID(), thingUpdateVO));
   }
 
   @Test
@@ -196,8 +230,8 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
             new MeasurandVO()
                 .measurandType(ObisId.OBIS_1_8_0.getObisId())
                 .enabled(true)
-                .interval(60000)
-                .timeout(1000)),
+                .interval(60000L)
+                .timeout(1000L)),
         thing.getMeasurands(),
         "Expected correct measurands to be created.");
     assertEquals(
@@ -248,10 +282,11 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Order(15)
   @Override
   public void findThingsByGatewayId200() {
-		var result = assert200(() -> client.findThingsByGatewayId(auth(tenant), gateway.getGatewayId()));
-		assertEquals(1, result.size(), "Expected 1 found thing");
-		assertEquals(thingId, result.get(0).getId(), "Expected correct thing id to be found");
-	}
+    var result =
+        assert200(() -> client.findThingsByGatewayId(auth(tenant), gateway.getGatewayId()));
+    assertEquals(1, result.size(), "Expected 1 found thing");
+    assertEquals(thingId, result.get(0).getId(), "Expected correct thing id to be found");
+  }
 
   @Test
   @Order(16)
@@ -263,7 +298,6 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Test
   @Order(17)
   @Override
-  @Disabled("NYI")
   public void findThingsByGatewayId404() {
     assert404(() -> client.findThingsByGatewayId(auth(tenant), data.gatewayId()));
   }
@@ -272,8 +306,8 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Order(18)
   @Override
   public void deleteThing204() {
-		assert204(() -> client.deleteThing(auth(tenant), thingId));
-	}
+    assert204(() -> client.deleteThing(auth(tenant), thingId));
+  }
 
   @Test
   @Order(19)
@@ -305,7 +339,6 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
   @Test
   @Order(23)
   @Override
-  @Disabled("NYI")
   public void syncThingsToGateway404() {
     assert404(() -> client.syncThingsToGateway(auth(tenant), data.gatewayId()));
   }

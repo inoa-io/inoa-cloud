@@ -46,7 +46,6 @@ export * from './thingTypeCreate';
 export * from './thingTypeProtocol';
 export * from './thingTypeUpdate';
 export * from './thingType';
-export * from './thingUpdateConfigurationsInner';
 export * from './thingUpdate';
 export * from './thing';
 export * from './user';

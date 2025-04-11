@@ -26,13 +26,13 @@ public class MeasurandVO {
 	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_INTERVAL)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private java.lang.Integer interval;
+	private java.lang.Long interval;
 
 	/** Maximum duration a measurement may take in milliseconds */
 	@jakarta.validation.constraints.NotNull
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_TIMEOUT)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private java.lang.Integer timeout;
+	private java.lang.Long timeout;
 
 	// methods
 
@@ -80,12 +80,12 @@ public class MeasurandVO {
 		return this;
 	}
 
-	public MeasurandVO interval(java.lang.Integer newInterval) {
+	public MeasurandVO interval(java.lang.Long newInterval) {
 		this.interval = newInterval;
 		return this;
 	}
 
-	public MeasurandVO timeout(java.lang.Integer newTimeout) {
+	public MeasurandVO timeout(java.lang.Long newTimeout) {
 		this.timeout = newTimeout;
 		return this;
 	}
@@ -108,19 +108,19 @@ public class MeasurandVO {
 		this.enabled = newEnabled;
 	}
 
-	public java.lang.Integer getInterval() {
+	public java.lang.Long getInterval() {
 		return interval;
 	}
 
-	public void setInterval(java.lang.Integer newInterval) {
+	public void setInterval(java.lang.Long newInterval) {
 		this.interval = newInterval;
 	}
 
-	public java.lang.Integer getTimeout() {
+	public java.lang.Long getTimeout() {
 		return timeout;
 	}
 
-	public void setTimeout(java.lang.Integer newTimeout) {
+	public void setTimeout(java.lang.Long newTimeout) {
 		this.timeout = newTimeout;
 	}
 }

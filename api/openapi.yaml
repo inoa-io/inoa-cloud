@@ -2065,12 +2065,12 @@ components:
         interval:
           description: Duration between two measurements in milliseconds
           type: integer
-          format: int32
+          format: int64
           example: 3000
         timeout:
           description: Maximum duration a measurement may take in milliseconds
           type: integer
-          format: int32
+          format: int64
           example: 1000
       required:
         - measurand_type
@@ -2335,29 +2335,22 @@ components:
           example: Garage fuse box meter
         gateway_id:
           $ref: "#/components/schemas/GatewayId"
-        thing_type_id:
-          $ref: "#/components/schemas/ThingTypeId"
         measurands:
           description: List of measurands and its configuration
           type: array
           items:
             $ref: "#/components/schemas/Measurand"
         configurations:
-          description: List of thing configurations
-          type: array
-          items:
-            type: object
-            properties:
-              configuration:
-                $ref: "#/components/schemas/ThingConfiguration"
-              value:
-                description: Value of the configuration
-                type: string
-                maxLength: 4096
-                example: 98
-            required:
-              - configuration
-              - value
+          description: Key / value map of thing configurations
+          type: object
+          additionalProperties:
+            type: string
+            description: Value of the configuration
+            maxLength: 4096
+            example: 98
+      required:
+        - name
+        - gateway_id
 
     ###
     ### Common

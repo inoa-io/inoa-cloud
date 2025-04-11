@@ -21,6 +21,7 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.validation.Valid;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -60,20 +61,11 @@ public class ThingsController implements ThingsApi {
     }
 
     // Gateway
-    var gateway = gatewayRepository.findByGatewayId(thingCreateVO.getGatewayId());
-    if (gateway.isEmpty()
-        || !Objects.equals(gateway.get().getTenant().getTenantId(), security.getTenantId())) {
-      throw new HttpStatusException(
-          HttpStatus.BAD_REQUEST, "No such gateway: " + thingCreateVO.getGatewayId());
-    }
-    if (!Objects.equals(security.getTenantId(), gateway.get().getTenant().getTenantId())) {
-      throw new HttpStatusException(
-          HttpStatus.NOT_FOUND, "No such gateway: " + thingCreateVO.getGatewayId());
-    }
-    thing.setGateway(gateway.get());
+    var gateway = checkGateway(thingCreateVO.getGatewayId(), HttpStatus.BAD_REQUEST);
+    thing.setGateway(gateway);
 
     // Name
-    if (thingRepository.existsByNameAndGateway(thingCreateVO.getName(), gateway.get())) {
+    if (thingRepository.existsByNameAndGateway(thingCreateVO.getName(), gateway)) {
       throw new HttpStatusException(
           HttpStatus.CONFLICT, "Thing with same name already exists: " + thingCreateVO.getName());
     }
@@ -195,9 +187,135 @@ public class ThingsController implements ThingsApi {
 
   @Override
   public HttpResponse<ThingVO> updateThing(UUID thingId, @Valid ThingUpdateVO thingUpdateVO) {
-    var thing = checkThing(thingId);
-    // TODO: Check if Gateway is visible to user! Otherwise send 404
-    return HttpResponse.status(500, "Not implemented yet");
+    var oldThing = checkThing(thingId);
+
+    // Update name
+    oldThing.setName(thingUpdateVO.getName());
+
+    // Update description
+    oldThing.setDescription(thingUpdateVO.getDescription());
+
+    // Update gateway
+    if (!Objects.equals(thingUpdateVO.getGatewayId(), oldThing.getGateway().getGatewayId())) {
+      oldThing.setGateway(checkGateway(thingUpdateVO.getGatewayId(), HttpStatus.BAD_REQUEST));
+    }
+
+    // Update measurands
+    if (thingUpdateVO.getMeasurands() == null) {
+      oldThing.setMeasurands(new HashSet<>());
+    } else {
+      // Removed - only keep measurands with corresponding type from update VO
+      oldThing.setMeasurands(
+          oldThing.getMeasurands().stream()
+              .filter(
+                  old ->
+                      thingUpdateVO.getMeasurands().stream()
+                          .anyMatch(
+                              update ->
+                                  Objects.equals(
+                                      old.getMeasurandType().getObisId(),
+                                      update.getMeasurandType())))
+              .collect(Collectors.toSet()));
+      // Changed - change matching measurands
+      oldThing
+          .getMeasurands()
+          .forEach(
+              (oldMeasurand) -> {
+                var changedMeasurand =
+                    thingUpdateVO.getMeasurands().stream()
+                        .filter(
+                            m ->
+                                Objects.equals(
+                                    m.getMeasurandType(),
+                                    oldMeasurand.getMeasurandType().getObisId()))
+                        .findFirst()
+                        .orElseThrow();
+                oldMeasurand.setEnabled(changedMeasurand.getEnabled());
+                oldMeasurand.setTimeout(changedMeasurand.getTimeout());
+                oldMeasurand.setInterval(changedMeasurand.getInterval());
+              });
+      // Created - add new measurands if they have no corresponding match in old thing
+      oldThing
+          .getMeasurands()
+          .addAll(
+              thingUpdateVO.getMeasurands().stream()
+                  .filter(
+                      update ->
+                          oldThing.getMeasurands().stream()
+                              .noneMatch(
+                                  old ->
+                                      Objects.equals(
+                                          old.getMeasurandType().getObisId(),
+                                          update.getMeasurandType())))
+                  .map(
+                      (vo) ->
+                          measurandMapper
+                              .toMeasurand(vo)
+                              .setMeasurandType(
+                                  measurandTypeRepository
+                                      .findByObisId(vo.getMeasurandType())
+                                      .orElseThrow(
+                                          () ->
+                                              new HttpStatusException(
+                                                  HttpStatus.BAD_REQUEST,
+                                                  "No such measurand type: "
+                                                      + vo.getMeasurandType()))))
+                  .collect(Collectors.toSet()));
+    }
+
+    // Update configs
+    if (thingUpdateVO.getConfigurations() == null) {
+      oldThing.setThingConfigurationValues(new HashSet<>());
+    } else {
+      // Removed - only keep config with corresponding name from update VO
+      oldThing.setThingConfigurationValues(
+          oldThing.getThingConfigurationValues().stream()
+              .filter(
+                  old ->
+                      thingUpdateVO
+                          .getConfigurations()
+                          .containsKey(old.getThingConfiguration().getName()))
+              .collect(Collectors.toSet()));
+      // Changed - change matching config values
+      oldThing
+          .getThingConfigurationValues()
+          .forEach(
+              (oldConfig) -> {
+                oldConfig.setValue(
+                    thingUpdateVO
+                        .getConfigurations()
+                        .get(oldConfig.getThingConfiguration().getName()));
+              });
+      // Created - add new configs if they have no corresponding match in old thing
+      oldThing
+          .getThingConfigurationValues()
+          .addAll(
+              thingUpdateVO.getConfigurations().entrySet().stream()
+                  .filter(
+                      update ->
+                          oldThing.getThingConfigurationValues().stream()
+                              .noneMatch(
+                                  old ->
+                                      Objects.equals(
+                                          update.getKey(), old.getThingConfiguration().getName())))
+                  .map(
+                      (vo) ->
+                          new ThingConfigurationValue()
+                              .setValue(vo.getValue())
+                              .setThingConfiguration(
+                                  oldThing.getThingType().getThingConfigurations().stream()
+                                      .filter(
+                                          config -> Objects.equals(config.getName(), vo.getKey()))
+                                      .findFirst()
+                                      .orElseThrow(
+                                          () ->
+                                              new HttpStatusException(
+                                                  HttpStatus.BAD_REQUEST,
+                                                  "No such config name: " + vo.getKey()))))
+                  .collect(Collectors.toSet()));
+    }
+
+    return HttpResponse.ok(thingMapper.toThingVO(thingRepository.update(oldThing)));
   }
 
   @Override
@@ -219,13 +337,13 @@ public class ThingsController implements ThingsApi {
 
   @Override
   public HttpResponse<List<ThingVO>> findThingsByGatewayId(String gatewayId) {
-		var gateway = checkGateway(gatewayId);
+    var gateway = checkGateway(gatewayId);
     return HttpResponse.ok(thingMapper.toThingVOs(thingRepository.findByGateway(gateway)));
   }
 
   @Override
   public HttpResponse<Object> syncThingsToGateway(String gatewayId) {
-		var gateway = checkGateway(gatewayId);
+    var gateway = checkGateway(gatewayId);
     return HttpResponse.status(500, "Not implemented yet");
   }
 
@@ -235,21 +353,26 @@ public class ThingsController implements ThingsApi {
     return HttpResponse.status(HttpStatus.NO_CONTENT);
   }
 
-	private Thing checkThing(UUID thingId) {
-		var thing = thingRepository.findByThingId(thingId);
-		if (thing.isEmpty()
-						|| !Objects.equals(
-						security.getTenantId(), thing.get().getGateway().getTenant().getTenantId())) {
-			throw new HttpStatusException(HttpStatus.NOT_FOUND, "No such thing.");
-		}
-		return thing.get();
-	}
+  private Thing checkThing(UUID thingId) {
+    var thing = thingRepository.findByThingId(thingId);
+    if (thing.isEmpty()
+        || !Objects.equals(
+            security.getTenantId(), thing.get().getGateway().getTenant().getTenantId())) {
+      throw new HttpStatusException(HttpStatus.NOT_FOUND, "No such thing.");
+    }
+    return thing.get();
+  }
 
-	private Gateway checkGateway(String gatewayId) {
-		var gateway = gatewayRepository.findByGatewayId(gatewayId);
-		if (gateway.isEmpty() || !Objects.equals(security.getTenantId(), gateway.get().getTenant().getTenantId())) {
-			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
-		}
-		return gateway.get();
-	}
+  private Gateway checkGateway(String gatewayId) {
+    return checkGateway(gatewayId, HttpStatus.NOT_FOUND);
+  }
+
+  private Gateway checkGateway(String gatewayId, HttpStatus status) {
+    var gateway = gatewayRepository.findByGatewayId(gatewayId);
+    if (gateway.isEmpty()
+        || !Objects.equals(security.getTenantId(), gateway.get().getTenant().getTenantId())) {
+      throw new HttpStatusException(status, "Gateway not found: " + gatewayId);
+    }
+    return gateway.get();
+  }
 }

@@ -140,7 +140,6 @@ export class GatewayDatapointsComponent implements OnInit {
 		// if there is an id match in the database, update the thing
 		const syncThing: ThingUpdateVO = {
 			name: thing.name,
-			thing_type_id: thing.id.split(":")[1],
       configurations: thing,
 			gateway_id: this.intercomService.selectedGateway!.gateway_id
 		};

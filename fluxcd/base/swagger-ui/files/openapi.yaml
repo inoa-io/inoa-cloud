@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Inoa API
   description: Definitions for managing fleet, things and measurands.
-  version: ${project.version}
+  version: 0.0.1
   license:
     name: Apache License 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0
@@ -11,9 +11,6 @@ info:
     url: https://github.com/inoa-io
 servers:
   - url: https://api.qas.inoa.io
-  - url: https://api.inoa.io
-  - url: http://inoa.127.0.0.1.nip.io:8080
-  - url: http://inoa.{inoa.domain}:8080
     variables:
       inoa.domain:
         default: 127.0.0.1.nip.io
@@ -2065,12 +2062,12 @@ components:
         interval:
           description: Duration between two measurements in milliseconds
           type: integer
-          format: int32
+          format: int64
           example: 3000
         timeout:
           description: Maximum duration a measurement may take in milliseconds
           type: integer
-          format: int32
+          format: int64
           example: 1000
       required:
         - measurand_type
@@ -2335,29 +2332,22 @@ components:
           example: Garage fuse box meter
         gateway_id:
           $ref: "#/components/schemas/GatewayId"
-        thing_type_id:
-          $ref: "#/components/schemas/ThingTypeId"
         measurands:
           description: List of measurands and its configuration
           type: array
           items:
             $ref: "#/components/schemas/Measurand"
         configurations:
-          description: List of thing configurations
-          type: array
-          items:
-            type: object
-            properties:
-              configuration:
-                $ref: "#/components/schemas/ThingConfiguration"
-              value:
-                description: Value of the configuration
-                type: string
-                maxLength: 4096
-                example: 98
-            required:
-              - configuration
-              - value
+          description: Key / value map of thing configurations
+          type: object
+          additionalProperties:
+            type: string
+            description: Value of the configuration
+            maxLength: 4096
+            example: 98
+      required:
+        - name
+        - gateway_id
 
     ###
     ### Common
@@ -2624,4 +2614,4 @@ components:
       scheme: bearer
     Keycloak:
       type: openIdConnect
-      openIdConnectUrl: http://keycloak.127.0.0.1.nip.io:8080/realms/inoa/.well-known/openid-configuration
+      openIdConnectUrl: https://auth.qas.inoa.io/realms/inoa/.well-known/openid-configuration
