@@ -1057,33 +1057,6 @@ paths:
           description: Thing type not found.
 
   /things:
-    get:
-      tags: [things]
-      parameters:
-        - $ref: "#/components/parameters/PageablePage"
-        - $ref: "#/components/parameters/PageableSize"
-        - $ref: "#/components/parameters/Sort"
-        - name: filter
-          description: Search in name. Supports wildcard *, is case insensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 10
-            example: dvh
-      summary: Find things.
-      description: Returns all things ordered by name.
-      operationId: findThings
-      responses:
-        200:
-          description: Page with thing types.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ThingPage"
-        401:
-          description: Unauthorized.
-        404:
-          description: No matching things found.
     post:
       tags: [things]
       summary: Create thing.

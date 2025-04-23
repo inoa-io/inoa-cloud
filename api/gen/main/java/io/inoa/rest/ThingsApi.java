@@ -6,7 +6,6 @@ public interface ThingsApi {
 	java.lang.String PATH_CREATE_THING = "/things";
 	java.lang.String PATH_DELETE_THING = "/things/{thing_id:[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]}";
 	java.lang.String PATH_FIND_THING = "/things/{thing_id:[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]}";
-	java.lang.String PATH_FIND_THINGS = "/things";
 	java.lang.String PATH_FIND_THINGS_BY_GATEWAY_ID = "/gateways/{gateway_id:20}/things";
 	java.lang.String PATH_SYNC_THINGS_TO_GATEWAY = "/gateways/{gateway_id:20}/things/upload";
 	java.lang.String PATH_UPDATE_THING = "/things/{thing_id:[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9]-[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]}";
@@ -32,22 +31,6 @@ public interface ThingsApi {
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "thing_id")
 			java.util.UUID thingId);
-
-	@io.micronaut.http.annotation.Get(PATH_FIND_THINGS)
-	@io.micronaut.http.annotation.Produces({ "application/json" })
-	io.micronaut.http.HttpResponse<ThingPageVO> findThings(
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue(value = "page")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(0) Integer> page,
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue(value = "size")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Min(1) @jakarta.validation.constraints.Max(100) Integer> size,
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue(value = "sort")
-			java.util.Optional<java.util.List<java.lang.@jakarta.validation.constraints.NotNull @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z_]{2,10}(,(asc|desc|ASC|DESC))?$") String>> sort,
-			@io.micronaut.core.annotation.NonNull
-			@io.micronaut.http.annotation.QueryValue(value = "filter")
-			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 10) String> filter);
 
 	@io.micronaut.http.annotation.Get(PATH_FIND_THINGS_BY_GATEWAY_ID)
 	@io.micronaut.http.annotation.Produces({ "application/json" })

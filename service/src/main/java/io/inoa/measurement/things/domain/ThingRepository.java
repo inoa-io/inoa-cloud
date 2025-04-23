@@ -12,19 +12,19 @@ import java.util.UUID;
 @JdbcRepository(dialect = Dialect.POSTGRES)
 public interface ThingRepository extends CrudRepository<Thing, Long> {
 
-  boolean existsByThingId(UUID id);
-
   boolean existsByNameAndGateway(String name, Gateway tenant);
 
   @Join("gateway.tenant")
-  @Join("thingType")
+  @Join("thingType.measurandTypes")
+  @Join("thingType.thingConfigurations")
   @Join(value = "measurands.measurandType", type = Join.Type.OUTER_FETCH)
   @Join(value = "thingConfigurationValues", type = Join.Type.OUTER_FETCH)
   @Join(value = "thingConfigurationValues.thingConfiguration")
   Optional<Thing> findByThingId(UUID thingId);
 
   @Join("gateway.tenant")
-  @Join("thingType")
+  @Join("thingType.measurandTypes")
+  @Join("thingType.thingConfigurations")
   @Join(value = "measurands.measurandType", type = Join.Type.OUTER_FETCH)
   @Join(value = "thingConfigurationValues", type = Join.Type.OUTER_FETCH)
   @Join(value = "thingConfigurationValues.thingConfiguration")

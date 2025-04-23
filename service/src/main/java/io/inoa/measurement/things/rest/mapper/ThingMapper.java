@@ -3,11 +3,10 @@ package io.inoa.measurement.things.rest.mapper;
 import io.inoa.measurement.things.domain.Thing;
 import io.inoa.rest.ThingCreateVO;
 import io.inoa.rest.ThingVO;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
-
-import java.util.List;
 
 @Mapper(
     uses = {ThingTypeMapper.class, MeasurandMapper.class},

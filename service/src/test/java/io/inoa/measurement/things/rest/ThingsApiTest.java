@@ -20,6 +20,7 @@ import io.inoa.rest.ThingsApiTestSpec;
 import io.inoa.test.AbstractUnitTest;
 import io.micronaut.data.jdbc.runtime.JdbcOperations;
 import jakarta.inject.Inject;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -92,8 +93,12 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
         thingVO.getThingTypeId(),
         "Expected correct thingType to be created.");
     assertEquals(
-        thingCreateVO.getMeasurands(),
-        thingVO.getMeasurands(),
+        thingCreateVO.getMeasurands().stream()
+            .sorted(Comparator.comparing(MeasurandVO::getMeasurandType))
+            .toList(),
+        thingVO.getMeasurands().stream()
+            .sorted(Comparator.comparing(MeasurandVO::getMeasurandType))
+            .toList(),
         "Expected correct measurands to be created.");
     assertEquals(
         thingCreateVO.getConfigurations(),
@@ -191,7 +196,44 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
         .putConfigurationsItem("Serial", "33065394");
 
     var updatedThing = assert200(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO));
-    // TODO: Check
+
+    assertEquals("Updated Thing", updatedThing.getName(), "Thing name shall be updated");
+    assertEquals(
+        "Updated description", updatedThing.getDescription(), "Thing description shall be updated");
+    assertEquals(
+        updatedGateway.getGatewayId(), updatedThing.getGatewayId(), "Gateway id shall be updated");
+    assertEquals(2, updatedThing.getMeasurands().size(), "Measurands size shall be updated");
+    assertEquals(
+        ObisId.OBIS_1_8_0.getObisId(),
+        updatedThing.getMeasurands().get(0).getMeasurandType(),
+        "Measurands size shall be updated");
+    assertEquals(
+        30000L,
+        updatedThing.getMeasurands().get(0).getInterval(),
+        "Measurands size shall be updated");
+    assertEquals(
+        2000L,
+        updatedThing.getMeasurands().get(0).getTimeout(),
+        "Measurands size shall be updated");
+    assertEquals(
+        ObisId.OBIS_FREQUENCY.getObisId(),
+        updatedThing.getMeasurands().get(1).getMeasurandType(),
+        "Measurands size shall be updated");
+    assertEquals(
+        60000L,
+        updatedThing.getMeasurands().get(1).getInterval(),
+        "Measurands size shall be updated");
+    assertEquals(
+        1000L,
+        updatedThing.getMeasurands().get(1).getTimeout(),
+        "Measurands size shall be updated");
+
+    assertEquals(
+        1, updatedThing.getConfigurations().size(), "Configurations size shall be updated");
+    assertEquals(
+        "33065394",
+        updatedThing.getConfigurations().get("Serial"),
+        "Configurations size shall be updated");
   }
 
   @Test
@@ -231,7 +273,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     // ConfigKey does not match regex
     thingUpdateVO.setConfigurations(Map.of("Serial", "bielefeld"));
     assertEquals(
-        "No such config name: bielefeld",
+        "Config value 'bielefeld' does not match regex '[0-9]*'",
         assert400(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO)).getMessage());
   }
 
@@ -284,7 +326,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
         thing.getMeasurands(),
         "Expected correct measurands to be created.");
     assertEquals(
-        Map.of("Serial", "33065393"),
+        Map.of("Serial", "33065394"),
         thing.getConfigurations(),
         "Expected correct configs to be created.");
   }
@@ -303,36 +345,12 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
     assert404(() -> client.findThing(auth(tenant), UUID.randomUUID()));
   }
 
-  @Disabled("NYI")
-  @Test
-  @Order(12)
-  @Override
-  public void findThings200() {
-    var things = assert200(() -> client.findThings(auth(tenant), null, null, null, null));
-    assertEquals(1, things.getTotalSize(), "Expected 1 created thing");
-  }
-
-  @Test
-  @Order(13)
-  @Override
-  public void findThings401() {
-    assert401(() -> client.findThings(null, null, null, null, null));
-  }
-
-  @Test
-  @Order(14)
-  @Override
-  @Disabled("NYI")
-  public void findThings404() {
-    assert404(() -> client.findThings(auth(tenant), null, null, null, null));
-  }
-
   @Test
   @Order(15)
   @Override
   public void findThingsByGatewayId200() {
     var result =
-        assert200(() -> client.findThingsByGatewayId(auth(tenant), gateway.getGatewayId()));
+        assert200(() -> client.findThingsByGatewayId(auth(tenant), updatedGateway.getGatewayId()));
     assertEquals(1, result.size(), "Expected 1 found thing");
     assertEquals(thingId, result.get(0).getId(), "Expected correct thing id to be found");
   }

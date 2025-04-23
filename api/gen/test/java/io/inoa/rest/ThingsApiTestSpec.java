@@ -30,14 +30,6 @@ public interface ThingsApiTestSpec {
 
 	void findThing404() throws java.lang.Exception;
 
-	// findThings
-
-	void findThings200() throws java.lang.Exception;
-
-	void findThings401() throws java.lang.Exception;
-
-	void findThings404() throws java.lang.Exception;
-
 	// findThingsByGatewayId
 
 	void findThingsByGatewayId200() throws java.lang.Exception;

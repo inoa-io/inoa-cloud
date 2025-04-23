@@ -3,9 +3,12 @@ package io.inoa.measurement.things.rest;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.registry.domain.TenantRepository;
+import io.inoa.measurement.things.domain.Measurand;
+import io.inoa.measurement.things.domain.MeasurandRepository;
 import io.inoa.measurement.things.domain.MeasurandTypeRepository;
 import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingConfigurationValue;
+import io.inoa.measurement.things.domain.ThingConfigurationValueRepository;
 import io.inoa.measurement.things.domain.ThingRepository;
 import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.measurement.things.domain.ThingTypeRepository;
@@ -13,7 +16,6 @@ import io.inoa.measurement.things.rest.mapper.MeasurandMapper;
 import io.inoa.measurement.things.rest.mapper.ThingMapper;
 import io.inoa.rest.MeasurandVO;
 import io.inoa.rest.ThingCreateVO;
-import io.inoa.rest.ThingPageVO;
 import io.inoa.rest.ThingUpdateVO;
 import io.inoa.rest.ThingVO;
 import io.inoa.rest.ThingsApi;
@@ -22,10 +24,10 @@ import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
 import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -41,7 +43,9 @@ public class ThingsController implements ThingsApi {
   private final TenantRepository tenantRepository;
   private final ThingRepository thingRepository;
   private final ThingTypeRepository thingTypeRepository;
+  private final MeasurandRepository measurandRepository;
   private final MeasurandTypeRepository measurandTypeRepository;
+  private final ThingConfigurationValueRepository thingConfigurationValueRepository;
   private final ThingMapper thingMapper;
   private final MeasurandMapper measurandMapper;
   private final Security security;
@@ -201,10 +205,22 @@ public class ThingsController implements ThingsApi {
     }
 
     // Update measurands
+    List<Measurand> deletedMeasurands = new ArrayList<>();
     if (thingUpdateVO.getMeasurands() == null) {
       oldThing.setMeasurands(new HashSet<>());
     } else {
       // Removed - only keep measurands with corresponding type from update VO
+      deletedMeasurands =
+          oldThing.getMeasurands().stream()
+              .filter(
+                  old ->
+                      thingUpdateVO.getMeasurands().stream()
+                          .noneMatch(
+                              update ->
+                                  Objects.equals(
+                                      old.getMeasurandType().getObisId(),
+                                      update.getMeasurandType())))
+              .toList();
       oldThing.setMeasurands(
           oldThing.getMeasurands().stream()
               .filter(
@@ -264,10 +280,19 @@ public class ThingsController implements ThingsApi {
     }
 
     // Update configs
+    List<ThingConfigurationValue> deletedThingConfigurationValues = new ArrayList<>();
     if (thingUpdateVO.getConfigurations() == null) {
       oldThing.setThingConfigurationValues(new HashSet<>());
     } else {
       // Removed - only keep config with corresponding name from update VO
+      deletedThingConfigurationValues =
+          oldThing.getThingConfigurationValues().stream()
+              .filter(
+                  old ->
+                      !thingUpdateVO
+                          .getConfigurations()
+                          .containsKey(old.getThingConfiguration().getName()))
+              .toList();
       oldThing.setThingConfigurationValues(
           oldThing.getThingConfigurationValues().stream()
               .filter(
@@ -317,6 +342,12 @@ public class ThingsController implements ThingsApi {
                   .collect(Collectors.toSet()));
     }
 
+    // Delete removed measurands and configs after all checks are done
+    deletedMeasurands.forEach((measurand) -> measurandRepository.deleteById(measurand.getId()));
+    deletedThingConfigurationValues.forEach(
+        (thingConfigurationValue) ->
+            thingConfigurationValueRepository.deleteById(thingConfigurationValue.getId()));
+
     return HttpResponse.ok(thingMapper.toThingVO(thingRepository.update(oldThing)));
   }
 
@@ -324,17 +355,6 @@ public class ThingsController implements ThingsApi {
   public HttpResponse<ThingVO> findThing(UUID thingId) {
     var thing = checkThing(thingId);
     return HttpResponse.ok(thingMapper.toThingVO(thing));
-  }
-
-  // TODO filter
-  @Override
-  public HttpResponse<ThingPageVO> findThings(
-      Optional<Integer> page,
-      Optional<Integer> size,
-      Optional<List<String>> sort,
-      Optional<String> filter) {
-    // TODO: Check if Gateway is visible to user! Otherwise send 404
-    return HttpResponse.status(500, "Not implemented yet");
   }
 
   @Override
