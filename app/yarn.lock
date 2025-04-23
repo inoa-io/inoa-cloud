@@ -22,21 +22,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/architect@npm:0.1802.17":
-  version: 0.1802.17
-  resolution: "@angular-devkit/architect@npm:0.1802.17"
-  dependencies:
-    "@angular-devkit/core": "npm:18.2.17"
-    rxjs: "npm:7.8.1"
-  dependenciesMeta:
-    esbuild:
-      built: true
-    puppeteer:
-      built: true
-  checksum: 10c0/e393df338f2c9a4a048fb973dd71ee25ecd594459f3378a5081c7d2e7d54f76e65ac149af342b9e3d0a43642341ace31de5ea849c282058362246453a1eb1eff
-  languageName: node
-  linkType: hard
-
 "@angular-devkit/architect@npm:0.1802.19":
   version: 0.1802.19
   resolution: "@angular-devkit/architect@npm:0.1802.19"
@@ -240,30 +225,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/core@npm:18.2.17":
-  version: 18.2.17
-  resolution: "@angular-devkit/core@npm:18.2.17"
-  dependencies:
-    ajv: "npm:8.17.1"
-    ajv-formats: "npm:3.0.1"
-    jsonc-parser: "npm:3.3.1"
-    picomatch: "npm:4.0.2"
-    rxjs: "npm:7.8.1"
-    source-map: "npm:0.7.4"
-  peerDependencies:
-    chokidar: ^3.5.2
-  dependenciesMeta:
-    esbuild:
-      built: true
-    puppeteer:
-      built: true
-  peerDependenciesMeta:
-    chokidar:
-      optional: true
-  checksum: 10c0/b8a95c8a17162fb6b348874346fa5d52d246785b0da1ce7a59d7ff5080eaf753c7e4879f558b2f12e648ff51f22ab2c51bbf3bfe8a0a2e85a437d515e3e27c05
-  languageName: node
-  linkType: hard
-
 "@angular-devkit/core@npm:18.2.19":
   version: 18.2.19
   resolution: "@angular-devkit/core@npm:18.2.19"
@@ -301,11 +262,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-devkit/schematics@npm:18.2.17":
-  version: 18.2.17
-  resolution: "@angular-devkit/schematics@npm:18.2.17"
+"@angular-devkit/schematics@npm:18.2.19":
+  version: 18.2.19
+  resolution: "@angular-devkit/schematics@npm:18.2.19"
   dependencies:
-    "@angular-devkit/core": "npm:18.2.17"
+    "@angular-devkit/core": "npm:18.2.19"
     jsonc-parser: "npm:3.3.1"
     magic-string: "npm:0.30.11"
     ora: "npm:5.4.1"
@@ -315,7 +276,7 @@ __metadata:
       built: true
     puppeteer:
       built: true
-  checksum: 10c0/c0db53ff6d8a62ba80dcb7171948c287ffa5ea3e1217d0034c3388234a4cfd4a5fb4cf1ea89d4c690b1dffb0d722640c07d0a80214fae4e056acecb3abdab52a
+  checksum: 10c0/4b26db2fe1182344dfb809619ed1406970780528aa86cb1040889861b66db8d77d59b88b859852b82436cad8c68cafe5169aea90032a894ab7c730cdccde6f48
   languageName: node
   linkType: hard
 
@@ -518,15 +479,15 @@ __metadata:
   linkType: hard
 
 "@angular/cli@npm:~18.2.0":
-  version: 18.2.17
-  resolution: "@angular/cli@npm:18.2.17"
+  version: 18.2.19
+  resolution: "@angular/cli@npm:18.2.19"
   dependencies:
-    "@angular-devkit/architect": "npm:0.1802.17"
-    "@angular-devkit/core": "npm:18.2.17"
-    "@angular-devkit/schematics": "npm:18.2.17"
+    "@angular-devkit/architect": "npm:0.1802.19"
+    "@angular-devkit/core": "npm:18.2.19"
+    "@angular-devkit/schematics": "npm:18.2.19"
     "@inquirer/prompts": "npm:5.3.8"
     "@listr2/prompt-adapter-inquirer": "npm:2.0.15"
-    "@schematics/angular": "npm:18.2.17"
+    "@schematics/angular": "npm:18.2.19"
     "@yarnpkg/lockfile": "npm:1.1.0"
     ini: "npm:4.1.3"
     jsonc-parser: "npm:3.3.1"
@@ -545,7 +506,7 @@ __metadata:
       built: true
   bin:
     ng: bin/ng.js
-  checksum: 10c0/5c9c1f33b2132634a40a0dc68b27001a239e58f94135ceb2cfd9bea79bc0aa9d1bef417d4d05a0fab649c96d7fe6840582cf7b4ca52624c3234cd76b92e31d32
+  checksum: 10c0/d6d662daff58f9c22364b3be608d1d3cc897347da9dfdaed07da4827324ab142ad9d19e32aa6e6021ad0e6b555046c0a95cd7b6cd0e4c3076aab20d61e12c21a
   languageName: node
   linkType: hard
 
@@ -3734,19 +3695,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@schematics/angular@npm:18.2.17":
-  version: 18.2.17
-  resolution: "@schematics/angular@npm:18.2.17"
+"@schematics/angular@npm:18.2.19":
+  version: 18.2.19
+  resolution: "@schematics/angular@npm:18.2.19"
   dependencies:
-    "@angular-devkit/core": "npm:18.2.17"
-    "@angular-devkit/schematics": "npm:18.2.17"
+    "@angular-devkit/core": "npm:18.2.19"
+    "@angular-devkit/schematics": "npm:18.2.19"
     jsonc-parser: "npm:3.3.1"
   dependenciesMeta:
     esbuild:
       built: true
     puppeteer:
       built: true
-  checksum: 10c0/b1c2f4b1ecc5d2f5bc97162ab26c5542d073ea80257df5912a28404d36ede64720ed0de0c58e7d1c1485e5292343d426569ffe5204ffd43aab3974a6329e9e66
+  checksum: 10c0/c6e14900a876d1f3a3c79d0aa513c11ece91edffce312c1af4f9b07ae47ea2ba6301b232e4dffaf170046bec8058dec5e080ad07be54f11f08abaa3502439728
   languageName: node
   linkType: hard
 
