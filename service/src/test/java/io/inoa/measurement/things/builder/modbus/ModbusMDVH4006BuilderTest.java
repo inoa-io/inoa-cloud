@@ -9,7 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.inoa.measurement.things.builder.ConfigException;
+import io.inoa.measurement.things.builder.AbstractBuilderTest;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
 import io.inoa.measurement.things.domain.MeasurandType;
 import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingConfigurationType;
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test;
 public class ModbusMDVH4006BuilderTest extends AbstractBuilderTest {
 
   @Test
-  public void testBuildDefinition() throws ConfigException {
+  public void testBuildDefinition() throws DatapointBuilderException {
     ModbusMDVH4006Builder builder = new ModbusMDVH4006Builder(new ObjectMapper());
     Thing thing = new Thing();
     thing.setName("schrank");

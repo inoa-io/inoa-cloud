@@ -5,10 +5,14 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-/** Exception thrown if thing configuration has errors */
+/**
+ * Exception thrown if datapoint cannot be built
+ *
+ * @author fabian.schlegel@grayc.de
+ */
 @Getter
 @AllArgsConstructor
-public class ConfigException extends Exception {
+public class DatapointBuilderException extends Exception {
 
   private UUID thingId;
   private String configName;

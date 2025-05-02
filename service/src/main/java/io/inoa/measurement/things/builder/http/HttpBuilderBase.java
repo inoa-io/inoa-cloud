@@ -2,11 +2,16 @@ package io.inoa.measurement.things.builder.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.inoa.measurement.things.builder.ConfigCreator;
+import io.inoa.measurement.things.builder.DatapointBuilder;
 import io.inoa.measurement.things.builder.modbus.Utils;
 import io.inoa.measurement.things.domain.Thing;
 
-public abstract class HttpBuilderBase extends ConfigCreator {
+/**
+ * Abstract class for datapoint builders with HTTP measurement (e.g. Shelly devices)
+ *
+ * @author fabian.schlegel
+ */
+public abstract class HttpBuilderBase extends DatapointBuilder {
 
   protected abstract ObjectMapper getObjectMapper();
 

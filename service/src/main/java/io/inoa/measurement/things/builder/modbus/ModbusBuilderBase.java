@@ -3,15 +3,20 @@ package io.inoa.measurement.things.builder.modbus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.inoa.measurement.things.builder.ConfigCreator;
-import io.inoa.measurement.things.builder.ConfigException;
+import io.inoa.measurement.things.builder.DatapointBuilder;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
 import io.inoa.measurement.things.domain.Thing;
 import io.inoa.rest.DatapointVO;
 import java.util.HexFormat;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class ModbusBuilderBase extends ConfigCreator {
+/**
+ * Abstract class for datapoint builders with ModBus measurement (e.g. DZG devices)
+ *
+ * @author fabian.schlegel
+ */
+public abstract class ModbusBuilderBase extends DatapointBuilder {
 
   protected abstract ObjectMapper getObjectMapper();
 
@@ -87,7 +92,7 @@ public abstract class ModbusBuilderBase extends ConfigCreator {
   }
 
   protected ArrayNode toDatapoints(Thing thing, int slaveId, Map<String, RegisterSetting> mappings)
-      throws ConfigException {
+      throws DatapointBuilderException {
     ArrayNode datapoints = OBJECT_MAPPER.createArrayNode();
     var serial = getConfigAsNumber(thing, CONFIG_KEY_SERIAL).intValue();
     var modbusInterface = getConfigAsNumber(thing, CONFIG_KEY_MODBUS_INTERFACE).intValue();

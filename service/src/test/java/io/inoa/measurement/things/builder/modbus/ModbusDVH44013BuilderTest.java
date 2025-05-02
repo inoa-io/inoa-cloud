@@ -11,7 +11,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.inoa.measurement.things.builder.ConfigException;
+import io.inoa.measurement.things.builder.AbstractBuilderTest;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
 import io.inoa.measurement.things.domain.MeasurandType;
 import io.inoa.measurement.things.domain.Thing;
 import io.inoa.measurement.things.domain.ThingConfigurationType;
@@ -24,7 +25,7 @@ import org.junit.jupiter.api.Test;
 public class ModbusDVH44013BuilderTest extends AbstractBuilderTest {
 
   @Test
-  public void testBuildDefinition() throws JsonProcessingException, ConfigException {
+  public void testBuildDefinition() throws JsonProcessingException, DatapointBuilderException {
     ModbusDVH4013Builder builder = new ModbusDVH4013Builder(new ObjectMapper());
     Thing thing = new Thing();
     thing.setName("schrank");

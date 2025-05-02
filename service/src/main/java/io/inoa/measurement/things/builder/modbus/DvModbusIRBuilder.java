@@ -7,13 +7,20 @@ import static io.inoa.measurement.things.domain.ObisId.OBIS_METER_SERIAL;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.inoa.measurement.things.builder.ConfigException;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
 import io.inoa.measurement.things.domain.Thing;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Builder for <a
+ * href="https://www.device.de/index.php/produkte/kommunikationsadapter-zur-zaehlerauslesung-stationaer/dvmodbusir">DvModbusIR
+ * devices (Device GmbH)</a>
+ *
+ * @author fabian.schlegel@grayc.de
+ */
 @SuppressWarnings("unchecked")
 @Slf4j
 @RequiredArgsConstructor
@@ -42,7 +49,7 @@ public class DvModbusIRBuilder extends ModbusBuilderBase {
   private final ObjectMapper objectMapper;
 
   @Override
-  public ArrayNode build(Thing thing) throws ConfigException {
+  public ArrayNode build(Thing thing) throws DatapointBuilderException {
     var serial = getConfigAsNumber(thing, CONFIG_KEY_SERIAL).intValue();
     int slaveId = serial % 1000;
     if (slaveId > 255) {

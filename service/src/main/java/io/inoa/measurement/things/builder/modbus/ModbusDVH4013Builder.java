@@ -8,13 +8,20 @@ import static java.lang.Math.abs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.inoa.measurement.things.builder.ConfigException;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
 import io.inoa.measurement.things.domain.Thing;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Builder for <a
+ * href="https://www.dzg.de/fileadmin/dzg/content/downloads/produkte-zaehler/dvh/DZG_DWH4113_Handbuch_231114.pdf">DVH4013
+ * devices (DZG GmbH)</a>
+ *
+ * @author fabian.schlegel@grayc.de
+ */
 @SuppressWarnings("unchecked")
 @Slf4j
 @RequiredArgsConstructor
@@ -42,7 +49,7 @@ public class ModbusDVH4013Builder extends ModbusBuilderBase {
   private final ObjectMapper objectMapper;
 
   @Override
-  public ArrayNode build(Thing thing) throws ConfigException {
+  public ArrayNode build(Thing thing) throws DatapointBuilderException {
     var serial = getConfigAsNumber(thing, CONFIG_KEY_SERIAL).intValue();
     String hex = String.format("%02d", abs(serial + 1) % 100);
     int slaveId = Integer.parseInt(hex, 16);

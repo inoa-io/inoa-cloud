@@ -1,4 +1,4 @@
-package io.inoa.measurement.things.builder.modbus;
+package io.inoa.measurement.things.builder;
 
 import io.inoa.measurement.things.domain.Measurand;
 import io.inoa.measurement.things.domain.MeasurandType;

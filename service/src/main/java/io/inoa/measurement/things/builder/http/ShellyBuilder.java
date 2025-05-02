@@ -2,10 +2,15 @@ package io.inoa.measurement.things.builder.http;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import io.inoa.measurement.things.builder.ConfigException;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
 import io.inoa.measurement.things.domain.Thing;
 import lombok.RequiredArgsConstructor;
 
+/**
+ * Datapoint builder for Shelly devices
+ *
+ * @author fabian.schlegel@grayc.de
+ */
 @SuppressWarnings("unchecked")
 @RequiredArgsConstructor
 public class ShellyBuilder extends HttpBuilderBase {
@@ -16,7 +21,7 @@ public class ShellyBuilder extends HttpBuilderBase {
   public static final String CONFIG_KEY_URI = "uri";
 
   @Override
-  public ArrayNode build(Thing thing) throws ConfigException {
+  public ArrayNode build(Thing thing) throws DatapointBuilderException {
     ArrayNode datapoints = objectMapper.createArrayNode();
     var serial = getConfigAsString(thing, CONFIG_KEY_SERIAL);
     var uri = getConfigAsString(thing, CONFIG_KEY_URI);
