@@ -12,8 +12,7 @@ steps:
   # Linting for k8s kustomize configurations
   kustomize:
     image: ghcr.io/grayc-de/plugins/kubectl
-    commands:
-      - kubectl kustomize ./fluxcd/live/qas
+    commands: kubectl kustomize ./fluxcd/live/qas
     when: [path: [fluxcd/**]]
 
   # Linting for dockerfiles
