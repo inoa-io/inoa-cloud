@@ -12,13 +12,6 @@
 
 	<name>INOA :: API Spec</name>
 
-	<properties>
-		<openapi.generator.maven.plugin.ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</openapi.generator.maven.plugin.ignoreFileOverride>
-		<openapi.generator.inputSpec>${project.basedir}/openapi.yaml</openapi.generator.inputSpec>
-		<openapi.style.validateInfoLicense>false</openapi.style.validateInfoLicense>
-		<openapi.style.validateModelPropertiesExample>false</openapi.style.validateModelPropertiesExample>
-	</properties>
-
 	<dependencies>
 
 		<!-- apis -->
@@ -64,7 +57,44 @@
 	</dependencies>
 
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.openapitools</groupId>
+					<artifactId>openapi-generator-maven-plugin</artifactId>
+					<configuration>
+						<inputSpec>${project.basedir}/openapi.yaml</inputSpec>
+						<ignoreFileOverride>${project.basedir}/.openapi-generator-ignore</ignoreFileOverride>
+						<modelNameSuffix>VO</modelNameSuffix>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
+
+			<!--validate openapi spec -->
+			<plugin>
+				<groupId>org.openapitools.openapistylevalidator</groupId>
+				<artifactId>openapi-style-validator-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals><goal>validate</goal></goals>
+						<configuration>
+							<inputFile>${project.basedir}/openapi.yaml</inputFile>
+							<!-- see https://opensource.zalando.com/restful-api-guidelines -->
+							<pathNamingConvention>HyphenCase</pathNamingConvention>
+							<parameterNamingConvention>UnderscoreCase</parameterNamingConvention>
+							<pathParamNamingConvention>UnderscoreCase</pathParamNamingConvention>
+							<queryParamNamingConvention>UnderscoreCase</queryParamNamingConvention>
+							<propertyNamingConvention>UnderscoreCase</propertyNamingConvention>
+							<!-- TODO update all examples and set correct license -->
+							<validateInfoLicense>false</validateInfoLicense>
+							<validateModelPropertiesExample>false</validateModelPropertiesExample>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 
 			<!-- add generated sources -->
 			<plugin>
@@ -107,7 +137,6 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut.core}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -131,11 +160,6 @@
 			<!-- remove default invocations -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<executions><execution><id>default</id><phase /></execution></executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<executions><execution><id>default-resources</id><phase /></execution></executions>
 			</plugin>
@@ -144,28 +168,6 @@
 	</build>
 
 	<profiles>
-		<profile>
-			<id>check</id>
-			<activation>
-				<property>
-					<name>!check.skip</name>
-				</property>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.openapitools.openapistylevalidator</groupId>
-						<artifactId>openapi-style-validator-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>validate</phase>
-								<goals><goal>validate</goal></goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
 		<profile>
 			<id>generate</id>
 			<build>
@@ -212,7 +214,6 @@
 									<generatorName>micronaut</generatorName>
 									<output>${project.basedir}/gen</output>
 									<packageName>io.inoa.rest</packageName>
-									<modelNameSuffix>VO</modelNameSuffix>
 									<configOptions>
 										<pageable>true</pageable>
 										<generateConstants>true</generateConstants>
@@ -234,7 +235,6 @@
 									<output>${project.basedir}/gen</output>
 									<packageName>org.eclipse.hawkbit.api</packageName>
 									<modelPackage>org.eclipse.hawkbit.model</modelPackage>
-									<modelNameSuffix>VO</modelNameSuffix>
 									<configOptions>
 										<useBeanValidation>false</useBeanValidation>
 										<clientId>hawkbit</clientId>
@@ -251,7 +251,6 @@
 								</goals>
 								<configuration>
 									<generatorName>typescript-angular</generatorName>
-									<modelNameSuffix>VO</modelNameSuffix>
 									<output>${project.basedir}/../app/src/openapi</output>
 									<configOptions>
 										<ngVersion>16</ngVersion>

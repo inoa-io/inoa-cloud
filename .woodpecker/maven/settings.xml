@@ -12,6 +12,13 @@
 		</server>
 	</servers>
 
+	<mirrors>
+		<mirror>
+			<url>http://mirror.woodpecker.svc/maven2</url>
+			<mirrorOf>central</mirrorOf>
+		</mirror>
+	</mirrors>
+
 	<profiles>
 		<profile>
 			<id>default</id>
@@ -19,12 +26,12 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
+				<k3s.registries>${env.CI_WORKSPACE}/.woodpecker/maven/registries.yml</k3s.registries>
 				<k3s.skipRm>true</k3s.skipRm>
 				<k3s.clusterDns>10.53.0.10</k3s.clusterDns>
 				<k3s.clusterCidr>10.52.0.0/16</k3s.clusterCidr>
 				<k3s.serviceCidr>10.53.0.0/16</k3s.serviceCidr>
 				<k3s.serviceCidrStatic>10.53.100.0</k3s.serviceCidrStatic>
-				<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 			</properties>
 		</profile>
 	</profiles>

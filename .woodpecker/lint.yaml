@@ -1,29 +1,42 @@
 when:
-  - event: [manual, pull_request]
-  - event: push
-    branch: main
+  event: [manual, pull_request]
+  branch: main
+  path: [.woodpecker/lint.yaml, renovate.json, "**/*.y*ml", "**/*.md", "**/*.sh", "**/Dockerfile", fluxcd/**]
 
 steps:
-  # Linting fopr backstage coatalog entities
+
+  renovate:
+    image: kokuwaio/renovate-config-validator
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, renovate.json]]
+
+  dockerfile:
+    image: kokuwaio/hadolint
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, "**/Dockerfile"]]
+
+  yaml:
+    image: kokuwaio/yamllint
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, .yamllint.yaml, "**/*.y*ml"]]
+    failure: ignore
+
+  markdown:
+    image: kokuwaio/markdownlint
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, .markdownlint.yaml, "**/*.md"]]
+    failure: ignore
+
+  shellcheck:
+    image: kokuwaio/shellcheck
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, "**/*.sh"]]
+
   backstage:
     image: ghcr.io/grayc-de/plugins/backstage-entity-validator
-    when: [path: [catalog-info.yaml, docs/backstage/**]]
+    when: [path: [.woodpecker/lint.yaml, catalog-info.yaml, docs/backstage/**]]
 
-  # Linting for k8s kustomize configurations
   kustomize:
     image: ghcr.io/grayc-de/plugins/kubectl
     commands: kubectl kustomize ./fluxcd/live/qas
-    when: [path: [fluxcd/**]]
-
-  # Linting for dockerfiles
-  dockerfile:
-    image: ghcr.io/grayc-de/plugins/hadolint
-    when: [path: ["**/Dockerfile"]]
-
-  # Linting for *.java, *.sql, *.md, *.yaml
-  # WARNING: The markdown and yaml rules in spotless are different to the rules used by yamllint and markdownlint.
-  # TODO unify this rules to reduce confusion and effort while switching between projects or force one tool for all?
-  spotless:
-    image: ghcr.io/grayc-de/plugins/inoa
-    commands: [mvn validate]
-    when: [path: ["**/*.java", "**/pom.xml"]]
+    when: [path: [.woodpecker/lint.yaml, fluxcd/**]]

@@ -2,13 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>io.kokuwa.maven</groupId>
-		<artifactId>maven-parent</artifactId>
-		<version>0.6.18</version>
-		<relativePath/>
-	</parent>
-
 	<groupId>io.inoa</groupId>
 	<artifactId>inoa-parent</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -30,7 +23,6 @@
 	</licenses>
 
 	<modules>
-		<module>app</module>
 		<module>api</module>
 		<module>service</module>
 		<module>image</module>
@@ -58,16 +50,29 @@
 		<!-- ============================== Build ================================ -->
 		<!-- ===================================================================== -->
 
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.outputTimestamp>2024-01-10T14:04:49Z</project.build.outputTimestamp>
 
 		<maven.compiler.release>17</maven.compiler.release>
+		<maven.compiler.source>${maven.compiler.release}</maven.compiler.source>
+		<maven.compiler.target>${maven.compiler.release}</maven.compiler.target>
+		<maven.compiler.compilerArgument>-Xlint:all,-processing</maven.compiler.compilerArgument>
 		<maven.compiler.failOnWarning>true</maven.compiler.failOnWarning>
+		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
 
 		<maven.release.preparationGoals>verify -N -P release-prepare</maven.release.preparationGoals>
 		<maven.release.releaseProfiles>release-perform</maven.release.releaseProfiles>
 		<maven.release.goals>deploy -Dcheck.skip -DskipTests -pl !test -T1C</maven.release.goals>
 		<maven.release.scmReleaseCommitComment>@{prefix} prepare release @{releaseLabel} [CI SKIP]</maven.release.scmReleaseCommitComment>
 		<maven.release.signTag>false</maven.release.signTag>
+
+		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+		<impsort.removeUnused>true</impsort.removeUnused>
+		<impsort.groups>java.,javax.,jakarta.,org.</impsort.groups>
+		<!-- not yet executed -->
+		<impsort.skip>true</impsort.skip>
+		<formatter.skip>true</formatter.skip>
 
 		<image.registry>ghcr.io/inoa-io</image.registry>
 		<image.inoa.tag>snapshot</image.inoa.tag>
@@ -80,34 +85,41 @@
 		<image.keycloak>docker.io/kokuwaio/keycloak:${version.org.keycloak}-distroless</image.keycloak>
 		<image.kafka>ghcr.io/grayc-de/kafka:${version.org.apache.kafka}</image.kafka>
 
-		<!-- How many instances of McNoise are generating traffic? -->
-		<!-- Could be overridden via maven property -Dmcnoise.replicas=10 to produce more traffic. -->
-		<mcnoise.replicas>1</mcnoise.replicas>
-
-		<check.skip>false</check.skip>
-
 		<!-- ===================================================================== -->
-		<!-- ============================== Libaries ============================= -->
+		<!-- ============================= Versions ============================== -->
 		<!-- ===================================================================== -->
+
+		<version.org.apache.maven.plugins.clean>3.4.1</version.org.apache.maven.plugins.clean>
+		<version.org.apache.maven.plugins.compiler>3.14.0</version.org.apache.maven.plugins.compiler>
+		<version.org.apache.maven.plugins.deploy>3.1.4</version.org.apache.maven.plugins.deploy>
+		<version.org.apache.maven.plugins.install>3.1.4</version.org.apache.maven.plugins.install>
+		<version.org.apache.maven.plugins.jar>3.4.2</version.org.apache.maven.plugins.jar>
+		<version.org.apache.maven.plugins.release>3.1.1</version.org.apache.maven.plugins.release>
+		<version.org.apache.maven.plugins.resources>3.3.1</version.org.apache.maven.plugins.resources>
+		<version.org.apache.maven.plugins.surefire>3.5.3</version.org.apache.maven.plugins.surefire>
+		<version.org.codehaus.mojo.build-helper>3.6.0</version.org.codehaus.mojo.build-helper>
+		<version.org.codehaus.mojo.exec>3.5.0</version.org.codehaus.mojo.exec>
+		<version.org.codehaus.mojo.tidy>1.4.0</version.org.codehaus.mojo.tidy>
+		<version.org.codehaus.mojo.versions>2.18.0</version.org.codehaus.mojo.versions>
+		<version.org.openapitools.generator>7.10.0</version.org.openapitools.generator>
+		<version.org.openapitools.stylevalidator>1.11</version.org.openapitools.stylevalidator>
+		<version.com.google.code.replacer>1.5.3</version.com.google.code.replacer>
+		<version.net.revelc.code.formatter>2.26.0</version.net.revelc.code.formatter>
+		<version.net.revelc.code.impsort>1.12.0</version.net.revelc.code.impsort>
+		<version.io.kokuwa.maven.k3s>1.5.0</version.io.kokuwa.maven.k3s>
 
 		<version.com.influxdb.client>7.2.0</version.com.influxdb.client>
 		<version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
-		<version.io.kokuwa.maven.k3s>1.5.0</version.io.kokuwa.maven.k3s>
 		<version.io.kokuwa.micronaut.codegen>4.4.2</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut.platform>4.7.6</version.io.micronaut.platform>
-		<version.io.micronaut.core>4.7.16</version.io.micronaut.core>
-		<version.io.micronaut.data>4.11.1</version.io.micronaut.data>
-		<version.io.micronaut.validation>4.9.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.80</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>26.0.8</version.org.keycloak>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
-		<version.org.projectlombok>1.18.36</version.org.projectlombok>
-		<version.com.diffplug.spotless.spotless-maven-plugin>2.44.3</version.com.diffplug.spotless.spotless-maven-plugin>
 
 	</properties>
 
@@ -119,27 +131,6 @@
 				<groupId>io.micronaut.platform</groupId>
 				<artifactId>micronaut-platform</artifactId>
 				<version>${version.io.micronaut.platform}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.micronaut</groupId>
-				<artifactId>micronaut-core-bom</artifactId>
-				<version>${version.io.micronaut.core}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.micronaut.data</groupId>
-				<artifactId>micronaut-data-bom</artifactId>
-				<version>${version.io.micronaut.data}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>io.micronaut.validation</groupId>
-				<artifactId>micronaut-validation-bom</artifactId>
-				<version>${version.io.micronaut.validation}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -237,11 +228,6 @@
 				<artifactId>mapstruct-processor</artifactId>
 				<version>${version.org.mapstruct}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${version.org.projectlombok}</version>
-			</dependency>
 
 		</dependencies>
 	</dependencyManagement>
@@ -261,7 +247,36 @@
 			<plugins>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.clean}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.compiler}</version>
+					<configuration>
+						<compilerArgument>${maven.compiler.compilerArgument}</compilerArgument>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.deploy}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-failsafe-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.surefire}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.install}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.jar}</version>
 					<configuration>
 						<!-- we do not deploy our jars, so exclude unused maven descriptor -->
 						<archive>
@@ -270,8 +285,50 @@
 					</configuration>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.release}</version>
+					<configuration>
+						<preparationGoals>clean verify</preparationGoals>
+						<preparationProfiles>check</preparationProfiles>
+						<localCheckout>true</localCheckout>
+						<goals>deploy</goals>
+						<releaseProfiles>release</releaseProfiles>
+						<scmReleaseCommitComment>@{prefix} prepare release @{releaseLabel} [CI SKIP]</scmReleaseCommitComment>
+						<tagNameFormat>@{project.version}</tagNameFormat>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.resources}</version>
+					<configuration>
+						<propertiesEncoding>ISO-8859-1</propertiesEncoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.surefire}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.build-helper}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.exec}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>tidy-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.tidy}</version>
+				</plugin>				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>versions-maven-plugin</artifactId>
+					<version>${version.org.codehaus.mojo.versions}</version>
 					<configuration>
 						<ruleSet>
 							<rules>
@@ -302,6 +359,7 @@
 				<plugin>
 					<groupId>org.openapitools</groupId>
 					<artifactId>openapi-generator-maven-plugin</artifactId>
+					<version>${version.org.openapitools.generator}</version>
 					<dependencies>
 						<dependency>
 							<groupId>io.kokuwa.micronaut</groupId>
@@ -311,94 +369,32 @@
 					</dependencies>
 				</plugin>
 				<plugin>
+					<groupId>org.openapitools.openapistylevalidator</groupId>
+					<artifactId>openapi-style-validator-maven-plugin</artifactId>
+					<version>${version.org.openapitools.stylevalidator}</version>
+				</plugin>
+				<plugin>
+					<groupId>com.google.code.maven-replacer-plugin</groupId>
+					<artifactId>replacer</artifactId>
+					<version>${version.com.google.code.replacer}</version>
+				</plugin>
+				<plugin>
+					<groupId>net.revelc.code.formatter</groupId>
+					<artifactId>formatter-maven-plugin</artifactId>
+					<version>${version.net.revelc.code.formatter}</version>
+					<configuration>
+						<configFile>${project.basedir}/src/eclipse/formatter.xml</configFile>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>net.revelc.code</groupId>
+					<artifactId>impsort-maven-plugin</artifactId>
+					<version>${version.net.revelc.code.impsort}</version>
+				</plugin>
+				<plugin>
 					<groupId>io.kokuwa.maven</groupId>
 					<artifactId>k3s-maven-plugin</artifactId>
 					<version>${version.io.kokuwa.maven.k3s}</version>
-				</plugin>
-				<plugin>
-					<groupId>com.diffplug.spotless</groupId>
-					<artifactId>spotless-maven-plugin</artifactId>
-					<version>${version.com.diffplug.spotless.spotless-maven-plugin}</version>
-					<configuration>
-						<skip>${check.skip}</skip>
-						<formats>
-							<!-- Git files -->
-							<format>
-								<includes>
-									<include>.gitattributes</include>
-									<include>.gitignore</include>
-								</includes>
-								<trimTrailingWhitespace/>
-								<endWithNewline/>
-								<indent>
-									<tabs>true</tabs>
-									<spacesPerTab>4</spacesPerTab>
-								</indent>
-							</format>
-						</formats>
-						<java>
-							<googleJavaFormat>
-								<version>1.10.0</version>
-								<style>GOOGLE</style>
-								<reflowLongStrings>true</reflowLongStrings>
-								<formatJavadoc>true</formatJavadoc>
-							</googleJavaFormat>
-							<formatAnnotations />
-							<importOrder>
-								<wildcardsLast>true</wildcardsLast>
-								<!-- We stick to the defaults as first step
-								<order>
-									<file>${project.basedir}/src/main/resources/ide.importorder</file>
-								</order> -->
-								<semanticSort>true</semanticSort>
-							</importOrder>
-							<removeUnusedImports />
-						</java>
-						<!-- Good for Flyway to avoid hash changes on unwanted whitespace changes -->
-						<sql>
-							<includes>
-								<include>src/main/resources/**/*.sql</include>
-								<include>src/test/resources/**/*.sql</include>
-							</includes>
-							<excludes>
-								<exclude>**/target/**/*.sql</exclude>
-								<exclude>**/dist/**/*.sql</exclude>
-							</excludes>
-							<dbeaver />
-						</sql>
-						<yaml>
-							<includes>
-								<include>**/*.yaml</include>
-							</includes>
-							<excludes>
-								<exclude>**/target/**/*.yaml</exclude>
-								<!-- By now, we would corrupt the replica setting as string -->
-								<exclude>**/mcnoize/*.yaml</exclude>
-								<exclude>**/dist/**/*.yaml</exclude>
-								<exclude>**/.woodpecker/*.yaml</exclude>
-								<exclude>**/node_modules/**/*.yaml</exclude>
-							</excludes>
-							<prettier />
-						</yaml>
-						<markdown>
-							<includes>
-								<include>**/*.md</include>
-							</includes>
-							<excludes>
-								<exclude>**/target/**/*.md</exclude>
-								<exclude>**/dist/**/*.md</exclude>
-								<exclude>**/node_modules/**/*.md</exclude>
-							</excludes>
-							<flexmark/>
-						</markdown>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-checkstyle-plugin</artifactId>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -410,44 +406,107 @@
 				<artifactId>maven-deploy-plugin</artifactId>
 				<executions><execution><id>default-deploy</id><phase /></execution></executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions><execution><id>default</id><phase /></execution></executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions><execution><id>default</id><phase /></execution></executions>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>flatten-maven-plugin</artifactId>
-				<executions><execution><id>default</id><phase /></execution></executions>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<executions><execution><id>default</id><phase /></execution></executions>
-			</plugin>
-			<plugin>
-				<groupId>com.diffplug.spotless</groupId>
-				<artifactId>spotless-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>default</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 
 		</plugins>
 	</build>
 
 	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<property>
+					<name>!env.CI</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>tidy-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>pom</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code</groupId>
+						<artifactId>impsort-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>sort</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code.formatter</groupId>
+						<artifactId>formatter-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>format</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>check</id>
+			<activation>
+				<property>
+					<name>env.CI</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>tidy-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code</groupId>
+						<artifactId>impsort-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>check</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>net.revelc.code.formatter</groupId>
+						<artifactId>formatter-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>validate</phase>
+								<goals>
+									<goal>validate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 		<profile>
 			<id>release-prepare</id>
 			<build>
@@ -455,7 +514,6 @@
 					<plugin>
 						<groupId>com.google.code.maven-replacer-plugin</groupId>
 						<artifactId>replacer</artifactId>
-						<version>1.5.3</version>
 						<executions>
 							<execution>
 								<phase>verify</phase>

@@ -1,43 +1,38 @@
 when:
   event: [manual, push]
   branch: main
-  path:
-    - .woodpecker/build.yaml
-    - api/**
-    - app/**
-    - service/**
-    - image/**
-    - pom.xml
-    - lombok.config
+  path: [.woodpecker/build.yaml, api/**, app/**, service/**, image/**, pom.xml, lombok.config]
 
 services:
   - name: dockerd
-    image: ghcr.io/grayc-de/plugins/dockerd
+    image: kokuwaio/dockerd
     ports: [2375]
     privileged: true
 
 steps:
+
   deploy:
     image: ghcr.io/grayc-de/plugins/inoa
     environment:
-      DOCKER_HOST: tcp://dockerd:2375
+      MAVEN_ARGS: --batch-mode --settings=.woodpecker/maven/settings.xml --color=always --no-transfer-progress
       DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
-      - mvn deploy -pl image -am -Dcheck.skip -DskipTests -T1C
+      - mvn -pl image deploy -am -DskipTests
 
   restart:
     image: ghcr.io/grayc-de/plugins/kubectl
     environment:
       # stored as repo secret in https://ci.grayc.io/repos/inoa/cloud/settings
       # definition: https://git.grayc.io/grayc/inoa/src/branch/main/fluxcd/live/dev/service-account/rbac.yaml
-      # token: kubectl --namespace grayc-inoa-qas get secret restarter -ojson | jq -r .data.token | base64 -d
-      KUBE_TOKEN: {from_secret: KUBE_TOKEN}
+      # token: kubectl --context=live --namespace=grayc-inoa-qas get secret restarter -ojson | jq -r .data.token | base64 -d
+      CLUSTER_TOKEN: {from_secret: KUBE_TOKEN}
     commands:
-      - echo $KUBE_CERTIFICATE | base64 -d > ca-certificate
-      - kubectl config set-cluster grayc-live --server=https://$KUBE_HOST --certificate-authority=ca-certificate
-      - kubectl config set-credentials restarter --token=$KUBE_TOKEN
-      - kubectl config set-context grayc-inoa-qas --cluster=grayc-live --namespace=grayc-inoa-qas --user=restarter
-      - kubectl config use-context grayc-inoa-qas
+      - echo $CLUSTER_LIVE_CERTIFICATE | base64 -d > ca-certificate
+      - kubectl config set-cluster grayc-live --server=$CLUSTER_LIVE_HOST --certificate-authority=ca-certificate
+      - kubectl config set-credentials restarter --token=$CLUSTER_TOKEN
+      - kubectl config set-context default --cluster=grayc-live --namespace=grayc-inoa-qas --user=restarter
+      - kubectl config use-context default
+      - kubectl version
       - kubectl rollout restart deployment/inoa
       - kubectl rollout status deployment/inoa --timeout=10m

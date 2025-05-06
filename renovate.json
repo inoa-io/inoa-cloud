@@ -1,9 +1,30 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"kubernetes": { "fileMatch": ["kustomization\\.yaml"] },
+	"labels": ["renovate", "renovate-manager/{{{manager}}}", "renovate-type/{{{updateType}}}"],
+	"assignees": ["renovate"],
+	"reviewers": [],
+	"dependencyDashboard": true,
+	"dependencyDashboardLabels": ["renovate"],
+	"dependencyDashboardApproval": true,
+	"dependencyDashboardAutoclose": false,
+	"dependencyDashboardOSVVulnerabilitySummary": "all",
+	"osvVulnerabilityAlerts": true,
+	"separateMajorMinor": true,
+	"separateMinorPatch": true,
+	"separateMultipleMinor": true,
+	"separateMultipleMajor": true,
+	"pinDigests": true,
+	"automerge": false,
+	"automergeStrategy": "fast-forward",
+	"rebaseWhen": "behind-base-branch",
+	"platformAutomerge": true,
 	"packageRules": [
 		{
 			"matchUpdateTypes": ["patch"],
+			"dependencyDashboardApproval": false,
+			"automerge": true
+		},{
+			"matchUpdateTypes": ["minor"],
 			"dependencyDashboardApproval": false
 		},{
 			"matchPackageNames": [
@@ -17,8 +38,12 @@
 			],
 			"enabled": false
 		},{
-			"groupName": "micronaut",
-			"matchPackageNames": ["io.micronaut:**", "io.micronaut.data:**", "io.micronaut.platform:**", "io.micronaut.serde:**", "io.micronaut.validation:**"]
+			"matchManagers": ["woodpecker"],
+			"pinDigests": false
+		},{
+			"matchManagers": ["npm"],
+			"matchUpdateTypes": ["major"],
+			"enabled": false
 		},{
 			"groupName": "@angular",
 			"matchPackageNames": ["@angular/**"]
@@ -34,9 +59,6 @@
 		},{
 			"groupName": "@ngx-formly",
 			"matchPackageNames": ["@ngx-formly/**"]
-		},{
-			"groupName": "karma",
-			"matchPackageNames": ["karma**", "jasmine-core", "@types/jasmine"]
 		},{
 			"groupName": "monaco",
 			"matchPackageNames": ["monaco-editor", "ngx-monaco-editor"]

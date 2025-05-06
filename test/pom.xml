@@ -13,13 +13,18 @@
 	<name>INOA :: Integration Test</name>
 
 	<properties>
+
+		<!-- How many instances of McNoise are generating traffic? -->
+		<!-- Could be overridden via maven property -Dmcnoise.replicas=10 to produce more traffic. -->
+		<mcnoise.replicas>0</mcnoise.replicas>
+
+		<inoa.domain>127.0.0.1.nip.io</inoa.domain>
+
 		<k3s.imageTag>v1.31.1-k3s1</k3s.imageTag>
 		<k3s.manifests>${project.build.directory}/k3s</k3s.manifests>
 		<k3s.subdir>test</k3s.subdir>
-		<k3s.clusterDns>10.53.0.10</k3s.clusterDns>
-		<k3s.clusterCidr>10.52.0.0/16</k3s.clusterCidr>
-		<k3s.serviceCidr>10.53.0.0/16</k3s.serviceCidr>
 		<k3s.resources>deployment/default/inoa</k3s.resources>
+
 	</properties>
 
 	<dependencies>
@@ -139,7 +144,6 @@
 				</executions>
 				<configuration>
 					<!-- Expose ports to host for usage from outside k3s or host -->
-					<!-- TODO Check if this could make trouble in CI/CD environment with port clashes. -->
 					<portBindings>
 						<!-- Traefik -->
 						<portBinding>8080:8080</portBinding>
@@ -160,10 +164,10 @@
 						<ctrImage>${image.keycloak}</ctrImage>
 						<ctrImage>${image.postgresql}</ctrImage>
 						<ctrImage>${image.traefik}</ctrImage>
+						<ctrImage>${image.kafka}</ctrImage>
 					</ctrImages>
 					<dockerImages>
 						<dockerImage>${image.inoa}</dockerImage>
-						<dockerImage>${image.kafka}</dockerImage>
 					</dockerImages>
 				</configuration>
 			</plugin>
@@ -178,12 +182,10 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>${version.org.projectlombok}</version>
 						</path>
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
-							<version>${version.io.micronaut.core}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

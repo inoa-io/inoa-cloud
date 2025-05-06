@@ -2,7 +2,6 @@
 
 !service/target/libs/*.jar
 !service/target/inoa-service-*.jar
-!/app/dist/*
 !app/src
 !app/.yarnrc.yml
 !app/yarn.lock
