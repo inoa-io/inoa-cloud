@@ -224,10 +224,22 @@
 						<path>
 							<groupId>io.micronaut.validation</groupId>
 							<artifactId>micronaut-validation-processor</artifactId>
+							<exclusions>
+								<exclusion>
+									<groupId>io.micronaut</groupId>
+									<artifactId>micronaut-inject</artifactId>
+								</exclusion>
+							</exclusions>
 						</path>
 						<path>
 							<groupId>io.micronaut.data</groupId>
 							<artifactId>micronaut-data-processor</artifactId>
+							<exclusions>
+								<exclusion>
+									<groupId>io.micronaut</groupId>
+									<artifactId>micronaut-inject</artifactId>
+								</exclusion>
+							</exclusions>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

@@ -11,6 +11,7 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.security.config.SecurityConfiguration;
 import io.micronaut.security.oauth2.client.OpenIdProviderMetadata;
 import io.micronaut.security.oauth2.configuration.OauthClientConfiguration;
+import io.micronaut.security.oauth2.endpoint.endsession.request.AuthorizationServerResolver;
 import io.micronaut.security.oauth2.endpoint.endsession.request.EndSessionEndpoint;
 import io.micronaut.security.oauth2.endpoint.endsession.request.EndSessionEndpointResolver;
 import io.micronaut.security.oauth2.endpoint.endsession.request.OktaEndSessionEndpoint;
@@ -26,9 +27,10 @@ public class KeycloakEndSessionEndpointResolver extends EndSessionEndpointResolv
 
 	KeycloakEndSessionEndpointResolver(
 			BeanContext beanContext,
+			AuthorizationServerResolver authorizationServerResolver,
 			SecurityConfiguration securityConfiguration,
 			TokenResolver<HttpRequest<?>> tokenResolver) {
-		super(beanContext);
+		super(beanContext, authorizationServerResolver);
 		this.securityConfiguration = securityConfiguration;
 		this.tokenResolver = tokenResolver;
 	}

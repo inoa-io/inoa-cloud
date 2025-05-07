@@ -200,6 +200,7 @@ kafka:
 
 pageable:
   maxPageSize: 30
+
 endpoints:
   all:
     enabled: false
@@ -211,6 +212,11 @@ endpoints:
     disk-space:
       enabled: false
     discovery-client:
+      enabled: false
+    # this check was introduced with Micronaut 4.8.0: https://github.com/micronaut-projects/micronaut-core/pull/11388
+    # sounds like a usefull feature, but is not healthy for inoa
+    # we should review our thread usage and add a monitoring for this
+    deadlocked-threads:
       enabled: false
   flyway:
     enabled: true
