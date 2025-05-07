@@ -19,5 +19,6 @@ rules:
     check-keys: false
 
 ignore:
+  - "**/target/**"
   - "**/app/.yarn/**"
   - "**/app/node_modules/**"

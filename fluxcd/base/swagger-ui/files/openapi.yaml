@@ -1445,47 +1445,47 @@ components:
           type: string
           maxLength: 100
           description: Street or road name
-          example: "Somestreet"
+          example: Somestreet
         neighbourhood:
           type: string
           maxLength: 100
           description: Neighborhood or local area name
-          example: "Downtown"
+          example: Downtown
         suburb:
           type: string
           maxLength: 100
           description: Suburb name
-          example: "West End"
+          example: West End
         city_district:
           type: string
           maxLength: 100
           description: District within the city
-          example: "Central District"
+          example: Central District
         city:
           type: string
           maxLength: 100
           description: City name
-          example: "Somewhereville"
+          example: Somewhereville
         state:
           type: string
           maxLength: 100
           description: State or province name
-          example: "State"
+          example: State
         postcode:
           type: string
           maxLength: 20
           description: Postal or ZIP code
-          example: "10815"
+          example: 10815
         country:
           type: string
           maxLength: 100
           description: Country name
-          example: "Germany"
+          example: Germany
         country_code:
           type: string
           maxLength: 2
           description: Two-letter ISO country code
-          example: "DE"
+          example: DE
         latitude:
           type: number
           format: double
@@ -2059,7 +2059,7 @@ components:
         params:
           description: Parameters of the command as JSON object
           type: object
-          example: { uart: 1, frame: \"1603000D0004D6ED\" }
+          example: "{ uart: 1, frame: \"1603000D0004D6ED\" }"
       required:
         - method
     RpcResponse:

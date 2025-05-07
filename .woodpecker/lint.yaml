@@ -19,7 +19,6 @@ steps:
     image: kokuwaio/yamllint
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, .yamllint.yaml, "**/*.y*ml"]]
-    failure: ignore
 
   markdown:
     image: kokuwaio/markdownlint

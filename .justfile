@@ -8,7 +8,7 @@ set fallback := true
 
 # Lint files
 @lint:
-	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/yamllint --strict || true
+	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/yamllint --strict
 	docker run --rm --read-only --volume=$(pwd):$(pwd):rw --workdir=$(pwd) kokuwaio/markdownlint --fix
 	docker run --rm --read-only --volume $(pwd):$(pwd):ro --workdir $(pwd) kokuwaio/hadolint
 	docker run --rm --read-only --volume=$(pwd):$(pwd):ro --workdir=$(pwd) kokuwaio/renovate

@@ -4,4 +4,4 @@ resources:
 
 images:
   - name: ghcr.io/inoa-io/mcnoize
-    newTag: "0.0.5"
+    newTag: 0.0.5
