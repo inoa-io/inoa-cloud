@@ -28,7 +28,7 @@
 		"crypto-js": "^4.2.0",
 		"leaflet": "^1.9.4",
 		"leaflet-control-geocoder": "^2.4.0",
-		"monaco-editor": "^0.51.0",
+		"monaco-editor": "^0.52.0",
 		"ngx-monaco-editor": "^12.0.0",
 		"rxjs": "~7.8.1",
 		"tslib": "^2.6.3",
