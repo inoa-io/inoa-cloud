@@ -38,11 +38,20 @@
 			],
 			"enabled": false
 		},{
+			"matchPackageNames": ["ghcr.io/grayc-de/plugins/node"],
+			"pinDigests": false
+		},{
 			"matchManagers": ["woodpecker"],
 			"pinDigests": false
 		},{
 			"matchManagers": ["npm"],
 			"matchUpdateTypes": ["major"],
+			"enabled": false
+		},{
+			"description": "The Angular Compiler requires TypeScript >=5.4.0 and <5.6.0.",
+			"matchManagers": ["npm"],
+			"matchPackageNames": ["typescript"],
+			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
 		},{
 			"groupName": "@angular",
