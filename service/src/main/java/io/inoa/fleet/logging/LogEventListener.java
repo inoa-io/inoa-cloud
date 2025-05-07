@@ -1,5 +1,12 @@
 package io.inoa.fleet.logging;
 
+import java.util.Base64;
+import java.util.regex.Pattern;
+
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
@@ -15,13 +22,8 @@ import io.micronaut.configuration.kafka.annotation.OffsetReset;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.context.annotation.Requires;
 import io.micronaut.validation.validator.Validator;
-import java.util.Base64;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 
 /**
  * Kafka listener to receive log events from hono and put them to the log backend.
@@ -34,100 +36,98 @@ import org.slf4j.MDC;
 @RequiredArgsConstructor
 public class LogEventListener {
 
-  private static final Pattern PATTERN_TENANT_ID = Pattern.compile("^[a-z0-9\\-]{4,30}$");
-  private static final Pattern PATTERN_UUID = Pattern.compile("^[A-Z][A-Z0-9\\-_]{3,19}$");
+	private static final Pattern PATTERN_TENANT_ID = Pattern.compile("^[a-z0-9\\-]{4,30}$");
+	private static final Pattern PATTERN_UUID = Pattern.compile("^[A-Z][A-Z0-9\\-_]{3,19}$");
 
-  private final Validator validator;
-  private final ObjectMapper mapper;
-  private final LogMetrics metrics;
+	private final Validator validator;
+	private final ObjectMapper mapper;
+	private final LogMetrics metrics;
 
-  @Topic(patterns = "hono\\.event\\..*")
-  void handle(ConsumerRecord<String, CloudEvent> record) {
+	@Topic(patterns = "hono\\.event\\..*")
+	void handle(ConsumerRecord<String, CloudEvent> record) {
 
-    var tenantId = record.topic().substring(11);
-    var gatewayId = record.key();
-    var event = record.value();
+		var tenantId = record.topic().substring(11);
+		var gatewayId = record.key();
+		var event = record.value();
 
-    try {
+		try {
 
-      MDC.put("tenantId", tenantId);
-      MDC.put("gatewayId", gatewayId);
+			MDC.put("tenantId", tenantId);
+			MDC.put("gatewayId", gatewayId);
 
-      // get tenantId and gatewayId from message record
+			// get tenantId and gatewayId from message record
 
-      if (!PATTERN_TENANT_ID.matcher(tenantId).matches()) {
-        log.warn("Got record with unparseable topic: {}", tenantId);
-        metrics.counterFailTenantId(tenantId).increment();
-        return;
-      }
-      if (!PATTERN_UUID.matcher(gatewayId).matches()) {
-        log.warn("Got record with unparseable key: {}", gatewayId);
-        metrics.counterFailGatewayId(tenantId).increment();
-        return;
-      }
+			if (!PATTERN_TENANT_ID.matcher(tenantId).matches()) {
+				log.warn("Got record with unparseable topic: {}", tenantId);
+				metrics.counterFailTenantId(tenantId).increment();
+				return;
+			}
+			if (!PATTERN_UUID.matcher(gatewayId).matches()) {
+				log.warn("Got record with unparseable key: {}", gatewayId);
+				metrics.counterFailGatewayId(tenantId).increment();
+				return;
+			}
 
-      // check if we are in charge
+			// check if we are in charge
 
-      if (!CloudEventTypeVO.LOG_EMITTED_VALUE.equals(event.getType())) {
-        log.trace("Not in charge for event type: {}", event.getType());
-        metrics.counterIgnore(tenantId).increment();
-        return;
-      }
+			if (!CloudEventTypeVO.LOG_EMITTED_VALUE.equals(event.getType())) {
+				log.trace("Not in charge for event type: {}", event.getType());
+				metrics.counterIgnore(tenantId).increment();
+				return;
+			}
 
-      // parse log
+			// parse log
 
-      LogEventVO logEvent;
-      try {
-        logEvent =
-            PojoCloudEventDataMapper.from(mapper, LogEventVO.class).map(event.getData()).getValue();
-      } catch (CloudEventRWException e) {
-        log.warn("Failed to parse json log: {}", e.getMessage());
-        log.warn(
-            "Invalid payload: {}", Base64.getEncoder().encodeToString(event.getData().toBytes()));
-        metrics.counterFailMessageRead(tenantId).increment();
-        return;
-      }
+			LogEventVO logEvent;
+			try {
+				logEvent = PojoCloudEventDataMapper.from(mapper, LogEventVO.class).map(event.getData()).getValue();
+			} catch (CloudEventRWException e) {
+				log.warn("Failed to parse json log: {}", e.getMessage());
+				log.warn(
+						"Invalid payload: {}", Base64.getEncoder().encodeToString(event.getData().toBytes()));
+				metrics.counterFailMessageRead(tenantId).increment();
+				return;
+			}
 
-      // validate log
+			// validate log
 
-      var violations = validator.validate(logEvent);
-      if (!violations.isEmpty()) {
-        log.warn("Retrieved invalid payload: {}", logEvent);
-        if (log.isDebugEnabled()) {
-          violations.forEach(
-              v -> log.debug("Violation: {} {}", v.getPropertyPath(), v.getMessage()));
-        }
-        metrics.counterFailMessageValidate(tenantId).increment();
-        return;
-      }
+			var violations = validator.validate(logEvent);
+			if (!violations.isEmpty()) {
+				log.warn("Retrieved invalid payload: {}", logEvent);
+				if (log.isDebugEnabled()) {
+					violations.forEach(
+							v -> log.debug("Violation: {} {}", v.getPropertyPath(), v.getMessage()));
+				}
+				metrics.counterFailMessageValidate(tenantId).increment();
+				return;
+			}
 
-      // Actual log
+			// Actual log
 
-      log(logEvent);
-      metrics.counterSuccess(tenantId).increment();
+			log(logEvent);
+			metrics.counterSuccess(tenantId).increment();
 
-    } finally {
-      MDC.clear();
-    }
-  }
+		} finally {
+			MDC.clear();
+		}
+	}
 
-  private void log(LogEventVO logEvent) {
-    var logger = (Logger) LoggerFactory.getLogger(logEvent.getTag());
-    var event =
-        new LoggingEvent(
-            logger.getName(), logger, getLogLevel(logEvent), logEvent.getMsg(), null, null);
-    event.setTimeStamp(logEvent.getTime());
-    logger.callAppenders(event);
-  }
+	private void log(LogEventVO logEvent) {
+		var logger = (Logger) LoggerFactory.getLogger(logEvent.getTag());
+		var event = new LoggingEvent(
+				logger.getName(), logger, getLogLevel(logEvent), logEvent.getMsg(), null, null);
+		event.setTimeStamp(logEvent.getTime());
+		logger.callAppenders(event);
+	}
 
-  private Level getLogLevel(LogEventVO logEvent) {
-    return switch (logEvent.getLevel()) {
-      case 0 -> Level.OFF;
-      case 1 -> Level.ERROR;
-      case 2 -> Level.WARN;
-      case 3 -> Level.INFO;
-      case 4 -> Level.DEBUG;
-      default -> Level.TRACE;
-    };
-  }
+	private Level getLogLevel(LogEventVO logEvent) {
+		return switch (logEvent.getLevel()) {
+			case 0 -> Level.OFF;
+			case 1 -> Level.ERROR;
+			case 2 -> Level.WARN;
+			case 3 -> Level.INFO;
+			case 4 -> Level.DEBUG;
+			default -> Level.TRACE;
+		};
+	}
 }
