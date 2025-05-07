@@ -8045,16 +8045,16 @@ __metadata:
   linkType: hard
 
 "jasmine-core@npm:^4.1.0":
-  version: 4.6.0
-  resolution: "jasmine-core@npm:4.6.0"
-  checksum: 10c0/c78338fff7e6383653e049f7d5101f0933beb5dc09be6ed526c209c0521b7fa974477206c0ac1041455f6555a4bdcba163ea8581d420fdd35cd58a67a07466dc
+  version: 4.6.1
+  resolution: "jasmine-core@npm:4.6.1"
+  checksum: 10c0/3d038b7f6f6f0d3cb56cdb4d2f0323a9d84f3a64a03746f9329a2d5a5166ec5e0ad3232d72ceb4f357cf2f120fdb86310715eaeb174f325833515fd0792a6860
   languageName: node
   linkType: hard
 
 "jasmine-core@npm:~5.7.0":
-  version: 5.7.0
-  resolution: "jasmine-core@npm:5.7.0"
-  checksum: 10c0/33d030ccc4141734e49f4e14b7e8910ceab0219396876292acfef94167d13ad2e819a9297b57cad5c9d2df1331a80e1a6e9b6e0fade4316d1edc404a6c09d6b7
+  version: 5.7.1
+  resolution: "jasmine-core@npm:5.7.1"
+  checksum: 10c0/eeb2cb030fc294f152e37dfeeb1cb137fefe6de186d470fd3fa6d1fd5279408c1226e90a488015ad079d5686aa1736ca67b2ced491d9a43720d9cb1170f1791f
   languageName: node
   linkType: hard
 
