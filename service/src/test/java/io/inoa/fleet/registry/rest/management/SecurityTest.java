@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import io.inoa.test.AbstractUnitTest;
-import io.micronaut.http.HttpAttributes;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpStatus;
@@ -167,9 +166,7 @@ public class SecurityTest extends AbstractUnitTest {
 
     var request = new SimpleHttpRequest<>(HttpMethod.GET, "/", null);
     request.getHeaders().add(oldProperties.getSecurity().getTenantHeaderName(), tenantHeader);
-    request
-        .getAttributes()
-        .put(HttpAttributes.PRINCIPAL.toString(), new ServerAuthentication("", null, headers));
+    request.setUserPrincipal(new ServerAuthentication("", null, headers));
     return request;
   }
 }
