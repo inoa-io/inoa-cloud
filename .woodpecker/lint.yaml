@@ -25,7 +25,6 @@ steps:
     image: kokuwaio/markdownlint
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, .markdownlint.yaml, "**/*.md"]]
-    failure: ignore
 
   shellcheck:
     image: kokuwaio/shellcheck

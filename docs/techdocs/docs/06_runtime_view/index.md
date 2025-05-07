@@ -61,7 +61,6 @@ Here are the steps in detail:
    1. The InfluxDbExporter is listening at the topic `inoa.telemetry.<tenant>`
    2. The InfluxDbExporter is writing the measured data into the InfluxDb.
 
-
 ## Configuration of Satellites
 
 t.b.d.

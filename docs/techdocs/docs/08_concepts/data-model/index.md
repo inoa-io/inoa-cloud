@@ -2,4 +2,4 @@
 
 ## Gateway Registry
 
-![](gateway-registry-erm.drawio.svg)
+![ERM](gateway-registry-erm.drawio.svg)

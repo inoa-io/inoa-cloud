@@ -22,6 +22,7 @@ It is build as a single page app with help of [Angular](https://angular.io/).
    yarn install
    ng serve
    ```
+
 2. Via prepared IntelliJ run configuration
 
    ![Launch Ground Control](../docs/assets/launch-groundcontrol.png)

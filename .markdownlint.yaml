@@ -7,3 +7,6 @@ MD009:
 
 # MD013 - Line length
 MD013: false
+
+# MD046 - Code block style
+MD046: false

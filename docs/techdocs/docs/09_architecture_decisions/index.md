@@ -10,4 +10,3 @@
 4. Write the ADR with status `PROPOSAL`
 5. Create a merge request and add reviewers
 6. After discussion and alignment, merge the ADR with status `DECIDED` into main.
-

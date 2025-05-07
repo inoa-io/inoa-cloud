@@ -68,6 +68,7 @@ For bash there are some scripts that should help to execute the INOA components:
    ```shell
    ./inoa-startup.sh
    ```
+
 2. Shutdown all running INOA Cloud services & stops k3s.
 
    ```shell
@@ -93,6 +94,7 @@ For bash there are some scripts that should help to execute the INOA components:
    mvn clean install
    mvn clean pre-integration-test -Dk3s.failIfExists=false -pl ./test/ -Dinoa.domain=${INOA_DOMAIN}
    ```
+
 2. Check the now running services via [http://help.${INOA_DOMAIN}:8080/](http://help.127.0.0.1.nip.io:8080/).
 3. Start a local instance of INOA GroundControl for UI development:
 

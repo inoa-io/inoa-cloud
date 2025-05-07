@@ -28,4 +28,3 @@ decisions together.
 
 1. Our decisions become transparent to all developers and users of `INOA`.
 2. Every team member must understand [MarkDown](https://www.markdownguide.org/basic-syntax/) syntax.
-

@@ -61,4 +61,4 @@ t.b.d.
 
 ## Developer Environment
 
-![](deployment-view-development.drawio.svg)
+![Deployment View](deployment-view-development.drawio.svg)

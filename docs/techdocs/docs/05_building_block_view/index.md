@@ -53,7 +53,11 @@ INOA Ground Control is an [Angular](https://angular.dev/) based single page app 
 The INOA Fleet Service offers two main use cases:
 
 1. The INOA Fleet Management API (REST) for configure & control the INOA Satellites
-2.  The IoT endpoints for bidirectional communication with INOA Satellites (MQTT, REST).
+2. The IoT endpoints for bidirectional communication with INOA Satellites (MQTT, REST).
+
+### Component Diagram (Level 2)
+
+![Building-Blocks-Layer-2](building-blocks-layer-2-fleet-service-dark.drawio.svg)
 
 ### Grafana
 
@@ -78,9 +82,3 @@ The persistence of the INOA Fleet service is made with help of a [PostgreSQL](ht
 ### Timeseries DB
 
 The measured data from the sensors and meters is stored into a timeseries database. For that we use [InfluxDB](https://www.influxdata.com/products/influxdb/) as technology.
-
-## Fleet Service
-
-### Component Diagram (Level 2)
-
-![Building-Blocks-Layer-2](building-blocks-layer-2-fleet-service-dark.drawio.svg)

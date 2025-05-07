@@ -50,7 +50,7 @@ Parameters:
 }
 ```
 
-- For the parameter uri fill in the last part of the ip of your shelly plug
+* For the parameter uri fill in the last part of the ip of your shelly plug
 
 ## Shelly Plus Plug S
 
@@ -71,7 +71,7 @@ Parameters:
 }
 ```
 
-- For the parameter uri fill in the last part of the ip of your shelly plug
+* For the parameter uri fill in the last part of the ip of your shelly plug
 
 ## S0
 
