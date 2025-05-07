@@ -15,8 +15,6 @@ micronaut:
         url: ${hawkbit.url:`http://hawkbit.default.svc:8080/UI/login`}
 
   server:
-    # https://docs.micronaut.io/snapshot/guide/index.html#atBlocking
-    thread-selection: AUTO
     ## see https://docs.micronaut.io/latest/guide/index.html#cors
     cors:
       enabled: true
