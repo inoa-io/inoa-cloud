@@ -91,6 +91,7 @@
 
 		<version.org.apache.maven.plugins.clean>3.4.1</version.org.apache.maven.plugins.clean>
 		<version.org.apache.maven.plugins.compiler>3.14.0</version.org.apache.maven.plugins.compiler>
+		<version.org.apache.maven.plugins.dependency>3.8.1</version.org.apache.maven.plugins.dependency>
 		<version.org.apache.maven.plugins.deploy>3.1.4</version.org.apache.maven.plugins.deploy>
 		<version.org.apache.maven.plugins.install>3.1.4</version.org.apache.maven.plugins.install>
 		<version.org.apache.maven.plugins.jar>3.4.2</version.org.apache.maven.plugins.jar>
@@ -257,6 +258,11 @@
 					<configuration>
 						<compilerArgument>${maven.compiler.compilerArgument}</compilerArgument>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-dependency-plugin</artifactId>
+					<version>${version.org.apache.maven.plugins.dependency}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
