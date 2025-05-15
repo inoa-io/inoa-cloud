@@ -12,7 +12,7 @@ services:
 steps:
 
   deploy:
-    image: ghcr.io/grayc-de/plugins/inoa
+    image: maven:3.9.9-eclipse-temurin-17
     environment:
       MAVEN_ARGS: --batch-mode --settings=.woodpecker/maven/settings.xml --color=always --no-transfer-progress
       DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}

@@ -108,7 +108,7 @@
 		<version.net.revelc.code.formatter>2.26.0</version.net.revelc.code.formatter>
 		<version.net.revelc.code.impsort>1.12.0</version.net.revelc.code.impsort>
 		<version.io.fabric8.docker>0.46.0</version.io.fabric8.docker>
-		<version.io.kokuwa.maven.k3s>1.6.0</version.io.kokuwa.maven.k3s>
+		<version.io.kokuwa.maven.k3s>2.0.0-20250515.135119-4</version.io.kokuwa.maven.k3s>
 
 		<version.com.influxdb.client>7.2.0</version.com.influxdb.client>
 		<version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
@@ -243,6 +243,14 @@
 		</dependency>
 
 	</dependencies>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>sonatype-nexus</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<releases><enabled>false</enabled></releases>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<pluginManagement>
