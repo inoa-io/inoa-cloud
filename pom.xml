@@ -107,6 +107,7 @@
 		<version.com.google.code.replacer>1.5.3</version.com.google.code.replacer>
 		<version.net.revelc.code.formatter>2.26.0</version.net.revelc.code.formatter>
 		<version.net.revelc.code.impsort>1.12.0</version.net.revelc.code.impsort>
+		<version.io.fabric8.docker>0.46.0</version.io.fabric8.docker>
 		<version.io.kokuwa.maven.k3s>1.6.0</version.io.kokuwa.maven.k3s>
 
 		<version.com.influxdb.client>7.2.0</version.com.influxdb.client>
@@ -437,6 +438,11 @@
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>${version.io.fabric8.docker}</version>
 					</plugin>
 					<plugin>
 						<groupId>net.revelc.code</groupId>

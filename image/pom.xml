@@ -18,45 +18,35 @@
 
 			<!-- build container image -->
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
 				<executions>
 					<execution>
 						<id>build</id>
 						<phase>install</phase>
 						<goals>
-							<goal>exec</goal>
+							<goal>build</goal>
 						</goals>
-						<configuration>
-							<arguments>
-								<argument>build</argument>
-								<argument>${project.basedir}/..</argument>
-								<argument>--build-arg=YARN_NPM_REGISTRY_SERVER</argument>
-								<argument>--build-arg=YARN_UNSAFE_HTTP_WHITELIST</argument>
-								<argument>--file=${project.basedir}/src/docker/Dockerfile</argument>
-								<argument>--tag=${image.inoa}</argument>
-							</arguments>
-						</configuration>
 					</execution>
 					<execution>
 						<id>push</id>
 						<phase>deploy</phase>
 						<goals>
-							<goal>exec</goal>
+							<goal>push</goal>
 						</goals>
-						<configuration>
-							<arguments>
-								<argument>push</argument>
-								<argument>${image.inoa}</argument>
-							</arguments>
-						</configuration>
 					</execution>
 				</executions>
 				<configuration>
-					<environmentVariables>
-						<DOCKER_BUILDKIT>1</DOCKER_BUILDKIT>
-					</environmentVariables>
-					<executable>docker</executable>
+					<verbose>build</verbose>
+					<images>
+						<image>
+							<name>${image.inoa}</name>
+							<build>
+								<contextDir>${project.basedir}/..</contextDir>
+								<dockerFile>${project.basedir}/Dockerfile</dockerFile>
+							</build>
+						</image>
+					</images>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -70,4 +60,19 @@
 
 		</plugins>
 	</build>
+
+	<!-- using empty args or reuse from env is not possible -->
+	<!-- https://github.com/fabric8io/docker-maven-plugin/issues/1858 -->
+	<profiles>
+		<profile>
+			<id>YARN_UNSAFE_HTTP_WHITELIST</id>
+			<activation><property><name>env.YARN_UNSAFE_HTTP_WHITELIST</name></property></activation>
+			<properties><docker.buildArg.YARN_UNSAFE_HTTP_WHITELIST>${env.YARN_UNSAFE_HTTP_WHITELIST}</docker.buildArg.YARN_UNSAFE_HTTP_WHITELIST></properties>
+		</profile>
+		<profile>
+			<id>YARN_NPM_REGISTRY_SERVER</id>
+			<activation><property><name>env.YARN_NPM_REGISTRY_SERVER</name></property></activation>
+			<properties><docker.buildArg.YARN_NPM_REGISTRY_SERVER>${env.YARN_NPM_REGISTRY_SERVER}</docker.buildArg.YARN_NPM_REGISTRY_SERVER></properties>
+		</profile>
+	</profiles>
 </project>

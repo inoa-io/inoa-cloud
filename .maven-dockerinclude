@@ -1,0 +1,12 @@
+# fabric8 docker plugin does not support .dockerignore
+# https://github.com/fabric8io/docker-maven-plugin/issues/362
+
+service/target/libs/*.jar
+service/target/inoa-service-*.jar
+app/src/**
+app/.yarnrc.yml
+app/yarn.lock
+app/angular.json
+app/package.json
+app/tsconfig.json
+app/tsconfig.app.json
