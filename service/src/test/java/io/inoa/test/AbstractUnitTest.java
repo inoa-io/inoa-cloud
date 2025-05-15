@@ -23,6 +23,7 @@ import java.util.stream.Stream;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
+import org.testcontainers.containers.FixedHostPortGenericContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
@@ -68,7 +69,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
     oldProperties.getGateway().getToken().setIssuedAtThreshold(Optional.of(Duration.ofSeconds(5)));
   }
 
-  @SuppressWarnings("resource")
+  @SuppressWarnings({ "resource", "deprecation", "rawtypes" })
   @Override
   @SneakyThrows
   public Map<String, String> getProperties() {
@@ -86,22 +87,28 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 
       // start docker containers
 
+      // use fixed ports in CI because k8s services only expose specified ports
+      var fixedPorts = System.getenv("CI") != null; 
+
       var influxOrganisation = "test-org";
       var influxBucket = "test-bucket";
       var influxToken = "changeMe";
-      var influxContainer =
-          new GenericContainer<>(imageProperties.getProperty("image.influxdb"))
+      var influxImage = imageProperties.getProperty("image.influxdb");
+      var influxContainer = (fixedPorts 
+          ? (GenericContainer<?>) new FixedHostPortGenericContainer(influxImage).withFixedExposedPort(8086, 8086)
+          : (GenericContainer<?>) new GenericContainer(influxImage).withExposedPorts(8086))
               .withEnv("DOCKER_INFLUXDB_INIT_MODE", "setup")
               .withEnv("DOCKER_INFLUXDB_INIT_USERNAME", "username")
               .withEnv("DOCKER_INFLUXDB_INIT_PASSWORD", "password")
               .withEnv("DOCKER_INFLUXDB_INIT_ORG", influxOrganisation)
               .withEnv("DOCKER_INFLUXDB_INIT_BUCKET", influxBucket)
               .withEnv("DOCKER_INFLUXDB_INIT_ADMIN_TOKEN", influxToken)
-              .withExposedPorts(8086)
               .waitingFor(Wait.forListeningPort());
 
-      var postgres =
-          new GenericContainer<>(imageProperties.getProperty("image.postgresql"))
+      var postgresImage = imageProperties.getProperty("image.postgresql");
+      var postgres =(fixedPorts 
+          ? (GenericContainer<?>) new FixedHostPortGenericContainer(postgresImage).withFixedExposedPort(5432, 5432)
+          : (GenericContainer<?>) new GenericContainer(postgresImage).withExposedPorts(5432))
               .withEnv("POSTGRES_DB", "inoa")
               .withEnv("POSTGRES_USER", "inoa")
               .withEnv("POSTGRES_PASSWORD", "changeMe")

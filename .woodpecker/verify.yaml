@@ -5,7 +5,13 @@ when:
 services:
   - name: dockerd
     image: kokuwaio/dockerd
-    ports: [2375]
+    ports:
+      - 2375  # docker rest api
+      - 5432  # testcontainers postgres
+      - 8086  # testcontainers influxdb
+      - 6443  # k3s control plane
+      - 8080  # k3s http api
+      - 8883  # k3s mqtt api
     privileged: true
 
 steps:
@@ -31,11 +37,7 @@ steps:
   test-service:
     <<: *maven
     depends_on: [build]
-    commands:
-      # testcontainers uses random ports and service only expose named ports, use pod ip
-      # another solution: use fixed posts in ci and expose via dockerd service
-      - DOCKER_HOST=tcp://$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.):2375
-      - mvn test -pl service -Dsurefire.rerunFailingTestsCount=2
+    commands: mvn test -pl service -Dsurefire.rerunFailingTestsCount=2
     when: [path: [pom.xml, api/**, service/**]]
 
   image:
@@ -46,10 +48,7 @@ steps:
   integration-test:
     <<: *maven
     depends_on: [image]
-    commands:
-      - DOCKER_IP=$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.)
-      - DOCKER_HOST=tcp://$DOCKER_IP:2375
-      - mvn -pl test verify -Dinoa.domain=$DOCKER_IP.nip.io
+    commands: mvn -pl test verify -Dinoa.domain=$(env|grep DOCKERD_SERVICE_HOST|cut -d= -f2).nip.io
     when:
       path: {exclude: [app/**]}
 
