@@ -1,6 +1,6 @@
 when:
   event: [manual, pull_request]
-  path: [.woodpecker/verify.yaml, api/**, app/**, service/**, image/**, pom.xml, lombok.config]
+  path: [.woodpecker/verify.yaml, .woodpecker/maven/**, api/**, app/**, service/**, image/**, pom.xml, lombok.config]
 
 services:
   - name: dockerd

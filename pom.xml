@@ -51,6 +51,7 @@
 		<!-- ===================================================================== -->
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.propertiesEncoding>ISO-8859-1</project.build.propertiesEncoding>
 		<project.build.outputTimestamp>2024-01-10T14:04:49Z</project.build.outputTimestamp>
 
 		<maven.compiler.release>17</maven.compiler.release>
@@ -60,12 +61,6 @@
 		<maven.compiler.failOnWarning>true</maven.compiler.failOnWarning>
 		<maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 		<maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
-
-		<maven.release.preparationGoals>verify -N -P release-prepare</maven.release.preparationGoals>
-		<maven.release.releaseProfiles>release-perform</maven.release.releaseProfiles>
-		<maven.release.goals>deploy -Dcheck.skip -DskipTests -pl !test -T1C</maven.release.goals>
-		<maven.release.scmReleaseCommitComment>@{prefix} prepare release @{releaseLabel} [CI SKIP]</maven.release.scmReleaseCommitComment>
-		<maven.release.signTag>false</maven.release.signTag>
 
 		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 		<impsort.removeUnused>true</impsort.removeUnused>
@@ -309,7 +304,7 @@
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>${version.org.apache.maven.plugins.resources}</version>
 					<configuration>
-						<propertiesEncoding>ISO-8859-1</propertiesEncoding>
+						<propertiesEncoding>${project.build.propertiesEncoding}</propertiesEncoding>
 					</configuration>
 				</plugin>
 				<plugin>

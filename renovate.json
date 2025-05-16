@@ -2,7 +2,7 @@
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"labels": ["renovate", "renovate-manager/{{{manager}}}", "renovate-type/{{{updateType}}}"],
 	"assignees": ["renovate"],
-	"reviewers": [],
+	"reviewers": ["fabian.schlegel", "stephan.schnabel"],
 	"dependencyDashboard": true,
 	"dependencyDashboardLabels": ["renovate"],
 	"dependencyDashboardApproval": true,

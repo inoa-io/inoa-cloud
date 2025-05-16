@@ -32,6 +32,7 @@ steps:
 
   backstage:
     image: ghcr.io/grayc-de/plugins/backstage-entity-validator
+    depends_on: []
     when: [path: [.woodpecker/lint.yaml, catalog-info.yaml, docs/backstage/**]]
 
   kustomize:
