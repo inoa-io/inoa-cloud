@@ -47,11 +47,25 @@ public class ConfigurationMapperTest {
     assertBadRequest("String expected, got: Boolean", definition, true);
   }
 
+  @DisplayName("toString: url invalid uri")
+  @Test
+  void toStringUrlInvalidUri() {
+    var definition = new ConfigurationDefinition().setType(ConfigurationTypeVO.URL);
+    assertBadRequest("Invalid url: Illegal character in path at index 0: {}", definition, "{}");
+  }
+
   @DisplayName("toString: url invalid syntax")
   @Test
   void toStringUrlInvalidSyntax() {
     var definition = new ConfigurationDefinition().setType(ConfigurationTypeVO.URL);
-    assertBadRequest("Invalid url: no protocol: nope", definition, "nope");
+    assertBadRequest("Invalid url: URI is not absolute", definition, "http");
+  }
+
+  @DisplayName("toString: url invalid proto")
+  @Test
+  void toStringUrlInvalidProto() {
+    var definition = new ConfigurationDefinition().setType(ConfigurationTypeVO.URL);
+    assertBadRequest("Invalid url: unknown protocol: nope", definition, "nope://sdfsdf");
   }
 
   @DisplayName("toString: boolean valid")

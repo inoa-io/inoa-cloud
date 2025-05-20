@@ -17,7 +17,7 @@ services:
 steps:
 
   build: &maven
-    image: ghcr.io/grayc-de/plugins/inoa
+    image: ghcr.io/grayc-de/plugins/maven:3-jdk21
     depends_on: []
     environment:
       MAVEN_ARGS: --batch-mode --settings=.woodpecker/maven/settings.xml --color=always --no-transfer-progress
