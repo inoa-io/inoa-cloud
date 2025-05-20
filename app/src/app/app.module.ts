@@ -26,6 +26,7 @@ import { SatelliteManagerComponent } from "./satellite-manager/satellite-manager
 import { InstallationMonitorComponent } from "./installation-monitor/installation-monitor.component";
 import { SetupConfiguratorComponent } from "./setup-configurator/setup-configurator.component";
 import { EmsDashboardComponent } from "./ems-dashboard/ems-dashboard.component";
+import { SatelliteView3dComponent } from "./satellite-view-3d/satellite-view-3d.component";
 
 import { RpcHistoryComponent } from "./satellite-manager/gateway-detail/rpc-history-panel/rpc-history-panel.component";
 import { GatewayTableComponent } from "./satellite-manager/gateway-table/gateway-table.component";
@@ -58,6 +59,7 @@ export function fleetApiConfigFactory(): FleetConfiguration {
 		InstallationMonitorComponent,
 		SetupConfiguratorComponent,
 		EmsDashboardComponent,
+		SatelliteView3dComponent,
 		RpcHistoryComponent,
 		GatewayTableComponent,
 		GatewayDetailComponent,
@@ -89,11 +91,6 @@ export function fleetApiConfigFactory(): FleetConfiguration {
 		FormsModule,
 		MaterialModule,
 		FormlyModule.forRoot({
-			// validationMessages: [
-			//     { name: 'required', message: 'This field is required' },
-			//     { name: 'uniqueItems', message: 'should NOT have duplicate items' },
-			//     { name: 'enum', message: `must be equal to one of the allowed values` },
-			// ],
 			types: [
 				{ name: "null", component: NullTypeComponent, wrappers: ["form-field"] },
 				{ name: "array", component: ArrayTypeComponent },

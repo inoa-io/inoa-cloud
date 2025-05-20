@@ -1,0 +1,20 @@
+.satellite-view-3d-container {
+	height: calc(100vh - 92px);
+	display: flex;
+}
+
+.card-satellite-view-3d {
+	flex: 1 1;
+	height: 100%;
+	padding: 15px;
+	margin-left: 15px;
+	margin-right: 15px;
+	position: relative;
+}
+
+.satellite-view-3d-card-content {
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
