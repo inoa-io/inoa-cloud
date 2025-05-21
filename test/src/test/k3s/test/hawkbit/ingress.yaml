@@ -4,7 +4,7 @@ metadata:
   name: hawkbit
 spec:
   rules:
-    - host: hawkbit.${inoa.domain}
+    - host: hawkbit.${ip}.nip.io
       http:
         paths:
           - path: /

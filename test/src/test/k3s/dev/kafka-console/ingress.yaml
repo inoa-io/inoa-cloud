@@ -4,7 +4,7 @@ metadata:
   name: kafka-console
 spec:
   rules:
-    - host: kafka.${inoa.domain}
+    - host: kafka.${ip}.nip.io
       http:
         paths:
           - path: /

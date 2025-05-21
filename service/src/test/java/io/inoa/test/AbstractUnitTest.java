@@ -14,7 +14,6 @@ import io.micronaut.test.support.TestPropertyProvider;
 import io.micronaut.validation.validator.Validator;
 import jakarta.inject.Inject;
 import java.time.Duration;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
@@ -143,36 +142,13 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
   }
 
   // auth
-
-  public String auth(Tenant tenant) {
-    return auth(tenant.getTenantId());
+  public String auth() {
+    return auth(new String[0]);
   }
 
   public String auth(Tenant... tenants) {
-    return new JwtProvider(signature)
-        .builder()
-        .subject("admin")
-        .claim(
-            oldProperties.getSecurity().getClaimTenants(),
-            Stream.of(tenants).map(Tenant::getTenantId).toList())
-        .toBearer();
-  }
-
-  public String auth() {
-    return new JwtProvider(signature)
-        .builder()
-        .subject("admin")
-        .claim("email", "test@example.org")
-        .toBearer();
-  }
-
-  public String auth(String tenantId) {
-    return new JwtProvider(signature)
-        .builder()
-        .subject("admin")
-        .claim("email", "test@example.org")
-        .claim(oldProperties.getSecurity().getClaimTenants(), List.of(tenantId))
-        .toBearer();
+    var tenantIds = Stream.of(tenants).map(Tenant::getTenantId).toList();
+    return auth(tenantIds.toArray(new String[tenantIds.size()]));
   }
 
   public String auth(String... tenantIds) {
@@ -180,6 +156,7 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
         .builder()
         .subject("admin")
         .claim("email", "test@example.org")
+        .claim("aud", "inoa-cloud")
         .claim(oldProperties.getSecurity().getClaimTenants(), tenantIds)
         .toBearer();
   }

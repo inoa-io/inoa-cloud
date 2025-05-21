@@ -4,7 +4,7 @@ metadata:
   name: keycloak
 spec:
   rules:
-    - host: keycloak.${inoa.domain}
+    - host: keycloak.${ip}.nip.io
       http:
         paths:
           - path: /

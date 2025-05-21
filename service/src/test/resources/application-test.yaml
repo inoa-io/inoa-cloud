@@ -25,38 +25,6 @@ endpoints:
 kafka:
   enabled: false
 
-## config for registry
-inoa:
-  domain: foo.io
-  fleet:
-    # allow audience test access to all tenants
-    security:
-      tenant-audience-whitelist: test
-    # add some default configurations
-    tenant:
-      configurations:
-        - definition:
-            key: ntp.host
-            description: Host of ntp server to use.
-            type: STRING
-            pattern: "[a-z0-9\\.]{8,20}"
-          value: pool.ntp.org
-        - definition:
-            key: mqtt.url
-            description: URI of mqtt server.
-            type: STRING
-            pattern: (tcp|mqtt|ssl|mqtts)://[a-z0-9\\.\\-]+:[0-9]{3,5}
-          value: mqtt://mqtt.${inoa.domain}:${inoa.mqtt.port}
-        - definition:
-            key: mqtt.insecure
-            description: Should the client accept unsecure mqtt connections?
-            type: BOOLEAN
-          value: true
-  measurement:
-    # allow audience test access to all tenants
-    security:
-      tenant-audience-whitelist: test
-
 ## custom log configuration
 logger:
   levels:
@@ -65,5 +33,3 @@ logger:
     io.micronaut.data: INFO
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
     org.apache.kafka: ERROR
-static:
-  path: ${project.basedir}/src/test/resources/static

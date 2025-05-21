@@ -38,22 +38,12 @@ public class AngularAuthenticationFetcher implements AuthenticationFetcher<HttpR
         .getHeaders()
         .get(HttpHeaders.REFERER, String.class)
         .filter(referer -> referer.startsWith("http://localhost:4200"))
-        .map(
-            d ->
-                new ServerAuthentication(
-                    "admin",
-                    Set.of(),
-                    Map.of(
-                        Claims.EXPIRATION_TIME,
-                        Date.from(Instant.now().plusSeconds(60)),
-                        "tenants",
-                        List.of("inoa"),
-                        "given_name",
-                        "Super",
-                        "family_name",
-                        "Admin",
-                        "email",
-                        "superadmin@example.org")))
+        .map(d -> new ServerAuthentication("admin", Set.of(), Map.of(
+                        Claims.EXPIRATION_TIME, Date.from(Instant.now().plusSeconds(60)),
+                        "tenants", List.of("inoa"),
+                        "given_name", "Super",
+                        "family_name", "Admin",
+                        "email", "superadmin@example.org")))
         .map(Authentication.class::cast)
         .map(Publishers::just)
         .orElseGet(Publishers::empty);

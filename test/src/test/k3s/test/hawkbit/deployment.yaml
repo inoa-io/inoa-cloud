@@ -2,10 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: hawkbit
-  labels:
-    app.kubernetes.io/name: hawkbit
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: hawkbit
@@ -18,12 +15,7 @@ spec:
         - name: wait-for-postgres
           image: ${image.postgresql}
           imagePullPolicy: Never
-          command:
-            [
-              sh,
-              -c,
-              until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done,
-            ]
+          command: [sh, -c, until echo "`date '+%T'` connect psql ..." && psql && echo "`date '+%T'` ... connected"; do sleep 0.1 ; done]
           env:
             - name: PGCONNECT_TIMEOUT
               value: "1"
@@ -61,7 +53,7 @@ spec:
             - name: SPRING_PROFILES_ACTIVE
               value: postgresql
             - name: SPRING_DATASOURCE_URL
-              value: jdbc:postgresql://postgres.default:5432/hawkbit
+              value: jdbc:postgresql://postgres.default.svc:5432/hawkbit
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 configMapKeyRef:

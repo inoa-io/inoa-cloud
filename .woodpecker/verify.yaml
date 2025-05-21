@@ -48,7 +48,7 @@ steps:
   integration-test:
     <<: *maven
     depends_on: [image]
-    commands: mvn -pl test verify -Dinoa.domain=$(env|grep DOCKERD_SERVICE_HOST|cut -d= -f2).nip.io
+    commands: mvn -pl test verify -Dip="$(env|grep DOCKERD_SERVICE_HOST|cut -d= -f2)"
     when:
       path: {exclude: [app/**]}
 

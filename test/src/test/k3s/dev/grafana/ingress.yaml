@@ -4,7 +4,7 @@ metadata:
   name: grafana
 spec:
   rules:
-    - host: grafana.${inoa.domain}
+    - host: grafana.${ip}.nip.io
       http:
         paths:
           - path: /
