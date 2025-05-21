@@ -1,20 +1,37 @@
 .satellite-view-3d-container {
-	height: calc(100vh - 92px);
-	display: flex;
+    height: calc(100vh - 92px);
+    display: flex;
 }
 
 .card-satellite-view-3d {
-	flex: 1 1;
-	height: 100%;
-	padding: 15px;
-	margin-left: 15px;
-	margin-right: 15px;
-	position: relative;
+    flex: 1 1;
+    height: 100%;
+    padding: 15px;
+    margin-left: 15px;
+    margin-right: 15px;
+    position: relative;
 }
 
 .satellite-view-3d-card-content {
-	padding: 15px;
-	display: flex;
-	flex-direction: column;
-	height: 100%;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.renderer-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.satellite-count {
+    position: absolute;
+    height: 0px;
+    top: 50%;
+    line-height: 0;
+    left: 20%;
+    color: white;
+    font-size: 288px;
+    z-index: 1000;
 }
