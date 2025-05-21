@@ -3,6 +3,9 @@ resources:
   - dashboard
   - grafana
   - help
+  - kafka
   - kafka-console
   - mcnoize
+  - postgres
   - swagger-ui
+  - traefik

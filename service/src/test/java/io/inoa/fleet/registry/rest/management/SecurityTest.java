@@ -45,7 +45,7 @@ public class SecurityTest extends AbstractUnitTest {
   @Test
   void getTenantIdSuccessAusdienceSingle() {
     ServerRequestContext.with(
-        request(null, "test", "abc"),
+        request(null, "inoa", "abc"),
         (Runnable)
             () -> {
               assertEquals("abc", security.getTenantIds().iterator().next(), "tenantId");
@@ -56,7 +56,7 @@ public class SecurityTest extends AbstractUnitTest {
   @Test
   void getTenantIdSuccessAusdienceList() {
     ServerRequestContext.with(
-        request(null, List.of("nope", "test"), "abc"),
+        request(null, List.of("nope", "inoa"), "abc"),
         (Runnable)
             () -> {
               assertEquals("abc", security.getTenantIds().iterator().next(), "tenantId");

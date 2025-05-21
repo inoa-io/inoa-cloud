@@ -16,7 +16,7 @@
 	"ssoSessionIdleTimeout": 86400,
 	"ssoSessionMaxLifespan": 86400,
 	"attributes": {
-		"frontendUrl": "http://keycloak.${inoa.domain}:8080"
+		"frontendUrl": "http://keycloak.${ip}.nip.io:8080"
 	},
   "browserSecurityHeaders": {
     "contentSecurityPolicyReportOnly": "",
@@ -66,9 +66,9 @@
 			"serviceAccountsEnabled": false,
 			"protocol": "openid-connect",
 			"protocolMappers": [],
-			"baseUrl": "http://grafana.${inoa.domain}:8080",
-			"redirectUris": [ "http://grafana.${inoa.domain}:8080/*", "http://grafana.127.0.0.1.nip.io:8080/*"],
-			"webOrigins": [ "http://grafana.${inoa.domain}:8080/*", "http://grafana.127.0.0.1.nip.io:8080/*"],
+			"baseUrl": "http://grafana.${ip}.nip.io:8080",
+			"redirectUris": [ "http://grafana.${ip}.nip.io:8080/*", "http://grafana.127.0.0.1.nip.io:8080/*"],
+			"webOrigins": [ "http://grafana.${ip}.nip.io:8080/*", "http://grafana.127.0.0.1.nip.io:8080/*"],
 			"defaultClientScopes": [ "email" ],
 			"optionalClientScopes": []
 		},
@@ -86,14 +86,14 @@
       "serviceAccountsEnabled": false,
       "attributes": {
         "client_credentials.use_refresh_token": "false",
-        "post.logout.redirect.uris": "http://inoa.${inoa.domain}:8080/logout"
+        "post.logout.redirect.uris": "http://inoa.${ip}.nip.io:8080/logout"
       },
       "protocol": "openid-connect",
-      "baseUrl": "http://inoa.${inoa.domain}:8080",
+      "baseUrl": "http://inoa.${ip}.nip.io:8080",
       "redirectUris": [
         "http://localhost:4200/oauth/callback/inoa-groundcontrol",
         "http://localhost:4300/oauth/callback/inoa-groundcontrol",
-        "http://inoa.${inoa.domain}:8080/oauth/callback/inoa-groundcontrol"
+        "http://inoa.${ip}.nip.io:8080/oauth/callback/inoa-groundcontrol"
       ],
       "webOrigins": [ "*" ],
       "defaultClientScopes": [ "profile", "email" ],
@@ -194,7 +194,7 @@
         }
       ],
       "attributes": {
-        "post.logout.redirect.uris": "http://inoa.${inoa.domain}:8080/logout",
+        "post.logout.redirect.uris": "http://inoa.${ip}.nip.io:8080/logout",
         "access.token.lifespan": "60"
       },
       "redirectUris": [],
@@ -323,9 +323,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://swagger.${inoa.domain}:8080/",
+			"baseUrl": "http://swagger.${ip}.nip.io:8080/",
 			"redirectUris": [
-				"http://swagger.${inoa.domain}:8080/oauth2-redirect.html"
+				"http://swagger.${ip}.nip.io:8080/oauth2-redirect.html"
 			],
 			"webOrigins": [ "*" ],
 			"defaultClientScopes": [ "profile", "email" ],
@@ -379,9 +379,9 @@
 					}
 				}
 			],
-			"baseUrl": "http://hawkbit.${inoa.domain}:8080/",
+			"baseUrl": "http://hawkbit.${ip}.nip.io:8080/",
 			"redirectUris": [
-				"http://hawkbit.${inoa.domain}:8080/oauth2-redirect.html"
+				"http://hawkbit.${ip}.nip.io:8080/oauth2-redirect.html"
 			],
 			"webOrigins": [ "*" ],
 			"defaultClientScopes": [ "profile", "email" ],

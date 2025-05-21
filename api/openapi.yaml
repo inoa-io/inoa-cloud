@@ -12,13 +12,11 @@ info:
 servers:
   - url: https://api.qas.inoa.io
   - url: https://api.inoa.io
-  - url: http://inoa.127.0.0.1.nip.io:8080
-  - url: http://inoa.{inoa.domain}:8080
+  - url: http://inoa.{inoa.ip}:8080
     variables:
-      inoa.domain:
-        default: 127.0.0.1.nip.io
+      inoa.ip:
+        default: 127.0.0.1
         description: Your local ip where INOA is running
-  - url: http://localhost:4300
 security:
   - Keycloak: []
   - BearerAuth: []

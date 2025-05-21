@@ -6,4 +6,4 @@ resources:
 configMapGenerator:
   - name: kafka-console-env
     literals:
-      - KAFKA_BROKERS=kafka:9092
+      - KAFKA_BROKERS=kafka.default.svc:9092

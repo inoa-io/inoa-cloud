@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: kafka-console
 spec:
-  replicas: 1
-  revisionHistoryLimit: 0
   selector:
     matchLabels:
       app.kubernetes.io/name: kafka-console

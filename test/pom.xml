@@ -18,13 +18,17 @@
 		<!-- Could be overridden via maven property -Dmcnoise.replicas=10 to produce more traffic. -->
 		<mcnoise.replicas>0</mcnoise.replicas>
 
-		<inoa.domain>127.0.0.1.nip.io</inoa.domain>
+		<!-- IP used by as external host using <host>.${ip}.nio.ip in traefik -->
+		<ip>127.0.0.1</ip>
 
 		<k3s.imageTag>v1.31.8-k3s1</k3s.imageTag>
 		<k3s.manifests>${project.build.directory}/k3s</k3s.manifests>
 		<k3s.subdir>test</k3s.subdir>
 		<k3s.registries>${project.basedir}/../.woodpecker/maven/registries.yml</k3s.registries>
 		<k3s.resources>deployment/default/inoa</k3s.resources>
+		<k3s.clusterDns>10.53.0.10</k3s.clusterDns>
+		<k3s.clusterCidr>10.52.0.0/16</k3s.clusterCidr>
+		<k3s.serviceCidr>10.53.0.0/16</k3s.serviceCidr>
 
 	</properties>
 
@@ -42,6 +46,12 @@
 			<version>${project.version}</version>
 			<classifier>tests</classifier>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.inoa</groupId>
+			<artifactId>inoa-image</artifactId>
+			<version>${project.version}</version>
+			<type>pom</type>
 		</dependency>
 
 		<!-- micronaut -->
@@ -119,7 +129,6 @@
 									<includes><include>**/openapi.yaml</include></includes>
 								</resource>
 								<resource>
-									<directory>${project.basedir}/../fluxcd/dashboards</directory>
 									<targetPath>dev/grafana/dashboards</targetPath>
 									<includes><include>*.json</include></includes>
 								</resource>
@@ -152,12 +161,6 @@
 						<portBinding>1883:1883</portBinding>
 						<!-- INOA: MQTTS -->
 						<portBinding>8883:8883</portBinding>
-						<!-- Postgres -->
-						<portBinding>5432:5432</portBinding>
-						<!-- Kafka: Controller -->
-						<portBinding>9093:9093</portBinding>
-						<!-- Kafka: Client -->
-						<portBinding>9092:9092</portBinding>
 					</portBindings>
 					<ctrImages>
 						<ctrImage>${image.hawkbit}</ctrImage>
@@ -228,39 +231,30 @@
 
 	<profiles>
 		<profile>
-			<id>restart</id>
-			<activation><property><name>!env.CI</name></property></activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>io.kokuwa.maven</groupId>
-						<artifactId>k3s-maven-plugin</artifactId>
-						<executions><execution><goals><goal>restart</goal></goals></execution></executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-		<profile>
 			<id>dev</id>
 			<activation><property><name>!env.CI</name></property></activation>
 			<properties><k3s.subdir>dev</k3s.subdir></properties>
-			<dependencies>
-				<dependency>
-					<groupId>io.inoa</groupId>
-					<artifactId>inoa-image</artifactId>
-					<version>${project.version}</version>
-					<type>pom</type>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
 						<groupId>io.kokuwa.maven</groupId>
 						<artifactId>k3s-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>restart</goal>
+								</goals>
+							</execution>
+						</executions>
 						<configuration>
-							<dockerImages combine.children="append">
-								<dockerImage>${image.mcnoize}</dockerImage>
-							</dockerImages>
+							<portBindings combine.children="append">
+								<!-- Postgres -->
+								<portBinding>5432:5432</portBinding>
+								<!-- Kafka: Controller -->
+								<portBinding>9093:9093</portBinding>
+								<!-- Kafka: Client -->
+								<portBinding>9092:9092</portBinding>
+							</portBindings>
 						</configuration>
 					</plugin>
 				</plugins>

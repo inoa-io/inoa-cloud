@@ -16,7 +16,7 @@
         <p class="card-text">
         You can start using INOA Ground Control in three different ways:
         <ol>
-          <li><a href="http://inoa.${inoa.domain}:8080" target="_blank">Inside k3s</a></li>
+          <li><a href="http://inoa.${ip}.nip.io:8080" target="_blank">Inside k3s</a></li>
           <li><a href="http://localhost:4200" target="_blank">Locally started via Yarn</a></li>
           <li><a href="http://localhost:4300" target="_blank">Locally started as Micronaut application.</a></li>
         </ol>
@@ -37,17 +37,17 @@
 
           <pre><code>
             # Configure the INOA registry URL for self registration
-            setup-registry http://inoa.${inoa.domain}:8080/gateway
+            setup-registry http://inoa.${ip}.nip.io:8080/gateway
           </code></pre>
 
           <pre><code>
             # Configure the MQTT endpoint where to communicate with INOA Cloud and send measurements to.
-            setup-mqtt mqtt://inoa.${inoa.domain} 1883
+            setup-mqtt mqtt://inoa.${ip}.nip.io 1883
           </code></pre>
 
           <pre><code>
             # Configure the Hawkbit API endpoint to enable OTA updates for the Satellite
-            setup-ota http://hawkbit.${inoa.domain}:8080 /update/inoa/controller/v1
+            setup-ota http://hawkbit.${ip}.nip.io:8080 /update/inoa/controller/v1
             reboot
           </code></pre>
         </p>
@@ -63,7 +63,7 @@
           Use <b>Authorize</b> with <b>Keycloak (OAuth2, implicit) </b> and user credentials or use
           <b>BearerAuth (http, Bearer)</b> with token:
           <pre><code>
-          curl http://keycloak.${inoa.domain}:8080/realms/inoa/protocol/openid-connect/token \
+          curl http://keycloak.${ip}.nip.io:8080/realms/inoa/protocol/openid-connect/token \
             --silent \
             --data client_id=inoa-swagger \
             --data username=admin \
@@ -72,7 +72,7 @@
             | jq -r .access_token
           </code></pre>
         </p>
-        <a class="card-link" target=”_blank" href="http://swagger.${inoa.domain}:8080">SwaggerUI</a>
+        <a class="card-link" target=”_blank" href="http://swagger.${ip}.nip.io:8080">SwaggerUI</a>
       </div>
     </div>
     <div class="card p-3 m-3">

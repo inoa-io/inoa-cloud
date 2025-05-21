@@ -4,8 +4,6 @@ metadata:
   name: kafka
 spec:
   podManagementPolicy: Parallel
-  replicas: 1
-  revisionHistoryLimit: 0
   serviceName: kafka-headless
   selector:
     matchLabels:

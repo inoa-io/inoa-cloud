@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: keycloak
 spec:
-  # TODO Check if this is still needed. I didn't miss it.
-  # fixed ip to enable `hostAlias` to rewrite `keycloak.127.0.0.1.nip.io` from service name `keycloak`
-  # clusterIP: 10.53.100.1
+  # fixed ip to enable `hostAlias` to rewrite `keycloak.${inoa.domain}` from service name `keycloak`
+  # see inoa/deployment where this ip is used
+  clusterIP: 10.53.100.1
   ports:
     - name: http
       port: 8080

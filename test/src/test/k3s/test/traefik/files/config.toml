@@ -1,5 +1,5 @@
 [http.middlewares]
   [http.middlewares.cors.headers]
     accessControlAllowMethods= ["GET", "POST", "PUT", "DELETE"]
-    accessControlAllowOriginList = ["http://swaggerui.${inoa.domain}:8080"]
+    accessControlAllowOriginList = ["http://swaggerui.${ip}.nip.io:8080"]
     accessControlAllowCredentials = true
