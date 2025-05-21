@@ -4,4 +4,4 @@ resources:
 
 images:
   - name: docker.io/library/influxdb
-    newTag: 2.7.11
+    newTag: 2.7.12
