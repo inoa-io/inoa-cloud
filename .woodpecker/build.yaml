@@ -1,7 +1,7 @@
 when:
   event: [manual, push]
   branch: main
-  path: [.woodpecker/build.yaml, api/**, app/**, service/**, image/**, pom.xml, lombok.config]
+  path: [.woodpecker/build.yaml, .woodpecker/maven/**, api/**, app/**, service/**, image/**, pom.xml, lombok.config]
 
 services:
   - name: dockerd
@@ -12,7 +12,7 @@ services:
 steps:
 
   deploy:
-    image: ghcr.io/grayc-de/plugins/inoa
+    image: ghcr.io/grayc-de/plugins/maven:3-jdk21
     environment:
       MAVEN_ARGS: --batch-mode --settings=.woodpecker/maven/settings.xml --color=always --no-transfer-progress
       DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}

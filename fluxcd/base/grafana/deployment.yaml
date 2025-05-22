@@ -14,7 +14,7 @@ spec:
       initContainers:
         - name: wait-for-postgres
           image: docker.io/library/postgres
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           command:
             [
               sh,

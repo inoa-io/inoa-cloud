@@ -2,8 +2,8 @@
 mirrors:
   "*":
   docker.io:
-    endpoint: [https://mirror.grayc.io]
+    endpoint: [http://mirror.woodpecker.svc]
     rewrite: {"^(.*)$": docker.io/$1}
   ghcr.io:
-    endpoint: [https://mirror.grayc.io]
+    endpoint: [http://mirror.woodpecker.svc]
     rewrite: {"^(.*)$": ghcr.io/$1}

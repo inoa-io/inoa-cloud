@@ -53,9 +53,6 @@
 					</execution>
 				</executions>
 				<configuration>
-					<environmentVariables>
-						<DOCKER_BUILDKIT>1</DOCKER_BUILDKIT>
-					</environmentVariables>
 					<executable>docker</executable>
 				</configuration>
 				<dependencies>

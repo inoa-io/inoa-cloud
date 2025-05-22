@@ -42,7 +42,6 @@
 			<artifactId>micronaut-security-jwt</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<!-- TODO: prüfen warum wir von validation abhängig sind, jakarta sollte reichen -->
 		<dependency>
 			<groupId>io.micronaut.validation</groupId>
 			<artifactId>micronaut-validation</artifactId>

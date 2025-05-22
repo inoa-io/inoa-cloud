@@ -5,4 +5,4 @@ resources:
 
 images:
   - name: docker.io/library/postgres
-    newTag: "17.4"
+    newTag: "17.5"

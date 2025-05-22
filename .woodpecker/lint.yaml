@@ -19,7 +19,6 @@ steps:
     image: kokuwaio/yamllint
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, .yamllint.yaml, "**/*.y*ml"]]
-    failure: ignore
 
   markdown:
     image: kokuwaio/markdownlint
@@ -33,6 +32,7 @@ steps:
 
   backstage:
     image: ghcr.io/grayc-de/plugins/backstage-entity-validator
+    depends_on: []
     when: [path: [.woodpecker/lint.yaml, catalog-info.yaml, docs/backstage/**]]
 
   kustomize:

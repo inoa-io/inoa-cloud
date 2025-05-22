@@ -1,6 +1,8 @@
 package io.inoa.fleet.registry.rest.mapper;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Comparator;
 import java.util.List;
@@ -171,14 +173,14 @@ public interface ConfigurationMapper {
 			}
 
 			case URL: {
-				if (!(object instanceof String)) {
+				if (!(object instanceof String value)) {
 					throw new HttpStatusException(
 							HttpStatus.BAD_REQUEST,
 							"String expected, got: " + object.getClass().getSimpleName());
 				}
 				try {
-					return new URL((String) object).toString();
-				} catch (MalformedURLException e) {
+					return new URI(value).toURL().toString();
+				} catch (IllegalArgumentException | MalformedURLException | URISyntaxException e) {
 					throw new HttpStatusException(HttpStatus.BAD_REQUEST, "Invalid url: " + e.getMessage());
 				}
 			}
