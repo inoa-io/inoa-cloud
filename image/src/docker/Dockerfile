@@ -1,4 +1,4 @@
-FROM docker.io/kokuwaio/node:20 AS app
+FROM docker.io/kokuwaio/node:20@sha256:2f85acbab9704cee2a0c2247b0cd00091e066b9074b08900de01d043e040f454 AS app
 WORKDIR /app
 ARG YARN_NPM_REGISTRY_SERVER
 ARG YARN_UNSAFE_HTTP_WHITELIST
