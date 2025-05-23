@@ -22,5 +22,5 @@ patches:
         value: 1
 
 images:
-  - name: ghcr.io/grayc-de/kafka
-    newTag: 3.6.1
+  - name: docker.io/kokuwaio/kafka:<patched>
+    newTag: 3.6.1@sha256:3d90a75619b524937bfd520cf8fa75fa6801785ad15c3cf7f2536fa84527e006

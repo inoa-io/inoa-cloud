@@ -1,4 +1,4 @@
-FROM ghcr.io/grayc-de/plugins/node:20 AS app
+FROM docker.io/kokuwaio/node:20 AS app
 WORKDIR /app
 ARG YARN_NPM_REGISTRY_SERVER
 ARG YARN_UNSAFE_HTTP_WHITELIST

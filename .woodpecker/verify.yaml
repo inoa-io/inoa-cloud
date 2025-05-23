@@ -24,7 +24,7 @@ steps:
     commands: mvn -am -pl service -DskipTests -DskipITs install
 
   test-yarn:
-    image: ghcr.io/grayc-de/plugins/node:20-chrome
+    image: kokuwaio/node:20-chrome
     depends_on: [build]
     directory: app
     commands:
@@ -62,6 +62,7 @@ steps:
       - docker exec k3s-maven-plugin sh -c 'cat `find /var/log/containers -name inoa-*_wait-for-keycloak-*.log`'
       - docker exec k3s-maven-plugin sh -c 'cat `find /var/log/containers -name inoa-*_wait-for-postgres-*.log`'
       - docker exec k3s-maven-plugin sh -c 'cat `find /var/log/containers -name inoa-*_inoa-*.log`'
+      - exit 1
     when:
       path: {exclude: [app/**]}
       status: failure

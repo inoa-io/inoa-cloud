@@ -78,7 +78,7 @@
 		<image.traefik>docker.io/library/traefik:v2.11.0</image.traefik>
 		<image.hawkbit>docker.io/hawkbit/hawkbit-update-server:0.3.0M8</image.hawkbit>
 		<image.keycloak>docker.io/kokuwaio/keycloak:${version.org.keycloak}-distroless</image.keycloak>
-		<image.kafka>ghcr.io/grayc-de/kafka:${version.org.apache.kafka}</image.kafka>
+		<image.kafka>docker.io/kokuwaio/kafka:${version.org.apache.kafka}</image.kafka>
 
 		<!-- ===================================================================== -->
 		<!-- ============================= Versions ============================== -->

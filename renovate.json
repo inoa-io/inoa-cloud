@@ -32,14 +32,11 @@
 				"io.cloudevents:cloudevents-json-jackson",
 				"io.cloudevents:cloudevents-kafka",
 				"org.apache.kafka:kafka-clients",
-				"ghcr.io/grayc-de/kafka",
+				"docker.io/kokuwaio/kafka",
 				"docker.io/eclipse-temurin",
 				"docker.io/hawkbit/hawkbit-update-server"
 			],
 			"enabled": false
-		},{
-			"matchPackageNames": ["ghcr.io/grayc-de/plugins/node"],
-			"pinDigests": false
 		},{
 			"matchManagers": ["woodpecker"],
 			"pinDigests": false

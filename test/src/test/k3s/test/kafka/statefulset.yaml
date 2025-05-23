@@ -19,7 +19,7 @@ spec:
     spec:
       initContainers:
         - name: kafka-init-properties
-          image: ghcr.io/grayc-de/kafka:${version.org.apache.kafka}
+          image: ${image.kafka}
           imagePullPolicy: Never
           command: [/opt/kafka/bin/kafka-init-properties.sh]
           env:
@@ -46,7 +46,7 @@ spec:
             capabilities:
               drop: [ALL]
         - name: kafka-init-storage
-          image: ghcr.io/grayc-de/kafka:${version.org.apache.kafka}
+          image: ${image.kafka}
           imagePullPolicy: Never
           command: [/opt/kafka/bin/kafka-init-storage.sh]
           env:
@@ -69,7 +69,7 @@ spec:
               drop: [ALL]
       containers:
         - name: kafka
-          image: ghcr.io/grayc-de/kafka:${version.org.apache.kafka}
+          image: ${image.kafka}
           imagePullPolicy: Never
           ports:
             - name: metrics

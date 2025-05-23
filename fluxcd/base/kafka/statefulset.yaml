@@ -30,7 +30,7 @@ spec:
         - name: dockerconfigjson-ghcr-io
       initContainers:
         - name: kafka-init-properties
-          image: ghcr.io/grayc-de/kafka
+          image: docker.io/kokuwaio/kafka:<patched>
           imagePullPolicy: Always
           command: [/opt/kafka/bin/kafka-init-properties.sh]
           env:
@@ -66,7 +66,7 @@ spec:
             capabilities:
               drop: [ALL]
         - name: kafka-init-storage
-          image: ghcr.io/grayc-de/kafka
+          image: docker.io/kokuwaio/kafka:<patched>
           imagePullPolicy: IfNotPresent
           command: [/opt/kafka/bin/kafka-init-storage.sh]
           env:
@@ -97,7 +97,7 @@ spec:
               drop: [ALL]
       containers:
         - name: kafka
-          image: ghcr.io/grayc-de/kafka
+          image: docker.io/kokuwaio/kafka:<patched>
           imagePullPolicy: IfNotPresent
           env:
             - name: KAFKA_HEAP_OPTS
