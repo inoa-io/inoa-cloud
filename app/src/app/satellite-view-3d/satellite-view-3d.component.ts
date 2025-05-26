@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from "@angular/core";
 import * as THREE from "three";
 
 @Component({
@@ -6,25 +6,31 @@ import * as THREE from "three";
     templateUrl: "./satellite-view-3d.component.html",
     styleUrls: ["./satellite-view-3d.component.css"]
 })
-export class SatelliteView3dComponent implements AfterViewInit {
+export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     @ViewChild("rendererContainer") rendererContainer!: ElementRef;
     private scene: THREE.Scene = new THREE.Scene();
     private camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000); // Narrower FOV
     private renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
+    private resizeObserver!: ResizeObserver;
     private sphere!: THREE.Mesh;
     private satellites: THREE.Mesh[] = [];
 
-    ngAfterViewInit() {
-        // Set renderer size based on container
+    private setRendererSize(): void {
         const containerWidth = this.rendererContainer.nativeElement.clientWidth;
         const containerHeight = this.rendererContainer.nativeElement.clientHeight;
         this.renderer.setSize(containerWidth, containerHeight);
+        this.camera.aspect = containerWidth / containerHeight;
+        this.camera.updateProjectionMatrix();
+    }
+
+    ngAfterViewInit(): void {
+        this.setRendererSize();
         this.renderer.setClearColor(0x000000, 1);
         this.rendererContainer.nativeElement.appendChild(this.renderer.domElement);
 
-        // Update camera aspect ratio
-        this.camera.aspect = containerWidth / containerHeight;
-        this.camera.updateProjectionMatrix();
+        // Setup resize observer
+        this.resizeObserver = new ResizeObserver(() => this.setRendererSize());
+        this.resizeObserver.observe(this.rendererContainer.nativeElement);
         this.camera.position.set(-2, 0, 15); // Shift camera left slightly
 
         // Add space background
@@ -108,5 +114,11 @@ export class SatelliteView3dComponent implements AfterViewInit {
             this.renderer.render(this.scene, this.camera);
         };
         animate();
+    }
+
+    ngOnDestroy(): void {
+        if (this.resizeObserver) {
+            this.resizeObserver.disconnect();
+        }
     }
 }
