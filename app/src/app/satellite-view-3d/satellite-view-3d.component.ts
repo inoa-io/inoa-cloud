@@ -1,4 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, HostListener } from "@angular/core";
+import { GatewaysService } from "@inoa/api";
+import { interval, Subscription, switchMap } from "rxjs";
 import * as THREE from "three";
 
 @Component({
@@ -16,6 +18,12 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private resizeObserver!: ResizeObserver;
     private sphere!: THREE.Mesh;
     private satellites: THREE.Mesh[] = [];
+    private autoDataRefresher!: Subscription;
+    private earthOffset: number = 3;
+
+    public satelliteCount: number = 0;
+
+    constructor(private gatewaysService: GatewaysService) {}
 
     private setRendererSize(): void {
         const container = this.rendererContainer.nativeElement;
@@ -111,7 +119,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
                     shininess: 25
                 });
                 this.sphere = new THREE.Mesh(earthGeometry, material);
-                this.sphere.position.x = 5;
+                this.sphere.position.x = this.earthOffset;
                 this.scene.add(this.sphere);
             },
             undefined,
@@ -126,7 +134,13 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             specular: 0x555555,
             shininess: 30
         });
-        for (let i = 0; i < 3; i++) {
+
+        // clear satellites
+        this.scene.remove(...this.satellites);
+        this.satellites = [];
+
+        // create satellites
+        for (let i = 0; i < this.satelliteCount; i++) {
             const satellite = new THREE.Mesh(satelliteGeometry, satelliteMaterial);
             this.satellites.push(satellite);
             this.scene.add(satellite);
@@ -140,7 +154,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
 
             this.satellites.forEach((satellite, index) => {
                 const angle = (Date.now() * 0.001 + index * 2) % (2 * Math.PI);
-                satellite.position.x = 4 * Math.cos(angle) + 5;
+                satellite.position.x = 4 * Math.cos(angle) + this.earthOffset;
                 satellite.position.z = 4 * Math.sin(angle);
             });
 
@@ -150,6 +164,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
+        this.startAutoRefresh();
         this.setupRenderer();
         this.setupBackground();
         this.setupLighting();
@@ -163,5 +178,33 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
         if (this.resizeObserver) {
             this.resizeObserver.disconnect();
         }
+
+        this.autoDataRefresher.unsubscribe();
+    }
+
+    startAutoRefresh() {
+        // Cancel existing auto-refresh subscription if it exists
+        if (this.autoDataRefresher) {
+            this.autoDataRefresher.unsubscribe();
+        }
+
+        // Always make an initial API call
+        this.gatewaysService.findGateways().subscribe((data) => {
+            this.satelliteCount = data.content.length;
+            this.setupSatellites();
+            this.startAnimation();
+        });
+
+        // Parse autoRefreshInterval
+        const autoRefreshInterval = 10000;
+
+        // otherwise do set up an interval
+        this.autoDataRefresher = interval(autoRefreshInterval)
+            .pipe(switchMap(() => this.gatewaysService.findGateways()))
+            .subscribe((data) => {
+                this.satelliteCount = data.content.length;
+                this.setupSatellites();
+                this.startAnimation();
+            });
     }
 }
