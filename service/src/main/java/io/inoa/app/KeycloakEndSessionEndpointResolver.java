@@ -27,10 +27,10 @@ public class KeycloakEndSessionEndpointResolver extends EndSessionEndpointResolv
 
 	KeycloakEndSessionEndpointResolver(
 			BeanContext beanContext,
-      AuthorizationServerResolver authorizationServerResolver,
+			AuthorizationServerResolver authorizationServerResolver,
 			SecurityConfiguration securityConfiguration,
 			TokenResolver<HttpRequest<?>> tokenResolver) {
-    super(beanContext, authorizationServerResolver);
+		super(beanContext, authorizationServerResolver);
 		this.securityConfiguration = securityConfiguration;
 		this.tokenResolver = tokenResolver;
 	}

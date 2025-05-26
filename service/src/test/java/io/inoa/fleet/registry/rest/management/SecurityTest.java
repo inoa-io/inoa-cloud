@@ -162,7 +162,7 @@ public class SecurityTest extends AbstractUnitTest {
 
 		var request = new SimpleHttpRequest<>(HttpMethod.GET, "/", null);
 		request.getHeaders().add(oldProperties.getSecurity().getTenantHeaderName(), tenantHeader);
-    request.setUserPrincipal(new ServerAuthentication("", null, headers));
+		request.setUserPrincipal(new ServerAuthentication("", null, headers));
 		return request;
 	}
 }
