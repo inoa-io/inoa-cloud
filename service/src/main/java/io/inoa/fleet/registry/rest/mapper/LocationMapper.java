@@ -1,9 +1,10 @@
 package io.inoa.fleet.registry.rest.mapper;
 
-import io.inoa.fleet.registry.domain.GatewayLocationData;
-import io.inoa.rest.GatewayLocationDataVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants.ComponentModel;
+
+import io.inoa.fleet.registry.domain.GatewayLocationData;
+import io.inoa.rest.GatewayLocationDataVO;
 
 /**
  * Mapper for {@link GatewayLocationData}.
@@ -13,7 +14,7 @@ import org.mapstruct.MappingConstants.ComponentModel;
 @Mapper(componentModel = ComponentModel.JAKARTA)
 public interface LocationMapper {
 
-  GatewayLocationDataVO toLocationVO(GatewayLocationData location);
+	GatewayLocationDataVO toLocationVO(GatewayLocationData location);
 
-  GatewayLocationData toLocation(GatewayLocationDataVO vo);
+	GatewayLocationData toLocation(GatewayLocationDataVO vo);
 }

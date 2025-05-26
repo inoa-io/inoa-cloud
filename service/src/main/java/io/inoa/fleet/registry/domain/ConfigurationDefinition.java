@@ -16,13 +16,21 @@ import lombok.Data;
 @Data
 public class ConfigurationDefinition {
 
-  @Id @GeneratedValue private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-  @MappedProperty private String key;
-  @MappedProperty private ConfigurationTypeVO type;
-  @MappedProperty private String description;
+	@MappedProperty
+	private String key;
+	@MappedProperty
+	private ConfigurationTypeVO type;
+	@MappedProperty
+	private String description;
 
-  @MappedProperty private Integer maximum;
-  @MappedProperty private Integer minimum;
-  @MappedProperty private String pattern;
+	@MappedProperty
+	private Integer maximum;
+	@MappedProperty
+	private Integer minimum;
+	@MappedProperty
+	private String pattern;
 }
