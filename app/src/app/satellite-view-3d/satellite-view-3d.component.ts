@@ -17,7 +17,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
     private resizeObserver!: ResizeObserver;
     private planet!: THREE.Mesh;
-    private satellites: { mesh: THREE.Mesh; gateway: GatewayVO }[] = [];
+    private satellites: { mesh: THREE.Mesh; gateway: GatewayVO; trace: THREE.Line; tracePoints: THREE.Vector3[] }[] = [];
     private autoDataRefresher!: Subscription;
     private earthOffset: number = 3;
 
@@ -146,15 +146,38 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             shininess: 30
         });
 
-        // clear satellites
-        this.scene.remove(...this.satellites.map((s) => s.mesh));
+        // clear satellites and traces
+        this.satellites.forEach((s) => {
+            this.scene.remove(s.mesh);
+            this.scene.remove(s.trace);
+        });
         this.satellites = [];
 
-        // create satellites
+        // create satellites with traces
         gateways.forEach((gateway, i) => {
             const satellite = new THREE.Mesh(satelliteGeometry, satelliteMaterial);
-            this.satellites.push({ mesh: satellite, gateway });
+
+            // Create trace line with fading effect
+            const traceMaterial = new THREE.LineBasicMaterial({
+                vertexColors: true,
+                transparent: true,
+                linewidth: 3,
+                depthTest: true,
+                depthWrite: false
+            });
+            const traceGeometry = new THREE.BufferGeometry();
+            const tracePoints: THREE.Vector3[] = [];
+            const traceColors: THREE.Color[] = [];
+            const trace = new THREE.Line(traceGeometry, traceMaterial);
+
+            this.satellites.push({
+                mesh: satellite,
+                gateway,
+                trace,
+                tracePoints
+            });
             this.scene.add(satellite);
+            this.scene.add(trace);
         });
     }
 
@@ -163,7 +186,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             requestAnimationFrame(animate);
             if (this.planet) this.planet.rotation.y += 0.001;
 
-            this.satellites.forEach(({ mesh, gateway }) => {
+            this.satellites.forEach(({ mesh, gateway, trace, tracePoints }) => {
                 // Create realistic orbit based on gateway properties
                 const orbitSeed = gateway.gateway_id.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0);
 
@@ -175,8 +198,8 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
                 // Calculate orbital period using Kepler's third law (simplified)
                 const period = (2 * Math.PI * Math.sqrt(Math.pow(semiMajorAxis, 3))) / 10;
 
-                // Current position in orbit
-                const meanAnomaly = (Date.now() / 1000) * ((2 * Math.PI) / period);
+                // Current position in orbit (negative for counter-clockwise)
+                const meanAnomaly = -(Date.now() / 1000) * ((2 * Math.PI) / period);
                 const eccentricAnomaly = this.solveKeplersEquation(meanAnomaly, eccentricity);
                 const trueAnomaly = 2 * Math.atan2(Math.sqrt(1 + eccentricity) * Math.sin(eccentricAnomaly / 2), Math.sqrt(1 - eccentricity) * Math.cos(eccentricAnomaly / 2));
 
@@ -187,6 +210,33 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
                 mesh.position.x = distance * (Math.cos(trueAnomaly) * Math.cos(inclination)) + this.earthOffset;
                 mesh.position.z = distance * Math.sin(trueAnomaly);
                 mesh.position.y = distance * (Math.cos(trueAnomaly) * Math.sin(inclination));
+
+                // Update trace
+                tracePoints.push(new THREE.Vector3(mesh.position.x, mesh.position.y, mesh.position.z));
+
+                // Limit trace length
+                if (tracePoints.length > 100) {
+                    tracePoints.shift();
+                }
+
+                // Update trace geometry with fading colors
+                if (tracePoints.length > 1) {
+                    trace.geometry.dispose();
+                    const geometry = new THREE.BufferGeometry().setFromPoints(tracePoints);
+
+                    // Create color array with fading effect
+                    const colors = [];
+                    const totalPoints = tracePoints.length;
+                    for (let i = 0; i < totalPoints; i++) {
+                        const ratio = i / totalPoints;
+                        const color = new THREE.Color(0x55ffff);
+                        color.multiplyScalar(ratio); // Fade from bright to dim
+                        colors.push(color.r, color.g, color.b);
+                    }
+
+                    geometry.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+                    trace.geometry = geometry;
+                }
             });
 
             this.renderer.render(this.scene, this.camera);
@@ -218,13 +268,6 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
         if (this.autoDataRefresher) {
             this.autoDataRefresher.unsubscribe();
         }
-
-        // Always make an initial API call
-        // this.gatewaysService.findGateways().subscribe((data) => {
-        //     this.satelliteCount = data.content.length;
-        //     this.setupSatellites(data.content);
-        //     this.startAnimation();
-        // });
 
         // Parse autoRefreshInterval
         const autoRefreshInterval = 10000;
