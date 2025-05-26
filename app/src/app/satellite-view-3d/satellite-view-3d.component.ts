@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy } from "@angular/core";
+import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, HostListener } from "@angular/core";
 import * as THREE from "three";
 
 @Component({
@@ -8,6 +8,8 @@ import * as THREE from "three";
 })
 export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     @ViewChild("rendererContainer") rendererContainer!: ElementRef;
+    private isFullscreen = false;
+    private originalParent!: HTMLElement;
     private scene: THREE.Scene = new THREE.Scene();
     private camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000); // Narrower FOV
     private renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
@@ -16,24 +18,54 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private satellites: THREE.Mesh[] = [];
 
     private setRendererSize(): void {
-        const containerWidth = this.rendererContainer.nativeElement.clientWidth;
-        const containerHeight = this.rendererContainer.nativeElement.clientHeight;
-        this.renderer.setSize(containerWidth, containerHeight);
-        this.camera.aspect = containerWidth / containerHeight;
+        const container = this.rendererContainer.nativeElement;
+        const width = this.isFullscreen ? window.innerWidth : container.clientWidth;
+        const height = this.isFullscreen ? window.innerHeight : container.clientHeight;
+        this.renderer.setSize(width, height);
+        this.camera.aspect = width / height;
         this.camera.updateProjectionMatrix();
     }
 
-    ngAfterViewInit(): void {
+    toggleFullscreen(): void {
+        if (!this.isFullscreen) {
+            this.originalParent = this.rendererContainer.nativeElement.parentNode;
+            document.body.appendChild(this.rendererContainer.nativeElement);
+            this.rendererContainer.nativeElement.style.position = "fixed";
+            this.rendererContainer.nativeElement.style.top = "0";
+            this.rendererContainer.nativeElement.style.left = "0";
+            this.rendererContainer.nativeElement.style.width = "100vw";
+            this.rendererContainer.nativeElement.style.height = "100vh";
+            this.rendererContainer.nativeElement.style.zIndex = "10000";
+            this.isFullscreen = true;
+        } else {
+            this.originalParent.appendChild(this.rendererContainer.nativeElement);
+            this.rendererContainer.nativeElement.style.position = "";
+            this.rendererContainer.nativeElement.style.top = "";
+            this.rendererContainer.nativeElement.style.left = "";
+            this.rendererContainer.nativeElement.style.width = "";
+            this.rendererContainer.nativeElement.style.height = "";
+            this.rendererContainer.nativeElement.style.zIndex = "";
+            this.isFullscreen = false;
+        }
+        this.setRendererSize();
+    }
+
+    @HostListener("document:fullscreenchange")
+    onFullscreenChange(): void {
+        this.setRendererSize();
+    }
+
+    private setupRenderer(): void {
         this.setRendererSize();
         this.renderer.setClearColor(0x000000, 1);
         this.rendererContainer.nativeElement.appendChild(this.renderer.domElement);
-
-        // Setup resize observer
         this.resizeObserver = new ResizeObserver(() => this.setRendererSize());
         this.resizeObserver.observe(this.rendererContainer.nativeElement);
-        this.camera.position.set(-2, 0, 15); // Shift camera left slightly
+        this.camera.position.set(-2, 0, 15);
+        this.camera.lookAt(0, 0, 0);
+    }
 
-        // Add space background
+    private setupBackground(): void {
         const backgroundTextureLoader = new THREE.TextureLoader();
         const bgTextureWidth = 2500;
         const bgTextureHeight = 1250;
@@ -57,15 +89,17 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             undefined,
             (error) => console.error("Error loading background:", error)
         );
+    }
 
-        // Add lighting
+    private setupLighting(): void {
         const directionalLight = new THREE.DirectionalLight(0xffffff, 2.5);
         directionalLight.position.set(20, 10, 10);
         this.scene.add(directionalLight);
         const ambientLight = new THREE.AmbientLight(0x202020, 0.2);
         this.scene.add(ambientLight);
+    }
 
-        // Add the Earth with offset to the right
+    private setupEarth(): void {
         const earthGeometry = new THREE.SphereGeometry(3, 32, 32);
         const textureLoader = new THREE.TextureLoader();
         textureLoader.load(
@@ -83,8 +117,9 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             undefined,
             (error) => console.error("Error loading Earth texture:", error)
         );
+    }
 
-        // Add satellites with offset to orbit around the shifted Earth
+    private setupSatellites(): void {
         const satelliteGeometry = new THREE.SphereGeometry(0.1, 16, 16);
         const satelliteMaterial = new THREE.MeshPhongMaterial({
             color: 0xffffff,
@@ -96,15 +131,13 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             this.satellites.push(satellite);
             this.scene.add(satellite);
         }
+    }
 
-        this.camera.lookAt(0, 0, 0); // Look at the scene center
-
-        // Animation loop
+    private startAnimation(): void {
         const animate = () => {
             requestAnimationFrame(animate);
             if (this.sphere) this.sphere.rotation.y += 0.001;
 
-            // Animate satellites around the shifted Earth
             this.satellites.forEach((satellite, index) => {
                 const angle = (Date.now() * 0.001 + index * 2) % (2 * Math.PI);
                 satellite.position.x = 4 * Math.cos(angle) + 5;
@@ -114,6 +147,16 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             this.renderer.render(this.scene, this.camera);
         };
         animate();
+    }
+
+    ngAfterViewInit(): void {
+        this.setupRenderer();
+        this.setupBackground();
+        this.setupLighting();
+        this.setupEarth();
+        this.setupSatellites();
+        this.startAnimation();
+        this.toggleFullscreen();
     }
 
     ngOnDestroy(): void {
