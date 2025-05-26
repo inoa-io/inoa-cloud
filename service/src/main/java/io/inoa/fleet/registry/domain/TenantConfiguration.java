@@ -17,13 +17,16 @@ import lombok.Data;
 @Data
 public class TenantConfiguration implements Configuration {
 
-  @Id @GeneratedValue private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-  @Relation(Kind.MANY_TO_ONE)
-  private ConfigurationDefinition definition;
+	@Relation(Kind.MANY_TO_ONE)
+	private ConfigurationDefinition definition;
 
-  @Relation(Kind.MANY_TO_ONE)
-  private Tenant tenant;
+	@Relation(Kind.MANY_TO_ONE)
+	private Tenant tenant;
 
-  @MappedProperty private String value;
+	@MappedProperty
+	private String value;
 }

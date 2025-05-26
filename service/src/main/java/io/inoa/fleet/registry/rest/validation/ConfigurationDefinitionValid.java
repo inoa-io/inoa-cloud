@@ -1,11 +1,13 @@
 package io.inoa.fleet.registry.rest.validation;
 
-import io.inoa.fleet.registry.domain.ConfigurationDefinition;
-import jakarta.validation.Constraint;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import jakarta.validation.Constraint;
+
+import io.inoa.fleet.registry.domain.ConfigurationDefinition;
 
 /**
  * Constraint annotation for {@link ConfigurationDefinition}.
@@ -17,5 +19,5 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ConfigurationDefinitionValidator.class)
 public @interface ConfigurationDefinitionValid {
 
-  String message() default "definition is invalid";
+	String message() default "definition is invalid";
 }

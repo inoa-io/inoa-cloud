@@ -1,9 +1,10 @@
 package io.inoa.fleet.registry.rest.gateway;
 
+import jakarta.inject.Singleton;
+
 import io.inoa.fleet.registry.auth.GatewayAuthentication;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.micronaut.http.context.ServerRequestContext;
-import jakarta.inject.Singleton;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -15,10 +16,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 class Security {
 
-  Gateway getGateway() {
-    return ServerRequestContext.currentRequest()
-        .flatMap(request -> request.getUserPrincipal(GatewayAuthentication.class))
-        .map(GatewayAuthentication::getGateway)
-        .orElseThrow();
-  }
+	Gateway getGateway() {
+		return ServerRequestContext.currentRequest()
+				.flatMap(request -> request.getUserPrincipal(GatewayAuthentication.class))
+				.map(GatewayAuthentication::getGateway)
+				.orElseThrow();
+	}
 }

@@ -11,16 +11,16 @@ import lombok.Data;
 @Data
 @Embeddable
 public class GatewayLocationData {
-  private String houseNumber;
-  private String road;
-  private String neighbourhood;
-  private String suburb;
-  private String cityDistrict;
-  private String city;
-  private String state;
-  private String postcode;
-  private String country;
-  private String countryCode;
-  private Double latitude;
-  private Double longitude;
+	private String houseNumber;
+	private String road;
+	private String neighbourhood;
+	private String suburb;
+	private String cityDistrict;
+	private String city;
+	private String state;
+	private String postcode;
+	private String country;
+	private String countryCode;
+	private Double latitude;
+	private Double longitude;
 }

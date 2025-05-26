@@ -65,9 +65,6 @@
 		<maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 		<impsort.removeUnused>true</impsort.removeUnused>
 		<impsort.groups>java.,javax.,jakarta.,org.</impsort.groups>
-		<!-- not yet executed -->
-		<impsort.skip>true</impsort.skip>
-		<formatter.skip>true</formatter.skip>
 
 		<image.registry>ghcr.io/inoa-io</image.registry>
 		<image.inoa.tag>snapshot</image.inoa.tag>
@@ -384,7 +381,7 @@
 					<artifactId>formatter-maven-plugin</artifactId>
 					<version>${version.net.revelc.code.formatter}</version>
 					<configuration>
-						<configFile>${project.basedir}/src/eclipse/formatter.xml</configFile>
+						<configFile>${project.parent.basedir}/src/eclipse/formatter.xml</configFile>
 					</configuration>
 				</plugin>
 				<plugin>

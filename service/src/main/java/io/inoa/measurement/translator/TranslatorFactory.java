@@ -1,9 +1,11 @@
 package io.inoa.measurement.translator;
 
-import io.micronaut.context.annotation.Context;
 import jakarta.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.micronaut.context.annotation.Context;
 
 /**
  * Factory for telemetry translator.
@@ -13,10 +15,10 @@ import org.slf4j.LoggerFactory;
 @Context
 public class TranslatorFactory {
 
-  private static final Logger log = LoggerFactory.getLogger(TranslatorFactory.class);
+	private static final Logger log = LoggerFactory.getLogger(TranslatorFactory.class);
 
-  @PostConstruct
-  void log() {
-    log.info("Starting controller: {}", getClass().getPackage().getName());
-  }
+	@PostConstruct
+	void log() {
+		log.info("Starting controller: {}", getClass().getPackage().getName());
+	}
 }

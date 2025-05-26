@@ -17,13 +17,16 @@ import lombok.Data;
 @Data
 public class GroupConfiguration implements Configuration {
 
-  @Id @GeneratedValue private Long id;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-  @Relation(Kind.MANY_TO_ONE)
-  private Group group;
+	@Relation(Kind.MANY_TO_ONE)
+	private Group group;
 
-  @Relation(Kind.MANY_TO_ONE)
-  private ConfigurationDefinition definition;
+	@Relation(Kind.MANY_TO_ONE)
+	private ConfigurationDefinition definition;
 
-  @MappedProperty private String value;
+	@MappedProperty
+	private String value;
 }

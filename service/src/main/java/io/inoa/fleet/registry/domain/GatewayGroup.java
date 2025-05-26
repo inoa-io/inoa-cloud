@@ -1,10 +1,11 @@
 package io.inoa.fleet.registry.domain;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 import io.micronaut.data.annotation.DateCreated;
 import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import lombok.Data;
 
 /**
@@ -16,12 +17,12 @@ import lombok.Data;
 @Data
 public class GatewayGroup {
 
-  @Relation(Relation.Kind.MANY_TO_ONE)
-  private Gateway gateway;
+	@Relation(Relation.Kind.MANY_TO_ONE)
+	private Gateway gateway;
 
-  @Relation(Relation.Kind.MANY_TO_ONE)
-  private Group group;
+	@Relation(Relation.Kind.MANY_TO_ONE)
+	private Group group;
 
-  @DateCreated(truncatedTo = ChronoUnit.MILLIS)
-  private Instant created;
+	@DateCreated(truncatedTo = ChronoUnit.MILLIS)
+	private Instant created;
 }
