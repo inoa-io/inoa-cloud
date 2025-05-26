@@ -16,7 +16,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private camera: THREE.PerspectiveCamera = new THREE.PerspectiveCamera(45, 1, 0.1, 1000); // Narrower FOV
     private renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
     private resizeObserver!: ResizeObserver;
-    private sphere!: THREE.Mesh;
+    private planet!: THREE.Mesh;
     private satellites: { mesh: THREE.Mesh; gateway: GatewayVO }[] = [];
     private autoDataRefresher!: Subscription;
     private earthOffset: number = 3;
@@ -24,6 +24,17 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     public satelliteCount: number = 0;
 
     constructor(private gatewaysService: GatewaysService) {}
+
+    private solveKeplersEquation(M: number, e: number, iterations = 5): number {
+        // Newton-Raphson method to solve Kepler's equation: E - e*sin(E) = M
+        let E = M;
+        for (let i = 0; i < iterations; i++) {
+            const delta = E - e * Math.sin(E) - M;
+            const deltaE = delta / (1 - e * Math.cos(E));
+            E -= deltaE;
+        }
+        return E;
+    }
 
     private setRendererSize(): void {
         const container = this.rendererContainer.nativeElement;
@@ -118,9 +129,9 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
                     specular: 0x333333,
                     shininess: 25
                 });
-                this.sphere = new THREE.Mesh(earthGeometry, material);
-                this.sphere.position.x = this.earthOffset;
-                this.scene.add(this.sphere);
+                this.planet = new THREE.Mesh(earthGeometry, material);
+                this.planet.position.x = this.earthOffset;
+                this.scene.add(this.planet);
             },
             undefined,
             (error) => console.error("Error loading Earth texture:", error)
@@ -128,7 +139,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     }
 
     private setupSatellites(gateways: GatewayVO[] = []): void {
-        const satelliteGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+        const satelliteGeometry = new THREE.SphereGeometry(0.025, 16, 16);
         const satelliteMaterial = new THREE.MeshPhongMaterial({
             color: 0xffffff,
             specular: 0x555555,
@@ -150,19 +161,32 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private startAnimation(): void {
         const animate = () => {
             requestAnimationFrame(animate);
-            if (this.sphere) this.sphere.rotation.y += 0.001;
+            if (this.planet) this.planet.rotation.y += 0.001;
 
-            this.satellites.forEach(({ mesh, gateway }, index) => {
-                // Create unique orbit based on gateway properties
-                const orbitSeed = gateway.gateway_id.charCodeAt(0) + gateway.gateway_id.charCodeAt(gateway.gateway_id.length - 1);
-                const orbitRadius = 4 + (orbitSeed % 100) / 100; // Slightly different radius
-                const orbitSpeed = -0.001 + (orbitSeed % 50) / 50000; // Slightly different speed
-                const orbitOffset = ((orbitSeed % 100) / 50) * Math.PI; // Different starting position
+            this.satellites.forEach(({ mesh, gateway }) => {
+                // Create realistic orbit based on gateway properties
+                const orbitSeed = gateway.gateway_id.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0);
 
-                const angle = (Date.now() * orbitSpeed + orbitOffset) % (2 * Math.PI);
-                mesh.position.x = orbitRadius * Math.cos(angle) + this.earthOffset;
-                mesh.position.z = orbitRadius * Math.sin(angle);
-                mesh.position.y = (orbitSeed % 100) / 50 - 1; // Slightly different height
+                // Orbital parameters
+                const semiMajorAxis = 4 + (orbitSeed % 300) / 100; // 4.0 to 6.99
+                const eccentricity = 0.1 + (orbitSeed % 80) / 400; // 0.1 to 0.3
+                const inclination = (((orbitSeed % 90) - 45) * Math.PI) / 180; // -π/2 to +π/2 radians
+
+                // Calculate orbital period using Kepler's third law (simplified)
+                const period = (2 * Math.PI * Math.sqrt(Math.pow(semiMajorAxis, 3))) / 10;
+
+                // Current position in orbit
+                const meanAnomaly = (Date.now() / 1000) * ((2 * Math.PI) / period);
+                const eccentricAnomaly = this.solveKeplersEquation(meanAnomaly, eccentricity);
+                const trueAnomaly = 2 * Math.atan2(Math.sqrt(1 + eccentricity) * Math.sin(eccentricAnomaly / 2), Math.sqrt(1 - eccentricity) * Math.cos(eccentricAnomaly / 2));
+
+                // Current distance from Earth
+                const distance = semiMajorAxis * (1 - eccentricity * Math.cos(eccentricAnomaly));
+
+                // 3D position calculation
+                mesh.position.x = distance * (Math.cos(trueAnomaly) * Math.cos(inclination)) + this.earthOffset;
+                mesh.position.z = distance * Math.sin(trueAnomaly);
+                mesh.position.y = distance * (Math.cos(trueAnomaly) * Math.sin(inclination));
             });
 
             this.renderer.render(this.scene, this.camera);
