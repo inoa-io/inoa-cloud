@@ -222,7 +222,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private startAnimation(): void {
         const animate = () => {
             requestAnimationFrame(animate);
-            if (this.planet) this.planet.rotation.y += 0.001;
+            if (this.planet) this.planet.rotation.y += 0.0005;
 
             this.satellites.forEach(({ mesh, gateway, trace, tracePoints }) => {
                 // Generate orbit seed from gateway ID
