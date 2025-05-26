@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, HostListener } from "@angular/core";
-import { GatewaysService } from "@inoa/api";
+import { GatewaysService, GatewayVO } from "@inoa/api";
 import { interval, Subscription, switchMap } from "rxjs";
 import * as THREE from "three";
 
@@ -17,7 +17,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private renderer: THREE.WebGLRenderer = new THREE.WebGLRenderer();
     private resizeObserver!: ResizeObserver;
     private sphere!: THREE.Mesh;
-    private satellites: THREE.Mesh[] = [];
+    private satellites: { mesh: THREE.Mesh; gateway: GatewayVO }[] = [];
     private autoDataRefresher!: Subscription;
     private earthOffset: number = 3;
 
@@ -127,7 +127,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
         );
     }
 
-    private setupSatellites(): void {
+    private setupSatellites(gateways: GatewayVO[] = []): void {
         const satelliteGeometry = new THREE.SphereGeometry(0.1, 16, 16);
         const satelliteMaterial = new THREE.MeshPhongMaterial({
             color: 0xffffff,
@@ -136,15 +136,15 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
         });
 
         // clear satellites
-        this.scene.remove(...this.satellites);
+        this.scene.remove(...this.satellites.map((s) => s.mesh));
         this.satellites = [];
 
         // create satellites
-        for (let i = 0; i < this.satelliteCount; i++) {
+        gateways.forEach((gateway, i) => {
             const satellite = new THREE.Mesh(satelliteGeometry, satelliteMaterial);
-            this.satellites.push(satellite);
+            this.satellites.push({ mesh: satellite, gateway });
             this.scene.add(satellite);
-        }
+        });
     }
 
     private startAnimation(): void {
@@ -152,10 +152,17 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             requestAnimationFrame(animate);
             if (this.sphere) this.sphere.rotation.y += 0.001;
 
-            this.satellites.forEach((satellite, index) => {
-                const angle = (Date.now() * 0.001 + index * 2) % (2 * Math.PI);
-                satellite.position.x = 4 * Math.cos(angle) + this.earthOffset;
-                satellite.position.z = 4 * Math.sin(angle);
+            this.satellites.forEach(({ mesh, gateway }, index) => {
+                // Create unique orbit based on gateway properties
+                const orbitSeed = gateway.gateway_id.charCodeAt(0) + gateway.gateway_id.charCodeAt(gateway.gateway_id.length - 1);
+                const orbitRadius = 4 + (orbitSeed % 100) / 100; // Slightly different radius
+                const orbitSpeed = -0.001 + (orbitSeed % 50) / 50000; // Slightly different speed
+                const orbitOffset = ((orbitSeed % 100) / 50) * Math.PI; // Different starting position
+
+                const angle = (Date.now() * orbitSpeed + orbitOffset) % (2 * Math.PI);
+                mesh.position.x = orbitRadius * Math.cos(angle) + this.earthOffset;
+                mesh.position.z = orbitRadius * Math.sin(angle);
+                mesh.position.y = (orbitSeed % 100) / 50 - 1; // Slightly different height
             });
 
             this.renderer.render(this.scene, this.camera);
@@ -189,11 +196,11 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
         }
 
         // Always make an initial API call
-        this.gatewaysService.findGateways().subscribe((data) => {
-            this.satelliteCount = data.content.length;
-            this.setupSatellites();
-            this.startAnimation();
-        });
+        // this.gatewaysService.findGateways().subscribe((data) => {
+        //     this.satelliteCount = data.content.length;
+        //     this.setupSatellites(data.content);
+        //     this.startAnimation();
+        // });
 
         // Parse autoRefreshInterval
         const autoRefreshInterval = 10000;
@@ -203,7 +210,20 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             .pipe(switchMap(() => this.gatewaysService.findGateways()))
             .subscribe((data) => {
                 this.satelliteCount = data.content.length;
-                this.setupSatellites();
+
+                // Update existing satellites with new data or create new ones
+                if (this.satellites.length > 0) {
+                    // Map new data to existing satellites by matching IDs
+                    data.content.forEach((newGateway) => {
+                        const existingSat = this.satellites.find((s) => s.gateway.gateway_id === newGateway.gateway_id);
+
+                        if (existingSat) {
+                            existingSat.gateway = newGateway;
+                        }
+                    });
+                } else {
+                    this.setupSatellites(data.content);
+                }
                 this.startAnimation();
             });
     }
