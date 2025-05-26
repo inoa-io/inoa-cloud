@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, AfterViewInit, OnDestroy, HostListener } from "@angular/core";
-import { GatewaysService, GatewayVO } from "@inoa/api";
+import { GatewaysService, GatewayVO, GatewayPageVO } from "@inoa/api";
 import { interval, Subscription, switchMap } from "rxjs";
 import * as THREE from "three";
 
@@ -181,6 +181,23 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
         });
     }
 
+    private handleGatewayData(data: GatewayPageVO): void {
+        // Update existing satellites with new data or create new ones
+        if (this.satellites.length > 0) {
+            // Map new data to existing satellites by matching IDs
+            data.content.forEach((newGateway) => {
+                const existingSat = this.satellites.find((s) => s.gateway.gateway_id === newGateway.gateway_id);
+
+                if (existingSat) {
+                    existingSat.gateway = newGateway;
+                }
+            });
+        } else {
+            this.setupSatellites(data.content);
+        }
+        this.startAnimation();
+    }
+
     private startAnimation(): void {
         const animate = () => {
             requestAnimationFrame(animate);
@@ -246,6 +263,10 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
 
     ngAfterViewInit(): void {
         this.startAutoRefresh();
+        this.gatewaysService.findGateways().subscribe((data) => {
+            this.satelliteCount = data.content.length;
+            this.handleGatewayData(data);
+        });
         this.setupRenderer();
         this.setupBackground();
         this.setupLighting();
@@ -277,21 +298,7 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
             .pipe(switchMap(() => this.gatewaysService.findGateways()))
             .subscribe((data) => {
                 this.satelliteCount = data.content.length;
-
-                // Update existing satellites with new data or create new ones
-                if (this.satellites.length > 0) {
-                    // Map new data to existing satellites by matching IDs
-                    data.content.forEach((newGateway) => {
-                        const existingSat = this.satellites.find((s) => s.gateway.gateway_id === newGateway.gateway_id);
-
-                        if (existingSat) {
-                            existingSat.gateway = newGateway;
-                        }
-                    });
-                } else {
-                    this.setupSatellites(data.content);
-                }
-                this.startAnimation();
+                this.handleGatewayData(data);
             });
     }
 }
