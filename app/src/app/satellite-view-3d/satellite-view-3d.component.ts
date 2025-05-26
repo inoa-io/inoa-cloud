@@ -21,6 +21,23 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
     private autoDataRefresher!: Subscription;
     private earthOffset: number = 3;
 
+    private hashString(str: string): number {
+        // MurmurHash3 variant for excellent distribution of similar strings
+        let hash = 0xdeadbeef; // Seed value
+        for (let i = 0; i < str.length; i++) {
+            hash ^= str.charCodeAt(i);
+            hash = (hash << 13) | (hash >>> 19);
+            hash = hash * 5 + 0xe6546b64;
+        }
+        hash ^= str.length;
+        hash ^= hash >>> 16;
+        hash *= 0x85ebca6b;
+        hash ^= hash >>> 13;
+        hash *= 0xc2b2ae35;
+        hash ^= hash >>> 16;
+        return hash >>> 0; // Ensure unsigned 32-bit integer
+    }
+
     public satelliteCount: number = 0;
 
     constructor(private gatewaysService: GatewaysService) {}
@@ -198,19 +215,23 @@ export class SatelliteView3dComponent implements AfterViewInit, OnDestroy {
         this.startAnimation();
     }
 
+    private degToRad(deg: number): number {
+        return deg * (Math.PI / 180);
+    }
+
     private startAnimation(): void {
         const animate = () => {
             requestAnimationFrame(animate);
             if (this.planet) this.planet.rotation.y += 0.001;
 
             this.satellites.forEach(({ mesh, gateway, trace, tracePoints }) => {
-                // Create realistic orbit based on gateway properties
-                const orbitSeed = gateway.gateway_id.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0);
+                // Generate orbit seed from gateway ID
+                const orbitSeed = this.hashString(gateway.gateway_id);
 
                 // Orbital parameters
                 const semiMajorAxis = 4 + (orbitSeed % 300) / 100; // 4.0 to 6.99
                 const eccentricity = 0.1 + (orbitSeed % 80) / 400; // 0.1 to 0.3
-                const inclination = (((orbitSeed % 90) - 45) * Math.PI) / 180; // -π/2 to +π/2 radians
+                const inclination = this.degToRad((orbitSeed % 90) - 45);
 
                 // Calculate orbital period using Kepler's third law (simplified)
                 const period = (2 * Math.PI * Math.sqrt(Math.pow(semiMajorAxis, 3))) / 10;
