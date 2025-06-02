@@ -12,13 +12,15 @@ services:
 steps:
 
   deploy:
-    image: ghcr.io/grayc-de/plugins/maven:3-jdk21
-    environment:
-      MAVEN_ARGS: --batch-mode --settings=.woodpecker/maven/settings.xml --color=always --no-transfer-progress
-      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
+    image: kokuwaio/docker-cli
     commands:
       - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
-      - mvn -pl image deploy -am -DskipTests
+      - docker build . --push --tag=ghcr.io/inoa-io/inoa:snapshot
+          --build-arg=MAVEN_MIRROR_CENTRAL
+          --build-arg=YARN_NPM_REGISTRY_SERVER
+          --build-arg=YARN_UNSAFE_HTTP_WHITELIST
+    environment:
+      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
 
   restart:
     image: ghcr.io/grayc-de/plugins/kubectl

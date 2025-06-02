@@ -47,12 +47,6 @@
 			<classifier>tests</classifier>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>io.inoa</groupId>
-			<artifactId>inoa-image</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
 
 		<!-- micronaut -->
 		<dependency>
@@ -236,6 +230,33 @@
 			<properties><k3s.subdir>dev</k3s.subdir></properties>
 			<build>
 				<plugins>
+
+					<!-- build container image -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>docker</executable>
+									<arguments>
+										<argument>build</argument>
+										<argument>${project.basedir}/..</argument>
+										<argument>--build-arg=MAVEN_MIRROR_CENTRAL</argument>
+										<argument>--build-arg=YARN_NPM_REGISTRY_SERVER</argument>
+										<argument>--build-arg=YARN_UNSAFE_HTTP_WHITELIST</argument>
+										<argument>--tag=${image.inoa}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- adjust testsetup -->
 					<plugin>
 						<groupId>io.kokuwa.maven</groupId>
 						<artifactId>k3s-maven-plugin</artifactId>
@@ -257,6 +278,7 @@
 							</portBindings>
 						</configuration>
 					</plugin>
+
 				</plugins>
 			</build>
 		</profile>
