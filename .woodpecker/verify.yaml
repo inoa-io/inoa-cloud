@@ -48,7 +48,7 @@ steps:
   integration-test:
     <<: *maven
     depends_on: [image]
-    commands: mvn -pl test verify -Dip="$(env|grep DOCKERD_SERVICE_HOST|cut -d= -f2)"
+    commands: mvn -pl test verify -Dip="$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42)"
     when:
       path: {exclude: [app/**]}
 
