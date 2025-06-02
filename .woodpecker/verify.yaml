@@ -29,6 +29,7 @@ steps:
     image: maven:3.9.9-eclipse-temurin-21@sha256:933900d8738eab72ddebb7ad971fc9bca91ae6bc4c7b6d6bbc17fb3609f5e64b
     depends_on: []
     commands: mvn install --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml
+    when: [path: {exclude: [app/**]}]
 
   yarn:
     image: kokuwaio/node:20-chrome
@@ -48,8 +49,7 @@ steps:
     depends_on: []
     directory: test
     commands: mvn --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml k3s:run k3s:image -Dk3s.dockerImages=
-    when:
-      path: {exclude: [app/**, api/src/test/**, service/src/test/**]}
+    when: [path: {exclude: [app/**, api/src/test/**, service/src/test/**]}]
 
   integration-test:
     image: ghcr.io/grayc-de/plugins/maven:3-jdk21
@@ -58,8 +58,7 @@ steps:
     depends_on: [image, integration-prepare]
     directory: test
     commands: mvn --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml verify -Dip="$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42)"
-    when:
-      path: {exclude: [app/**, api/src/test/**, service/src/test/**]}
+    when: [path: {exclude: [app/**, api/src/test/**, service/src/test/**]}]
 
   integration-errors:
     image: kokuwaio/docker-cli
