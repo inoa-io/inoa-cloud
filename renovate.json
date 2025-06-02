@@ -39,8 +39,16 @@
 			"matchManagers": ["woodpecker"],
 			"pinDigests": false
 		},{
-			"description": "Ignore Java/Maven/Node Major updates until we want to update.",
-			"matchPackageNames": ["eclipse-temurin", "maven", "node", "ghcr.io/grayc-de/plugins/maven"],
+			"description": "Ignore Java/Maven/Node/... Major updates until we want to update.",
+			"matchPackageNames": [
+				"docker.io/library/eclipse-temurin",
+				"docker.io/library/maven",
+				"docker.io/library/node",
+				"docker.io/library/influxdb",
+				"docker.io/library/postgres",
+				"docker.io/library/traefik",
+				"ghcr.io/grayc-de/plugins/maven"
+			],
 			"matchUpdateTypes": ["major"],
 			"enabled": false
 		},{
