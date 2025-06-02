@@ -50,7 +50,7 @@ spec:
               drop: [ALL]
       containers:
         - name: keycloak
-          image: docker.io/kokuwaio/keycloak:${version.org.keycloak}-distroless
+          image: ${image.keycloak}
           imagePullPolicy: Never
           args: [start, --import-realm]
           envFrom:

@@ -70,7 +70,7 @@
 		<image.influxdb>docker.io/library/influxdb:2.7.5</image.influxdb>
 		<image.traefik>docker.io/library/traefik:v2.11.0</image.traefik>
 		<image.hawkbit>docker.io/hawkbit/hawkbit-update-server:0.3.0M8</image.hawkbit>
-		<image.keycloak>docker.io/kokuwaio/keycloak:${version.org.keycloak}-distroless</image.keycloak>
+		<image.keycloak>docker.io/kokuwaio/keycloak:26.0.8-distroless</image.keycloak>
 		<image.kafka>docker.io/kokuwaio/kafka:${version.org.apache.kafka}</image.kafka>
 
 		<!-- ===================================================================== -->
@@ -106,7 +106,6 @@
 		<version.org.apache.kafka>3.6.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.80</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
-		<version.org.keycloak>26.0.8</version.org.keycloak>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
 		<version.org.openapitools.jackson.databind.nullable>0.2.6</version.org.openapitools.jackson.databind.nullable>
 
@@ -201,11 +200,6 @@
 				<groupId>org.eclipse.paho</groupId>
 				<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
 				<version>${version.org.eclipse.paho}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.keycloak.bom</groupId>
-				<artifactId>keycloak-bom-parent</artifactId>
-				<version>${version.org.keycloak}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mapstruct</groupId>

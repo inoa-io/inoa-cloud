@@ -1,9 +1,10 @@
 # https://docs.k3s.io/installation/private-registry
 mirrors:
-  "*":
   docker.io:
     endpoint: [https://mirror.grayc.io]
     rewrite: {"^(.*)$": docker.io/$1}
   ghcr.io:
     endpoint: [https://mirror.grayc.io]
     rewrite: {"^(.*)$": ghcr.io/$1}
+  "*":
+    endpoint: []
