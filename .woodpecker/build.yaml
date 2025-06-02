@@ -14,13 +14,16 @@ steps:
   deploy:
     image: kokuwaio/docker-cli
     commands:
-      - mkdir $HOME/.docker && echo "$DOCKER_CONFIG_JSON" > $HOME/.docker/config.json
+      - docker login ghcr.io --username=$GHCR_USERNAME --password=$GHCR_PASSWORD
       - docker build . --push --tag=ghcr.io/inoa-io/inoa:snapshot
+          --cache-from=type=registry,ref=ghcr.io/inoa-io/inoa:cache
+          --cache-to=type=registry,ref=ghcr.io/inoa-io/inoa:cache,mode=max,compression=zstd
           --build-arg=MAVEN_MIRROR_CENTRAL
           --build-arg=YARN_NPM_REGISTRY_SERVER
           --build-arg=YARN_UNSAFE_HTTP_WHITELIST
     environment:
-      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
+      GHCR_USERNAME: {from_secret: GHCR_USERNAME}
+      GHCR_PASSWORD: {from_secret: GHCR_PASSWORD}
 
   restart:
     image: ghcr.io/grayc-de/plugins/kubectl
