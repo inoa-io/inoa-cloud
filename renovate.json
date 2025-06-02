@@ -31,8 +31,6 @@
 				"io.inoa:inoa-parent",
 				"io.cloudevents:cloudevents-json-jackson",
 				"io.cloudevents:cloudevents-kafka",
-				"org.apache.kafka:kafka-clients",
-				"docker.io/kokuwaio/kafka",
 				"docker.io/eclipse-temurin",
 				"docker.io/hawkbit/hawkbit-update-server"
 			],
@@ -40,6 +38,11 @@
 		},{
 			"matchManagers": ["woodpecker"],
 			"pinDigests": false
+		},{
+			"description": "Ignore Kafka 4.x until we want to update.",
+			"matchPackageNames": ["org.apache.kafka:kafka-clients", "docker.io/kokuwaio/kafka"],
+			"matchUpdateTypes": ["major"],
+			"enabled": false
 		},{
 			"matchManagers": ["npm"],
 			"matchUpdateTypes": ["major"],
