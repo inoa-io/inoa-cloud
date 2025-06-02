@@ -28,6 +28,7 @@
 			"dependencyDashboardApproval": false
 		},{
 			"matchPackageNames": [
+				"ghcr.io/inoa-io/inoa",
 				"io.inoa:inoa-parent",
 				"io.cloudevents:cloudevents-json-jackson",
 				"io.cloudevents:cloudevents-kafka",
@@ -75,6 +76,14 @@
 		},{
 			"groupName": "monaco",
 			"matchPackageNames": ["monaco-editor", "ngx-monaco-editor"]
+		}
+	],
+	"customManagers": [
+		{
+			"customType": "regex",
+			"fileMatch": ["pom.xml"],
+			"matchStrings": ["<image\\.[a-z]+>(?<packageName>[a-z\\.\\-\\/]+):(?<currentValue>[a-zA-Z0-9\\.\\-]+)</image\\.[a-z]+>"],
+			"datasourceTemplate": "docker"
 		}
 	]
 }
