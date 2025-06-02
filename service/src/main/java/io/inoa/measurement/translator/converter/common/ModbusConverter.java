@@ -34,6 +34,7 @@ public class ModbusConverter extends CommonConverter {
 	 * @see "https://www.simplymodbus.ca/exceptions.htm#table1"
 	 */
 	private static final Set<Integer> FUNCTION_CODE_EXCEPTION = Set.of(129, 130, 131, 132, 133, 134, 143, 144);
+
 	/** Minimum length: 1 byte functionCode + 1 byte slaveId + 1 byte byteCount + 2 byte crc */
 	private static final Integer MESSAGE_MIN_LENGTH = 5;
 

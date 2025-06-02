@@ -53,21 +53,25 @@ public abstract class AbstractUnitTest extends AbstractTest implements TestPrope
 	void init(JdbcOperations jdbc) {
 
 		// cleanup database and other stores
+		cleanupDatabase(jdbc);
 
-		jdbc.execute(
-				c -> c.createStatement()
-						.execute(
-								Stream.of("thing_type", "gateway", "tenant")
-										.map(table -> "TRUNCATE TABLE " + table + " CASCADE;")
-										.collect(Collectors.joining())));
+		// Reset message queue
 		kafka.reset();
 
 		// handle token
-
 		oldProperties.getGateway().getToken().setForceNotBefore(true);
 		oldProperties.getGateway().getToken().setForceJwtId(true);
 		oldProperties.getGateway().getToken().setForceIssuedAt(true);
 		oldProperties.getGateway().getToken().setIssuedAtThreshold(Optional.of(Duration.ofSeconds(5)));
+	}
+
+	protected void cleanupDatabase(JdbcOperations jdbc) {
+		jdbc.execute(
+				c -> c.createStatement()
+						.execute(
+								Stream.of("gateway", "tenant", "thing")
+										.map(table -> "TRUNCATE TABLE " + table + " CASCADE;")
+										.collect(Collectors.joining())));
 	}
 
 	@SuppressWarnings({ "resource", "deprecation", "rawtypes" })

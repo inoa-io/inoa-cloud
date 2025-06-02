@@ -5,34 +5,41 @@ package io.inoa.rest;
 public class ThingUpdateVO {
 
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
+	public static final java.lang.String JSON_PROPERTY_DESCRIPTION = "description";
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID = "gateway_id";
-	public static final java.lang.String JSON_PROPERTY_THING_TYPE_ID = "thing_type_id";
-	public static final java.lang.String JSON_PROPERTY_CONFIG = "config";
+	public static final java.lang.String JSON_PROPERTY_MEASURANDS = "measurands";
+	public static final java.lang.String JSON_PROPERTY_CONFIGURATIONS = "configurations";
 
-	/** Name. */
+	/** Human readable name. */
 	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Size(max = 64)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
+	/** Long description of the thing */
+	@jakarta.validation.constraints.Size(max = 4096)
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DESCRIPTION)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private java.lang.String description;
+
 	/** Id as technical reference (never changes). */
+	@jakarta.validation.constraints.NotNull
 	@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
 	@jakarta.validation.constraints.Size(min = 4, max = 20)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GATEWAY_ID)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String gatewayId;
 
-	/** External thing type id */
-	@jakarta.validation.constraints.NotNull
-	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\_]{1,64}$")
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_THING_TYPE_ID)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private java.lang.String thingTypeId;
-
-	/** config */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIG)
+	/** List of measurands and its configuration */
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MEASURANDS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.Map<String, java.lang.Object> config;
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> measurands;
+
+	/** Key / value map of thing configurations */
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIGURATIONS)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private java.util.Map<String, java.lang.String> configurations;
 
 	// methods
 
@@ -46,14 +53,15 @@ public class ThingUpdateVO {
 		}
 		ThingUpdateVO other = (ThingUpdateVO) object;
 		return java.util.Objects.equals(name, other.name)
+				&& java.util.Objects.equals(description, other.description)
 				&& java.util.Objects.equals(gatewayId, other.gatewayId)
-				&& java.util.Objects.equals(thingTypeId, other.thingTypeId)
-				&& java.util.Objects.equals(config, other.config);
+				&& java.util.Objects.equals(measurands, other.measurands)
+				&& java.util.Objects.equals(configurations, other.configurations);
 	}
 
 	@Override
 	public int hashCode() {
-		return java.util.Objects.hash(name, gatewayId, thingTypeId, config);
+		return java.util.Objects.hash(name, description, gatewayId, measurands, configurations);
 	}
 
 	@Override
@@ -61,9 +69,10 @@ public class ThingUpdateVO {
 		return new java.lang.StringBuilder()
 				.append("ThingUpdateVO[")
 				.append("name=").append(name).append(",")
+				.append("description=").append(description).append(",")
 				.append("gatewayId=").append(gatewayId).append(",")
-				.append("thingTypeId=").append(thingTypeId).append(",")
-				.append("config=").append(config)
+				.append("measurands=").append(measurands).append(",")
+				.append("configurations=").append(configurations)
 				.append("]")
 				.toString();
 	}
@@ -75,32 +84,52 @@ public class ThingUpdateVO {
 		return this;
 	}
 
+	public ThingUpdateVO description(java.lang.String newDescription) {
+		this.description = newDescription;
+		return this;
+	}
+
 	public ThingUpdateVO gatewayId(java.lang.String newGatewayId) {
 		this.gatewayId = newGatewayId;
 		return this;
 	}
 
-	public ThingUpdateVO thingTypeId(java.lang.String newThingTypeId) {
-		this.thingTypeId = newThingTypeId;
-		return this;
-	}
-
-	public ThingUpdateVO config(java.util.Map<String, java.lang.Object> newConfig) {
-		this.config = newConfig;
+	public ThingUpdateVO measurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> newMeasurands) {
+		this.measurands = newMeasurands;
 		return this;
 	}
 	
-	public ThingUpdateVO putConfigItem(java.lang.String key, java.lang.Object configItem) {
-		if (this.config == null) {
-			this.config = new java.util.HashMap<>();
+	public ThingUpdateVO addMeasurandsItem(MeasurandVO measurandsItem) {
+		if (this.measurands == null) {
+			this.measurands = new java.util.ArrayList<>();
 		}
-		this.config.put(key, configItem);
+		this.measurands.add(measurandsItem);
 		return this;
 	}
 
-	public ThingUpdateVO removeConfigItem(java.lang.String key) {
-		if (this.config != null) {
-			this.config.remove(key);
+	public ThingUpdateVO removeMeasurandsItem(MeasurandVO measurandsItem) {
+		if (this.measurands != null) {
+			this.measurands.remove(measurandsItem);
+		}
+		return this;
+	}
+
+	public ThingUpdateVO configurations(java.util.Map<String, java.lang.String> newConfigurations) {
+		this.configurations = newConfigurations;
+		return this;
+	}
+	
+	public ThingUpdateVO putConfigurationsItem(java.lang.String key, java.lang.String configurationsItem) {
+		if (this.configurations == null) {
+			this.configurations = new java.util.HashMap<>();
+		}
+		this.configurations.put(key, configurationsItem);
+		return this;
+	}
+
+	public ThingUpdateVO removeConfigurationsItem(java.lang.String key) {
+		if (this.configurations != null) {
+			this.configurations.remove(key);
 		}
 		return this;
 	}
@@ -115,6 +144,14 @@ public class ThingUpdateVO {
 		this.name = newName;
 	}
 
+	public java.lang.String getDescription() {
+		return description;
+	}
+
+	public void setDescription(java.lang.String newDescription) {
+		this.description = newDescription;
+	}
+
 	public java.lang.String getGatewayId() {
 		return gatewayId;
 	}
@@ -123,19 +160,19 @@ public class ThingUpdateVO {
 		this.gatewayId = newGatewayId;
 	}
 
-	public java.lang.String getThingTypeId() {
-		return thingTypeId;
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> getMeasurands() {
+		return measurands;
 	}
 
-	public void setThingTypeId(java.lang.String newThingTypeId) {
-		this.thingTypeId = newThingTypeId;
+	public void setMeasurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> newMeasurands) {
+		this.measurands = newMeasurands;
 	}
 
-	public java.util.Map<String, java.lang.Object> getConfig() {
-		return config;
+	public java.util.Map<String, java.lang.String> getConfigurations() {
+		return configurations;
 	}
 
-	public void setConfig(java.util.Map<String, java.lang.Object> newConfig) {
-		this.config = newConfig;
+	public void setConfigurations(java.util.Map<String, java.lang.String> newConfigurations) {
+		this.configurations = newConfigurations;
 	}
 }

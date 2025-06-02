@@ -1,10 +1,11 @@
 package io.inoa.measurement.things.builder.modbus;
 
+import static io.inoa.measurement.things.domain.ObisId.OBIS_1_7_0;
+import static io.inoa.measurement.things.domain.ObisId.OBIS_1_8_0;
+import static io.inoa.measurement.things.domain.ObisId.OBIS_2_8_0;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.HashMap;
-import java.util.HexFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -14,43 +15,48 @@ import org.junit.jupiter.api.Test;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import io.inoa.measurement.things.builder.AbstractBuilderTest;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
+import io.inoa.measurement.things.domain.MeasurandType;
 import io.inoa.measurement.things.domain.Thing;
+import io.inoa.measurement.things.domain.ThingConfigurationType;
 import io.inoa.measurement.things.domain.ThingType;
 
-public class ModbusMDVH4006BuilderTest {
+public class ModbusMDVH4006BuilderTest extends AbstractBuilderTest {
 
 	@Test
-	public void testBuildDefinitionLegacy() {
+	public void testBuildDefinition() throws DatapointBuilderException {
 		ModbusMDVH4006Builder builder = new ModbusMDVH4006Builder(new ObjectMapper());
 		Thing thing = new Thing();
 		thing.setName("schrank");
-		HashMap<String, Object> config = new HashMap<>();
-		HashMap<String, Object> properties = new HashMap<>();
-		HashMap<String, Object> channels = new HashMap<>();
-		properties.put("serial", 39000976);
-		properties.put("modbus_interface", 1);
 
-		channels.put("obis_1_8_0", true);
-		channels.put("obis_1_8_1", true);
-		channels.put("obis_1_8_2", true);
-		channels.put("obis_2_8_0", true);
-		channels.put("obis_2_8_1", true);
-		channels.put("obis_2_8_2", true);
-		channels.put("obis_1_7_0", true);
-		config.put("properties", properties);
-		config.put("channels", channels);
-		thing.setConfig(config);
-		ThingType thingType = new ThingType();
-		thingType.setThingTypeId("mdvh4006");
-		ArrayNode build = builder.buildLegacy(thing, thingType);
+		addConfig(thing, "serial", ThingConfigurationType.NUMBER, "39000976");
+		addConfig(thing, "modbus_interface", ThingConfigurationType.NUMBER, "1");
+
+		addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
+		addMeasurand(thing, new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));
+		addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_7_0.getObisId()));
+
+		thing.setThingType(new ThingType().setIdentifier("mdvh4006"));
+		ArrayNode build = builder.build(thing);
 		List<JsonNode> items = StreamSupport.stream(build.spliterator(), false).toList();
 
+		Optional<JsonNode> obis180 = items.stream()
+				.filter(i -> i.get("id").asText().equals("urn:mdvh4006:39000976:0x4000"))
+				.findFirst();
+		assertTrue(obis180.isPresent());
+		assertEquals("770340000002DA9D", obis180.get().get("frame").asText());
+
+		Optional<JsonNode> obis280 = items.stream()
+				.filter(i -> i.get("id").asText().equals("urn:mdvh4006:39000976:0x4100"))
+				.findFirst();
+		assertTrue(obis280.isPresent());
+		assertEquals("770341000002DB61", obis280.get().get("frame").asText());
+
 		Optional<JsonNode> obis170 = items.stream()
-				.filter(i -> i.get("header").get("id").asText().equals("urn:mdvh4006:39000976:0x4000"))
+				.filter(i -> i.get("id").asText().equals("urn:mdvh4006:39000976:0x0000"))
 				.findFirst();
 		assertTrue(obis170.isPresent());
-		assertEquals(
-				Utils.toBase64(HexFormat.of().parseHex("770340000002DA9D")),
-				obis170.get().get("frame").asText());
+		assertEquals("770300000002CF5D", obis170.get().get("frame").asText());
 	}
 }

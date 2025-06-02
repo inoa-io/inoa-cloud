@@ -7,50 +7,27 @@ import java.util.Optional;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.inoa.measurement.things.builder.DatapointBuilder;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
 import io.inoa.measurement.things.domain.Thing;
-import io.inoa.measurement.things.domain.ThingType;
 import io.inoa.rest.DatapointVO;
 
-@SuppressWarnings("unchecked")
-public abstract class ModbusBuilderBase {
+/**
+ * Abstract class for datapoint builders with ModBus measurement (e.g. DZG devices)
+ *
+ * @author fabian.schlegel
+ */
+public abstract class ModbusBuilderBase extends DatapointBuilder {
 
 	protected abstract ObjectMapper getObjectMapper();
 
+	private static final int DEFAULT_TIMEOUT = 1000;
+	private static final int DEFAULT_INTERVAL = 60000;
+
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-	@Deprecated(forRemoval = true)
-	protected ObjectNode createModbusJsonNodeLegacy(
-			Integer serial,
-			String thingTypeReference,
-			RegisterSetting registerSetting,
-			Thing thing,
-			Integer modbusInterface,
-			byte slaveId) {
-		ObjectNode node = getObjectMapper().createObjectNode();
-		ObjectNode header = getObjectMapper().createObjectNode();
-		header.put(
-				"id",
-				Utils.buildUrn(
-						serial.toString(),
-						thingTypeReference,
-						String.format("0x%04X", registerSetting.getRegisterOffset())));
-		header.put("name", thing.getName());
-		header.put("type", "RS485");
-		header.put("interval", 30000);
-		node.set("header", header);
-
-		node.put("interface", modbusInterface);
-		node.put(
-				"frame",
-				Utils.toBase64(
-						Utils.buildFrame(
-								slaveId,
-								registerSetting.getFunctionCode(),
-								registerSetting.getRegisterOffset(),
-								registerSetting.getRegisterLength())));
-		node.put("timeout", 500);
-		return node;
-	}
+	public static final String CONFIG_KEY_SERIAL = "serial";
+	public static final String CONFIG_KEY_MODBUS_INTERFACE = "modbus_interface";
 
 	protected ObjectNode createModbusJsonNode(
 			Integer serial,
@@ -58,7 +35,10 @@ public abstract class ModbusBuilderBase {
 			RegisterSetting registerSetting,
 			Thing thing,
 			Integer modbusInterface,
-			byte slaveId) {
+			byte slaveId,
+			Long interval,
+			Long timeout,
+			Boolean enabled) {
 		return new ObjectMapper()
 				.valueToTree(
 						new DatapointVO()
@@ -68,106 +48,57 @@ public abstract class ModbusBuilderBase {
 												thingTypeReference,
 												String.format("0x%04X", registerSetting.getRegisterOffset())))
 								.name(thing.getName())
-								.enabled(true)
+								.enabled(enabled != null ? enabled : false)
 								.type(DatapointVO.Type.RS485)
-								.interval(30000)
+								.interval(interval != null ? interval.intValue() : DEFAULT_INTERVAL)
 								._interface(modbusInterface)
 								.frame(
 										HexFormat.of()
+												.withUpperCase()
 												.formatHex(
 														Utils.buildFrame(
 																slaveId,
 																registerSetting.getFunctionCode(),
 																registerSetting.getRegisterOffset(),
 																registerSetting.getRegisterLength())))
-								.timeout(1000));
-	}
-
-	@Deprecated(forRemoval = true)
-	protected Optional<ObjectNode> obisCodeToDatapointJSONLegacy(
-			Map<String, Object> channels,
-			Thing thing,
-			ThingType thingType,
-			String obisCodeKey,
-			RegisterSetting registerSetting,
-			Integer serial,
-			int slaveId,
-			Integer modbusInterface) {
-		if (channels.containsKey(obisCodeKey) && (boolean) channels.get(obisCodeKey)) {
-			ObjectNode node = createModbusJsonNodeLegacy(
-					serial,
-					thingType.getThingTypeId(),
-					registerSetting,
-					thing,
-					modbusInterface,
-					(byte) slaveId);
-			return Optional.of(node);
-		}
-		return Optional.empty();
+								.timeout(timeout != null ? timeout.intValue() : DEFAULT_TIMEOUT));
 	}
 
 	protected Optional<ObjectNode> obisCodeToDatapointJSON(
-			Map<String, Object> channels,
 			Thing thing,
-			ThingType thingType,
 			String obisCodeKey,
 			RegisterSetting registerSetting,
 			Integer serial,
 			int slaveId,
 			Integer modbusInterface) {
-		if (channels.containsKey(obisCodeKey) && (boolean) channels.get(obisCodeKey)) {
+		var measurand = thing.getMeasurands().stream()
+				.filter(m -> obisCodeKey.equals(m.getMeasurandType().getObisId()))
+				.findFirst();
+		if (measurand.isPresent()) {
 			ObjectNode node = createModbusJsonNode(
 					serial,
-					thingType.getThingTypeId(),
+					thing.getThingType().getIdentifier(),
 					registerSetting,
 					thing,
 					modbusInterface,
-					(byte) slaveId);
+					(byte) slaveId,
+					measurand.get().getInterval(),
+					measurand.get().getTimeout(),
+					measurand.get().getEnabled());
 			return Optional.of(node);
 		}
 		return Optional.empty();
 	}
 
-	@Deprecated(forRemoval = true)
-	protected ArrayNode toDatapointsLegacy(
-			Thing thing, ThingType thingType, int slaveId, Map<String, RegisterSetting> mappings) {
+	protected ArrayNode toDatapoints(Thing thing, int slaveId, Map<String, RegisterSetting> mappings)
+			throws DatapointBuilderException {
 		ArrayNode datapoints = OBJECT_MAPPER.createArrayNode();
-		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
-		Integer serial = (Integer) properties.get("serial");
-		Integer modbusInterface = (Integer) properties.get("modbus_interface");
-		Map<String, Object> channels = (Map<String, Object>) thing.getConfig().get("channels");
-		for (var mapping : mappings.entrySet()) {
-			Optional<ObjectNode> optionalValue = obisCodeToDatapointJSONLegacy(
-					channels,
-					thing,
-					thingType,
-					mapping.getKey(),
-					mapping.getValue(),
-					serial,
-					slaveId,
-					modbusInterface);
-			optionalValue.ifPresent(datapoints::add);
-		}
-		return datapoints;
-	}
+		var serial = getConfigAsNumber(thing, CONFIG_KEY_SERIAL).intValue();
+		var modbusInterface = getConfigAsNumber(thing, CONFIG_KEY_MODBUS_INTERFACE).intValue();
 
-	protected ArrayNode toDatapoints(
-			Thing thing, ThingType thingType, int slaveId, Map<String, RegisterSetting> mappings) {
-		ArrayNode datapoints = OBJECT_MAPPER.createArrayNode();
-		Map<String, Object> properties = (Map<String, Object>) thing.getConfig().get("properties");
-		Integer serial = (Integer) properties.get("serial");
-		Integer modbusInterface = (Integer) properties.get("modbus_interface");
-		Map<String, Object> channels = (Map<String, Object>) thing.getConfig().get("channels");
 		for (var mapping : mappings.entrySet()) {
 			Optional<ObjectNode> optionalValue = obisCodeToDatapointJSON(
-					channels,
-					thing,
-					thingType,
-					mapping.getKey(),
-					mapping.getValue(),
-					serial,
-					slaveId,
-					modbusInterface);
+					thing, mapping.getKey(), mapping.getValue(), serial, slaveId, modbusInterface);
 			optionalValue.ifPresent(datapoints::add);
 		}
 		return datapoints;

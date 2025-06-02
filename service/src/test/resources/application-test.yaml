@@ -30,6 +30,6 @@ logger:
   levels:
     io.inoa: TRACE
     io.micronaut: INFO
-    io.micronaut.data: INFO
+    io.micronaut.data: TRACE
     io.micronaut.retry.intercept.RecoveryInterceptor: "OFF"
     org.apache.kafka: ERROR

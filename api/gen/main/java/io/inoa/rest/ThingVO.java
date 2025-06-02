@@ -6,11 +6,11 @@ public class ThingVO {
 
 	public static final java.lang.String JSON_PROPERTY_ID = "id";
 	public static final java.lang.String JSON_PROPERTY_NAME = "name";
+	public static final java.lang.String JSON_PROPERTY_DESCRIPTION = "description";
 	public static final java.lang.String JSON_PROPERTY_GATEWAY_ID = "gateway_id";
 	public static final java.lang.String JSON_PROPERTY_THING_TYPE_ID = "thing_type_id";
-	public static final java.lang.String JSON_PROPERTY_CONFIG = "config";
-	public static final java.lang.String JSON_PROPERTY_CREATED = "created";
-	public static final java.lang.String JSON_PROPERTY_UPDATED = "updated";
+	public static final java.lang.String JSON_PROPERTY_MEASURANDS = "measurands";
+	public static final java.lang.String JSON_PROPERTY_CONFIGURATIONS = "configurations";
 
 	/** Id as technical reference (never changes). */
 	@jakarta.validation.constraints.NotNull
@@ -18,41 +18,43 @@ public class ThingVO {
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.util.UUID id;
 
-	/** Name. */
+	/** Human readable name. */
 	@jakarta.validation.constraints.NotNull
+	@jakarta.validation.constraints.Size(max = 64)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_NAME)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String name;
 
+	/** Long description of the thing */
+	@jakarta.validation.constraints.Size(max = 4096)
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_DESCRIPTION)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private java.lang.String description;
+
 	/** Id as technical reference (never changes). */
+	@jakarta.validation.constraints.NotNull
 	@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
 	@jakarta.validation.constraints.Size(min = 4, max = 20)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_GATEWAY_ID)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String gatewayId;
 
-	/** thing_type_id */
+	/** Id as technical reference (never changes). */
+	@jakarta.validation.constraints.NotNull
 	@jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z0-9\\-\\_]{1,64}$")
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_THING_TYPE_ID)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
 	private java.lang.String thingTypeId;
 
-	/** config */
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIG)
+	/** List of measurands and its configuration */
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_MEASURANDS)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
-	private java.util.Map<String, java.lang.Object> config;
+	private java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> measurands;
 
-	/** Common timestamp for created/updated timestamps. */
-	@jakarta.validation.constraints.NotNull
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CREATED)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private java.time.Instant created;
-
-	/** Common timestamp for created/updated timestamps. */
-	@jakarta.validation.constraints.NotNull
-	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_UPDATED)
-	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.ALWAYS)
-	private java.time.Instant updated;
+	/** Key / value map of thing configurations */
+	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_CONFIGURATIONS)
+	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
+	private java.util.Map<String, java.lang.String> configurations;
 
 	// methods
 
@@ -67,16 +69,16 @@ public class ThingVO {
 		ThingVO other = (ThingVO) object;
 		return java.util.Objects.equals(id, other.id)
 				&& java.util.Objects.equals(name, other.name)
+				&& java.util.Objects.equals(description, other.description)
 				&& java.util.Objects.equals(gatewayId, other.gatewayId)
 				&& java.util.Objects.equals(thingTypeId, other.thingTypeId)
-				&& java.util.Objects.equals(config, other.config)
-				&& java.util.Objects.equals(created, other.created)
-				&& java.util.Objects.equals(updated, other.updated);
+				&& java.util.Objects.equals(measurands, other.measurands)
+				&& java.util.Objects.equals(configurations, other.configurations);
 	}
 
 	@Override
 	public int hashCode() {
-		return java.util.Objects.hash(id, name, gatewayId, thingTypeId, config, created, updated);
+		return java.util.Objects.hash(id, name, description, gatewayId, thingTypeId, measurands, configurations);
 	}
 
 	@Override
@@ -85,11 +87,11 @@ public class ThingVO {
 				.append("ThingVO[")
 				.append("id=").append(id).append(",")
 				.append("name=").append(name).append(",")
+				.append("description=").append(description).append(",")
 				.append("gatewayId=").append(gatewayId).append(",")
 				.append("thingTypeId=").append(thingTypeId).append(",")
-				.append("config=").append(config).append(",")
-				.append("created=").append(created).append(",")
-				.append("updated=").append(updated)
+				.append("measurands=").append(measurands).append(",")
+				.append("configurations=").append(configurations)
 				.append("]")
 				.toString();
 	}
@@ -106,6 +108,11 @@ public class ThingVO {
 		return this;
 	}
 
+	public ThingVO description(java.lang.String newDescription) {
+		this.description = newDescription;
+		return this;
+	}
+
 	public ThingVO gatewayId(java.lang.String newGatewayId) {
 		this.gatewayId = newGatewayId;
 		return this;
@@ -116,33 +123,43 @@ public class ThingVO {
 		return this;
 	}
 
-	public ThingVO config(java.util.Map<String, java.lang.Object> newConfig) {
-		this.config = newConfig;
+	public ThingVO measurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> newMeasurands) {
+		this.measurands = newMeasurands;
 		return this;
 	}
 	
-	public ThingVO putConfigItem(java.lang.String key, java.lang.Object configItem) {
-		if (this.config == null) {
-			this.config = new java.util.HashMap<>();
+	public ThingVO addMeasurandsItem(MeasurandVO measurandsItem) {
+		if (this.measurands == null) {
+			this.measurands = new java.util.ArrayList<>();
 		}
-		this.config.put(key, configItem);
+		this.measurands.add(measurandsItem);
 		return this;
 	}
 
-	public ThingVO removeConfigItem(java.lang.String key) {
-		if (this.config != null) {
-			this.config.remove(key);
+	public ThingVO removeMeasurandsItem(MeasurandVO measurandsItem) {
+		if (this.measurands != null) {
+			this.measurands.remove(measurandsItem);
 		}
 		return this;
 	}
 
-	public ThingVO created(java.time.Instant newCreated) {
-		this.created = newCreated;
+	public ThingVO configurations(java.util.Map<String, java.lang.String> newConfigurations) {
+		this.configurations = newConfigurations;
+		return this;
+	}
+	
+	public ThingVO putConfigurationsItem(java.lang.String key, java.lang.String configurationsItem) {
+		if (this.configurations == null) {
+			this.configurations = new java.util.HashMap<>();
+		}
+		this.configurations.put(key, configurationsItem);
 		return this;
 	}
 
-	public ThingVO updated(java.time.Instant newUpdated) {
-		this.updated = newUpdated;
+	public ThingVO removeConfigurationsItem(java.lang.String key) {
+		if (this.configurations != null) {
+			this.configurations.remove(key);
+		}
 		return this;
 	}
 
@@ -164,6 +181,14 @@ public class ThingVO {
 		this.name = newName;
 	}
 
+	public java.lang.String getDescription() {
+		return description;
+	}
+
+	public void setDescription(java.lang.String newDescription) {
+		this.description = newDescription;
+	}
+
 	public java.lang.String getGatewayId() {
 		return gatewayId;
 	}
@@ -180,27 +205,19 @@ public class ThingVO {
 		this.thingTypeId = newThingTypeId;
 	}
 
-	public java.util.Map<String, java.lang.Object> getConfig() {
-		return config;
+	public java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> getMeasurands() {
+		return measurands;
 	}
 
-	public void setConfig(java.util.Map<String, java.lang.Object> newConfig) {
-		this.config = newConfig;
+	public void setMeasurands(java.util.List<@jakarta.validation.constraints.NotNull @jakarta.validation.Valid MeasurandVO> newMeasurands) {
+		this.measurands = newMeasurands;
 	}
 
-	public java.time.Instant getCreated() {
-		return created;
+	public java.util.Map<String, java.lang.String> getConfigurations() {
+		return configurations;
 	}
 
-	public void setCreated(java.time.Instant newCreated) {
-		this.created = newCreated;
-	}
-
-	public java.time.Instant getUpdated() {
-		return updated;
-	}
-
-	public void setUpdated(java.time.Instant newUpdated) {
-		this.updated = newUpdated;
+	public void setConfigurations(java.util.Map<String, java.lang.String> newConfigurations) {
+		this.configurations = newConfigurations;
 	}
 }

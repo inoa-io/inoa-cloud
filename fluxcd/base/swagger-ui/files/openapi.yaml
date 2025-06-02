@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Inoa Fleet API
-  description: Definitions for Inoa Fleet.
+  title: Inoa API
+  description: Definitions for managing fleet, things and measurands.
   version: 0.0.1
   license:
     name: Apache License 2.0
@@ -10,27 +10,36 @@ info:
     name: inoa.io
     url: https://github.com/inoa-io
 servers:
-  - url: https://api.${inoa_domain}
+  - url: https://api.qas.inoa.io
+    variables:
+      inoa.domain:
+        default: 127.0.0.1.nip.io
+        description: Your local ip where INOA is running
+  - url: http://localhost:4300
 security:
   - Keycloak: []
   - BearerAuth: []
 tags:
   - name: tenants
-    description: Tenants can be used to divide INOA resources for different groups of interest
+    description: Tenants can be used to divide INOA resources for different groups of interest.
   - name: groups
-    description: Groups are a logical structure to arrange gateways and their configuration
+    description: Groups are a logical structure to arrange gateways and their configuration.
   - name: gateways
-    description: Gateways are representations of IoT devices
+    description: Gateways are representations of IoT devices.
   - name: credentials
-    description: Credential definitions, types and values
+    description: Credential definitions, types and values.
   - name: configuration
-    description: Gateway configuration for system setup
+    description: Gateway configuration for system setup.
   - name: gateway
     description: Resources accessible by the physical gateway.
   - name: properties
     description: Gateway properties.
   - name: remote
     description: Remote control of gateways.
+  - name: things
+    description: Thing definitions and assignments.
+  - name: thing-types
+    description: Thing type management.
 paths:
   /whoami:
     get:
@@ -929,45 +938,42 @@ paths:
         401:
           description: Unauthorized
 
-  /thing-types:
+  /measurand-types:
     get:
-      tags:
-        - thingTypes
-      parameters:
-        - $ref: "#/components/parameters/PageablePage"
-        - $ref: "#/components/parameters/PageableSize"
-        - $ref: "#/components/parameters/Sort"
-        - name: name_filter
-          description: Search in name. Supports wildcard *, is case insensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 100
-            example: DZG*
-        - name: reference_filter
-          description: Search matching reference name. Is case sensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 100
-            example: dvh4013
-      summary: Find thing types.
-      description: Searches for thing types.
-      operationId: findThingTypes
+      tags: [thing-types]
+      summary: Find measurand types.
+      description: Find all defined measurand types.
+      operationId: findMeasurandTypes
       responses:
         200:
-          description: Thing types found.
+          description: List of thing types.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ThingTypePage"
+                type: array
+                items:
+                  $ref: "#/components/schemas/MeasurandType"
         401:
           description: Unauthorized.
-        404:
-          description: No matching thing types found.
+  /thing-types:
+    get:
+      tags: [thing-types]
+      summary: Find thing types.
+      description: Find all thing types.
+      operationId: getThingTypes
+      responses:
+        200:
+          description: List of thing types.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ThingType"
+        401:
+          description: Unauthorized.
     post:
-      tags:
-        - thingTypes
+      tags: [thing-types]
       summary: Create thing type.
       description: Creates a new thing type.
       operationId: createThingType
@@ -995,8 +1001,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/ThingTypeId"
     get:
-      tags:
-        - thingTypes
+      tags: [thing-types]
       summary: Find Thing type.
       description: return a single thing type
       operationId: findThingType
@@ -1011,9 +1016,8 @@ paths:
           description: Unauthorized.
         404:
           description: Thing Type not found.
-    post:
-      tags:
-        - thingTypes
+    patch:
+      tags: [thing-types]
       summary: Update Thing type.
       description: Updates existing thing type.
       operationId: updateThingType
@@ -1037,8 +1041,7 @@ paths:
         404:
           description: Thing type not found.
     delete:
-      tags:
-        - thingTypes
+      tags: [thing-types]
       summary: Delete thing type.
       description: Deletes a thing type and corresponding things.
       operationId: deleteThingType
@@ -1051,39 +1054,10 @@ paths:
           description: Thing type not found.
 
   /things:
-    get:
-      tags:
-        - things
-      parameters:
-        - $ref: "#/components/parameters/PageablePage"
-        - $ref: "#/components/parameters/PageableSize"
-        - $ref: "#/components/parameters/Sort"
-        - name: filter
-          description: Search in name. Supports wildcard *, is case insensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 10
-            example: dvh
-      summary: Find things.
-      description: Returns all things ordered by name.
-      operationId: findThings
-      responses:
-        200:
-          description: Page with thing types.
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ThingPage"
-        401:
-          description: Unauthorized.
-        404:
-          description: No matching things found.
     post:
-      tags:
-        - things
+      tags: [things]
       summary: Create thing.
-      description: Creates a new thing where we collect data from.
+      description: Creates a new thing.
       operationId: createThing
       requestBody:
         required: true
@@ -1109,8 +1083,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/ThingId"
     get:
-      tags:
-        - things
+      tags: [things]
       summary: Find Thing.
       description: Find thing by its Id.
       operationId: findThing
@@ -1125,9 +1098,8 @@ paths:
           description: Unauthorized.
         404:
           description: Thing not found.
-    put:
-      tags:
-        - things
+    patch:
+      tags: [things]
       summary: Update Thing.
       description: Updates an existing thing.
       operationId: updateThing
@@ -1151,8 +1123,7 @@ paths:
         404:
           description: Thing not found.
     delete:
-      tags:
-        - things
+      tags: [things]
       summary: Delete thing.
       description: Deletes an existing thing.
       operationId: deleteThing
@@ -1168,28 +1139,9 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GatewayId"
     get:
-      tags:
-        - things
-      parameters:
-        - $ref: "#/components/parameters/PageablePage"
-        - $ref: "#/components/parameters/PageableSize"
-        - $ref: "#/components/parameters/Sort"
-        - name: name_filter
-          description: Search in name. Supports wildcard *, is case insensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 100
-            example: DZG*
-        - name: reference_filter
-          description: Search matching reference name. Is case sensitive.
-          in: query
-          schema:
-            type: string
-            maxLength: 100
-            example: dvh4013
+      tags: [things]
       summary: Find all things for a gateway.
-      description: Returns all things.
+      description: Returns all things of given gateway.
       operationId: findThingsByGatewayId
       responses:
         200:
@@ -1197,7 +1149,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ThingPage"
+                type: array
+                items:
+                  $ref: "#/components/schemas/Thing"
         401:
           description: Unauthorized.
         404:
@@ -1207,73 +1161,13 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GatewayId"
     get:
-      tags:
-        - things
-      summary: Sync configuration to gateway.
-      description: Uploads the things configuration to the given gateway
-      operationId: syncConfigToGateway
+      tags: [things]
+      summary: Sync things to gateway.
+      description: Uploads the things and measurands to the given gateway
+      operationId: syncThingsToGateway
       responses:
         204:
           description: accepted sync request.
-        401:
-          description: Unauthorized.
-        404:
-          description: Gateway does not exist.
-
-  /gateways/{gateway_id}/things/upload-sequential:
-    parameters:
-      - $ref: "#/components/parameters/GatewayId"
-    get:
-      tags:
-        - things
-      summary: Sync configuration sequentially to gateway.
-      description: Uploads the things configuration to the given gateway sequentially.
-      operationId: syncConfigToGatewaySequential
-      responses:
-        204:
-          description: accepted sync request.
-        401:
-          description: Unauthorized.
-        404:
-          description: The given gateway does not exist.
-
-  /gateways/{gateway_id}/things/json:
-    parameters:
-      - $ref: "#/components/parameters/GatewayId"
-    get:
-      tags:
-        - things
-      summary: Downloads things as JSON configuration.
-      description: Downloads the thing configuration of the given gateway as JSON string.
-      operationId: downloadConfigToGateway
-      responses:
-        200:
-          description: json with thing config.
-          content:
-            application/json:
-              schema:
-                type: object
-        401:
-          description: Unauthorized.
-        404:
-          description: Gateway does not exist.
-
-  /gateways/{gateway_id}/things/json-legacy:
-    parameters:
-      - $ref: "#/components/parameters/GatewayId"
-    get:
-      tags:
-        - things
-      summary: Downloads things as JSON configuration in legacy format (OS version <0.4.0)
-      description: Downloads the thing configuration of the given gateway as JSON string in legacy format (OS version <0.4.0).
-      operationId: downloadConfigToGatewayLegacy
-      responses:
-        200:
-          description: json with thing config.
-          content:
-            application/json:
-              schema:
-                type: object
         401:
           description: Unauthorized.
         404:
@@ -2095,142 +1989,220 @@ components:
       pattern: ^[a-zA-Z0-9\-\_]{1,64}$
       example: dzg_dvh4013
     Name:
-      description: Name.
+      description: Human readable name.
       type: string
-    Category:
-      description: Category.
-      type: string
+      maxLength: 64
+      example: DZG DVH4013
 
     ###
     ### Thing Type
     ###
 
-    ThingType:
-      description: User with fields.
+    ObisId:
+      description: The OBIS code
+      type: string
+      pattern: ^((?<a>[0-9]{1,3})-)?((?<b>[0-9]{1,3}):)?(S\.)?(?<cde>(?<c>[0-9A-F]{1,3}).(?<d>[0-9A-F]{1,3})(.(?<e>[0-9A-F]{1,3}))?)([\*\&](?<f>[0-9A-F]{1,3}))?$
+      example: 1.8.0
+    MeasurandType:
+      description: Type of the measurand
       type: object
       properties:
-        id:
-          $ref: "#/components/schemas/ThingTypeId"
+        obis_id:
+          $ref: "#/components/schemas/ObisId"
         name:
-          $ref: "#/components/schemas/Name"
-        category:
-          $ref: "#/components/schemas/Category"
-        json_schema:
-          description: json_schema
-          type: object
-          additionalProperties: {}
-        properties:
-          type: array
-          items:
-            $ref: "#/components/schemas/PropertyDefinition"
-        channels:
-          type: array
-          items:
-            $ref: "#/components/schemas/ThingTypeChannel"
-        created:
-          $ref: "#/components/schemas/Timestamp"
-        updated:
-          $ref: "#/components/schemas/Timestamp"
-      required:
-        - id
-        - name
-        - created
-        - updated
-    ThingTypePage:
-      description: Page for thing types.
-      type: object
-      properties:
-        content:
-          description: List of entries on page.
-          type: array
-          items:
-            $ref: "#/components/schemas/ThingType"
-        total_size:
-          description: Total available entries.
-          type: integer
-          format: int32
-          example: 0
-      required:
-        - content
-        - total_size
-    ThingTypeCreate:
-      description: User to create.
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        category:
-          $ref: "#/components/schemas/Category"
-        thing_type_id:
-          $ref: "#/components/schemas/ThingTypeId"
-        json_schema:
-          description: json_schema
-          type: object
-          additionalProperties: {}
-      required:
-        - name
-    ThingTypeUpdate:
-      description: User to update.
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        category:
-          $ref: "#/components/schemas/Category"
-        thing_type_id:
-          $ref: "#/components/schemas/ThingTypeId"
-        json_schema:
-          description: json_schema
-          type: object
-          additionalProperties: {}
-      required:
-        - name
-    ThingTypeChannel:
-      description: Thing Type Channel with fields.
-      type: object
-      properties:
-        id:
-          $ref: "#/components/schemas/Id"
-        key:
+          description: Name of the measurand type
           type: string
-          example: power
-          description: key for the channel type
-        name:
-          $ref: "#/components/schemas/Name"
+          maxLength: 256
+          example: Energy In
         description:
+          description: Description of the measurand type
           type: string
-          example: 1-0:1.8.0*255
-          description: description for the channel type
-        properties:
+          maxLength: 4096
+          example: Total electric energy import in kWh
+      required:
+        - obis_id
+        - name
+    Measurand:
+      description: Representation of a measurand belonging to a thing
+      type: object
+      properties:
+        measurand_type:
+          $ref: "#/components/schemas/ObisId"
+        enabled:
+          description: Indicates if the measurand is measured
+          type: boolean
+          example: true
+        interval:
+          description: Duration between two measurements in milliseconds
+          type: integer
+          format: int64
+          example: 3000
+        timeout:
+          description: Maximum duration a measurement may take in milliseconds
+          type: integer
+          format: int64
+          example: 1000
+      required:
+        - measurand_type
+        - enabled
+        - interval
+        - timeout
+    ThingConfiguration:
+      description: A single configuration definition of a thing
+      type: object
+      properties:
+        name:
+          description: Name of the configuration
+          type: string
+          maxLength: 256
+          example: Modbus Address
+        description:
+          description: An optional description of the configuration
+          type: string
+          maxLength: 4096
+          example: The Modbus RTU address of the device
+        type:
+          description: The type of the configuration
+          type: string
+          enum:
+            - STRING
+            - NUMBER
+            - BOOLEAN
+          example: NUMBER
+        validation_regex:
+          description: An optional regular expression validating the configuration value
+          type: string
+          maxLength: 4096
+          example: ^[0-9]{1-3}$
+      required:
+        - name
+        - type
+    ThingTypeCategory:
+      description: Category for logical grouping.
+      type: string
+      enum:
+        - NONE
+        - ELECTRIC_METER
+        - GAS_METER
+        - CURRENT_TRANSFORMER
+        - SMART_PLUG
+    ThingTypeProtocol:
+      description: The protocol the thing type uses. If a thing supports several protocols, one may define several thing types.
+      type: string
+      enum:
+        - JSON_REST_HTTP
+        - MODBUS_RS458
+        - MODBUS_TCP
+        - S0
+        - MBUS
+        - WMBUS
+        - ADC
+        - RMS
+    ThingType:
+      description: Representation of a type / class of things.
+      type: object
+      properties:
+        identifier:
+          $ref: "#/components/schemas/ThingTypeId"
+        name:
+          $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/ThingTypeCategory"
+        description:
+          description: Additional description of the thing type
+          type: string
+          maxLength: 4096
+          example: Includes all members of the meter family
+        version:
+          description: An optional version of the thing type (e.g. firmware, revision, ...)
+          type: string
+          maxLength: 256
+          example: v1.7
+        protocol:
+          $ref: "#/components/schemas/ThingTypeProtocol"
+        measurands:
+          description: List of measurands this type of thing supports
           type: array
           items:
-            $ref: "#/components/schemas/PropertyDefinition"
-        created:
-          $ref: "#/components/schemas/Timestamp"
-        updated:
-          $ref: "#/components/schemas/Timestamp"
+            $ref: "#/components/schemas/MeasurandType"
+        configurations:
+          description: List of settings that can be configured for things of this type
+          type: array
+          items:
+            $ref: "#/components/schemas/ThingConfiguration"
       required:
-        - id
+        - identifier
         - name
-        - created
-        - updated
-
-    ThingTypeChannelCreate:
-      description: Thing Type Channel with fields.
+        - protocol
+    ThingTypeCreate:
+      description: Representation of a type / class of things to be created.
+      type: object
+      properties:
+        identifier:
+          $ref: "#/components/schemas/ThingTypeId"
+        name:
+          $ref: "#/components/schemas/Name"
+        category:
+          $ref: "#/components/schemas/ThingTypeCategory"
+        description:
+          description: Additional description of the thing type
+          type: string
+          maxLength: 4096
+          example: Includes all members of the meter family
+        version:
+          description: An optional version of the thing type (e.g. firmware, revision, ...)
+          type: string
+          maxLength: 256
+          example: v1.7
+        protocol:
+          $ref: "#/components/schemas/ThingTypeProtocol"
+        measurands:
+          description: List of measurands this type of thing supports
+          type: array
+          items:
+            $ref: "#/components/schemas/ObisId"
+        configurations:
+          description: List of settings that can be configured for things of this type
+          type: array
+          items:
+            $ref: "#/components/schemas/ThingConfiguration"
+      required:
+        - identifier
+        - name
+        - protocol
+    ThingTypeUpdate:
+      description: Representation of a type / class of things to be updated.
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
-        key:
+        category:
+          $ref: "#/components/schemas/ThingTypeCategory"
+        description:
+          description: Additional description of the thing type
           type: string
-          example: power
-          description: key for the channel type
-        properties:
+          maxLength: 4096
+          example: Includes all members of the meter family
+        version:
+          description: An optional version of the thing type (e.g. firmware, revision, ...)
+          type: string
+          maxLength: 256
+          example: v1.7
+        protocol:
+          $ref: "#/components/schemas/ThingTypeProtocol"
+        measurands:
+          description: List of measurands this type of thing supports
           type: array
           items:
-            $ref: "#/components/schemas/PropertyDefinition"
+            $ref: "#/components/schemas/ObisId"
+        configurations:
+          description: List of settings that can be configured for things of this type
+          type: array
+          items:
+            $ref: "#/components/schemas/ThingConfiguration"
       required:
         - name
+        - protocol
 
     ###
     ### Thing
@@ -2261,77 +2233,94 @@ components:
           $ref: "#/components/schemas/Id"
         name:
           $ref: "#/components/schemas/Name"
+        description:
+          description: Long description of the thing
+          type: string
+          maxLength: 4096
+          example: Garage fuse box meter
         gateway_id:
           $ref: "#/components/schemas/GatewayId"
         thing_type_id:
-          description: thing_type_id
-          type: string
-          pattern: ^[a-zA-Z0-9\-\_]{1,64}$
-          example: dzg_dvh4013
-        config:
-          description: config
-          additionalProperties: {}
-        created:
-          $ref: "#/components/schemas/Timestamp"
-        updated:
-          $ref: "#/components/schemas/Timestamp"
+          $ref: "#/components/schemas/ThingTypeId"
+        measurands:
+          description: List of measurands and its configuration
+          type: array
+          items:
+            $ref: "#/components/schemas/Measurand"
+        configurations:
+          description: Key / value map of thing configurations
+          type: object
+          additionalProperties:
+            type: string
+            description: Value of the configuration
+            maxLength: 4096
+            example: 98
       required:
         - id
         - name
-        - created
-        - updated
+        - gateway_id
+        - thing_type_id
     ThingCreate:
-      description: Thing to create.
+      description: Thing with fields.
       type: object
       properties:
         name:
           $ref: "#/components/schemas/Name"
+        description:
+          description: Long description of the thing
+          type: string
+          maxLength: 4096
+          example: Garage fuse box meter
         gateway_id:
           $ref: "#/components/schemas/GatewayId"
         thing_type_id:
-          description: External thing type id
-          type: string
-          pattern: ^[a-zA-Z0-9\-\_]{1,64}$
-          example: dzg_dvh4013
-        config:
-          description: config
-          additionalProperties: {}
-      required:
-        - name
-        - thing_type_id
-    ThingUpdate:
-      description: Thing to update.
-      type: object
-      properties:
-        name:
-          $ref: "#/components/schemas/Name"
-        gateway_id:
-          $ref: "#/components/schemas/GatewayId"
-        thing_type_id:
-          description: External thing type id
-          type: string
-          pattern: ^[a-zA-Z0-9\-\_]{1,64}$
-          example: dzg_dvh4013
-        config:
-          description: config
-          additionalProperties: {}
-      required:
-        - name
-        - thing_type_id
-    ThingChannel:
-      description: Thing channel to create.
-      type: object
-      properties:
-        key:
-          type: string
-          example: power
-          description: key for the channel
-        properties:
+          $ref: "#/components/schemas/ThingTypeId"
+        measurands:
+          description: List of measurands and its configuration
           type: array
           items:
-            $ref: "#/components/schemas/Property"
+            $ref: "#/components/schemas/Measurand"
+        configurations:
+          description: Key / value map of thing configurations
+          type: object
+          additionalProperties:
+            type: string
+            description: Value of the configuration
+            maxLength: 4096
+            example: 98
       required:
-        - key
+        - name
+        - gateway_id
+        - thing_type_id
+    ThingUpdate:
+      description: Thing with fields.
+      type: object
+      properties:
+        name:
+          $ref: "#/components/schemas/Name"
+        description:
+          description: Long description of the thing
+          type: string
+          maxLength: 4096
+          example: Garage fuse box meter
+        gateway_id:
+          $ref: "#/components/schemas/GatewayId"
+        measurands:
+          description: List of measurands and its configuration
+          type: array
+          items:
+            $ref: "#/components/schemas/Measurand"
+        configurations:
+          description: Key / value map of thing configurations
+          type: object
+          additionalProperties:
+            type: string
+            description: Value of the configuration
+            maxLength: 4096
+            example: 98
+      required:
+        - name
+        - gateway_id
 
     ###
     ### Common
@@ -2598,4 +2587,4 @@ components:
       scheme: bearer
     Keycloak:
       type: openIdConnect
-      openIdConnectUrl: https://auth.${inoa_domain}/realms/inoa/.well-known/openid-configuration
+      openIdConnectUrl: https://auth.qas.inoa.io/realms/inoa/.well-known/openid-configuration

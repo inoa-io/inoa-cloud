@@ -71,44 +71,26 @@ export class GatewayDatapointsComponent implements OnInit {
 
 	findIdMatchInDatabase(thingData: any): ThingVO | undefined {
 		return this.dataSourceThingsDatabase.data.find((thing) => {
-			return thing.config?.["id"] === thingData.id;
+			return thing.id === thingData.id;
 		});
 	}
 
 	findIdMatchOnSatellite(thingData: ThingVO): any | undefined {
 		return this.dataSourceThingsSatellite.data.find((satelliteThing: any) => {
-			return thingData.config?.["id"] === satelliteThing.id;
+			return thingData.id === satelliteThing.id;
 		});
 	}
 
 	findMatchInDatabaseByAllProperties(thingData: any): ThingVO | undefined {
-		return this.dataSourceThingsDatabase.data.find((thing) => {
-			// Compare every property of thing.config and thingData
-			return Object.keys(thing.config!).every((key) => {
-				// Check if the property exists in both objects
-				if (Object.prototype.hasOwnProperty.call(thing.config!, key) && Object.prototype.hasOwnProperty.call(thingData, key)) {
-					// Compare the values
-					return JSON.stringify(thing.config![key]) === JSON.stringify(thingData[key]);
-				}
-
-				return false;
-			});
-		});
+		// TODO
+		console.log("TODO: " + thingData);
+		return undefined;
 	}
 
 	findMatchOnSatelliteByAllProperties(thingData: ThingVO): any | undefined {
-		return this.dataSourceThingsSatellite.data.find((satelliteThing: any) => {
-			// Compare every property of thingData.config and satelliteThing
-			return Object.keys(thingData.config!).every((key) => {
-				// Check if the property exists in both config objects
-				if (Object.prototype.hasOwnProperty.call(thingData.config!, key) && Object.prototype.hasOwnProperty.call(satelliteThing, key)) {
-					// Compare the values
-					return JSON.stringify(thingData.config![key]) === JSON.stringify(satelliteThing[key]);
-				}
-
-				return false;
-			});
-		});
+		// TODO
+		console.log("TODO: " + thingData);
+		return undefined;
 	}
 
 	removeThingDatabaseClick(thing: ThingVO, event: Event) {
@@ -140,7 +122,7 @@ export class GatewayDatapointsComponent implements OnInit {
 			const syncThing: ThingCreateVO = {
 				name: thing.name,
 				thing_type_id: thing.id.split(":")[1],
-				config: thing,
+        configurations: thing,
 				gateway_id: this.intercomService.selectedGateway!.gateway_id
 			};
 
@@ -158,8 +140,7 @@ export class GatewayDatapointsComponent implements OnInit {
 		// if there is an id match in the database, update the thing
 		const syncThing: ThingUpdateVO = {
 			name: thing.name,
-			thing_type_id: thing.id.split(":")[1],
-			config: thing,
+      configurations: thing,
 			gateway_id: this.intercomService.selectedGateway!.gateway_id
 		};
 
@@ -207,7 +188,7 @@ export class GatewayDatapointsComponent implements OnInit {
 		}
 
 		// if there is an id match on the satellite, update the thing (updating for now means deleting and recreating)
-		this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "dp.delete", params: { id: thing.config!["id"] } }).subscribe(() => {
+		this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "dp.delete", params: { id: "TODO" } }).subscribe(() => {
 			this.addThingToSatellite(thing).then(() => {
 				if (updateLists) {
 					this.refreshThingsListDatabase(this.intercomService.selectedGateway);
@@ -250,8 +231,8 @@ export class GatewayDatapointsComponent implements OnInit {
 
 		//get things from database
 		this.thingsService.findThingsByGatewayId(satellite.gateway_id).subscribe((data) => {
-			this.dataSourceThingsDatabase.data = data.content;
-			this.intercomService.thingsList = data.content;
+			this.dataSourceThingsDatabase.data = data;
+			this.intercomService.thingsList = data;
 			this.intercomService.isLoadingDB = false;
 		});
 	}
@@ -287,8 +268,8 @@ export class GatewayDatapointsComponent implements OnInit {
 					break;
 			}
 
-			if (thing.config && methodName !== "") {
-				this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: methodName, params: thing.config }).subscribe(() => {
+			if (thing.configurations && methodName !== "") {
+				this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: methodName, params: thing.configurations }).subscribe(() => {
 					resolve();
 				});
 			} else {

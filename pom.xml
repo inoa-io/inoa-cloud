@@ -112,6 +112,7 @@
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.keycloak>26.0.8</version.org.keycloak>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
+		<version.org.openapitools.jackson.databind.nullable>0.2.6</version.org.openapitools.jackson.databind.nullable>
 
 	</properties>
 
@@ -220,7 +221,11 @@
 				<artifactId>mapstruct-processor</artifactId>
 				<version>${version.org.mapstruct}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.openapitools</groupId>
+				<artifactId>jackson-databind-nullable</artifactId>
+				<version>${version.org.openapitools.jackson.databind.nullable}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>

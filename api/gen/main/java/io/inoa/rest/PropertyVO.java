@@ -7,7 +7,8 @@ public class PropertyVO {
 	public static final java.lang.String JSON_PROPERTY_KEY = "key";
 	public static final java.lang.String JSON_PROPERTY_VALUE = "value";
 
-	/** Name. */
+	/** Human readable name. */
+	@jakarta.validation.constraints.Size(max = 64)
 	@com.fasterxml.jackson.annotation.JsonProperty(JSON_PROPERTY_KEY)
 	@com.fasterxml.jackson.annotation.JsonInclude(com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL)
 	private java.lang.String key;

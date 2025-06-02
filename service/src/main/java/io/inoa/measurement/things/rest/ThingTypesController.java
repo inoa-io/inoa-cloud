@@ -1,97 +1,126 @@
 package io.inoa.measurement.things.rest;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
-import jakarta.validation.Valid;
+import jakarta.inject.Inject;
 
-import io.inoa.measurement.things.builder.ThingTypeMapper;
-import io.inoa.measurement.things.domain.ThingType;
+import io.inoa.measurement.things.domain.MeasurandType;
+import io.inoa.measurement.things.domain.MeasurandTypeRepository;
 import io.inoa.measurement.things.domain.ThingTypeRepository;
-import io.inoa.rest.PageableProvider;
+import io.inoa.measurement.things.rest.mapper.MeasurandTypeMapper;
+import io.inoa.measurement.things.rest.mapper.ThingTypeMapper;
+import io.inoa.rest.MeasurandTypeVO;
 import io.inoa.rest.ThingTypeCreateVO;
-import io.inoa.rest.ThingTypePageVO;
 import io.inoa.rest.ThingTypeUpdateVO;
 import io.inoa.rest.ThingTypeVO;
 import io.inoa.rest.ThingTypesApi;
-import io.micronaut.data.model.Page;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
+@Slf4j
 @RequiredArgsConstructor
 public class ThingTypesController implements ThingTypesApi {
 
-	/** Default sort properties, see API spec for documentation. */
-	public static final String SORT_ORDER_DEFAULT = ThingTypeVO.JSON_PROPERTY_NAME;
-	/** Available sort properties, see API spec for documentation. */
-	public static final Map<String, String> SORT_ORDER_PROPERTIES = Map.of(
-			ThingTypeVO.JSON_PROPERTY_NAME,
-			ThingTypeVO.JSON_PROPERTY_NAME,
-			ThingTypeVO.JSON_PROPERTY_CREATED,
-			ThingTypeVO.JSON_PROPERTY_CREATED);
-
-	private final ThingTypeRepository thingTypeRepository;
 	private final ThingTypeMapper thingTypeMapper;
-	private final PageableProvider pageableProvider;
+	private final MeasurandTypeMapper measurandTypeMapper;
+
+	@Inject
+	private ThingTypeRepository thingTypeRepository;
+	@Inject
+	private MeasurandTypeRepository measurandTypeRepository;
 
 	@Override
-	public HttpResponse<ThingTypeVO> createThingType(@Valid ThingTypeCreateVO thingTypeCreateVO) {
-		ThingType thingType = thingTypeMapper.toThingType(thingTypeCreateVO);
-		thingType = thingTypeRepository.save(thingType);
-		return HttpResponse.created(thingTypeMapper.toThingTypeVO(thingType));
+	public HttpResponse<ThingTypeVO> createThingType(ThingTypeCreateVO thingTypeCreateVO) {
+		// Check Duplicates
+		if (!thingTypeRepository.findByIdentifier(thingTypeCreateVO.getIdentifier()).isEmpty()) {
+			return HttpResponse.status(HttpStatus.CONFLICT);
+		}
+
+		// Check Measurands
+		var measurands = new ArrayList<MeasurandType>();
+		for (var measurand : thingTypeCreateVO.getMeasurands()) {
+			var measurandType = measurandTypeRepository
+					.findByObisId(measurand)
+					.orElseThrow(
+							() -> new HttpStatusException(
+									HttpStatus.BAD_REQUEST, "Unknown measurand type: " + measurand));
+			if (measurandType == null) {
+				return HttpResponse.status(
+						HttpStatus.BAD_REQUEST, "Measurand '" + measurand + "'not found");
+			}
+			measurands.add(measurandType);
+		}
+
+		var thingType = thingTypeMapper.toThingType(thingTypeCreateVO);
+		thingType.setMeasurandTypes(measurands);
+
+		return HttpResponse.created(thingTypeMapper.toThingTypeVO(thingTypeRepository.save(thingType)));
 	}
 
 	@Override
 	public HttpResponse<Object> deleteThingType(String thingTypeId) {
-		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeId(thingTypeId);
-		if (optionalThingType.isEmpty()) {
-			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
+		// Check existing
+		if (thingTypeRepository.findByIdentifier(thingTypeId).isEmpty()) {
+			return HttpResponse.status(HttpStatus.NOT_FOUND);
 		}
-		thingTypeRepository.delete(optionalThingType.get());
-		return HttpResponse.noContent();
+
+		thingTypeRepository.deleteByIdentifier(thingTypeId);
+		return HttpResponse.status(HttpStatus.NO_CONTENT);
 	}
 
 	@Override
 	public HttpResponse<ThingTypeVO> findThingType(String thingTypeId) {
-		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeId(thingTypeId);
-		if (optionalThingType.isEmpty()) {
-			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
+		var result = thingTypeRepository.findByIdentifier(thingTypeId);
+		if (result == null || result.isEmpty()) {
+			return HttpResponse.notFound();
 		}
-		return HttpResponse.ok(thingTypeMapper.toThingTypeVO(optionalThingType.get()));
+		// TODO: Multiple thing type versions not supported yet
+		return HttpResponse.ok(thingTypeMapper.toThingTypeVO(result.iterator().next()));
 	}
 
 	@Override
-	public HttpResponse<ThingTypePageVO> findThingTypes(
-			Optional<Integer> page,
-			Optional<Integer> size,
-			Optional<List<String>> sort,
-			Optional<String> nameFilter,
-			Optional<String> referenceFilter) {
-		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, SORT_ORDER_DEFAULT);
-		Page<ThingType> thingTypes = nameFilter
-				.map(filter -> "%" + filter.replace("*", "%") + "%")
-				.map(filter -> thingTypeRepository.findByNameIlike(filter, pageable))
-				.orElseGet(() -> thingTypeRepository.findAll(pageable));
-		return HttpResponse.ok(thingTypeMapper.toThingTypePage(thingTypes));
+	public HttpResponse<List<ThingTypeVO>> getThingTypes() {
+		return HttpResponse.ok(
+				thingTypeRepository.findAll().stream()
+						.map(thingTypeMapper::toThingTypeVO)
+						.collect(Collectors.toList()));
 	}
 
 	@Override
 	public HttpResponse<ThingTypeVO> updateThingType(
-			String thingTypeId, @Valid ThingTypeUpdateVO thingTypeUpdateVO) {
-		Optional<ThingType> optionalThingType = thingTypeRepository.findByThingTypeId(thingTypeId);
-		if (optionalThingType.isEmpty()) {
-			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Thing Type not found.");
+			String thingTypeId, ThingTypeUpdateVO thingTypeUpdateVO) {
+		// Check existing
+		var thingTypes = thingTypeRepository.findByIdentifier(thingTypeId);
+		if (thingTypes.isEmpty()) {
+			return HttpResponse.status(HttpStatus.NOT_FOUND);
 		}
-		var thingType = optionalThingType.get();
-		thingType.setName(thingTypeUpdateVO.getName());
-		thingType.setCategory(thingTypeUpdateVO.getCategory());
-		thingType.setJsonSchema(thingTypeUpdateVO.getJsonSchema());
-		thingType = thingTypeRepository.update(thingType);
-		return HttpResponse.ok(thingTypeMapper.toThingTypeVO(thingType));
+		// TODO: No tenant in scope here yet
+		var thingType = thingTypes.iterator().next();
+		var thingTypeUpdate = thingTypeMapper.toThingType(thingTypeUpdateVO);
+
+		thingType.setName(thingTypeUpdate.getName());
+		thingType.setDescription(thingTypeUpdate.getDescription());
+		thingType.setCategory(thingTypeUpdate.getCategory());
+		thingType.setProtocol(thingTypeUpdate.getProtocol());
+		thingType.setVersion(thingTypeUpdate.getVersion());
+		thingType.setMeasurandTypes(thingTypeUpdate.getMeasurandTypes());
+		thingType.setThingConfigurations(thingTypeUpdate.getThingConfigurations());
+
+		return HttpResponse.ok(thingTypeMapper.toThingTypeVO(thingTypeRepository.update(thingType)));
+	}
+
+	@Override
+	public HttpResponse<List<MeasurandTypeVO>> findMeasurandTypes() {
+		return HttpResponse.ok(
+				measurandTypeRepository.findAll().stream()
+						.map(measurandTypeMapper::toMeasurandTypeVO)
+						.toList());
 	}
 }

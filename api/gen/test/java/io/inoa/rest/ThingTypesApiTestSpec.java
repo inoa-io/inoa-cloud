@@ -22,6 +22,12 @@ public interface ThingTypesApiTestSpec {
 
 	void deleteThingType404() throws java.lang.Exception;
 
+	// findMeasurandTypes
+
+	void findMeasurandTypes200() throws java.lang.Exception;
+
+	void findMeasurandTypes401() throws java.lang.Exception;
+
 	// findThingType
 
 	void findThingType200() throws java.lang.Exception;
@@ -30,13 +36,11 @@ public interface ThingTypesApiTestSpec {
 
 	void findThingType404() throws java.lang.Exception;
 
-	// findThingTypes
+	// getThingTypes
 
-	void findThingTypes200() throws java.lang.Exception;
+	void getThingTypes200() throws java.lang.Exception;
 
-	void findThingTypes401() throws java.lang.Exception;
-
-	void findThingTypes404() throws java.lang.Exception;
+	void getThingTypes401() throws java.lang.Exception;
 
 	// updateThingType
 

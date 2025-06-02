@@ -120,8 +120,8 @@ export class MeasurementCollectorComponent implements OnInit {
 			map((satellite) => (satellite ? this.filterGateways(satellite) : this.intercomService.gateways.slice()))
 		);
 
-		this.thingTypesService.findThingTypes().subscribe((data) => {
-			this.intercomService.thingTypes = data.content;
+		this.thingTypesService.getThingTypes().subscribe((data) => {
+			this.intercomService.thingTypes = data;
 		});
 	}
 
@@ -152,7 +152,7 @@ export class MeasurementCollectorComponent implements OnInit {
 		// Get connected things for Gateway.
 		if (this.intercomService.selectedGateway?.gateway_id) {
 			this.thingsService.findThingsByGatewayId(this.intercomService.selectedGateway.gateway_id).subscribe((next) => {
-				this.intercomService.thingsList = next.content;
+				this.intercomService.thingsList = next;
 
 				// Select first thing in list
 				if (this.intercomService.thingsList.length > 0) this.intercomService.selectedThing = this.intercomService.thingsList[0];

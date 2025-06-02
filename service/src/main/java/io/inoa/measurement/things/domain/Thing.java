@@ -1,46 +1,36 @@
 package io.inoa.measurement.things.domain;
 
-import java.time.Instant;
-import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
-import io.micronaut.data.annotation.DateCreated;
-import io.micronaut.data.annotation.DateUpdated;
+import io.inoa.fleet.registry.domain.Gateway;
+import io.micronaut.core.annotation.Nullable;
 import io.micronaut.data.annotation.GeneratedValue;
 import io.micronaut.data.annotation.Id;
 import io.micronaut.data.annotation.MappedEntity;
-import io.micronaut.data.annotation.MappedProperty;
 import io.micronaut.data.annotation.Relation;
-import io.micronaut.data.annotation.TypeDef;
-import io.micronaut.data.model.DataType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
-@MappedEntity
 @Data
+@MappedEntity
+@ToString
+@EqualsAndHashCode
 public class Thing {
 	@Id
 	@GeneratedValue
 	private Long id;
-	@MappedProperty
 	private UUID thingId;
-	@MappedProperty
-	private String urn;
-	@MappedProperty
-	private String tenantId;
-	@MappedProperty
-	private String gatewayId;
-	@MappedProperty
 	private String name;
-
-	@MappedProperty
-	@TypeDef(type = DataType.JSON)
-	private Map<String, Object> config;
-
-	@Relation(Relation.Kind.MANY_TO_ONE)
+	@Nullable
+	private String description;
+	private Gateway gateway;
 	private ThingType thingType;
 
-	@DateCreated
-	private Instant created;
-	@DateUpdated
-	private Instant updated;
+	@Relation(value = Relation.Kind.ONE_TO_MANY, mappedBy = "thing", cascade = Relation.Cascade.ALL)
+	private Set<ThingConfigurationValue> thingConfigurationValues;
+
+	@Relation(value = Relation.Kind.ONE_TO_MANY, mappedBy = "thing", cascade = Relation.Cascade.ALL)
+	private Set<Measurand> measurands;
 }

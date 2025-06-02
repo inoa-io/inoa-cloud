@@ -22,22 +22,6 @@ public interface ThingsApiTestSpec {
 
 	void deleteThing404() throws java.lang.Exception;
 
-	// downloadConfigToGateway
-
-	void downloadConfigToGateway200() throws java.lang.Exception;
-
-	void downloadConfigToGateway401() throws java.lang.Exception;
-
-	void downloadConfigToGateway404() throws java.lang.Exception;
-
-	// downloadConfigToGatewayLegacy
-
-	void downloadConfigToGatewayLegacy200() throws java.lang.Exception;
-
-	void downloadConfigToGatewayLegacy401() throws java.lang.Exception;
-
-	void downloadConfigToGatewayLegacy404() throws java.lang.Exception;
-
 	// findThing
 
 	void findThing200() throws java.lang.Exception;
@@ -45,14 +29,6 @@ public interface ThingsApiTestSpec {
 	void findThing401() throws java.lang.Exception;
 
 	void findThing404() throws java.lang.Exception;
-
-	// findThings
-
-	void findThings200() throws java.lang.Exception;
-
-	void findThings401() throws java.lang.Exception;
-
-	void findThings404() throws java.lang.Exception;
 
 	// findThingsByGatewayId
 
@@ -62,21 +38,13 @@ public interface ThingsApiTestSpec {
 
 	void findThingsByGatewayId404() throws java.lang.Exception;
 
-	// syncConfigToGateway
+	// syncThingsToGateway
 
-	void syncConfigToGateway204() throws java.lang.Exception;
+	void syncThingsToGateway204() throws java.lang.Exception;
 
-	void syncConfigToGateway401() throws java.lang.Exception;
+	void syncThingsToGateway401() throws java.lang.Exception;
 
-	void syncConfigToGateway404() throws java.lang.Exception;
-
-	// syncConfigToGatewaySequential
-
-	void syncConfigToGatewaySequential204() throws java.lang.Exception;
-
-	void syncConfigToGatewaySequential401() throws java.lang.Exception;
-
-	void syncConfigToGatewaySequential404() throws java.lang.Exception;
+	void syncThingsToGateway404() throws java.lang.Exception;
 
 	// updateThing
 
