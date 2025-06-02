@@ -31,13 +31,17 @@
 				"io.inoa:inoa-parent",
 				"io.cloudevents:cloudevents-json-jackson",
 				"io.cloudevents:cloudevents-kafka",
-				"docker.io/eclipse-temurin",
 				"docker.io/hawkbit/hawkbit-update-server"
 			],
 			"enabled": false
 		},{
 			"matchManagers": ["woodpecker"],
 			"pinDigests": false
+		},{
+			"description": "Ignore Java/Maven/Node Major updates until we want to update.",
+			"matchPackageNames": ["eclipse-temurin", "maven", "node", "ghcr.io/grayc-de/plugins/maven"],
+			"matchUpdateTypes": ["major"],
+			"enabled": false
 		},{
 			"description": "Ignore Kafka 4.x until we want to update.",
 			"matchPackageNames": ["org.apache.kafka:kafka-clients", "docker.io/kokuwaio/kafka"],
