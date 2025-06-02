@@ -47,13 +47,9 @@
 				"docker.io/library/influxdb",
 				"docker.io/library/postgres",
 				"docker.io/library/traefik",
+				"docker.io/kokuwaio/kafka",
 				"ghcr.io/grayc-de/plugins/maven"
 			],
-			"matchUpdateTypes": ["major"],
-			"enabled": false
-		},{
-			"description": "Ignore Kafka 4.x until we want to update.",
-			"matchPackageNames": ["org.apache.kafka:kafka-clients", "docker.io/kokuwaio/kafka"],
 			"matchUpdateTypes": ["major"],
 			"enabled": false
 		},{

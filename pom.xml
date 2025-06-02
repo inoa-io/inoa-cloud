@@ -103,7 +103,6 @@
 		<version.io.kokuwa.micronaut.logging>4.0.1</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut.platform>4.8.2</version.io.micronaut.platform>
 		<version.io.moquette>0.17</version.io.moquette>
-		<version.org.apache.kafka>3.7.1</version.org.apache.kafka>
 		<version.org.bouncycastle>1.80</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
@@ -185,11 +184,6 @@
 						<artifactId>slf4j-log4j12</artifactId>
 					</exclusion>
 				</exclusions>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.kafka</groupId>
-				<artifactId>kafka-clients</artifactId>
-				<version>${version.org.apache.kafka}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
