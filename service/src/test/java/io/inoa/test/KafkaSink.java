@@ -19,6 +19,7 @@ import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.Uuid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.inoa.rest.TelemetryVO;
@@ -103,6 +104,11 @@ public class KafkaSink {
 
 		@Override
 		public void close(Duration timeout) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public Uuid clientInstanceId(Duration timeout) {
 			throw new UnsupportedOperationException();
 		}
 	};
