@@ -56,6 +56,8 @@ spec:
               readOnly: true
             - name: data
               mountPath: /opt/kafka/data
+            - name: tmp
+              mountPath: /tmp
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -98,6 +100,8 @@ spec:
               readOnly: true
             - name: data
               mountPath: /opt/kafka/data
+            - name: tmp
+              mountPath: /tmp
       automountServiceAccountToken: false
       enableServiceLinks: false
       terminationGracePeriodSeconds: 30
@@ -107,4 +111,6 @@ spec:
             medium: Memory
             sizeLimit: 1Mi
         - name: data
+          emptyDir: {}
+        - name: tmp
           emptyDir: {}

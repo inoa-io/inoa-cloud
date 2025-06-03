@@ -23,4 +23,4 @@ patches:
 
 images:
   - name: docker.io/kokuwaio/kafka:<patched>
-    newTag: 3.6.1@sha256:3d90a75619b524937bfd520cf8fa75fa6801785ad15c3cf7f2536fa84527e006
+    newTag: 3.8.0@sha256:00b3af29afe174fc2733c86c94d77c1785bb559fb27feaca0ee5c54b52ab090e
