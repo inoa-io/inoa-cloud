@@ -66,7 +66,7 @@
 
 		<image.inoa>ghcr.io/inoa-io/inoa:snapshot</image.inoa>
 		<image.mcnoize>ghcr.io/inoa-io/mcnoize:0.0.5</image.mcnoize>
-		<image.postgresql>docker.io/library/postgres:14.11</image.postgresql>
+		<image.postgresql>docker.io/library/postgres:14.18</image.postgresql>
 		<image.influxdb>docker.io/library/influxdb:2.7.12</image.influxdb>
 		<image.traefik>docker.io/library/traefik:v2.11.0</image.traefik>
 		<image.hawkbit>docker.io/hawkbit/hawkbit-update-server:0.3.0M8</image.hawkbit>
