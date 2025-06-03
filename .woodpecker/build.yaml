@@ -1,7 +1,7 @@
 when:
   event: [manual, push]
   branch: main
-  path: [.woodpecker/build.yaml, .woodpecker/maven/**, api/**, app/**, service/**, image/**, pom.xml, lombok.config]
+  path: [.woodpecker/build.yaml, .woodpecker/maven/**, api/**, app/**, service/**, pom.xml, lombok.config, Dockerfile*]
 
 services:
   - name: dockerd
