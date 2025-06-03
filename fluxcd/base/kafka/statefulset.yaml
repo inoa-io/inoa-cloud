@@ -86,6 +86,8 @@ spec:
             - name: kafka-data
               mountPath: /opt/kafka/data
               subPath: data
+            - name: tmp
+              mountPath: /tmp
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -145,6 +147,8 @@ spec:
             - name: kafka-data
               mountPath: /opt/kafka/data
               subPath: data
+            - name: tmp
+              mountPath: /tmp
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -164,3 +168,6 @@ spec:
           persistentVolumeClaim:
             readOnly: false
             claimName: kafka
+        - name: tmp
+          emptyDir:
+            sizeLimit: 10Mi
