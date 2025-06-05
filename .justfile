@@ -28,7 +28,7 @@ export MAVEN_ARGS:= "--color=always --no-transfer-progress -Dmaven.plugin.valida
 
 # Build image with all dependencies.
 build:
-	mvn install -pl image -am -P!dev -Dmaven.test.skip
+	docker build . --tag ghcr.io/inoa-io/inoa:snapshot
 
 ##
 ## Integration tests
