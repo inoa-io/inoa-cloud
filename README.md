@@ -70,7 +70,6 @@ These are the steps you can do:
 1. Build INOA Cloud services and start the whole environment via k3s:
 
    ```shell
-   mvn install -pl image -am -DskipTests
    mvn pre-integration-test -pl test
    ```
 
