@@ -10,8 +10,8 @@ metadata:
     backstage.io/kubernetes-label-selector: app.kubernetes.io/part-of=inoa
     gitea.com/repo-slug: inoa/cloud
     grafana/overview-dashboard: https://grafana.grayc.io/d/beo5eusxaspvkb/inoa-monitoring?orgId=1&from=now-3h&to=now&timezone=Europe%2FBerlin
-    grafana/alert-label-selector: "service=inoa"
-    grafana/dashboard-selector: "folderUrl == 'https://grafana.grayc.io/dashboards/f/a000e71c-63d3-4189-a238-416024623cfb'"
+    grafana/alert-label-selector: service=inoa
+    grafana/dashboard-selector: folderUrl == 'https://grafana.grayc.io/dashboards/f/a000e71c-63d3-4189-a238-416024623cfb'
   links:
     - title: "[QAS] Ground Control"
       url: https://groundcontrol.qas.inoa.io
