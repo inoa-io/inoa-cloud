@@ -37,7 +37,7 @@ RUN --mount=type=cache,target=/tmp/mvn-repo mvn install -pl api
 COPY service/ service/
 RUN --mount=type=cache,target=/tmp/mvn-repo mvn install -pl service
 
-FROM docker.io/library/eclipse-temurin:21.0.7_6-jre@sha256:02df6e67e0d0ba516810a238629ae194e1d88cd6c75674bc74fc7030763ee0b6
+FROM docker.io/library/eclipse-temurin:21.0.7_6-jre@sha256:031eb6ccad828004407c0a41f6a4009a08289961d55e9119287c28756522a945
 COPY --chown=0:0 --from=mvn /app/service/target/libs /app/libs
 COPY --chown=0:0 --from=mvn /app/service/target/inoa-service-*.jar /app/inoa.jar
 COPY --chown=0:0 --from=app /app/dist /app/static
