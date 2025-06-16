@@ -56,6 +56,7 @@ These are the steps you can do:
 1. Start the whole INOA Cloud setup within k3s. After start it will open the INOA Developer Cockpit in your browser with useful links.
 
    ```shell
+   export IP=192.168.1.51 # if inoa should be available on external ip OR add .env with this env
    just up
    ```
 
@@ -102,11 +103,11 @@ are collected by IoT devices and provide it with help of APIs and UIs.
 
 INOA OS is our operating system for INOA connected IoT devices and gateways.
 
-Please find the documentation [here](https://inoa-io.github.io/inoa-os-esp32/).
+Please find the documentation at [inoa-io.github.io/inoa-os-esp32](https://inoa-io.github.io/inoa-os-esp32/).
 
 ### INOA Satellite
 
 The INOA-Satellite is a small IoT gateway made for gathering various of different measurements and forwarding them to Inoa
 Measurement.
 
-Please find the documentation [here](https://inoa-io.github.io/satellite/).
+Please find the documentation [inoa-io.github.io/satellite](https://inoa-io.github.io/satellite/).

@@ -15,8 +15,8 @@
 	<properties>
 
 		<!-- How many instances of McNoise are generating traffic? -->
-		<!-- Could be overridden via maven property -Dmcnoise.replicas=10 to produce more traffic. -->
-		<mcnoise.replicas>0</mcnoise.replicas>
+		<!-- Could be overridden via maven property -Dmcnoize.replicas=10 to produce more traffic. -->
+		<mcnoize.replicas>0</mcnoize.replicas>
 
 		<!-- IP used by as external host using <host>.${ip}.nio.ip in traefik -->
 		<ip>127.0.0.1</ip>

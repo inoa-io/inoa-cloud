@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: mcnoize
 spec:
-  replicas: ${mcnoise.replicas}
+  replicas: ${mcnoize.replicas}
   selector:
     matchLabels:
       app.kubernetes.io/name: mcnoize
@@ -32,7 +32,7 @@ spec:
         - name: wait-for-hawkbit
           image: ${image.traefik}
           imagePullPolicy: Never
-          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://hawkbit.default.svc/UI/login --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done && sleep 2]
+          command: [sh, -c, until echo "`date '+%T'` connect keycloak ..." && wget http://hawkbit.default.svc:8080/UI/login --spider --timeout 2 && echo "`date '+%T'` ... connected"; do sleep 0.5 ; done && sleep 2]
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -45,7 +45,7 @@ spec:
       containers:
         - name: mcnoize
           image: ${image.mcnoize}
-          imagePullPolicy: Never
+          imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
                 name: mcnoize-env

@@ -1,12 +1,13 @@
 # https://just.systems/man/en/
 
+set dotenv-load := true
 set unstable := true
 set fallback := true
 set script-interpreter := ["bash", "-eu"]
 
 export IP := env('IP', '127.0.0.1')
 export MCNOIZE := env('MCNOIZE', '1')
-export MAVEN_ARGS:= "--color=always --no-transfer-progress -Dmaven.plugin.validation=NONE -Dk3s.skipRm=false -Dk3s.failIfExists=false"
+export MAVEN_ARGS:= "--color=always --no-transfer-progress -Dmaven.plugin.validation=NONE -Dk3s.skipRm=false -Dk3s.failIfExists=false -Dformatter.skip -Dtidy.skip -Dimpsort.skip"
 
 [private]
 @default:
@@ -30,6 +31,16 @@ export MAVEN_ARGS:= "--color=always --no-transfer-progress -Dmaven.plugin.valida
 build:
 	docker build . --tag ghcr.io/inoa-io/inoa:snapshot
 
+
+# Inspect image with dive
+[script]
+dive: build
+	if hash dive 2>/dev/null; then
+		dive ghcr.io/inoa-io/inoa:snapshot
+	else
+		docker run --rm --interactive --tty --volume=/var/run/docker.sock:/var/run/docker.sock:ro wagoodman/dive:latest ghcr.io/inoa-io/inoa:snapshot
+	fi
+
 ##
 ## Integration tests
 ##
@@ -43,7 +54,7 @@ up: build start deploy
 [group('integration-tests')]
 [working-directory: 'test']
 @start:
-	mvn k3s:run k3s:image -Dk3s.failIfExists=false
+	mvn k3s:run k3s:image
 
 # Stop k3s instance.
 [group('integration-tests')]
@@ -59,7 +70,7 @@ restart: stop start deploy
 [group('integration-tests')]
 [working-directory: 'test']
 deploy:
-	mvn resources:copy-resources@k3s k3s:apply -Dip=$IP
+	mvn resources:copy-resources@k3s k3s:apply -Dip=$IP -Dmcnoize.replicas=$MCNOIZE
 
 # Build image and redeploy inoa.
 [group('integration-tests')]
@@ -67,3 +78,14 @@ deploy:
 redeploy: build
 	mvn k3s:image k3s:restart
 
+# Run integration tests.
+[group('integration-tests')]
+[working-directory: 'test']
+test:
+	mvn integration-test -Dip=$IP
+
+# Run integration tests after running `just up` or `just test` for fast test execution.
+[group('integration-tests')]
+[working-directory: 'test']
+test-only:
+	mvn integration-test -Dk3s.skip -Dip=$IP
