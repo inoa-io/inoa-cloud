@@ -3,4 +3,4 @@ resources:
 
 images:
   - name: docker.io/swaggerapi/swagger-ui
-    newTag: v5.24.1
+    newTag: v5.24.2
