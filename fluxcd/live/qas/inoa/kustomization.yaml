@@ -3,5 +3,11 @@ resources:
   - secrets.yaml
 
 images:
-  - name: ghcr.io/inoa-io/inoa
+  - name: ghcr.io/inoa-io/inoa:<patched>
     newTag: snapshot
+
+configMapGenerator:
+  - name: inoa-env
+    behavior: merge
+    literals:
+      - KEYCLOAK_URL=https://auth.qas.inoa.io

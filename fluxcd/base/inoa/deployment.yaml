@@ -21,7 +21,7 @@ spec:
         - name: dockerconfigjson-ghcr-io
       containers:
         - name: inoa
-          image: ghcr.io/inoa-io/inoa
+          image: ghcr.io/inoa-io/inoa:<patched>
           imagePullPolicy: Always
           envFrom:
             - configMapRef:

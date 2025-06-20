@@ -23,7 +23,7 @@ configMapGenerator:
       - DATASOURCES_DEFAULT_DATABASE=inoa
       - DATASOURCES_DEFAULT_USERNAME=inoa
       # Other Services
-      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_URL=https://<patched>
       - HAWKBIT_URL=http://hawkbit:80/UI/login
       # Kafka settings
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
