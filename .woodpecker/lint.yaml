@@ -31,7 +31,9 @@ steps:
     when: [path: [.woodpecker/lint.yaml, "**/*.sh"]]
 
   backstage:
-    image: ghcr.io/grayc-de/plugins/backstage-entity-validator
+    image: kokuwaio/backstage-entity-validator
+    settings:
+      files: catalog-info.yaml docs/backstage/**
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, catalog-info.yaml, docs/backstage/**]]
 
