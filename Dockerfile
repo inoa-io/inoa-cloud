@@ -31,11 +31,11 @@ RUN mkdir "$HOME/.m2" && printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 COPY pom.xml lombok.config ./
 COPY api/pom.xml api/pom.xml
 COPY service/pom.xml service/pom.xml
-RUN --mount=type=cache,target=/tmp/mvn-repo mvn install -N
+RUN mvn install -N
 COPY api/ api/
-RUN --mount=type=cache,target=/tmp/mvn-repo mvn install -pl api
+RUN mvn install -pl api
 COPY service/ service/
-RUN --mount=type=cache,target=/tmp/mvn-repo mvn install -pl service
+RUN mvn install -pl service
 
 FROM docker.io/library/eclipse-temurin:21.0.7_6-jre@sha256:031eb6ccad828004407c0a41f6a4009a08289961d55e9119287c28756522a945
 COPY --chown=0:0 --from=mvn /app/service/target/libs /app/libs

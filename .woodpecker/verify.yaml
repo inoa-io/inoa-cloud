@@ -19,7 +19,8 @@ steps:
   image:
     image: kokuwaio/docker-cli
     depends_on: []
-    commands: docker build . --tag=ghcr.io/inoa-io/inoa:snapshot
+    commands: docker buildx build .
+          --tag=ghcr.io/inoa-io/inoa:snapshot
           --cache-from=type=registry,ref=ghcr.io/inoa-io/inoa:cache
           --build-arg=MAVEN_MIRROR_CENTRAL
           --build-arg=YARN_NPM_REGISTRY_SERVER

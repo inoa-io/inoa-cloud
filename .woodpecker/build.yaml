@@ -15,7 +15,8 @@ steps:
     image: kokuwaio/docker-cli
     commands:
       - docker login ghcr.io --username=$GHCR_USERNAME --password=$GHCR_PASSWORD
-      - docker build . --push --tag=ghcr.io/inoa-io/inoa:snapshot
+      - docker buildx build . --push
+          --tag=ghcr.io/inoa-io/inoa:snapshot
           --cache-from=type=registry,ref=ghcr.io/inoa-io/inoa:cache
           --cache-to=type=registry,ref=ghcr.io/inoa-io/inoa:cache,mode=max,compression=zstd
           --build-arg=MAVEN_MIRROR_CENTRAL
