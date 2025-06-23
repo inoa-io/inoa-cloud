@@ -3,4 +3,4 @@ resources:
 
 images:
   - name: docker.io/redpandadata/console
-    newTag: v3.1.1
+    newTag: v3.1.2
