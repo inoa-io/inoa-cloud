@@ -92,7 +92,7 @@
 		<version.org.codehaus.mojo.versions>2.18.0</version.org.codehaus.mojo.versions>
 		<version.org.openapitools.generator>7.14.0</version.org.openapitools.generator>
 		<version.org.openapitools.stylevalidator>1.11</version.org.openapitools.stylevalidator>
-		<version.net.revelc.code.formatter>2.26.0</version.net.revelc.code.formatter>
+		<version.net.revelc.code.formatter>2.27.0</version.net.revelc.code.formatter>
 		<version.net.revelc.code.impsort>1.12.0</version.net.revelc.code.impsort>
 		<version.io.kokuwa.maven.k3s>1.6.0</version.io.kokuwa.maven.k3s>
 
