@@ -1,7 +1,5 @@
 package io.inoa.measurement.translator.converter.common;
 
-import java.util.Iterator;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import jakarta.inject.Singleton;
@@ -22,13 +20,10 @@ public class JsonConverter extends CommonConverter {
 	@Override
 	public Stream<TelemetryVO> convert(TelemetryRawVO raw, String type, String sensor) {
 		return toJsonNode(raw.value()).stream()
-				.flatMap(
-						e -> Stream.iterate(e.fields(), Iterator::hasNext, UnaryOperator.identity())
-								.map(Iterator::next))
+				.flatMap(e -> e.properties().stream())
 				.filter(node -> node.getValue().isNumber())
-				.map(
-						node -> convert(type, sensor, node.getValue().asDouble())
-								.urn(raw.urn() + "." + node.getKey())
-								.sensor(sensor + "." + node.getKey()));
+				.map(node -> convert(type, sensor, node.getValue().asDouble())
+						.urn(raw.urn() + "." + node.getKey())
+						.sensor(sensor + "." + node.getKey()));
 	}
 }
