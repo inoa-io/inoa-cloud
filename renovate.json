@@ -53,6 +53,10 @@
 			"matchUpdateTypes": ["major"],
 			"enabled": false
 		},{
+			"description": "SwaggerUI is broken",
+			"matchPackageNames": ["docker.io/swaggerapi/swagger-ui"],
+			"enabled": false
+		},{
 			"matchManagers": ["npm"],
 			"matchUpdateTypes": ["major"],
 			"enabled": false

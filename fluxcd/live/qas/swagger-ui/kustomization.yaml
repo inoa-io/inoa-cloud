@@ -2,5 +2,7 @@ resources:
   - ../../../base/swagger-ui
 
 images:
+  # updates via renovate are disabled because upstream is unable to build containers
+  # https://github.com/swagger-api/swagger-ui/issues/10505
   - name: docker.io/swaggerapi/swagger-ui
-    newTag: v5.25.3
+    newTag: v5.20.8
