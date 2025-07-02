@@ -70,8 +70,7 @@ public class GroupsController extends AbstractManagementController implements Gr
 	}
 
 	@Override
-	public HttpResponse<GroupVO> updateGroup(
-			@NonNull UUID groupId, @Valid GroupUpdateVO vo, @NonNull Optional<String> tenantId) {
+	public HttpResponse<GroupVO> updateGroup(UUID groupId, @Valid GroupUpdateVO vo, Optional<String> tenantId) {
 
 		var changed = false;
 		var group = getGroup(groupId, tenantId);
@@ -97,8 +96,7 @@ public class GroupsController extends AbstractManagementController implements Gr
 	}
 
 	@Override
-	public HttpResponse<Object> deleteGroup(
-			@NonNull UUID groupId, @NonNull Optional<String> tenantId) {
+	public HttpResponse<Object> deleteGroup(UUID groupId, Optional<String> tenantId) {
 		var group = getGroup(groupId, tenantId);
 		repository.delete(group);
 		log.info("Group {} deleted.", group.getName());
@@ -111,6 +109,6 @@ public class GroupsController extends AbstractManagementController implements Gr
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Group not found.");
 		}
-		return optional.get();
+		return optional.get().setTenant(tenant);
 	}
 }

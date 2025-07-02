@@ -228,7 +228,7 @@ public class GatewaysController extends AbstractManagementController implements 
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found.");
 		}
-		return optional.get();
+		return optional.get().setTenant(tenant);
 	}
 
 	private List<Group> getGroups(Tenant tenant, Set<UUID> groupIds) {

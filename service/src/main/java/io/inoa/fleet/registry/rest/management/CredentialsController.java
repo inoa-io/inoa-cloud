@@ -121,11 +121,11 @@ public class CredentialsController extends AbstractManagementController implemen
 	}
 
 	private Credential getCredential(String gatewayId, UUID credentialId, Optional<String> tenantId) {
-		var optional = credentialRepository.findByGatewayAndCredentialId(
-				getGateway(gatewayId, tenantId), credentialId);
+		var gateway = getGateway(gatewayId, tenantId);
+		var optional = credentialRepository.findByGatewayAndCredentialId(gateway, credentialId);
 		if (optional.isEmpty()) {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Credential not found.");
 		}
-		return optional.get();
+		return optional.get().setGateway(gateway);
 	}
 }
