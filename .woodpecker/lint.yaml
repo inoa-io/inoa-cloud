@@ -6,34 +6,34 @@ when:
 steps:
 
   renovate:
-    image: kokuwaio/renovate-config-validator
+    image: kokuwaio/renovate-config-validator:41
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, renovate.json]]
 
-  dockerfile:
-    image: kokuwaio/hadolint
-    depends_on: []
-    when: [path: [.woodpecker/lint.yaml, "**/Dockerfile"]]
-
   yaml:
-    image: kokuwaio/yamllint
+    image: kokuwaio/yamllint:v1.37.1
     depends_on: []
-    when: [path: [.woodpecker/lint.yaml, .yamllint.yaml, "**/*.y*ml"]]
+    when: [path: [.woodpecker/lint.yaml, .yamllint.yaml, "**/*.yaml"]]
 
   markdown:
-    image: kokuwaio/markdownlint
+    image: kokuwaio/markdownlint:0.45.0
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, .markdownlint.yaml, "**/*.md"]]
 
+  dockerfile:
+    image: kokuwaio/hadolint:v2.12.0
+    depends_on: []
+    when: [path: [.woodpecker/lint.yaml, "**/Dockerfile"]]
+
   shellcheck:
-    image: kokuwaio/shellcheck
+    image: kokuwaio/shellcheck:v0.10.0
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, "**/*.sh"]]
 
   backstage:
-    image: kokuwaio/backstage-entity-validator
+    image: kokuwaio/backstage-entity-validator:0.5.1
     settings:
-      files: catalog-info.yaml docs/backstage/**
+      files: catalog-info.yaml docs/backstage/**/*.yaml
     depends_on: []
     when: [path: [.woodpecker/lint.yaml, catalog-info.yaml, docs/backstage/**]]
 

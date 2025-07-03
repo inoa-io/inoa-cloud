@@ -26,8 +26,9 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<k3s.registries>${env.CI_WORKSPACE}/.woodpecker/maven/registries-ci.yml</k3s.registries>
+				<k3s.registries>${env.CI_WORKSPACE}/.woodpecker/maven/registries-ci.yaml</k3s.registries>
 				<k3s.skipRm>true</k3s.skipRm>
+				<k3s.failIfExists>false</k3s.failIfExists>
 			</properties>
 		</profile>
 	</profiles>

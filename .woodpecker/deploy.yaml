@@ -1,18 +1,18 @@
 when:
   event: [manual, push]
   branch: main
-  path: [.woodpecker/build.yaml, .woodpecker/maven/**, api/**, app/**, service/**, pom.xml, lombok.config, Dockerfile*]
+  path: [.woodpecker/deploy.yaml, .woodpecker/maven/**, api/**, app/**, service/**, pom.xml, lombok.config, Dockerfile*]
 
 services:
   - name: dockerd
-    image: kokuwaio/dockerd
+    image: kokuwaio/dockerd:28.2.2
     ports: [2375]
     privileged: true
 
 steps:
 
   deploy:
-    image: kokuwaio/docker-cli
+    image: kokuwaio/docker-cli:28.2.2
     commands:
       - docker login ghcr.io --username=$GHCR_USERNAME --password=$GHCR_PASSWORD
       - docker buildx build . --push

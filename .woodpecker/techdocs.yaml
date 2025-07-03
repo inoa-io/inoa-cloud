@@ -6,36 +6,28 @@ when:
     branch: main
 
 steps:
+
   generate:
-    image: ghcr.io/grayc-de/techdocs
-    environment:
-      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
+    image: ghcr.io/grayc-de/techdocs:latest
     entrypoint:
       [
         /techdocs/entrypoint-generate.sh,
-        --source-dir,
-        docs/techdocs,
-        --output-dir,
-        docs/target,
+        --source-dir, docs/techdocs,
+        --output-dir, docs/target
       ]
 
   publish:
-    image: ghcr.io/grayc-de/techdocs
-    environment:
-      PUBLISH_TECHDOCS_SECRET: {from_secret: GRAYC_TECHDOCS}
-      DOCKER_CONFIG_JSON: {from_secret: DOCKER_CONFIG_JSON}
+    image: ghcr.io/grayc-de/techdocs:latest
     entrypoint:
       [
         /techdocs/entrypoint-publish.sh,
-        --publisher-type,
-        googleGcs,
-        --storage-name,
-        grayc-techdocs,
-        --entity,
-        inoa/System/inoa-cloud,
-        --directory,
-        docs/target,
+        --publisher-type, googleGcs,
+        --storage-name, grayc-techdocs,
+        --entity, inoa/System/inoa-cloud,
+        --directory, docs/target
       ]
+    environment:
+      PUBLISH_TECHDOCS_SECRET: {from_secret: GRAYC_TECHDOCS}
     when:
       - event: [manual, push]
         branch: main

@@ -24,7 +24,7 @@
 		<k3s.imageTag>v1.31.8-k3s1</k3s.imageTag>
 		<k3s.manifests>${project.build.directory}/k3s</k3s.manifests>
 		<k3s.subdir>test</k3s.subdir>
-		<k3s.registries>${project.basedir}/../.woodpecker/maven/registries.yml</k3s.registries>
+		<k3s.registries>${project.basedir}/../.woodpecker/maven/registries.yaml</k3s.registries>
 		<k3s.resources>deployment/default/inoa</k3s.resources>
 		<k3s.clusterDns>10.53.0.10</k3s.clusterDns>
 		<k3s.clusterCidr>10.52.0.0/16</k3s.clusterCidr>
