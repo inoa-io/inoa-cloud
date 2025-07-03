@@ -19,12 +19,13 @@ steps:
   image:
     image: kokuwaio/docker-cli
     depends_on: []
-    commands: docker buildx build .
-          --tag=ghcr.io/inoa-io/inoa:snapshot
-          --cache-from=type=registry,ref=ghcr.io/inoa-io/inoa:cache
-          --build-arg=MAVEN_MIRROR_CENTRAL
-          --build-arg=YARN_NPM_REGISTRY_SERVER
-          --build-arg=YARN_UNSAFE_HTTP_WHITELIST
+    commands:
+      - docker buildx create --use --name=buildkit --driver=remote --driver-opt=default-load=true $BUILDKIT_HOST
+      - docker buildx build .
+            --tag=ghcr.io/inoa-io/inoa:snapshot
+            --build-arg=MAVEN_MIRROR_CENTRAL
+            --build-arg=YARN_NPM_REGISTRY_SERVER
+            --build-arg=YARN_UNSAFE_HTTP_WHITELIST
 
   maven:
     image: docker.io/library/maven:3.9.10-eclipse-temurin-21@sha256:615bd38fa00dd2416d90cbbc99895b9955400fa8110e83646e3e04ebcb7c471e
