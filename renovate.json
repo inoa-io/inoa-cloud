@@ -1,32 +1,9 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"labels": ["renovate", "renovate-manager/{{{manager}}}", "renovate-type/{{{updateType}}}"],
-	"assignees": ["renovate"],
+	"extends": ["grayc/renovate-config"],
 	"reviewers": ["fabian.schlegel", "stephan.schnabel"],
-	"dependencyDashboard": true,
-	"dependencyDashboardLabels": ["renovate"],
-	"dependencyDashboardApproval": true,
-	"dependencyDashboardAutoclose": false,
-	"dependencyDashboardOSVVulnerabilitySummary": "all",
-	"osvVulnerabilityAlerts": true,
-	"separateMajorMinor": true,
-	"separateMinorPatch": true,
-	"separateMultipleMinor": true,
-	"separateMultipleMajor": true,
-	"pinDigests": true,
-	"automerge": false,
-	"automergeStrategy": "fast-forward",
-	"rebaseWhen": "behind-base-branch",
-	"platformAutomerge": true,
 	"packageRules": [
 		{
-			"matchUpdateTypes": ["patch"],
-			"dependencyDashboardApproval": false,
-			"automerge": true
-		},{
-			"matchUpdateTypes": ["minor"],
-			"dependencyDashboardApproval": false
-		},{
 			"matchPackageNames": [
 				"ghcr.io/inoa-io/inoa",
 				"io.inoa:inoa-parent",
@@ -36,24 +13,12 @@
 			],
 			"enabled": false
 		},{
-			"matchManagers": ["woodpecker"],
-			"pinDigests": false
-		},{
-			"description": "Ignore Java/Maven/Node/... Major updates until we want to update.",
-			"matchPackageNames": [
-				"docker.io/library/eclipse-temurin",
-				"docker.io/library/maven",
-				"docker.io/library/node",
-				"docker.io/library/influxdb",
-				"docker.io/library/postgres",
-				"docker.io/library/traefik",
-				"docker.io/kokuwaio/kafka",
-				"ghcr.io/grayc-de/plugins/maven"
-			],
+			"description": "Ignore Major updates until we want to update.",
+			"matchPackageNames": ["docker.io/library/influxdb", "docker.io/library/postgres", "docker.io/library/traefik"],
 			"matchUpdateTypes": ["major"],
 			"enabled": false
 		},{
-			"description": "SwaggerUI is broken",
+			"description": "SwaggerUI is broken: https://github.com/swagger-api/swagger-ui/issues/10505",
 			"matchPackageNames": ["docker.io/swaggerapi/swagger-ui"],
 			"enabled": false
 		},{
@@ -66,18 +31,6 @@
 			"matchPackageNames": ["typescript"],
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
-		},{
-			"groupName": "@angular",
-			"matchPackageNames": ["@angular/**"]
-		},{
-			"groupName": "@angular-dev",
-			"matchPackageNames": ["@angular-devkit/**"]
-		},{
-			"groupName": "@angular-eslint",
-			"matchPackageNames": ["@angular-eslint/**"]
-		},{
-			"groupName": "@typescript-eslint",
-			"matchPackageNames": ["@typescript-eslint/**"]
 		},{
 			"groupName": "@ngx-formly",
 			"matchPackageNames": ["@ngx-formly/**"]
