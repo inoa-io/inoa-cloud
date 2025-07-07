@@ -291,7 +291,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/builder@npm:^18.2.0":
+"@angular-eslint/builder@npm:18.4.3":
   version: 18.4.3
   resolution: "@angular-eslint/builder@npm:18.4.3"
   dependencies:
@@ -311,7 +311,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/eslint-plugin-template@npm:18.4.3, @angular-eslint/eslint-plugin-template@npm:^18.2.0":
+"@angular-eslint/eslint-plugin-template@npm:18.4.3":
   version: 18.4.3
   resolution: "@angular-eslint/eslint-plugin-template@npm:18.4.3"
   dependencies:
@@ -328,7 +328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/eslint-plugin@npm:18.4.3, @angular-eslint/eslint-plugin@npm:^18.2.0":
+"@angular-eslint/eslint-plugin@npm:18.4.3":
   version: 18.4.3
   resolution: "@angular-eslint/eslint-plugin@npm:18.4.3"
   dependencies:
@@ -342,7 +342,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/schematics@npm:^18.2.0":
+"@angular-eslint/schematics@npm:18.4.3":
   version: 18.4.3
   resolution: "@angular-eslint/schematics@npm:18.4.3"
   dependencies:
@@ -357,7 +357,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular-eslint/template-parser@npm:^18.2.0":
+"@angular-eslint/template-parser@npm:18.4.3":
   version: 18.4.3
   resolution: "@angular-eslint/template-parser@npm:18.4.3"
   dependencies:
@@ -6288,11 +6288,11 @@ __metadata:
   resolution: "groundcontrol@workspace:."
   dependencies:
     "@angular-devkit/build-angular": "npm:^18.1.3"
-    "@angular-eslint/builder": "npm:^18.2.0"
-    "@angular-eslint/eslint-plugin": "npm:^18.2.0"
-    "@angular-eslint/eslint-plugin-template": "npm:^18.2.0"
-    "@angular-eslint/schematics": "npm:^18.2.0"
-    "@angular-eslint/template-parser": "npm:^18.2.0"
+    "@angular-eslint/builder": "npm:18.4.3"
+    "@angular-eslint/eslint-plugin": "npm:18.4.3"
+    "@angular-eslint/eslint-plugin-template": "npm:18.4.3"
+    "@angular-eslint/schematics": "npm:18.4.3"
+    "@angular-eslint/template-parser": "npm:18.4.3"
     "@angular/animations": "npm:18.2.13"
     "@angular/cdk": "npm:18.2.14"
     "@angular/cli": "npm:~18.2.0"
