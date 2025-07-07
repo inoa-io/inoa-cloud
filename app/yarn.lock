@@ -454,7 +454,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cdk@npm:^18.1.3":
+"@angular/cdk@npm:18.2.14":
   version: 18.2.14
   resolution: "@angular/cdk@npm:18.2.14"
   dependencies:
@@ -597,7 +597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/material@npm:^18.1.3":
+"@angular/material@npm:18.2.14":
   version: 18.2.14
   resolution: "@angular/material@npm:18.2.14"
   dependencies:
@@ -3416,7 +3416,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/crypto-js@npm:^4":
+"@types/crypto-js@npm:4.2.2":
   version: 4.2.2
   resolution: "@types/crypto-js@npm:4.2.2"
   checksum: 10c0/760a2078f36f2a3a1089ef367b0d13229876adcf4bcd6e8824d00d9e9bfad8118dc7e6a3cc66322b083535e12be3a29044ccdc9603bfb12519ff61551a3322c6
@@ -3507,7 +3507,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:~5.1.4":
+"@types/jasmine@npm:5.1.8":
   version: 5.1.8
   resolution: "@types/jasmine@npm:5.1.8"
   checksum: 10c0/a43a93058e2dee95a1e4de083e5ac8c3a212d3d37855f9af2c73807f6948ff6a1759446193e3032ef4a34df995a038a7cc6594634ca3d977b75bdddb3df20b46
@@ -3521,7 +3521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/leaflet@npm:^1":
+"@types/leaflet@npm:1.9.19":
   version: 1.9.19
   resolution: "@types/leaflet@npm:1.9.19"
   dependencies:
@@ -3624,7 +3624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^10.0.0":
+"@types/uuid@npm:10.0.0":
   version: 10.0.0
   resolution: "@types/uuid@npm:10.0.0"
   checksum: 10c0/9a1404bf287164481cb9b97f6bb638f78f955be57c40c6513b7655160beb29df6f84c915aaf4089a1559c216557dc4d2f79b48d978742d3ae10b937420ddac60
@@ -4930,7 +4930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"crypto-js@npm:^4.2.0":
+"crypto-js@npm:4.2.0":
   version: 4.2.0
   resolution: "crypto-js@npm:4.2.0"
   checksum: 10c0/8fbdf9d56f47aea0794ab87b0eb9833baf80b01a7c5c1b0edc7faf25f662fb69ab18dc2199e2afcac54670ff0cd9607a9045a3f7a80336cccd18d77a55b9fdf0
@@ -5636,7 +5636,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.8.0":
+"eslint@npm:9.30.1":
   version: 9.30.1
   resolution: "eslint@npm:9.30.1"
   dependencies:
@@ -6294,7 +6294,7 @@ __metadata:
     "@angular-eslint/schematics": "npm:^18.2.0"
     "@angular-eslint/template-parser": "npm:^18.2.0"
     "@angular/animations": "npm:18.2.13"
-    "@angular/cdk": "npm:^18.1.3"
+    "@angular/cdk": "npm:18.2.14"
     "@angular/cli": "npm:~18.2.0"
     "@angular/common": "npm:18.2.13"
     "@angular/compiler": "npm:18.2.13"
@@ -6302,34 +6302,34 @@ __metadata:
     "@angular/core": "npm:18.2.13"
     "@angular/forms": "npm:18.2.13"
     "@angular/localize": "npm:18.2.13"
-    "@angular/material": "npm:^18.1.3"
+    "@angular/material": "npm:18.2.14"
     "@angular/platform-browser": "npm:18.2.13"
     "@angular/platform-browser-dynamic": "npm:18.2.13"
     "@angular/router": "npm:18.2.13"
     "@ngx-formly/core": "npm:^6.3.6"
     "@ngx-formly/material": "npm:^6.3.6"
     "@ngx-formly/schematics": "npm:^6.3.6"
-    "@types/crypto-js": "npm:^4"
-    "@types/jasmine": "npm:~5.1.4"
-    "@types/leaflet": "npm:^1"
-    "@types/uuid": "npm:^10.0.0"
+    "@types/crypto-js": "npm:4.2.2"
+    "@types/jasmine": "npm:5.1.8"
+    "@types/leaflet": "npm:1.9.19"
+    "@types/uuid": "npm:10.0.0"
     "@typescript-eslint/eslint-plugin": "npm:^8.0.0"
     "@typescript-eslint/parser": "npm:^8.0.0"
-    crypto-js: "npm:^4.2.0"
-    eslint: "npm:^9.8.0"
-    jasmine-core: "npm:~5.8.0"
-    karma: "npm:~6.4.4"
-    karma-chrome-launcher: "npm:~3.2.0"
-    karma-coverage: "npm:~2.2.1"
-    karma-jasmine: "npm:~5.1.0"
-    karma-jasmine-html-reporter: "npm:~2.1.0"
-    leaflet: "npm:^1.9.4"
-    leaflet-control-geocoder: "npm:^2.4.0"
+    crypto-js: "npm:4.2.0"
+    eslint: "npm:9.30.1"
+    jasmine-core: "npm:5.8.0"
+    karma: "npm:6.4.4"
+    karma-chrome-launcher: "npm:3.2.0"
+    karma-coverage: "npm:2.2.1"
+    karma-jasmine: "npm:5.1.0"
+    karma-jasmine-html-reporter: "npm:2.1.0"
+    leaflet: "npm:1.9.4"
+    leaflet-control-geocoder: "npm:2.4.0"
     monaco-editor: "npm:^0.52.0"
     ngx-monaco-editor: "npm:^12.0.0"
-    rxjs: "npm:~7.8.1"
-    tslib: "npm:^2.6.3"
-    typescript: "npm:~5.5.4"
+    rxjs: "npm:7.8.2"
+    tslib: "npm:2.8.1"
+    typescript: "npm:5.5.4"
     zone.js: "npm:0.15.1"
   languageName: unknown
   linkType: soft
@@ -6981,17 +6981,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jasmine-core@npm:5.8.0":
+  version: 5.8.0
+  resolution: "jasmine-core@npm:5.8.0"
+  checksum: 10c0/9b1b7937b97ccc01468ba90953658e990d813d7cb275ea15c229b02ac2a42ca6b6469fc2342e0673917859f715213dc05a50419f56a0f603e31904b8b5aa83aa
+  languageName: node
+  linkType: hard
+
 "jasmine-core@npm:^4.1.0":
   version: 4.6.1
   resolution: "jasmine-core@npm:4.6.1"
   checksum: 10c0/3d038b7f6f6f0d3cb56cdb4d2f0323a9d84f3a64a03746f9329a2d5a5166ec5e0ad3232d72ceb4f357cf2f120fdb86310715eaeb174f325833515fd0792a6860
-  languageName: node
-  linkType: hard
-
-"jasmine-core@npm:~5.8.0":
-  version: 5.8.0
-  resolution: "jasmine-core@npm:5.8.0"
-  checksum: 10c0/9b1b7937b97ccc01468ba90953658e990d813d7cb275ea15c229b02ac2a42ca6b6469fc2342e0673917859f715213dc05a50419f56a0f603e31904b8b5aa83aa
   languageName: node
   linkType: hard
 
@@ -7142,7 +7142,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-chrome-launcher@npm:~3.2.0":
+"karma-chrome-launcher@npm:3.2.0":
   version: 3.2.0
   resolution: "karma-chrome-launcher@npm:3.2.0"
   dependencies:
@@ -7151,7 +7151,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-coverage@npm:~2.2.1":
+"karma-coverage@npm:2.2.1":
   version: 2.2.1
   resolution: "karma-coverage@npm:2.2.1"
   dependencies:
@@ -7165,7 +7165,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-jasmine-html-reporter@npm:~2.1.0":
+"karma-jasmine-html-reporter@npm:2.1.0":
   version: 2.1.0
   resolution: "karma-jasmine-html-reporter@npm:2.1.0"
   peerDependencies:
@@ -7176,7 +7176,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-jasmine@npm:~5.1.0":
+"karma-jasmine@npm:5.1.0":
   version: 5.1.0
   resolution: "karma-jasmine@npm:5.1.0"
   dependencies:
@@ -7196,7 +7196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma@npm:~6.4.4":
+"karma@npm:6.4.4":
   version: 6.4.4
   resolution: "karma@npm:6.4.4"
   dependencies:
@@ -7256,7 +7256,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leaflet-control-geocoder@npm:^2.4.0":
+"leaflet-control-geocoder@npm:2.4.0":
   version: 2.4.0
   resolution: "leaflet-control-geocoder@npm:2.4.0"
   dependencies:
@@ -7270,7 +7270,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"leaflet@npm:^1.9.4":
+"leaflet@npm:1.9.4":
   version: 1.9.4
   resolution: "leaflet@npm:1.9.4"
   checksum: 10c0/f639441dbb7eb9ae3fcd29ffd7d3508f6c6106892441634b0232fafb9ffb1588b05a8244ec7085de2c98b5ed703894df246898477836cfd0ce5b96d4717b5ca1
@@ -9386,7 +9386,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:~7.8.1":
+"rxjs@npm:7.8.2":
   version: 7.8.2
   resolution: "rxjs@npm:7.8.2"
   dependencies:
@@ -10282,17 +10282,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.1.0, tslib@npm:^2.3.0":
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
+  languageName: node
+  linkType: hard
+
 "tslib@npm:^1.9.0":
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: 10c0/69ae09c49eea644bc5ebe1bca4fa4cc2c82b7b3e02f43b84bd891504edf66dbc6b2ec0eef31a957042de2269139e4acff911e6d186a258fb14069cd7f6febce2
-  languageName: node
-  linkType: hard
-
-"tslib@npm:^2.0.0, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.6.3":
-  version: 2.8.1
-  resolution: "tslib@npm:2.8.1"
-  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
   languageName: node
   linkType: hard
 
@@ -10340,7 +10340,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.5.4":
+"typescript@npm:5.5.4":
   version: 5.5.4
   resolution: "typescript@npm:5.5.4"
   bin:
@@ -10350,7 +10350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.5.4#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>":
   version: 5.5.4
   resolution: "typescript@patch:typescript@npm%3A5.5.4#optional!builtin<compat/typescript>::version=5.5.4&hash=379a07"
   bin:
