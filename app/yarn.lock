@@ -2766,7 +2766,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-formly/core@npm:^6.3.6":
+"@ngx-formly/core@npm:6.3.12":
   version: 6.3.12
   resolution: "@ngx-formly/core@npm:6.3.12"
   dependencies:
@@ -2778,7 +2778,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-formly/material@npm:^6.3.6":
+"@ngx-formly/material@npm:6.3.12":
   version: 6.3.12
   resolution: "@ngx-formly/material@npm:6.3.12"
   dependencies:
@@ -2790,7 +2790,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ngx-formly/schematics@npm:^6.3.6":
+"@ngx-formly/schematics@npm:6.3.12":
   version: 6.3.12
   resolution: "@ngx-formly/schematics@npm:6.3.12"
   dependencies:
@@ -6306,9 +6306,9 @@ __metadata:
     "@angular/platform-browser": "npm:18.2.13"
     "@angular/platform-browser-dynamic": "npm:18.2.13"
     "@angular/router": "npm:18.2.13"
-    "@ngx-formly/core": "npm:^6.3.6"
-    "@ngx-formly/material": "npm:^6.3.6"
-    "@ngx-formly/schematics": "npm:^6.3.6"
+    "@ngx-formly/core": "npm:6.3.12"
+    "@ngx-formly/material": "npm:6.3.12"
+    "@ngx-formly/schematics": "npm:6.3.12"
     "@types/crypto-js": "npm:4.2.2"
     "@types/jasmine": "npm:5.1.8"
     "@types/leaflet": "npm:1.9.19"
