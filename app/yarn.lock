@@ -3521,12 +3521,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/leaflet@npm:1.9.19":
-  version: 1.9.19
-  resolution: "@types/leaflet@npm:1.9.19"
+"@types/leaflet@npm:1.9.20":
+  version: 1.9.20
+  resolution: "@types/leaflet@npm:1.9.20"
   dependencies:
     "@types/geojson": "npm:*"
-  checksum: 10c0/09a32f19d05a28b4c6478c7830af049a14573e78e5652947723b6416b20b3080970da88b6c43991d81fed156b94a7da3f2261d5ffe430b61c4ec6467fc94a54f
+  checksum: 10c0/14a32df400c6a371bc7e65ee4467118dc1b977cae002c45f7315ed032fade30bac3b97feac60a08809dd767bd68b17900ae6f947258cc0745412562ad12f2e82
   languageName: node
   linkType: hard
 
@@ -6311,7 +6311,7 @@ __metadata:
     "@ngx-formly/schematics": "npm:6.3.12"
     "@types/crypto-js": "npm:4.2.2"
     "@types/jasmine": "npm:5.1.8"
-    "@types/leaflet": "npm:1.9.19"
+    "@types/leaflet": "npm:1.9.20"
     "@types/uuid": "npm:10.0.0"
     "@typescript-eslint/eslint-plugin": "npm:8.36.0"
     "@typescript-eslint/parser": "npm:8.36.0"
