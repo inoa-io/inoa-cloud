@@ -53,10 +53,13 @@ spec:
                     name: grafana-env
                 - secretRef:
                     name: grafana-env
+              ports:
+                - name: http
+                  containerPort: 3000
               startupProbe:
                 httpGet:
                   path: /api/health
-                  port: 8080
+                  port: http
                 failureThreshold: 60
                 periodSeconds: 2
                 initialDelaySeconds: 5
@@ -64,7 +67,7 @@ spec:
               readinessProbe:
                 httpGet:
                   path: /api/health
-                  port: 8080
+                  port: http
                 failureThreshold: 5
                 periodSeconds: 10
                 initialDelaySeconds: 10
@@ -86,7 +89,7 @@ spec:
       ports:
         - name: http
           port: 80
-          targetPort: 8080
+          targetPort: http
 
   ingress:
     metadata:
