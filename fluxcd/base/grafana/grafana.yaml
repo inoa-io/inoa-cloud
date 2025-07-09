@@ -113,5 +113,5 @@ spec:
                       number: 80
       tls:
         - hosts:
-          - grafana.${inoa_domain}
+            - grafana.${inoa_domain}
           secretName: grafana-tls
