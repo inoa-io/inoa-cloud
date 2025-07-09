@@ -5,13 +5,11 @@ metadata:
   labels:
     grafana-instance: <patched>
 spec:
-  client:
-    url: <patched>
   config:
     log:
       level: info
     auth:
-      disable_login_form: false
+      disable_login_form: "false"
     server:
       root_url: https://grafana.${inoa_domain}
 
@@ -31,7 +29,7 @@ spec:
                   until echo "$(date '+%T') connect psql ..." && psql && echo "$(date '+%T') ... connected"; do sleep 0.1; done
               env:
                 - name: PGCONNECT_TIMEOUT
-                  value: 1
+                  value: "1"
                 - name: PGHOST
                   valueFrom:
                     configMapKeyRef:
@@ -83,8 +81,6 @@ spec:
             - name: tmp
               emptyDir: {}
   service:
-    metadata:
-      name: grafana
     spec:
       type: ClusterIP
       ports:
@@ -95,8 +91,8 @@ spec:
   ingress:
     metadata:
       annotations:
-        kubernetes.io/tls-acme: true
-        traefik.ingress.kubernetes.io/router.tls: true
+        kubernetes.io/tls-acme: "true"
+        traefik.ingress.kubernetes.io/router.tls: "true"
         traefik.ingress.kubernetes.io/router.middlewares: auth-grayc-de@file
     spec:
       ingressClassName: traefik
@@ -108,7 +104,7 @@ spec:
                 pathType: Prefix
                 backend:
                   service:
-                    name: grafana
+                    name: grafana-service
                     port:
                       number: 80
       tls:

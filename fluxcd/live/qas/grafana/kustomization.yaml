@@ -12,9 +12,6 @@ patches:
       - op: replace
         path: /metadata/labels/grafana-instance
         value: grafana-inoa-qas
-      - op: replace
-        path: /spec/client/url
-        value: http://grafana.grayc-inoa-qas.svc:8080
   - target:
       kind: GrafanaFolder
     patch: |-
