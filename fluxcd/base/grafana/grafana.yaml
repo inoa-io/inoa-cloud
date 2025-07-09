@@ -1,0 +1,117 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: Grafana
+metadata:
+  name: grafana
+  labels:
+    grafana-instance: <patched>
+spec:
+  client:
+    url: <patched>
+  config:
+    log:
+      level: info
+    auth:
+      disable_login_form: false
+    server:
+      root_url: https://grafana.${inoa_domain}
+
+  deployment:
+    spec:
+      replicas: 1
+      template:
+        spec:
+          serviceAccountName: grafana
+          initContainers:
+            - name: wait-for-postgres
+              image: docker.io/library/postgres
+              command:
+                - sh
+                - -c
+                - |
+                  until echo "$(date '+%T') connect psql ..." && psql && echo "$(date '+%T') ... connected"; do sleep 0.1; done
+              env:
+                - name: PGCONNECT_TIMEOUT
+                  value: 1
+                - name: PGHOST
+                  valueFrom:
+                    configMapKeyRef:
+                      name: grafana-env
+                      key: GF_DATABASE_HOST
+                - name: PGUSER
+                  valueFrom:
+                    configMapKeyRef:
+                      name: grafana-env
+                      key: GF_DATABASE_USER
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: grafana-env
+                      key: GF_DATABASE_PASSWORD
+          containers:
+            - name: grafana
+              image: grafana/grafana
+              envFrom:
+                - configMapRef:
+                    name: grafana-env
+                - secretRef:
+                    name: grafana-env
+              startupProbe:
+                httpGet:
+                  path: /api/health
+                  port: 8080
+                failureThreshold: 60
+                periodSeconds: 2
+                initialDelaySeconds: 5
+                timeoutSeconds: 2
+              readinessProbe:
+                httpGet:
+                  path: /api/health
+                  port: 8080
+                failureThreshold: 5
+                periodSeconds: 10
+                initialDelaySeconds: 10
+              resources:
+                requests:
+                  memory: 256Mi
+                  cpu: 100m
+                limits:
+                  memory: 512Mi
+              volumeMounts:
+                - name: tmp
+                  mountPath: /tmp
+          volumes:
+            - name: tmp
+              emptyDir: {}
+  service:
+    metadata:
+      name: grafana
+    spec:
+      type: ClusterIP
+      ports:
+        - name: http
+          port: 80
+          targetPort: 8080
+
+  ingress:
+    metadata:
+      annotations:
+        kubernetes.io/tls-acme: true
+        traefik.ingress.kubernetes.io/router.tls: true
+        traefik.ingress.kubernetes.io/router.middlewares: auth-grayc-de@file
+    spec:
+      ingressClassName: traefik
+      rules:
+        - host: grafana.${inoa_domain}
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: grafana
+                    port:
+                      number: 80
+      tls:
+        - hosts:
+          - grafana.${inoa_domain}
+          secretName: grafana-tls

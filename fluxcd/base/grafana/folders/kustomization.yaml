@@ -1,0 +1,3 @@
+resources:
+  - ems.yaml
+  - fleet.yaml

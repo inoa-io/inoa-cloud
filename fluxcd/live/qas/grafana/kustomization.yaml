@@ -1,15 +1,23 @@
+namespace: grayc-inoa-qas
 resources:
   - ../../../base/grafana
-  - datasources.yaml
+  - datasources
   - secrets.yaml
 
-configMapGenerator:
-  - name: grafana-env
-    behavior: merge
-    literals:
-      - GF_DATABASE_HOST=postgres
-      - GF_DATABASE_USER=grafana
-
-images:
-  - name: docker.io/grafana/grafana
-    newTag: 12.0.2
+patches:
+  - target:
+      kind: Grafana
+      name: grafana
+    patch: |-
+      - op: replace
+        path: /metadata/labels/grafana-instance
+        value: grafana-inoa-qas
+      - op: replace
+        path: /spec/client/url
+        value: http://grafana.grayc-inoa-qas.svc:8080
+  - target:
+      kind: GrafanaFolder
+    patch: |-
+      - op: replace
+        path: /spec/instanceSelector/matchLabels/grafana-instance
+        value: grafana-inoa-qas

@@ -1,19 +1,18 @@
+resources:
+  - grafana.yaml
+  - folders
+
 labels:
   - pairs:
       app.kubernetes.io/name: grafana
-      app.kubernetes.io/technology: golang
-
-resources:
-  #  - dashboards
-  - deployment.yaml
-  - ingress.yaml
-  - rbac.yaml
-  - service.yaml
 
 configMapGenerator:
   - name: grafana-env
+    options:
+      disableNameSuffixHash: true
     literals:
       - GF_PATHS_DATA=/tmp/grafana
+      - GF_SECURITY_ADMIN_USER=admin
       - GF_SERVER_PROTOCOL=http
       - GF_SERVER_HTTP_PORT=8080
       - GF_SERVER_ENFORCE_DOMAIN=false
@@ -22,8 +21,8 @@ configMapGenerator:
       - GF_SERVER_ROUTER_LOGGING=false
       - GF_SERVER_ENABLE_GZIP=false
       - GF_DATABASE_TYPE=postgres
-      - GF_DATABASE_HOST=<patched>
-      - GF_DATABASE_USER=<patched>
+      - GF_DATABASE_HOST=postgres
+      - GF_DATABASE_USER=grafana
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_USERS_AUTO_ASSIGN_ORG_ROLE=Admin
       - GF_SECURITY_DISABLE_INITIAL_ADMIN_CREATION=true
@@ -54,16 +53,3 @@ configMapGenerator:
       - GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES=false
       - GF_ANALYTICS_REPORTING_ENABLED=false
       - GF_ANALYTICS_ENABLE_DEEDBACK_LINKS=false
-  - name: grafana-sidecar-env
-    literals:
-      - LABEL=grafana.io/instance
-      - LABEL_VALUE=inoa
-      - FOLDER=/dashboards
-      - FOLDER_ANNOTATION=grafana.io/folder
-      - LOG_FORMAT=LOGFMT
-      - LOG_LEVEL=INFO
-  - name: grafana-config
-    literals:
-      - INOA_DOMAIN=${inoa_domain}
-    files:
-      - files/dashboards.yaml
