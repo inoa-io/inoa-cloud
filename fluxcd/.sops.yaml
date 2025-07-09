@@ -1,3 +1,15 @@
 creation_rules:
+  # rule for K8s secret manifests (to limit the encryption to the 'data' property)
+  - path_regex: .*secret.*\.yaml$
+    encrypted_regex: ^(data|stringData)$
+    gcp_kms: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd
+
+  - path_regex: .*datasource.*\.yaml$
+    encrypted_regex: ^(datasource)$
+    gcp_kms: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd
+
+  - path_regex: ^.*/(secrets/.*)$
+    gcp_kms: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd
+
   - path_regex: ^.*/.*(.env|.yaml)$
     gcp_kms: projects/grayc-infrastructure/locations/europe/keyRings/sops/cryptoKeys/fluxcd
