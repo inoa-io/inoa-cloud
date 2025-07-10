@@ -51,12 +51,12 @@ spec:
                 - secretRef:
                     name: grafana-env
               ports:
-                - name: http
+                - name: grafana-http
                   containerPort: 3000
               startupProbe:
                 httpGet:
                   path: /api/health
-                  port: http
+                  port: grafana-http
                 failureThreshold: 60
                 periodSeconds: 2
                 initialDelaySeconds: 5
@@ -64,7 +64,7 @@ spec:
               readinessProbe:
                 httpGet:
                   path: /api/health
-                  port: http
+                  port: grafana-http
                 failureThreshold: 5
                 periodSeconds: 10
                 initialDelaySeconds: 10
@@ -79,7 +79,18 @@ spec:
                   mountPath: /tmp
           volumes:
             - name: tmp
-              emptyDir: {}
+              emptyDir:
+                sizeLimit: 512Mi
+  service:
+    spec:
+      type: ClusterIP
+      ports:
+        - name: http
+          port: 80
+          targetPort: grafana-http
+        - name: grafana
+          port: 3000
+          targetPort: grafana-http
   ingress:
     metadata:
       annotations:
