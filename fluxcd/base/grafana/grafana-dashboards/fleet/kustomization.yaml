@@ -1,0 +1,9 @@
+resources:
+  - dashboards-fleet.yaml
+
+configMapGenerator:
+  - name: fleet-dashboards
+    options:
+      disableNameSuffixHash: true
+    files:
+      - files/gateway-count.json

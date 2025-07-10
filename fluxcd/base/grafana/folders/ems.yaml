@@ -3,8 +3,5 @@ kind: GrafanaFolder
 metadata:
   name: ems
 spec:
-  instanceSelector:
-    matchLabels:
-      grafana-instance: <patched>
   title: ems
   uid: d02099f1-c64f-48f2-b1f5-f848915ed506

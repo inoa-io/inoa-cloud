@@ -12,6 +12,16 @@ patches:
   - target:
       kind: GrafanaFolder
     patch: |-
-      - op: replace
-        path: /spec/instanceSelector/matchLabels/grafana-instance
-        value: grafana-inoa-qas
+      - op: add
+        path: /spec/instanceSelector
+        value:
+          matchLabels:
+            grafana-instance: grafana-inoa-qas
+  - target:
+      kind: GrafanaDashboard
+    patch: |-
+      - op: add
+        path: /spec/instanceSelector
+        value:
+          matchLabels:
+            grafana-instance: grafana-inoa-qas

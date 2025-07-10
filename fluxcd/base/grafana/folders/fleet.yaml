@@ -3,8 +3,5 @@ kind: GrafanaFolder
 metadata:
   name: fleet
 spec:
-  instanceSelector:
-    matchLabels:
-      grafana-instance: <patched>
   title: Fleet
   uid: 8932c242-7e14-4d76-8715-d7a97bf361fc
