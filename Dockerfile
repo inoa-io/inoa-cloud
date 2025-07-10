@@ -37,7 +37,7 @@ RUN mvn install -pl api
 COPY service/ service/
 RUN mvn install -pl service
 
-FROM docker.io/library/eclipse-temurin:21.0.7_6-jre@sha256:ffed502a66e8be6e27b6317fcd5913e967dd79e1e2f5135b2c1ffce557930ec3
+FROM docker.io/library/eclipse-temurin:21.0.7_6-jre@sha256:f7d9b212856985f86445a09330518ccf3d5e5b2ade00e3608a75420d95f5cf27
 COPY --chown=0:0 --from=mvn /app/service/target/libs /app/libs
 COPY --chown=0:0 --from=mvn /app/service/target/inoa-service-*.jar /app/inoa.jar
 COPY --chown=0:0 --from=app /app/dist /app/static
