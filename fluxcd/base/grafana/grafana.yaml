@@ -2,8 +2,6 @@ apiVersion: grafana.integreatly.org/v1beta1
 kind: Grafana
 metadata:
   name: grafana
-  labels:
-    grafana-instance: <patched>
 spec:
   config:
     log:
@@ -82,14 +80,6 @@ spec:
           volumes:
             - name: tmp
               emptyDir: {}
-  service:
-    spec:
-      type: ClusterIP
-      ports:
-        - name: http
-          port: 80
-          targetPort: http
-
   ingress:
     metadata:
       annotations:

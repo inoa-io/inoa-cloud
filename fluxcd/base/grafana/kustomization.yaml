@@ -1,5 +1,6 @@
 resources:
   - grafana.yaml
+  - service.yaml
   - folders
 
 labels:
@@ -11,12 +12,10 @@ configMapGenerator:
     options:
       disableNameSuffixHash: true
     literals:
-      - GF_PATHS_DATA=/tmp/grafana
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SERVER_PROTOCOL=http
       - GF_SERVER_HTTP_PORT=3000
       - GF_SERVER_ENFORCE_DOMAIN=false
-      - GF_SERVER_DOMAIN=grafana.${inoa_domain}
       - GF_SERVER_ROOT_URL=https://grafana.${inoa_domain}
       - GF_SERVER_ROUTER_LOGGING=false
       - GF_SERVER_ENABLE_GZIP=false
@@ -52,4 +51,4 @@ configMapGenerator:
       - GF_ANALYTICS_CHECK_FOR_UPDATES=false
       - GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES=false
       - GF_ANALYTICS_REPORTING_ENABLED=false
-      - GF_ANALYTICS_ENABLE_DEEDBACK_LINKS=false
+      - GF_ANALYTICS_ENABLE_FEEDBACK_LINKS=false

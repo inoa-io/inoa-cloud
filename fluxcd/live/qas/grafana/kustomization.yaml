@@ -4,14 +4,18 @@ resources:
   - datasources
   - secrets.yaml
 
+labels:
+  - pairs:
+      grafana-instance: grafana-inoa-qas
+
 patches:
-  - target:
-      kind: Grafana
-      name: grafana
-    patch: |-
-      - op: replace
-        path: /metadata/labels/grafana-instance
-        value: grafana-inoa-qas
+#  - target:
+#      kind: Grafana
+#      name: grafana
+#    patch: |-
+#      - op: replace
+#        path: /metadata/labels/grafana-instance
+#        value: grafana-inoa-qas
   - target:
       kind: GrafanaFolder
     patch: |-
