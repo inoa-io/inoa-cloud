@@ -88,9 +88,6 @@ spec:
         - name: http
           port: 80
           targetPort: grafana-http
-        - name: grafana
-          port: 3000
-          targetPort: grafana-http
   ingress:
     metadata:
       annotations:
