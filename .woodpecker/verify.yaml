@@ -28,7 +28,7 @@ steps:
             --build-arg=YARN_UNSAFE_HTTP_WHITELIST
 
   maven:
-    image: docker.io/library/maven:3.9.10-eclipse-temurin-21@sha256:e68528e0b7e07443b5cb3bf1d3eabc4392733446bcab3a1a380321c77e84dd03
+    image: docker.io/library/maven:3.9.10-eclipse-temurin-21@sha256:193ed19a4806b4bbad65b2e8a2a9bbf901b6e216eb0d5761c70c2c4537cd53d7
     depends_on: []
     commands: mvn install --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml
     when: [path: {exclude: [app/**]}]
