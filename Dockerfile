@@ -1,4 +1,4 @@
-FROM docker.io/library/node:20.19.4-slim@sha256:6638afe313d36cd2ad29bfd4e0ef9dfa4037fd6a1ca79ace04ba66b2a8be98d2 AS app
+FROM docker.io/library/node:20.19.4-slim@sha256:ef358d9fa0734e2c3b42482aa352c28a59245bc3d32e07ef57810cf8ba9092c5 AS app
 WORKDIR /app
 ARG YARN_NPM_REGISTRY_SERVER
 ARG YARN_UNSAFE_HTTP_WHITELIST
