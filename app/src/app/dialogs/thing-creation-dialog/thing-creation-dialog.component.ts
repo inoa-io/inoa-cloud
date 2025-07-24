@@ -2,8 +2,6 @@ import { Component, Inject, OnDestroy } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { GatewayVO, ThingTypeVO, ThingCreateVO } from "@inoa/api";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import { FormlyJsonschema } from "@ngx-formly/core/json-schema";
 import { Subject } from "rxjs";
 import { ThingCategoryService, ThingCategory } from "../../services/thing-category.service";
 import { UtilityService } from "../../services/utility-service";
@@ -13,18 +11,22 @@ import { InternalCommunicationService } from "../../services/internal-communicat
     selector: "gc-thing-creation-dialog",
     templateUrl: "./thing-creation-dialog.component.html",
     styleUrls: ["./thing-creation-dialog.component.css"]
+    selector: "gc-thing-creation-dialog",
+    templateUrl: "./thing-creation-dialog.component.html",
+    styleUrls: ["./thing-creation-dialog.component.css"]
 })
 export class ThingCreationDialogComponent implements OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private destroy$: Subject<any> = new Subject<any>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private destroy$: Subject<any> = new Subject<any>();
 
+    public thingTypes: ThingTypeVO[] = [];
     public thingTypes: ThingTypeVO[] = [];
 
     form!: FormGroup;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     model: any;
-    options!: FormlyFormOptions;
-    fields!: FormlyFieldConfig[];
     selectedThingType!: ThingTypeVO;
     category!: ThingCategory;
 
@@ -60,13 +62,15 @@ export class ThingCreationDialogComponent implements OnDestroy {
 
         this.selectedThingType = type;
         this.form = new FormGroup({});
-        this.options = {};
 
         this.category = type.category ? this.thingCategoryService.getCategory(type.identifier) : { key: "error", image: "", title: "none" };
         this.model = {};
 
-        this.addOutlineAppearanceToFields(this.fields);
-
+        const thing: ThingCreateVO = {
+            name: type.name,
+            gateway_id: this.data.gateway.gateway_id,
+            thing_type_id: type.identifier
+        };
         const thing: ThingCreateVO = {
             name: type.name,
             gateway_id: this.data.gateway.gateway_id,
@@ -74,20 +78,6 @@ export class ThingCreationDialogComponent implements OnDestroy {
         };
 
         this.data.thing = thing;
-    }
-
-    private addOutlineAppearanceToFields(fields: FormlyFieldConfig[]) {
-        fields.forEach((field) => {
-            if (field.props) {
-                field.props["appearance"] = "outline";
-            } else {
-                field.props = { appearance: "outline" };
-            }
-
-            if (field.fieldGroup) {
-                this.addOutlineAppearanceToFields(field.fieldGroup);
-            }
-        });
     }
 
     onCancelClick(): void {
