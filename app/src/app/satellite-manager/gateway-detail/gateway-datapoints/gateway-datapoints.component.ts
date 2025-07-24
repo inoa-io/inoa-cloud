@@ -27,7 +27,7 @@ export interface ConfigData {
 export class GatewayDatapointsComponent implements OnInit {
     expandedElementDatabase: ThingVO | null = null;
     expandedElementSatellite: ThingVO | null = null;
-    displayedColumnsThingsTableDatabase: string[] = ["name", "category", "thing_type", "match", "actions", "sync"];
+    displayedColumnsThingsTableDatabase: string[] = ["name", "category", "match", "actions", "sync"];
     displayedColumnsThingsTableSatellite: string[] = ["sync", "name", "match", "actions"];
 
     dataSourceThingsDatabase = new MatTableDataSource<ThingVO>();
@@ -83,13 +83,13 @@ export class GatewayDatapointsComponent implements OnInit {
 
     findMatchInDatabaseByAllProperties(thingData: any): ThingVO | undefined {
         // TODO
-        console.log("TODO: " + thingData);
+        console.log("TODO: " + thingData + " - Do something with findMatchInDatabaseByAllProperties.");
         return undefined;
     }
 
     findMatchOnSatelliteByAllProperties(thingData: ThingVO): any | undefined {
         // TODO
-        console.log("TODO: " + thingData);
+        console.log("TODO: " + thingData + " - Do something with findMatchOnSatelliteByAllProperties.");
         return undefined;
     }
 

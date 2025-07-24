@@ -9,26 +9,36 @@ import { ThingTypeCategoryVO } from "@inoa/model";
 export class UtilityService {
     constructor(private thingCategoryService: ThingCategoryService, private intercomService: InternalCommunicationService) {}
 
-    getThingImage(thingTypeId: ThingTypeCategoryVO | undefined) {
-        if (thingTypeId == undefined) return "assets/energy_meter.png";
+    getThingImage(thingCategory: ThingTypeCategoryVO | undefined) {
+        if (!thingCategory) return "assets/energy_meter.png";
 
-        const category = this.getThingCategory(thingTypeId);
+        const category = this.getThingCategory(thingCategory);
 
         return category.image;
     }
 
     getThingCategory(thingTypeId: string | undefined): ThingCategory {
-        if (thingTypeId == undefined) return { key: "unknown", image: "", title: "Some Thing" };
+        if (!thingTypeId) return { key: "unknown", image: "", title: "Some Thing" };
 
-        const thingType = this.getThingType(thingTypeId);
-        if (thingType == undefined) return { key: "unknown", image: "", title: "Some Thing" };
+        const thingType = this.intercomService.thingTypes.find((type) => type.identifier === thingTypeId)?.category;
+        if (!thingType) return { key: "unknown", image: "", title: "Some Thing" };
 
         return this.thingCategoryService.getCategory(thingType);
     }
 
     getThingType(thingTypeId: string | undefined): ThingTypeCategoryVO | undefined {
-        if (thingTypeId == undefined) return ThingTypeCategoryVO.None;
+        if (!thingTypeId) return ThingTypeCategoryVO.None;
 
-        return this.intercomService.thingTypes.find((type) => type.identifier === thingTypeId)?.category;
+        const type = this.intercomService.thingTypes.find((type) => type.identifier === thingTypeId);
+
+        return type ? type.category : ThingTypeCategoryVO.None;
+    }
+
+    getThingTypeName(thingTypeId: string | undefined): string {
+        if (thingTypeId == undefined) "unknown";
+
+        const type = this.intercomService.thingTypes.find((type) => type.identifier === thingTypeId);
+
+        return type ? type.name : "unknown";
     }
 }

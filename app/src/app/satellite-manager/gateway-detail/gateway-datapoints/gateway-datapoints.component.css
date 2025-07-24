@@ -75,31 +75,6 @@
 	width: 100%;
 }
 
-.mat-column-name {
-	flex: 1;
-	text-align: left;
-}
-
-.mat-column-thing_type {
-	flex: 1;
-	text-align: left;
-}
-
-.mat-column-thing_type_id {
-	width: 200px;
-	text-align: left;
-}
-
-.mat-column-config {
-	width: 50px;
-	text-align: left;
-}
-
-.mat-column-type {
-	width: 200px;
-	text-align: left;
-}
-
 .element-row {
 	cursor: pointer;
 }
@@ -142,6 +117,16 @@
 
 .mat-column-expanded_detail {
 	border: none;
+}
+
+.mat-column-name {
+	flex: 1;
+	text-align: left;
+}
+
+.mat-column-category {
+	flex: 1;
+	text-align: left;
 }
 
 .mat-column-match {
