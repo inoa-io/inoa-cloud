@@ -391,5 +391,44 @@
 	"eventsEnabled": true,
 	"eventsListeners": [ "metrics-listener", "jboss-logging" ],
 	"adminEventsEnabled": true,
-	"adminEventsDetailsEnabled": true
+	"adminEventsDetailsEnabled": true,
+    "identityProviders": [
+      {
+        "alias": "google",
+        "displayName": "GrayC GmbH",
+        "internalId": "6f371925-6f43-41c7-84d0-79ee0783525a",
+        "providerId": "google",
+        "enabled": true,
+        "updateProfileFirstLoginMode": "on",
+        "trustEmail": true,
+        "storeToken": false,
+        "addReadTokenRoleOnCreate": false,
+        "authenticateByDefault": false,
+        "linkOnly": false,
+        "hideOnLogin": false,
+        "firstBrokerLoginFlowAlias": "first broker login",
+        "config": {
+          "acceptsPromptNoneForwardFromClient": "false",
+          "clientId": "${google.client.id}",
+          "disableUserInfo": "false",
+          "filteredByClaim": "false",
+          "hostedDomain": "grayc.de",
+          "syncMode": "FORCE",
+          "clientSecret": "${google.client.secret}",
+          "caseSensitiveOriginalUsername": "false"
+        }
+      }
+    ],
+    "identityProviderMappers": [
+      {
+        "id": "131eeefb-e9ec-4ae3-b703-fb7e85728450",
+        "name": "role.realm-management.realm-admin",
+        "identityProviderAlias": "google",
+        "identityProviderMapper": "oidc-hardcoded-role-idp-mapper",
+        "config": {
+          "syncMode": "FORCE",
+          "role": "realm-management.realm-admin"
+        }
+      }
+    ]
 }

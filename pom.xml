@@ -194,7 +194,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcpkix-jdk18on </artifactId>
+				<artifactId>bcpkix-jdk18on</artifactId>
 				<version>${version.org.bouncycastle}</version>
 			</dependency>
 			<dependency>

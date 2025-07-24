@@ -6,6 +6,8 @@ set fallback := true
 set script-interpreter := ["bash", "-eu"]
 
 export IP := env('IP', '127.0.0.1')
+export GOOGLE_CLIENT_ID := env('GOOGLE_CLIENT_ID', 'google-client-id')
+export GOOGLE_CLIENT_SECRET := env('GOOGLE_CLIENT_SECRET', 'google-client-secret')
 export MCNOIZE := env('MCNOIZE', '1')
 export MAVEN_ARGS:= "--color=always --no-transfer-progress -Dmaven.plugin.validation=NONE -Dk3s.skipRm=false -Dk3s.failIfExists=false -Dformatter.skip -Dtidy.skip -Dimpsort.skip"
 
@@ -70,7 +72,7 @@ restart: stop start deploy
 [group('integration-tests')]
 [working-directory: 'test']
 deploy:
-	mvn resources:copy-resources@k3s k3s:apply -Dip=$IP -Dmcnoize.replicas=$MCNOIZE
+	mvn resources:copy-resources@k3s k3s:apply -Dip=$IP -Dmcnoize.replicas=$MCNOIZE -Dgoogle.client.id=$GOOGLE_CLIENT_ID -Dgoogle.client.secret=$GOOGLE_CLIENT_SECRET
 
 # Build image and redeploy inoa.
 [group('integration-tests')]
