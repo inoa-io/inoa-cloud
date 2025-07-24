@@ -11,17 +11,11 @@ import { InternalCommunicationService } from "../../services/internal-communicat
     selector: "gc-thing-creation-dialog",
     templateUrl: "./thing-creation-dialog.component.html",
     styleUrls: ["./thing-creation-dialog.component.css"]
-    selector: "gc-thing-creation-dialog",
-    templateUrl: "./thing-creation-dialog.component.html",
-    styleUrls: ["./thing-creation-dialog.component.css"]
 })
 export class ThingCreationDialogComponent implements OnDestroy {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private destroy$: Subject<any> = new Subject<any>();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private destroy$: Subject<any> = new Subject<any>();
 
-    public thingTypes: ThingTypeVO[] = [];
     public thingTypes: ThingTypeVO[] = [];
 
     form!: FormGroup;
@@ -91,11 +85,6 @@ export class ThingCreationDialogComponent implements OnDestroy {
             thing_type_id: type.identifier,
             configurations: {},
             measurands: []
-        };
-        const thing: ThingCreateVO = {
-            name: type.name,
-            gateway_id: this.data.gateway.gateway_id,
-            thing_type_id: type.identifier
         };
 
         this.data.thing = thing;
