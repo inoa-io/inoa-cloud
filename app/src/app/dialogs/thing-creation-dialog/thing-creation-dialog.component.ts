@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
-import { GatewayVO, ThingTypeVO, ThingCreateVO } from "@inoa/api";
-import { FormGroup } from "@angular/forms";
+import { GatewayVO, ThingTypeVO, ThingCreateVO, MeasurandVO } from "@inoa/api";
+import { FormBuilder, FormGroup, Validators, FormArray } from "@angular/forms";
 import { Subject } from "rxjs";
 import { ThingCategoryService, ThingCategory } from "../../services/thing-category.service";
 import { UtilityService } from "../../services/utility-service";
@@ -19,9 +19,7 @@ export class ThingCreationDialogComponent implements OnDestroy {
     public thingTypes: ThingTypeVO[] = [];
 
     form!: FormGroup;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    model: any;
-    selectedThingType!: ThingTypeVO;
+    selectedThingType: ThingTypeVO | undefined;
     category!: ThingCategory;
 
     // extract from json_schema for display in dialog
@@ -33,9 +31,14 @@ export class ThingCreationDialogComponent implements OnDestroy {
         private thingCategoryService: ThingCategoryService,
         public intercomService: InternalCommunicationService,
         public utilityService: UtilityService,
+        private fb: FormBuilder,
         @Inject(MAT_DIALOG_DATA) public data: ThingCreationDialogData
     ) {
-        this.form = new FormGroup({});
+        this.form = this.fb.group({
+            name: ["", Validators.required],
+            configurations: this.fb.group({}),
+            measurands: this.fb.array([])
+        });
 
         // Ensure that thingTypes is defined before accessing its elements
         if (this.intercomService.thingTypes && this.intercomService.thingTypes.length > 0) {
@@ -55,18 +58,40 @@ export class ThingCreationDialogComponent implements OnDestroy {
         }
 
         this.selectedThingType = type;
-        this.form = new FormGroup({});
-
         this.category = type.category ? this.thingCategoryService.getCategory(type.identifier) : { key: "error", image: "", title: "none" };
-        this.model = {};
+
+        const configurationsGroup = this.fb.group({});
+        if (type.configurations) {
+            type.configurations.forEach((config) => {
+                const validators = [];
+                if (config.validation_regex) {
+                    validators.push(Validators.pattern(config.validation_regex));
+                }
+                configurationsGroup.addControl(config.name, this.fb.control("", validators));
+            });
+        }
+
+        const measurandsArray = this.fb.array(type.measurands ? type.measurands.map(() => this.fb.control(true)) : []);
+
+        this.form = this.fb.group({
+            name: [type.name, Validators.required],
+            configurations: configurationsGroup,
+            measurands: measurandsArray
+        });
 
         const thing: ThingCreateVO = {
             name: type.name,
             gateway_id: this.data.gateway.gateway_id,
-            thing_type_id: type.identifier
+            thing_type_id: type.identifier,
+            configurations: {},
+            measurands: []
         };
 
         this.data.thing = thing;
+    }
+
+    get measurands(): FormArray {
+        return this.form.get("measurands") as FormArray;
     }
 
     onCancelClick(): void {
@@ -74,13 +99,35 @@ export class ThingCreationDialogComponent implements OnDestroy {
     }
 
     onCreateClick() {
-        if (this.form.valid && this.selectedThingType) {
-            if (this.data.thing) {
-                this.data.thing.thing_type_id = this.selectedThingType.identifier;
-                this.data.thing.name = this.form.get("name")?.value;
+        if (this.form.valid && this.selectedThingType && this.data.thing) {
+            this.data.thing.name = this.form.get("name")?.value;
 
-                // TODO
+            const configurations: { [key: string]: string } = {};
+            if (this.selectedThingType.configurations) {
+                this.selectedThingType.configurations.forEach((config) => {
+                    const value = this.form.get("configurations")?.get(config.name)?.value;
+                    if (value) {
+                        configurations[config.name] = value;
+                    }
+                });
             }
+            this.data.thing.configurations = configurations;
+
+            const measurands: MeasurandVO[] = [];
+            if (this.selectedThingType.measurands) {
+                this.measurands.controls.forEach((control, index) => {
+                    if (control.value && this.selectedThingType && this.selectedThingType.measurands) {
+                        const measurandType = this.selectedThingType.measurands[index];
+                        measurands.push({
+                            measurand_type: measurandType.obis_id,
+                            enabled: true,
+                            interval: 30000,
+                            timeout: 1000
+                        });
+                    }
+                });
+            }
+            this.data.thing.measurands = measurands;
         }
     }
 
