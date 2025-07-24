@@ -71,13 +71,6 @@
 	}
 }
 
-.mat-column-enabled {
-	width: 85px;
-	min-width: 85px;
-	max-width: 85px;
-	text-align: center;
-}
-
 .things-table {
 	width: 100%;
 }
