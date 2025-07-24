@@ -180,10 +180,12 @@
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>${version.org.projectlombok.lombok}</version>
 						</path>
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut.micronaut-inject-java}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

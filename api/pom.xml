@@ -140,6 +140,7 @@
 						<path>
 							<groupId>io.micronaut</groupId>
 							<artifactId>micronaut-inject-java</artifactId>
+							<version>${version.io.micronaut.micronaut-inject-java}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
