@@ -12,6 +12,10 @@ public interface ThingTypeRepository extends CrudRepository<ThingType, Long> {
 
 	@Join(value = "measurandTypes", type = Join.Type.FETCH)
 	@Join(value = "thingConfigurations", type = Join.Type.FETCH)
+	List<ThingType> findAll();
+
+	@Join(value = "measurandTypes", type = Join.Type.FETCH)
+	@Join(value = "thingConfigurations", type = Join.Type.FETCH)
 	List<ThingType> findByIdentifier(String identifier);
 
 	@Join(value = "measurandTypes", type = Join.Type.FETCH)
