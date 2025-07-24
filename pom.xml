@@ -111,7 +111,7 @@
 		<version.io.micronaut.micronaut-inject-java>4.9.7</version.io.micronaut.micronaut-inject-java>
 		<version.org.projectlombok.lombok>1.18.36</version.org.projectlombok.lombok>
 		<version.org.mapstruct.mapstruct-processor>${version.org.mapstruct}</version.org.mapstruct.mapstruct-processor>
-		<version.io.micronaut.micronaut-inject-java>4.7.23</version.io.micronaut.micronaut-inject-java>
+		<version.io.micronaut.micronaut-inject-java>4.7.26</version.io.micronaut.micronaut-inject-java>
 		<version.io.micronaut.validation.micronaut-validation-processor>4.7.0</version.io.micronaut.validation.micronaut-validation-processor>
 		<version.io.micronaut.data.micronaut-data-processor>4.10.5</version.io.micronaut.data.micronaut-data-processor>
 
