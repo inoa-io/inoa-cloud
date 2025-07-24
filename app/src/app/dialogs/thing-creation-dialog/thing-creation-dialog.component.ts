@@ -2,8 +2,6 @@ import { Component, Inject, OnDestroy } from "@angular/core";
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { GatewayVO, ThingTypeVO, ThingCreateVO } from "@inoa/api";
 import { FormGroup } from "@angular/forms";
-import { FormlyFieldConfig, FormlyFormOptions } from "@ngx-formly/core";
-import { FormlyJsonschema } from "@ngx-formly/core/json-schema";
 import { Subject } from "rxjs";
 import { ThingCategoryService, ThingCategory } from "../../services/thing-category.service";
 import { UtilityService } from "../../services/utility-service";
@@ -23,8 +21,6 @@ export class ThingCreationDialogComponent implements OnDestroy {
     form!: FormGroup;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     model: any;
-    options!: FormlyFormOptions;
-    fields!: FormlyFieldConfig[];
     selectedThingType!: ThingTypeVO;
     category!: ThingCategory;
 
@@ -60,12 +56,9 @@ export class ThingCreationDialogComponent implements OnDestroy {
 
         this.selectedThingType = type;
         this.form = new FormGroup({});
-        this.options = {};
 
         this.category = type.category ? this.thingCategoryService.getCategory(type.identifier) : { key: "error", image: "", title: "none" };
         this.model = {};
-
-        this.addOutlineAppearanceToFields(this.fields);
 
         const thing: ThingCreateVO = {
             name: type.name,
@@ -74,20 +67,6 @@ export class ThingCreationDialogComponent implements OnDestroy {
         };
 
         this.data.thing = thing;
-    }
-
-    private addOutlineAppearanceToFields(fields: FormlyFieldConfig[]) {
-        fields.forEach((field) => {
-            if (field.props) {
-                field.props["appearance"] = "outline";
-            } else {
-                field.props = { appearance: "outline" };
-            }
-
-            if (field.fieldGroup) {
-                this.addOutlineAppearanceToFields(field.fieldGroup);
-            }
-        });
     }
 
     onCancelClick(): void {
