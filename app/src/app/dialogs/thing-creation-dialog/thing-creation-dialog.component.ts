@@ -58,7 +58,7 @@ export class ThingCreationDialogComponent implements OnDestroy {
         }
 
         this.selectedThingType = type;
-        this.category = type.category ? this.thingCategoryService.getCategory(type.identifier) : { key: "error", image: "", title: "none" };
+        this.category = type.category ? this.thingCategoryService.getCategory(type.category) : { key: "error", image: "", title: "none" };
 
         const configurationsGroup = this.fb.group({});
         if (type.configurations) {
