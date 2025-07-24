@@ -9,54 +9,54 @@ import { LocationEditorDialogComponent } from "../dialogs/location-editor-dialog
 import { GatewayLocationDataVO } from "src/openapi/model/gatewayLocationData";
 
 @Injectable({
-	providedIn: "root"
+    providedIn: "root"
 })
 export class DialogService {
-	constructor(private intercomService: InternalCommunicationService, private thingTypesService: ThingTypesService, public dialog: MatDialog) {}
+    constructor(private intercomService: InternalCommunicationService, public dialog: MatDialog) {}
 
-	openCreateThingDialog(): MatDialogRef<ThingCreationDialogComponent> | null {
-		if (!this.intercomService.selectedGateway) {
-			return null;
-		}
+    openCreateThingDialog(): MatDialogRef<ThingCreationDialogComponent> | null {
+        if (!this.intercomService.selectedGateway) {
+            return null;
+        }
 
-		const thingCreationDialogData: ThingCreationDialogData = {
-			gateway: this.intercomService.selectedGateway,
-			thing: undefined
-		};
+        const thingCreationDialogData: ThingCreationDialogData = {
+            gateway: this.intercomService.selectedGateway,
+            thing: undefined
+        };
 
-		const dialogRef = this.dialog.open(ThingCreationDialogComponent, {
-			width: "700px",
-			data: thingCreationDialogData
-		});
+        const dialogRef = this.dialog.open(ThingCreationDialogComponent, {
+            width: "700px",
+            data: thingCreationDialogData
+        });
 
-		return dialogRef;
-	}
+        return dialogRef;
+    }
 
-	openRenameSatelliteDialog(oldName: string): MatDialogRef<RenameSatelliteDialogComponent> | null {
-		const dialogRef = this.dialog.open(RenameSatelliteDialogComponent, {
-			data: { name: oldName }
-		});
+    openRenameSatelliteDialog(oldName: string): MatDialogRef<RenameSatelliteDialogComponent> | null {
+        const dialogRef = this.dialog.open(RenameSatelliteDialogComponent, {
+            data: { name: oldName }
+        });
 
-		return dialogRef;
-	}
+        return dialogRef;
+    }
 
-	openConfigEditDialog(data: ConfigEditDialogData): MatDialogRef<ConfigEditDialogComponent> | null {
-		const dialogRef = this.dialog.open(ConfigEditDialogComponent, {
-			data: data
-		});
+    openConfigEditDialog(data: ConfigEditDialogData): MatDialogRef<ConfigEditDialogComponent> | null {
+        const dialogRef = this.dialog.open(ConfigEditDialogComponent, {
+            data: data
+        });
 
-		return dialogRef;
-	}
+        return dialogRef;
+    }
 
-	openLocationEditorDialog(oldLocation: GatewayLocationDataVO | null): MatDialogRef<LocationEditorDialogComponent> | null {
-		const dialogRef = this.dialog.open(LocationEditorDialogComponent, {
-			height: "100%",
-			width: "100%",
-			maxHeight: "100%",
-			maxWidth: "100%",
-			data: { location: oldLocation }
-		});
+    openLocationEditorDialog(oldLocation: GatewayLocationDataVO | null): MatDialogRef<LocationEditorDialogComponent> | null {
+        const dialogRef = this.dialog.open(LocationEditorDialogComponent, {
+            height: "100%",
+            width: "100%",
+            maxHeight: "100%",
+            maxWidth: "100%",
+            data: { location: oldLocation }
+        });
 
-		return dialogRef;
-	}
+        return dialogRef;
+    }
 }
