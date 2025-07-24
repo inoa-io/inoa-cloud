@@ -395,7 +395,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	@Order(21)
 	@Test
 	@Override
-	public void syncThingsToGateway204() {}
+	public void syncThingsToGateway200() {}
 
 	@Test
 	@Order(22)

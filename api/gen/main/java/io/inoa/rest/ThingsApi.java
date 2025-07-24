@@ -42,7 +42,8 @@ public interface ThingsApi {
 			java.lang.String gatewayId);
 
 	@io.micronaut.http.annotation.Get(PATH_SYNC_THINGS_TO_GATEWAY)
-	io.micronaut.http.HttpResponse<Object> syncThingsToGateway(
+	@io.micronaut.http.annotation.Produces({ "application/json" })
+	io.micronaut.http.HttpResponse<java.lang.Object> syncThingsToGateway(
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
 			@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")

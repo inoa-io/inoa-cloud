@@ -40,7 +40,7 @@ public interface ThingsApiTestSpec {
 
 	// syncThingsToGateway
 
-	void syncThingsToGateway204() throws java.lang.Exception;
+	void syncThingsToGateway200() throws java.lang.Exception;
 
 	void syncThingsToGateway401() throws java.lang.Exception;
 

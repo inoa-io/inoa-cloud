@@ -11,11 +11,6 @@ info:
     url: https://github.com/inoa-io
 servers:
   - url: https://api.qas.inoa.io
-    variables:
-      inoa.domain:
-        default: 127.0.0.1.nip.io
-        description: Your local ip where INOA is running
-  - url: http://localhost:4300
 security:
   - Keycloak: []
   - BearerAuth: []
@@ -1166,8 +1161,12 @@ paths:
       description: Uploads the things and measurands to the given gateway
       operationId: syncThingsToGateway
       responses:
-        204:
+        200:
           description: accepted sync request.
+          content:
+            application/json:
+              schema:
+                type: object
         401:
           description: Unauthorized.
         404:

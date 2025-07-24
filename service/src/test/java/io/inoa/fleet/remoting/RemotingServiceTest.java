@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.UUID;
 
 import jakarta.inject.Inject;
 
@@ -33,18 +32,22 @@ public class RemotingServiceTest extends AbstractUnitTest {
 	@Test
 	void rpcCommand(TestMqttListener mqttListener) throws MqttException, IOException {
 
+		var tenant = data.tenant("test");
+		var gateway = data.gateway(tenant, true);
+		var credential = data.credentialInitialPSK(gateway);
+
 		// Test constants
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
-		var tenantId = "inoa";
-		var gatewayId = "GW-0001";
-		var psk = UUID.randomUUID().toString().getBytes();
+		var tenantId = tenant.getTenantId();
+		var gatewayId = gateway.getGatewayId();
+		var psk = credential.getValue();
 
 		// Create client to act as gateway
 		var fakeGatewayClient = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		fakeGatewayClient.trustAllCertificates().connect();
 
 		// Subscribe to RPC commands for our gateway and tenant
-		fakeGatewayClient.subscribe("command/inoa/GW-0001/req/+/cloudEventRpc", mqttListener);
+		fakeGatewayClient.subscribe("command/" + tenantId + "/" + gatewayId + "/req/+/cloudEventRpc", mqttListener);
 		// Clear all received messages
 		mqttListener.clear();
 
@@ -58,7 +61,7 @@ public class RemotingServiceTest extends AbstractUnitTest {
 
 		// Send the command response from our fake gateway
 		fakeGatewayClient.publish(
-				"command/inoa/GW-0001/res/" + command.getId() + "/200",
+				"command/" + tenantId + "/" + gatewayId + "/res/" + command.getId() + "/200",
 				new ObjectMapper()
 						.writeValueAsBytes(
 								new RpcResponseVO()

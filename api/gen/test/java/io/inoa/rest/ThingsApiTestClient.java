@@ -46,7 +46,8 @@ public interface ThingsApiTestClient {
 			java.lang.String gatewayId);
 
 	@io.micronaut.http.annotation.Get("/gateways/{gateway_id}/things/upload")
-	io.micronaut.http.HttpResponse<?> syncThingsToGateway(
+	@io.micronaut.http.annotation.Consumes({ "application/json" })
+	io.micronaut.http.HttpResponse<java.lang.Object> syncThingsToGateway(
 			@io.micronaut.core.annotation.Nullable
 			@io.micronaut.http.annotation.Header(io.micronaut.http.HttpHeaders.AUTHORIZATION)
 			java.lang.String authorization,

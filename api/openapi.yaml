@@ -1167,8 +1167,12 @@ paths:
       description: Uploads the things and measurands to the given gateway
       operationId: syncThingsToGateway
       responses:
-        204:
+        200:
           description: accepted sync request.
+          content:
+            application/json:
+              schema:
+                type: object
         401:
           description: Unauthorized.
         404:
