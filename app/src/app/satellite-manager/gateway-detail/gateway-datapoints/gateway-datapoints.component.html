@@ -176,10 +176,11 @@
                             <td
                                 mat-cell
                                 *matCellDef="let element"
-                                [attr.colspan]="displayedColumnsThingsTableDatabase.length">
+                                [attr.colspan]="displayedColumnsThingsTableDatabase.length"
+                                [class.expanded]="expandedElementDatabase === element">
                                 <div
                                     class="thing-config-element-detail"
-                                    [class.thing-config-element-detail-expanded]="expandCheckDb(element)">
+                                    [@detailExpand]="expandedElementDatabase === element ? 'expanded' : 'collapsed'">
                                     <!-- show config if there is any -->
                                     <div *ngIf="element.configurations">
                                         <p>Config:</p>
@@ -411,7 +412,7 @@
                                 [attr.colspan]="displayedColumnsThingsTableSatellite.length">
                                 <div
                                     class="thing-config-element-detail"
-                                    [class.thing-config-element-detail-expanded]="expandCheckSat(element)">
+                                    [@detailExpand]="expandedElementSatellite === element ? 'expanded' : 'collapsed'">
                                     <!-- show config if there is any -->
                                     <div *ngIf="element">
                                         <p>Config:</p>
@@ -432,7 +433,7 @@
                         <tr
                             mat-row
                             *matRowDef="let row; columns: displayedColumnsThingsTableSatellite"
-                            class="thing-config-row element-row"
+                            class="thing-config-row"
                             [class.thing-config-expanded-row]="expandedElementSatellite === row"
                             (click)="toggleSat(row);"></tr>
                         <tr

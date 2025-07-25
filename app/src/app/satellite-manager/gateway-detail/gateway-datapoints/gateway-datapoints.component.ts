@@ -15,7 +15,14 @@ export interface ConfigData {
 @Component({
     selector: "gc-gateway-datapoints",
     templateUrl: "./gateway-datapoints.component.html",
-    styleUrl: "./gateway-datapoints.component.css"
+    styleUrl: "./gateway-datapoints.component.css",
+    animations: [
+        trigger("detailExpand", [
+            state("collapsed", style({ height: "0px", minHeight: "0px" })),
+            state("expanded", style({ height: "*" })),
+            transition("expanded <=> collapsed", animate("75ms cubic-bezier(0.4, 0, 0.2, 1)")),
+        ]),
+    ],
 })
 export class GatewayDatapointsComponent implements OnInit {
     expandedElementDatabase: ThingVO | null = null ;
@@ -211,19 +218,11 @@ export class GatewayDatapointsComponent implements OnInit {
     }
 
     toggleDb(row: ThingVO) {
-        this.expandedElementDatabase = this.expandCheckDb(row) ? null : row;
+        this.expandedElementDatabase = this.expandedElementDatabase === row ? null : row;
     }
 
     toggleSat(row: ThingVO) {
-        this.expandedElementDatabase = this.expandCheckSat(row) ? null : row;
-    }
-
-    expandCheckDb(row: ThingVO): boolean {
-        return row === this.expandedElementDatabase;
-    }
-
-    expandCheckSat(row: ThingVO): boolean {
-        return row === this.expandedElementSatellite;
+        this.expandedElementSatellite = this.expandedElementSatellite === row ? null : row;
     }
 
     refreshThingsListDatabase(satellite: GatewayVO | undefined) {

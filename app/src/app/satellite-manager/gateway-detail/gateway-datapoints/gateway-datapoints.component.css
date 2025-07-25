@@ -75,32 +75,10 @@
 	width: 100%;
 }
 
-.element-row {
-	cursor: pointer;
-}
-
-.element-row:hover {
-	background: #f5f5f5;
-}
-
-.element-row-selected {
-	background: #e5e5e5;
-}
-
-.element-row-selected:hover {
-	background: #d5d5d5;
-}
-
 .thing-config-element-detail {
 	overflow: hidden;
-    display: grid;
-    grid-template-rows: 0fr;
-    grid-template-columns: 100%;
-    transition: grid-template-rows 225ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.thing-config-element-detail-expanded {
-    grid-template-rows: 1fr;
+	display: flex;
+	flex-direction: column;
 }
 
 .config-code {
@@ -117,12 +95,8 @@
     cursor: pointer;
 }
 
-.normal-row:not(.expanded-row):hover {
-    background: whitesmoke;
-}
-
-.normal-row:not(.expanded-row):active {
-    background: #efefef;
+.normal-row:hover {
+	background-color: whitesmoke;
 }
 
 .thing-config-row {
@@ -131,8 +105,7 @@
 }
 
 .thing-config-expanded-row {
-	height: "*";
-	background-color: beige;
+	height: auto;
 }
 
 .thing-config-row:hover {
@@ -141,6 +114,15 @@
 
 .satellite-things-table {
 	width: 100%;
+}
+
+.mat-column-expanded-detail {
+	border-bottom: none;
+}
+
+.expanded {
+	border-bottom: 1px solid #dedede;
+	background-color: #fbfbfb;
 }
 
 .mat-column-name {
