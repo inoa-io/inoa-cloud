@@ -27,7 +27,7 @@ export interface ConfigData {
 export class GatewayDatapointsComponent implements OnInit {
     expandedElementDatabase: ThingVO | null = null;
     expandedElementSatellite: ThingVO | null = null;
-    displayedColumnsThingsTableDatabase: string[] = ["name", "category", "match", "actions", "sync"];
+    displayedColumnsThingsTableDatabase: string[] = ["name", "type", "category", "match", "actions", "sync"];
     displayedColumnsThingsTableSatellite: string[] = ["sync", "name", "match", "actions"];
 
     dataSourceThingsDatabase = new MatTableDataSource<ThingVO>();

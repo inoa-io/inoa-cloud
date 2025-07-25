@@ -124,6 +124,11 @@
 	text-align: left;
 }
 
+.mat-column-type {
+	flex: 1;
+	text-align: left;
+}
+
 .mat-column-category {
 	flex: 1;
 	text-align: left;
