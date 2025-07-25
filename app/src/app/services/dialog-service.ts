@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { InternalCommunicationService } from "../services/internal-communication-service";
 import { ThingCreationDialogComponent, ThingCreationDialogData } from "../dialogs/thing-creation-dialog/thing-creation-dialog.component";
 import { MatDialog, MatDialogRef } from "@angular/material/dialog";
-import { ThingTypesService } from "@inoa/api";
 import { RenameSatelliteDialogComponent } from "../dialogs/rename-satellite-dialog/rename-satellite-dialog.component";
 import { ConfigEditDialogComponent, ConfigEditDialogData } from "../dialogs/config-edit-dialog/config-edit-dialog.component";
 import { LocationEditorDialogComponent } from "../dialogs/location-editor-dialog/location-editor-dialog.component";

@@ -172,14 +172,14 @@
                         </ng-container>
 
                         <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-                        <ng-container matColumnDef="expanded_detail">
+                        <ng-container matColumnDef="expanded-detail">
                             <td
                                 mat-cell
                                 *matCellDef="let element"
-                                [attr.colspan]="3">
+                                [attr.colspan]="displayedColumnsThingsTableDatabase.length">
                                 <div
                                     class="thing-config-element-detail"
-                                    [@detailExpand]="element === expandedElementDatabase ? 'expanded' : 'collapsed'">
+                                    [class.thing-config-element-detail-expanded]="expandCheckDb(element)">
                                     <!-- show config if there is any -->
                                     <div *ngIf="element.configurations">
                                         <p>Config:</p>
@@ -198,18 +198,20 @@
 
                         <tr
                             mat-header-row
-                            *matHeaderRowDef="displayedColumnsThingsTableDatabase; sticky: true"></tr>
+                            *matHeaderRowDef="displayedColumnsThingsTableDatabase; sticky: true">
+                        </tr>
                         <tr
                             mat-row
                             *matRowDef="let row; columns: displayedColumnsThingsTableDatabase"
-                            class="thing-config-row"
-                            [class.thing-config-expanded-row]="expandedElementDatabase === row"
-                            (click)="cellClickThings(row); expandedElementDatabase = expandedElementDatabase === row ? null : row"
-                            class="element-row"></tr>
+                            class="normal-row"
+                            [class.expanded-row]="expandedElementDatabase === row"
+                            (click)="toggleDb(row);">
+                        </tr>
                         <tr
                             mat-row
-                            *matRowDef="let row; columns: ['expanded_detail']"
-                            class="thing-config-detail-row"></tr>
+                            *matRowDef="let row; columns: ['expanded-detail']"
+                            class="thing-config-detail-row">
+                        </tr>
                     </table>
                 </div>
             </mat-card-content>
@@ -402,14 +404,14 @@
                         </ng-container>
 
                         <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-                        <ng-container matColumnDef="expanded_detail">
+                        <ng-container matColumnDef="expanded-detail">
                             <td
                                 mat-cell
                                 *matCellDef="let element"
-                                [attr.colspan]="3">
+                                [attr.colspan]="displayedColumnsThingsTableSatellite.length">
                                 <div
                                     class="thing-config-element-detail"
-                                    [@detailExpand]="element === expandedElementSatellite ? 'expanded' : 'collapsed'">
+                                    [class.thing-config-element-detail-expanded]="expandCheckSat(element)">
                                     <!-- show config if there is any -->
                                     <div *ngIf="element">
                                         <p>Config:</p>
@@ -430,13 +432,12 @@
                         <tr
                             mat-row
                             *matRowDef="let row; columns: displayedColumnsThingsTableSatellite"
-                            class="thing-config-row"
+                            class="thing-config-row element-row"
                             [class.thing-config-expanded-row]="expandedElementSatellite === row"
-                            (click)="cellClickThings(row); expandedElementSatellite = expandedElementSatellite === row ? null : row"
-                            class="element-row"></tr>
+                            (click)="toggleSat(row);"></tr>
                         <tr
                             mat-row
-                            *matRowDef="let row; columns: ['expanded_detail']"
+                            *matRowDef="let row; columns: ['expanded-detail']"
                             class="thing-config-detail-row"></tr>
                     </table>
                 </div>

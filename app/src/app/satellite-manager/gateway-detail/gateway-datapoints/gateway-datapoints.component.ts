@@ -15,17 +15,10 @@ export interface ConfigData {
 @Component({
     selector: "gc-gateway-datapoints",
     templateUrl: "./gateway-datapoints.component.html",
-    styleUrl: "./gateway-datapoints.component.css",
-    animations: [
-        trigger("detailExpand", [
-            state("collapsed", style({ height: "0px", minHeight: "0" })),
-            state("expanded", style({ height: "*" })),
-            transition("expanded <=> collapsed", animate("225ms cubic-bezier(0.4, 0.0, 0.2, 1)"))
-        ])
-    ]
+    styleUrl: "./gateway-datapoints.component.css"
 })
 export class GatewayDatapointsComponent implements OnInit {
-    expandedElementDatabase: ThingVO | null = null;
+    expandedElementDatabase: ThingVO | null = null ;
     expandedElementSatellite: ThingVO | null = null;
     displayedColumnsThingsTableDatabase: string[] = ["name", "type", "category", "match", "actions", "sync"];
     displayedColumnsThingsTableSatellite: string[] = ["sync", "name", "match", "actions"];
@@ -82,14 +75,14 @@ export class GatewayDatapointsComponent implements OnInit {
     }
 
     findMatchInDatabaseByAllProperties(thingData: any): ThingVO | undefined {
-        // TODO
-        console.log("TODO: " + thingData + " - Do something with findMatchInDatabaseByAllProperties.");
+        // TODO this is just here so the linter does not complain until the todo is fixed
+        if(thingData) return undefined;
         return undefined;
     }
 
     findMatchOnSatelliteByAllProperties(thingData: ThingVO): any | undefined {
-        // TODO
-        console.log("TODO: " + thingData + " - Do something with findMatchOnSatelliteByAllProperties.");
+        // TODO this is just here so the linter does not complain until the todo is fixed
+        if(thingData) return undefined;
         return undefined;
     }
 
@@ -217,20 +210,32 @@ export class GatewayDatapointsComponent implements OnInit {
         });
     }
 
-    cellClickThings(thing: ThingVO) {
-        this.intercomService.selectedThing = thing;
+    toggleDb(row: ThingVO) {
+        this.expandedElementDatabase = this.expandCheckDb(row) ? null : row;
+    }
+
+    toggleSat(row: ThingVO) {
+        this.expandedElementDatabase = this.expandCheckSat(row) ? null : row;
+    }
+
+    expandCheckDb(row: ThingVO): boolean {
+        return row === this.expandedElementDatabase;
+    }
+
+    expandCheckSat(row: ThingVO): boolean {
+        return row === this.expandedElementSatellite;
     }
 
     refreshThingsListDatabase(satellite: GatewayVO | undefined) {
         //do nothing if there is no satellite selected
         if (!satellite) return;
 
-        this.dataSourceThingsDatabase.data = [];
-        this.intercomService.thingsList = [];
         this.intercomService.isLoadingDB = true;
 
         //get things from database
         this.thingsService.findThingsByGatewayId(satellite.gateway_id).subscribe((data) => {
+            this.dataSourceThingsDatabase.data = [];
+            this.intercomService.thingsList = [];
             this.dataSourceThingsDatabase.data = data;
             this.intercomService.thingsList = data;
             this.intercomService.isLoadingDB = false;
@@ -241,11 +246,11 @@ export class GatewayDatapointsComponent implements OnInit {
         //do nothing if there is no satellite selected
         if (!satellite) return;
 
-        this.dataSourceThingsSatellite.data = [];
         this.intercomService.isLoadingSat = true;
 
         //get things from satellite
         this.rpcMqttService.sendRpcCommand(satellite.gateway_id, { method: "dp.list" }).subscribe((data) => {
+            this.dataSourceThingsSatellite.data = [];
             this.storeSatelliteThingsData(satellite.gateway_id, data.response);
             this.intercomService.isLoadingSat = false;
         });
