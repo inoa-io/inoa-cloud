@@ -31,7 +31,7 @@ public class ModbusMDVH4006BuilderTest extends AbstractBuilderTest {
 		thing.setName("schrank");
 
 		addConfig(thing, "serial", ThingConfigurationType.NUMBER, "39000976");
-		addConfig(thing, "modbus_interface", ThingConfigurationType.NUMBER, "1");
+		addConfig(thing, "modbus interface", ThingConfigurationType.NUMBER, "1");
 
 		addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
 		addMeasurand(thing, new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));

@@ -35,7 +35,7 @@ public class DvModbusIRBuilderTest extends AbstractBuilderTest {
 		thing.setMeasurands(new HashSet<>());
 
 		addConfig(thing, "serial", ThingConfigurationType.NUMBER, "22");
-		addConfig(thing, "modbus_interface", ThingConfigurationType.NUMBER, "1");
+		addConfig(thing, "modbus interface", ThingConfigurationType.NUMBER, "1");
 
 		addMeasurand(thing, new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
 		addMeasurand(thing, new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));

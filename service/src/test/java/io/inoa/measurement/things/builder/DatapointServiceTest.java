@@ -34,7 +34,7 @@ public class DatapointServiceTest extends AbstractBuilderTest {
 		thing1.setThingType(new ThingType().setIdentifier("dvh4013"));
 
 		addConfig(thing1, "serial", ThingConfigurationType.NUMBER, "100022");
-		addConfig(thing1, "modbus_interface", ThingConfigurationType.NUMBER, "1");
+		addConfig(thing1, "modbus interface", ThingConfigurationType.NUMBER, "1");
 
 		addMeasurand(thing1, new MeasurandType().setObisId(OBIS_1_8_0.getObisId()));
 		addMeasurand(thing1, new MeasurandType().setObisId(OBIS_2_8_0.getObisId()));

@@ -7,6 +7,7 @@ import static io.inoa.test.HttpAssertions.assert400;
 import static io.inoa.test.HttpAssertions.assert401;
 import static io.inoa.test.HttpAssertions.assert404;
 import static io.inoa.test.HttpAssertions.assert409;
+import static io.inoa.test.HttpAssertions.assert504;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Comparator;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 import jakarta.inject.Inject;
 
-import org.junit.jupiter.api.Disabled;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -150,7 +151,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 		thingCreateVO.putConfigurationsItem("Serial", "bielefeld");
 		assertEquals(
 				"Some configuration values are invalid: ['bielefeld' does not match regular expression:"
-						+ " [0-9]*]",
+						+ " [0-9]{8}]",
 				assert400(() -> client.createThing(auth(tenant), thingCreateVO)).getMessage());
 	}
 
@@ -173,8 +174,30 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 		assert409(() -> client.createThing(auth(tenant), thingCreateVO));
 	}
 
-	@Test
 	@Order(5)
+	@Test
+	@Override
+	public void syncThingsToGateway200() throws MqttException {
+		// TODO: Write better test with fake gateway reacting to RPC commands, so no 504 is caused!
+		assert504(() -> client.syncThingsToGateway(auth(tenant), gateway.getGatewayId()));
+	}
+
+	@Test
+	@Order(6)
+	@Override
+	public void syncThingsToGateway401() {
+		assert401(() -> client.syncThingsToGateway(null, "unknown"));
+	}
+
+	@Test
+	@Order(7)
+	@Override
+	public void syncThingsToGateway404() {
+		assert404(() -> client.syncThingsToGateway(auth(tenant), data.gatewayId()));
+	}
+
+	@Test
+	@Order(8)
 	@Override
 	public void updateThing200() {
 		updatedGateway = data.gateway(tenant);
@@ -239,7 +262,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(6)
+	@Order(9)
 	@Override
 	public void updateThing400() {
 		var thingUpdateVO = new ThingUpdateVO();
@@ -275,19 +298,19 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 		// ConfigKey does not match regex
 		thingUpdateVO.setConfigurations(Map.of("Serial", "bielefeld"));
 		assertEquals(
-				"Config value 'bielefeld' does not match regex '[0-9]*'",
+				"Config value 'bielefeld' does not match regex '[0-9]{8}'",
 				assert400(() -> client.updateThing(auth(tenant), thingId, thingUpdateVO)).getMessage());
 	}
 
 	@Test
-	@Order(7)
+	@Order(10)
 	@Override
 	public void updateThing401() {
 		assert401(() -> client.updateThing(null, UUID.randomUUID(), new ThingUpdateVO()));
 	}
 
 	@Test
-	@Order(8)
+	@Order(11)
 	@Override
 	public void updateThing404() {
 		var thingUpdateVO = new ThingUpdateVO();
@@ -299,7 +322,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(9)
+	@Order(12)
 	@Override
 	public void findThing200() {
 		var thing = assert200(() -> client.findThing(auth(tenant), thingId));
@@ -334,14 +357,14 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(10)
+	@Order(13)
 	@Override
 	public void findThing401() {
 		assert401(() -> client.findThing(null, UUID.randomUUID()));
 	}
 
 	@Test
-	@Order(11)
+	@Order(14)
 	@Override
 	public void findThing404() {
 		assert404(() -> client.findThing(auth(tenant), UUID.randomUUID()));
@@ -391,23 +414,4 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 		assert404(() -> client.deleteThing(auth(tenant), UUID.randomUUID()));
 	}
 
-	@Disabled("NYI")
-	@Order(21)
-	@Test
-	@Override
-	public void syncThingsToGateway200() {}
-
-	@Test
-	@Order(22)
-	@Override
-	public void syncThingsToGateway401() {
-		assert401(() -> client.syncThingsToGateway(null, "unknown"));
-	}
-
-	@Test
-	@Order(23)
-	@Override
-	public void syncThingsToGateway404() {
-		assert404(() -> client.syncThingsToGateway(auth(tenant), data.gatewayId()));
-	}
 }

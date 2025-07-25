@@ -3,12 +3,11 @@ package io.inoa.fleet.remoting;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.MDC;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.rest.RemoteApi;
 import io.inoa.rest.RpcCommandVO;
@@ -52,27 +51,16 @@ public class RemoteController implements RemoteApi {
 			MDC.put("tenantId", "inoa");
 			MDC.put("gatewayId", gatewayId);
 			// Send RPC command
-			remotingService.sendRpcCommand("inoa", gatewayId, rpcCommandVO);
-			// Wait for RPC response with 20s timeout
-			Future<RpcResponseVO> rpcResponseFuture = waitForRpcResponse(rpcCommandVO.getId());
-			return HttpResponse.ok(rpcResponseFuture.get(20, TimeUnit.SECONDS));
+			return HttpResponse.ok(remotingService.sendRpcCommandSync("inoa", gatewayId, rpcCommandVO, 5000));
 		} catch (TimeoutException e) {
 			return HttpResponse.status(HttpStatus.REQUEST_TIMEOUT);
+		} catch (JsonProcessingException e) {
+			return HttpResponse.status(HttpStatus.INTERNAL_SERVER_ERROR, "Json processing error: " + e.getMessage());
 		} catch (Exception e) {
 			return HttpResponse.status(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
 		} finally {
 			MDC.remove("tenantId");
 			MDC.remove("gatewayId");
 		}
-	}
-
-	private Future<RpcResponseVO> waitForRpcResponse(String commandId) {
-		return executor.submit(
-				() -> {
-					while (remotingHandler.getCommandResponse(commandId).isEmpty()) {
-						Thread.sleep(100);
-					}
-					return remotingHandler.getCommandResponse(commandId).get();
-				});
 	}
 }

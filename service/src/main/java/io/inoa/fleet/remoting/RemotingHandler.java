@@ -1,6 +1,7 @@
 package io.inoa.fleet.remoting;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -48,6 +49,10 @@ public class RemotingHandler extends AbstractInterceptHandler {
 			log.error("Dropping unparsable command response: {}", new String(payload));
 		}
 		message.getPayload().release();
+	}
+
+	public List<RpcResponseVO> getCommandResponses() {
+		return commandResponses.values().stream().toList();
 	}
 
 	public Optional<RpcResponseVO> getCommandResponse(String commandId) {

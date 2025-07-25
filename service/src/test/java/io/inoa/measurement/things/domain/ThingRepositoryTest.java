@@ -122,7 +122,7 @@ public class ThingRepositoryTest extends AbstractUnitTest {
 				thingFound.get().getThingConfigurationValues().iterator().next().getValue(),
 				"Expected equal config value");
 		assertEquals(
-				"Serial",
+				"Modbus Interface",
 				thingFound
 						.get()
 						.getThingConfigurationValues()
