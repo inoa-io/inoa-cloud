@@ -39,6 +39,8 @@ import lombok.SneakyThrows;
 @RequiredArgsConstructor
 public class Data {
 
+	private static final Random random = new Random();
+
 	private final TenantRepository tenantRepository;
 	private final GroupRepository groupRepository;
 	private final GatewayRepository gatewayRepository;
@@ -133,7 +135,7 @@ public class Data {
 						.setTenantId(tenantId)
 						.setName(tenantName())
 						.setEnabled(enabled)
-						.setGatewayIdPattern("^GW\\-[0-9]+$")
+						.setGatewayIdPattern("^ISRL02\\-[0-9]{12}$")
 						.setCreated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
 						.setUpdated(Instant.now().truncatedTo(ChronoUnit.MILLIS))
 						.setDeleted(deleted ? Instant.now().truncatedTo(ChronoUnit.MILLIS) : null));
@@ -153,7 +155,7 @@ public class Data {
 	}
 
 	public String gatewayId() {
-		return "GW-" + new Random().nextLong(1000000000);
+		return "ISRL02-" + numeric(12);
 	}
 
 	public String gatewayName() {
@@ -325,6 +327,17 @@ public class Data {
 		return credential(gateway, CredentialTypeVO.PSK, UUID.randomUUID().toString().getBytes());
 	}
 
+	public Credential credentialInitialPSK(Gateway gateway) {
+		var credential = new Credential()
+				.setGateway(gateway)
+				.setCredentialId(UUID.randomUUID())
+				.setName("initial")
+				.setEnabled(true)
+				.setType(CredentialTypeVO.PSK)
+				.setValue(UUID.randomUUID().toString().getBytes());
+		return credentialRepository.save(credential);
+	}
+
 	@SneakyThrows
 	public Credential credentialRSA(Gateway gateway, KeyPair keyPair) {
 		return credential(gateway, CredentialTypeVO.RSA, keyPair.getPublic().getEncoded());
@@ -435,5 +448,9 @@ public class Data {
 
 	public List<GatewayProperty> findProperties(Gateway gateway) {
 		return gatewayPropertyRepository.findByGateway(gateway);
+	}
+
+	private String numeric(int length) {
+		return random.ints(0, 9).mapToObj(String::valueOf).limit(length).collect(Collectors.joining());
 	}
 }

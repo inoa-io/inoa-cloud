@@ -47,6 +47,21 @@ dive: build
 ## Integration tests
 ##
 
+# Start the UI App locally
+[group('groundcontrol')]
+[working-directory: 'app']
+ui:
+  yarn start
+
+# ensure all tools are present to launch GroundControl locally.
+[group('groundcontrol')]
+@ui-init:
+  #!/bin/bash
+  asdf install
+  asdf exec nodejs 20.19.4 corepack enable
+  asdf reshim nodejs
+  cd app && yarn set version 4.9.2 && yarn install
+
 # Start k3s instance and deploy everything.
 [group('integration-tests')]
 up: build start deploy

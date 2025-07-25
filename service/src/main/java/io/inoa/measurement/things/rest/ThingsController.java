@@ -13,6 +13,8 @@ import jakarta.validation.Valid;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.registry.domain.TenantRepository;
+import io.inoa.measurement.things.builder.DatapointBuilderException;
+import io.inoa.measurement.things.builder.DatapointService;
 import io.inoa.measurement.things.domain.Measurand;
 import io.inoa.measurement.things.domain.MeasurandRepository;
 import io.inoa.measurement.things.domain.MeasurandTypeRepository;
@@ -51,6 +53,7 @@ public class ThingsController implements ThingsApi {
 	private final ThingMapper thingMapper;
 	private final MeasurandMapper measurandMapper;
 	private final Security security;
+	private final DatapointService datapointService;
 
 	@Override
 	public HttpResponse<ThingVO> createThing(@Valid ThingCreateVO thingCreateVO) {
@@ -341,7 +344,14 @@ public class ThingsController implements ThingsApi {
 	@Override
 	public HttpResponse<Object> syncThingsToGateway(String gatewayId) {
 		var gateway = checkGateway(gatewayId);
-		return HttpResponse.status(500, "Not implemented yet");
+		var things = thingRepository.findByGateway(gateway);
+		try {
+			var datapointsJson = datapointService.getDatapointsJson(things);
+			// TODO: Actual sync to gateways!
+			return HttpResponse.ok(datapointsJson);
+		} catch (DatapointBuilderException e) {
+			return HttpResponse.status(500, e.toString());
+		}
 	}
 
 	@Override

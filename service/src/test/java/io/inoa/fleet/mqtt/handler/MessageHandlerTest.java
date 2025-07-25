@@ -28,10 +28,14 @@ public class MessageHandlerTest extends AbstractMqttTest {
 	@Test
 	void telemetry(MqttProperties properties) throws MqttException {
 
+		var tenant = data.tenant("test");
+		var gateway = data.gateway(tenant, true);
+		var credential = data.credentialInitialPSK(gateway);
+
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
-		var tenantId = "inoa";
-		var gatewayId = "GW-0001";
-		var psk = UUID.randomUUID().toString().getBytes();
+		var tenantId = tenant.getTenantId();
+		var gatewayId = gateway.getGatewayId();
+		var psk = credential.getValue();
 		var payload = UUID.randomUUID().toString().getBytes();
 
 		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
@@ -54,10 +58,14 @@ public class MessageHandlerTest extends AbstractMqttTest {
 	@Test
 	void event(MqttProperties properties) throws MqttException {
 
+		var tenant = data.tenant("test");
+		var gateway = data.gateway(tenant, true);
+		var credential = data.credentialInitialPSK(gateway);
+
 		var url = "ssl://" + properties.getHost() + ":" + properties.getTls().getPort();
-		var tenantId = "inoa";
-		var gatewayId = "GW-0001";
-		var psk = UUID.randomUUID().toString().getBytes();
+		var tenantId = tenant.getTenantId();
+		var gatewayId = gateway.getGatewayId();
+		var psk = credential.getValue();
 		var payload = Map.of("uuid", UUID.randomUUID());
 
 		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);

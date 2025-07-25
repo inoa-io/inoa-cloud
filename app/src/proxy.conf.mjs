@@ -1,4 +1,4 @@
-const INOA_DOMAIN = process.env["INOA_DOMAIN"] ? process.env["INOA_DOMAIN"] : "127.0.0.1.nip.io";
+const IP = process.env["IP"] ? process.env["IP"] : "127.0.0.1";
 
 export default [
   {

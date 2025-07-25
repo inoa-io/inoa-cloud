@@ -3,7 +3,6 @@ package io.inoa.fleet.mqtt.handler;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Map;
-import java.util.UUID;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
@@ -26,10 +25,14 @@ public class ConnectionHandlerTest extends AbstractMqttTest {
 	@Test
 	void graceful(MqttProperties properties) throws MqttException {
 
+		var tenant = data.tenant("test");
+		var gateway = data.gateway(tenant, true);
+		var credential = data.credentialInitialPSK(gateway);
+
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
-		var tenantId = "inoa";
-		var gatewayId = "GW-0001";
-		var psk = UUID.randomUUID().toString().getBytes();
+		var tenantId = tenant.getTenantId();
+		var gatewayId = gateway.getGatewayId();
+		var psk = credential.getValue();
 		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();
 
@@ -60,10 +63,14 @@ public class ConnectionHandlerTest extends AbstractMqttTest {
 	@Test
 	void hard(MqttProperties properties) throws MqttException {
 
+		var tenant = data.tenant("test");
+		var gateway = data.gateway(tenant, true);
+		var credential = data.credentialInitialPSK(gateway);
+
 		var url = "tcp://" + properties.getHost() + ":" + properties.getPort();
-		var tenantId = "inoa";
-		var gatewayId = "GW-0001";
-		var psk = UUID.randomUUID().toString().getBytes();
+		var tenantId = tenant.getTenantId();
+		var gatewayId = gateway.getGatewayId();
+		var psk = credential.getValue();
 		var client = new MqttServiceClient(url, tenantId, gatewayId, psk);
 		var clientId = client.getClientId();
 

@@ -109,7 +109,7 @@
 		<version.org.openapitools.jackson.databind.nullable>0.2.6</version.org.openapitools.jackson.databind.nullable>
 
 		<version.io.micronaut.micronaut-inject-java>4.9.7</version.io.micronaut.micronaut-inject-java>
-		<version.org.projectlombok.lombok>1.18.36</version.org.projectlombok.lombok>
+		<version.org.projectlombok.lombok>1.18.38</version.org.projectlombok.lombok>
 		<version.org.mapstruct.mapstruct-processor>${version.org.mapstruct}</version.org.mapstruct.mapstruct-processor>
 		<version.io.micronaut.micronaut-inject-java>4.7.26</version.io.micronaut.micronaut-inject-java>
 		<version.io.micronaut.validation.micronaut-validation-processor>4.7.0</version.io.micronaut.validation.micronaut-validation-processor>
