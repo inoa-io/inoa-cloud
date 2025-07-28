@@ -179,6 +179,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	@Override
 	public void syncThingsToGateway200() throws MqttException {
 		// TODO: Write better test with fake gateway reacting to RPC commands, so no 504 is caused!
+		// TODO: Or, mock the RemoteService, since we already have a remoting test in place...
 		assert504(() -> client.syncThingsToGateway(auth(tenant), gateway.getGatewayId()));
 	}
 
