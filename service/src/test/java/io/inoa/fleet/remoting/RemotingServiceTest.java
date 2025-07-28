@@ -52,7 +52,7 @@ public class RemotingServiceTest extends AbstractUnitTest {
 		mqttListener.clear();
 
 		// Send our RPC command
-		remotingService.sendRpcCommand(
+		remotingService.sendRpcCommandAsync(
 				tenantId, gatewayId, new RpcCommandVO().id("blub").method("rpc.list"));
 
 		// Wait until our fake gateway "sees" the command

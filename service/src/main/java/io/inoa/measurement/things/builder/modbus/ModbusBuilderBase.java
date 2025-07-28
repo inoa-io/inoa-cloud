@@ -27,7 +27,7 @@ public abstract class ModbusBuilderBase extends DatapointBuilder {
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	public static final String CONFIG_KEY_SERIAL = "serial";
-	public static final String CONFIG_KEY_MODBUS_INTERFACE = "modbus_interface";
+	public static final String CONFIG_KEY_MODBUS_INTERFACE = "modbus interface";
 
 	protected ObjectNode createModbusJsonNode(
 			Integer serial,

@@ -72,6 +72,10 @@ public final class HttpAssertions {
 		return assertStatus(HttpStatus.CONFLICT, executeable, null);
 	}
 
+	public static <T> HttpResponse<T> assert504(Supplier<HttpResponse<T>> executeable) {
+		return assertStatus(HttpStatus.GATEWAY_TIMEOUT, executeable, null);
+	}
+
 	static <T> HttpResponse<T> assertStatus(
 			HttpStatus status, HttpResponse<T> response, String message) {
 		assertEquals(status, response.getStatus(), message);

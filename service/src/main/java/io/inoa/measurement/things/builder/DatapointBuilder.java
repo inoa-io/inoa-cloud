@@ -115,7 +115,7 @@ public abstract class DatapointBuilder {
 
 	ThingConfigurationValue getThingConfigurationValue(Thing thing, String configKey) {
 		for (var thingConfigurationValue : thing.getThingConfigurationValues()) {
-			if (configKey.equals(thingConfigurationValue.getThingConfiguration().getName())) {
+			if (configKey.equalsIgnoreCase(thingConfigurationValue.getThingConfiguration().getName())) {
 				return thingConfigurationValue;
 			}
 		}
