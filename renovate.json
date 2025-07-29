@@ -1,7 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["grayc/renovate-config"],
-	"reviewers": ["fabian.schlegel", "stephan.schnabel"],
 	"packageRules": [
 		{
 			"matchPackageNames": [
