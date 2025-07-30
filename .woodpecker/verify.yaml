@@ -45,21 +45,17 @@ steps:
     when: [path: [.woodpecker/verify.yaml, app/**]]
 
   integration-prepare:
-    image: ghcr.io/grayc-de/plugins/maven:3-jdk21
-    # replace with default maven image when k3s-maven-plugin 2.0.0 is released which does not need local docker-cli
-    # image: docker.io/library/maven:3.9.9-eclipse-temurin-21@sha256:933900d8738eab72ddebb7ad971fc9bca91ae6bc4c7b6d6bbc17fb3609f5e64b
+    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:fb525d54d52bbdce5c5768c5a80580f4bbf6b5679214f35dfd039e580b5172bf
     depends_on: []
     directory: test
     commands: mvn --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml k3s:run k3s:image -Dk3s.dockerImages=
     when: [path: {exclude: [app/**, api/src/test/**, service/src/test/**]}]
 
   integration-test:
-    image: ghcr.io/grayc-de/plugins/maven:3-jdk21
-    # replace with default maven image when k3s-maven-plugin 2.0.0 is released which does not need local docker-cli
-    # image: docker.io/library/maven:3.9.9-eclipse-temurin-21@sha256:933900d8738eab72ddebb7ad971fc9bca91ae6bc4c7b6d6bbc17fb3609f5e64b
+    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:fb525d54d52bbdce5c5768c5a80580f4bbf6b5679214f35dfd039e580b5172bf
     depends_on: [image, integration-prepare]
     directory: test
-    commands: mvn --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml verify -Dip="$(docker run --rm --network host debian:stable-slim hostname -I | tr ' ' '\n' | grep 10.42)"
+    commands: mvn --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml verify -Dip=$(getent hosts dockerd|awk '{print $1}')
     when: [path: {exclude: [app/**, api/src/test/**, service/src/test/**]}]
 
   integration-errors:
@@ -72,7 +68,6 @@ steps:
       - docker exec k3s-maven-plugin sh -c 'cat `find /var/log/containers -name inoa-*_wait-for-keycloak-*.log`'
       - docker exec k3s-maven-plugin sh -c 'cat `find /var/log/containers -name inoa-*_wait-for-postgres-*.log`'
       - docker exec k3s-maven-plugin sh -c 'cat `find /var/log/containers -name inoa-*_inoa-*.log`'
-      - exit 1
     when:
       path: {exclude: [app/**, api/src/test/**, service/src/test/**]}
       status: failure
