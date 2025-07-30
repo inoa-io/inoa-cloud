@@ -14,4 +14,4 @@ configMapGenerator:
 
 images:
   - name: docker.io/kokuwaio/keycloak
-    newTag: 26.0.8-distroless
+    newTag: 26.2.2-distroless
