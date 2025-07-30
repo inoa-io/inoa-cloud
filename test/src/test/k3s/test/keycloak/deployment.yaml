@@ -52,7 +52,7 @@ spec:
         - name: keycloak
           image: ${image.keycloak}
           imagePullPolicy: Never
-          args: [start, --import-realm]
+          args: [start, --optimized, --import-realm, --verbose]
           envFrom:
             - configMapRef:
                 name: keycloak-config
@@ -83,15 +83,14 @@ spec:
             capabilities:
               drop: [ALL]
           volumeMounts:
-            - name: data
-              mountPath: /app/data
-            - name: realm
-              mountPath: /app/data/import/realm.json
-              subPath: realm.json
-              readOnly: true
             - name: themes
-              mountPath: /app/themes
+              mountPath: /opt/keycloak/themes
               readOnly: true
+            - name: realms
+              mountPath: /opt/keycloak/data/import
+              readOnly: true
+            - name: tmp
+              mountPath: /opt/keycloak/data/tmp
             - name: tmp
               mountPath: /tmp
       automountServiceAccountToken: false
@@ -104,6 +103,6 @@ spec:
           emptyDir: {}
         - name: tmp
           emptyDir: {}
-        - name: realm
+        - name: realms
           configMap:
             name: keycloak-realm

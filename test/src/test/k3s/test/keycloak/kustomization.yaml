@@ -9,7 +9,6 @@ configMapGenerator:
       - KC_HOSTNAME=http://keycloak.${ip}.nip.io:8080
       - KC_HOSTNAME_DEBUG=true
       - KC_HOSTNAME_BACKCHANNEL_DYNAMIC=true
-      - KC_PROXY_HEADERS=xforwarded
       - KC_LOG_CONSOLE_OUTPUT=default
   - name: keycloak-realm
     files: [realm.json]
@@ -23,5 +22,5 @@ secretGenerator:
       - KC_DB_PASSWORD=changeMe
   - name: keycloak-admin
     literals:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=password
+      - KC_BOOTSTRAP_ADMIN_USERNAME=admin
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=password
