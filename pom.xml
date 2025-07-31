@@ -101,7 +101,7 @@
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.micronaut.codegen>4.5.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>5.0.0</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut.platform>4.9.1</version.io.micronaut.platform>
+		<version.io.micronaut.platform>4.9.2</version.io.micronaut.platform>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.bouncycastle>1.81</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
