@@ -102,18 +102,16 @@
 		<version.io.kokuwa.micronaut.codegen>4.5.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>5.0.0</version.io.kokuwa.micronaut.logging>
 		<version.io.micronaut.platform>4.9.2</version.io.micronaut.platform>
+		<!-- Annotation processors. Do not remove. IntelliJ needs explicit versions to build properly -->
+		<version.io.micronaut.core>4.9.9</version.io.micronaut.core>
+		<version.io.micronaut.data>4.13.3</version.io.micronaut.data>
+		<version.io.micronaut.validation>4.10.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.bouncycastle>1.81</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
 		<version.org.openapitools.jackson.databind.nullable>0.2.6</version.org.openapitools.jackson.databind.nullable>
-
-		<version.io.micronaut.micronaut-inject-java>4.9.7</version.io.micronaut.micronaut-inject-java>
-		<version.org.projectlombok.lombok>1.18.38</version.org.projectlombok.lombok>
-		<version.org.mapstruct.mapstruct-processor>${version.org.mapstruct}</version.org.mapstruct.mapstruct-processor>
-		<version.io.micronaut.micronaut-inject-java>4.9.9</version.io.micronaut.micronaut-inject-java>
-		<version.io.micronaut.validation.micronaut-validation-processor>4.10.0</version.io.micronaut.validation.micronaut-validation-processor>
-		<version.io.micronaut.data.micronaut-data-processor>4.13.3</version.io.micronaut.data.micronaut-data-processor>
+		<version.org.projectlombok>1.18.38</version.org.projectlombok>
 
 	</properties>
 
@@ -125,6 +123,27 @@
 				<groupId>io.micronaut.platform</groupId>
 				<artifactId>micronaut-platform</artifactId>
 				<version>${version.io.micronaut.platform}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.micronaut</groupId>
+				<artifactId>micronaut-core-bom</artifactId>
+				<version>${version.io.micronaut.core}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.micronaut.data</groupId>
+				<artifactId>micronaut-data-bom</artifactId>
+				<version>${version.io.micronaut.data}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>io.micronaut.validation</groupId>
+				<artifactId>micronaut-validation-bom</artifactId>
+				<version>${version.io.micronaut.validation}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
