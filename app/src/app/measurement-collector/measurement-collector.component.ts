@@ -234,7 +234,7 @@ export class MeasurementCollectorComponent implements OnInit {
 		if (!this.intercomService.selectedThing) return "#2196f3";
 
 		//color blue when thing category matches
-		if (this.utilityService.getThingCategory(this.intercomService.selectedThing.thing_type_id).key === category) return "#ffa500";
+		if (this.utilityService.getThingCategoryFromId(this.intercomService.selectedThing.thing_type_id).key === category) return "#ffa500";
 
 		return "#2196f3";
 	}
@@ -254,7 +254,7 @@ export class MeasurementCollectorComponent implements OnInit {
 		if (
 			this.intercomService.selectedThing &&
 			this.intercomService.selectedThing.thing_type_id &&
-			category == this.utilityService.getThingCategory(this.intercomService.selectedThing.thing_type_id)
+			category == this.utilityService.getThingCategoryFromId(this.intercomService.selectedThing.thing_type_id)
 		) {
 			return this.intercomService.selectedThing && this.intercomService.selectedThing.name ? this.intercomService.selectedThing.name : "No name";
 		}

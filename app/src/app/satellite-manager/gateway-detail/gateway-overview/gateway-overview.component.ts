@@ -8,151 +8,158 @@ import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
 import * as L from "leaflet";
 
 export interface SysInfo {
-	[key: string]: any;
+    [key: string]: any;
 }
 
 @Component({
-	selector: "gc-gateway-overview",
-	templateUrl: "./gateway-overview.component.html",
-	styleUrl: "./gateway-overview.component.css"
+    selector: "gc-gateway-overview",
+    templateUrl: "./gateway-overview.component.html",
+    styleUrl: "./gateway-overview.component.css"
 })
 export class GatewayOverviewComponent implements AfterViewInit {
-	@ViewChild("mapRef") mapContainer!: ElementRef;
-	map!: L.Map;
-	resizeObserver?: ResizeObserver;
+    @ViewChild("mapRef") mapContainer!: ElementRef;
+    map!: L.Map;
+    resizeObserver?: ResizeObserver;
 
-	sysData: SysInfo = {
-		hardwareRevision: "",
-		buildRevision: 0,
-		buildDate: "",
-		buildTime: ""
-	};
+    sysData: SysInfo = {
+        hardwareRevision: "",
+        buildRevision: 0,
+        buildDate: "",
+        buildTime: ""
+    };
 
-	updateAvailable = false;
+    updateAvailable = false;
 
-	constructor(public mapService: MapService, private rpcService: RpcMqttService, public intercomService: InternalCommunicationService, private dialogService: DialogService, private gatewaysService: GatewaysService) {}
+    constructor(
+        public mapService: MapService,
+        private rpcService: RpcMqttService,
+        public intercomService: InternalCommunicationService,
+        private dialogService: DialogService,
+        private gatewaysService: GatewaysService
+    ) {}
 
-	ngAfterViewInit(): void {
-		setTimeout(() => {
-			this.readSysInfo();
-			this.initMap();
-			this.updateMap();
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            this.readSysInfo();
+            this.initMap();
+            this.updateMap();
 
-			//sub to selected gateway changes
-			this.intercomService.selectedGatewayChangedEventEmitter.subscribe(() => {
-				this.readSysInfo();
+            //sub to selected gateway changes
+            this.intercomService.selectedGatewayChangedEventEmitter.subscribe(() => {
+                this.readSysInfo();
 
-				setTimeout(() => {
-					this.updateMap();
-				}, 0);
-			});
+                setTimeout(() => {
+                    this.updateMap();
+                }, 0);
+            });
 
-			//sub to gateway location changes
-			this.mapService.updateMapEventEmitter.subscribe(() => {
-				setTimeout(() => {
-					this.updateMap();
-				}, 0);
-			});
-		}, 0);
-	}
-	initMap() {
-		// Initialize the map
-		this.map = L.map(this.mapContainer.nativeElement, {
-			zoomControl: false,
-			dragging: false,
-			scrollWheelZoom: false,
-			attributionControl: false,
-			doubleClickZoom: false
-		});
+            //sub to gateway location changes
+            this.mapService.updateMapEventEmitter.subscribe(() => {
+                setTimeout(() => {
+                    this.updateMap();
+                }, 0);
+            });
+        }, 0);
+    }
+    initMap() {
+        // Initialize the map
+        this.map = L.map(this.mapContainer.nativeElement, {
+            zoomControl: false,
+            dragging: false,
+            scrollWheelZoom: false,
+            attributionControl: false,
+            doubleClickZoom: false
+        });
 
-		this.mapService.switchMapType(this.map, "normal");
+        this.mapService.switchMapType(this.map, "normal");
 
-		// Set up resize observer
-		this.resizeObserver = new ResizeObserver(() => {
-			this.map.invalidateSize();
-		});
-		this.resizeObserver.observe(this.mapContainer.nativeElement);
-	}
-	updateMap() {
-		this.mapService.moveMapToSelectedGatewayLocation(this.map);
-	}
+        // Set up resize observer
+        this.resizeObserver = new ResizeObserver(() => {
+            this.map.invalidateSize();
+        });
+        this.resizeObserver.observe(this.mapContainer.nativeElement);
+    }
+    updateMap() {
+        this.mapService.moveMapToSelectedGatewayLocation(this.map);
+        this.map.invalidateSize();
+    }
 
-	readSysInfo() {
-		if (!this.intercomService.selectedGateway) return;
+    readSysInfo() {
+        if (!this.intercomService.selectedGateway) return;
 
-		this.intercomService.isLoadingSysInfo = true;
+        this.intercomService.isLoadingSysInfo = true;
 
-		this.rpcService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "sys.version" }).subscribe((rpcResponse) => {
-			this.sysData = this.parseRpcConfigResponse(rpcResponse.response);
+        this.rpcService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "sys.version" }).subscribe((rpcResponse) => {
+            this.sysData = this.parseRpcConfigResponse(rpcResponse.response);
 
-			this.intercomService.isLoadingSysInfo = false;
-		});
-	}
+            this.intercomService.isLoadingSysInfo = false;
+        });
+    }
 
-	parseRpcConfigResponse(rpcResponse: string): SysInfo {
-		const jsonData = JSON.parse(rpcResponse);
+    parseRpcConfigResponse(rpcResponse: string): SysInfo {
+        const jsonData = JSON.parse(rpcResponse);
 
-		const data: SysInfo = {
-			hardwareRevision: jsonData.hardwareRevision,
-			buildRevision: jsonData.buildRevision,
-			buildDate: jsonData.buildDate,
-			buildTime: jsonData.buildTime
-		};
+        const data: SysInfo = {
+            hardwareRevision: jsonData.hardwareRevision,
+            buildRevision: jsonData.buildRevision,
+            buildDate: jsonData.buildDate,
+            buildTime: jsonData.buildTime
+        };
 
-		// set the hardware version to be checked in other components
-		this.intercomService.hardwareVersion = jsonData.hardwareRevision;
+        // set the hardware version to be checked in other components
+        this.intercomService.hardwareVersion = jsonData.hardwareRevision;
 
-		return data;
-	}
+        return data;
+    }
 
-	renameSatelliteClick(gateway: GatewayVO | undefined, event: Event) {
-		event.stopPropagation();
+    renameSatelliteClick(gateway: GatewayVO | undefined, event: Event) {
+        event.stopPropagation();
 
-		if (!gateway) return;
+        if (!gateway) return;
 
-		this.dialogService
-			.openRenameSatelliteDialog(gateway.name ? gateway.name : "")
-			?.afterClosed()
-			.subscribe((data) => {
-				if (!data) return;
-				this.updateSatelliteName(gateway, data.name);
-			});
-	}
+        this.dialogService
+            .openRenameSatelliteDialog(gateway.name ? gateway.name : "")
+            ?.afterClosed()
+            .subscribe((data) => {
+                if (!data) return;
+                this.updateSatelliteName(gateway, data.name);
+            });
+    }
 
-	locationEditorClick(gateway: GatewayVO | undefined, event: Event) {
-		event.stopPropagation();
+    locationEditorClick(gateway: GatewayVO | undefined, event: Event) {
+        event.stopPropagation();
 
-		if (!gateway) return;
+        if (!gateway) return;
 
-		this.dialogService
-			.openLocationEditorDialog(gateway.location ? gateway.location : null)
-			?.afterClosed()
-			.subscribe((data) => {
-				if (!data) return;
-				this.updateSatelliteLocation(gateway, data.location);
-			})
-	}
+        this.dialogService
+            .openLocationEditorDialog(gateway.location ? gateway.location : null)
+            ?.afterClosed()
+            .subscribe((data) => {
+                if (!data) return;
+                this.updateSatelliteLocation(gateway, data.location);
+            });
+    }
 
-	updateSatelliteName(gateway: GatewayVO, name: string) {
-		const updateData: GatewayUpdateVO = {
-			name: name
-		};
+    updateSatelliteName(gateway: GatewayVO, name: string) {
+        const updateData: GatewayUpdateVO = {
+            name: name
+        };
 
-		this.gatewaysService.updateGateway(gateway.gateway_id, updateData).subscribe((returnData) => {
-			gateway.name = returnData.name;
-		});
-	}
+        this.gatewaysService.updateGateway(gateway.gateway_id, updateData).subscribe((returnData) => {
+            gateway.name = returnData.name;
+        });
+    }
 
-	updateSatelliteLocation(gateway: GatewayVO, location: any) {
-		const updateData: GatewayUpdateVO = {
-			location: location
-		};
+    updateSatelliteLocation(gateway: GatewayVO, location: any) {
+        const updateData: GatewayUpdateVO = {
+            location: location
+        };
 
-		this.gatewaysService.updateGateway(gateway.gateway_id, updateData).subscribe((returnData) => {
-			gateway.location = returnData.location;
+        this.gatewaysService.updateGateway(gateway.gateway_id, updateData).subscribe((returnData) => {
+            gateway.location = returnData.location;
 
-			//raise event to inform subbed components of location change
-			this.mapService.raiseUpdateMapEvent();
-		})
-	}
+            //raise event to inform subbed components of location change
+            this.mapService.raiseUpdateMapEvent();
+        });
+    }
 }

@@ -1,0 +1,129 @@
+<mat-toolbar
+    color="primary"
+    class="mat-elevation-z2">
+    <img
+        src="assets/inoa/satellite-color.png"
+        alt="INOA Satellite"
+        class="toolbar-icon" />
+    <span>Configure a Thing available via {{ data.gateway.gateway_id }}</span>
+</mat-toolbar>
+
+<form [formGroup]="form">
+    <div mat-dialog-content>
+        <p>Choose type of thing to configure:</p>
+
+        <mat-form-field appearance="outline">
+            <mat-label>Type of the thing to connect.</mat-label>
+
+            <mat-select
+                (selectionChange)="loadThingType($event.value)"
+                [(value)]="selectedThingType">
+                <mat-option
+                    *ngFor="let thingType of intercomService.thingTypes"
+                    [value]="thingType">
+                    <span style="padding-left: 10pt">{{ thingType.name }}</span>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div
+            class="thing-header"
+            *ngIf="selectedThingType">
+            <!-- image -->
+            <img
+                class="thing-header-image"
+                width="60"
+                [src]="category.image"
+                alt="Category Image" />
+
+            <!-- title and description -->
+            <div class="thing-header-text">
+                <legend class="thing-title">{{ thingTitle }}</legend>
+                <p class="thing-description">{{ thingDescription }}</p>
+            </div>
+        </div>
+
+        <ng-container *ngIf="selectedThingType">
+            <mat-form-field appearance="outline">
+                <mat-label>Name</mat-label>
+                <input
+                    matInput
+                    formControlName="name"
+                    required />
+            </mat-form-field>
+
+            <div
+                *ngIf="selectedThingType.configurations && selectedThingType.configurations.length > 0"
+                formGroupName="configurations">
+                <h3>Configurations</h3>
+                <div
+                    *ngFor="let config of selectedThingType.configurations"
+                    [ngSwitch]="config.type">
+                    <mat-form-field
+                        *ngSwitchCase="'STRING'"
+                        appearance="outline">
+                        <mat-label>{{ config.description }}</mat-label>
+                        <input
+                            matInput
+                            [formControlName]="config.name" />
+                    </mat-form-field>
+
+                    <mat-form-field
+                        *ngSwitchCase="'NUMBER'"
+                        appearance="outline">
+                        <mat-label>{{ config.description }}</mat-label>
+                        <input
+                            matInput
+                            type="number"
+                            [formControlName]="config.name" />
+                    </mat-form-field>
+
+                    <mat-checkbox
+                        *ngSwitchCase="'BOOLEAN'"
+                        [formControlName]="config.name">
+                        {{ config.description }}
+                    </mat-checkbox>
+                </div>
+            </div>
+
+            <div
+                *ngIf="selectedThingType.measurands && selectedThingType.measurands.length > 0"
+                formArrayName="measurands">
+                <h3>Measurands</h3>
+                <div *ngFor="let measurand of measurands.controls; let i = index">
+                    <mat-checkbox
+                        class="measurand-checkbox"
+                        [formControlName]="i">
+                        <div class="measurand-label-container">
+                            <div class="measurand-label">
+                                <span class="measurand-label-name">{{ selectedThingType.measurands[i].name }}</span>
+                                <span class="measurand-label-description">{{ selectedThingType.measurands[i].description }}</span>
+                            </div>
+                            <span class="measurand-label-obis">(Obis: {{ selectedThingType.measurands[i].obis_id }})</span>
+                        </div>
+                    </mat-checkbox>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+
+    <div
+        mat-dialog-actions
+        align="end">
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="onCancelClick()">
+            Cancel
+        </button>
+
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="onOkClick()"
+            [mat-dialog-close]="data.thing"
+            [disabled]="!form.valid">
+            Ok
+        </button>
+    </div>
+</form>

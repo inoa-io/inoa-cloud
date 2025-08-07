@@ -168,7 +168,18 @@ public class ThingTypesApiTest extends AbstractUnitTest implements ThingTypesApi
 	public void getThingTypes200() {
 		var thingTypes = assert200(() -> client.getThingTypes(auth("inoa")));
 		assertNotNull(thingTypes, "ThingTypes shall be loaded.");
-		assertFalse(thingTypes.isEmpty(), "ThingTypes shall not be empty.");
+		var thingType = thingTypes.stream().filter(t -> t.getIdentifier().equals("sct-013-030")).findFirst()
+				.orElseThrow();
+		assertEquals("sct-013-030", thingType.getIdentifier(), "Identifier shall match.");
+		assertEquals("SCT-013-030", thingType.getName(), "Name shall match.");
+		assertEquals(
+				"Current transformer 1V = 30A", thingType.getDescription(), "Description shall match.");
+		assertNull(thingType.getVersion(), "Version shall be null");
+		assertEquals(
+				ThingTypeCategoryVO.CURRENT_TRANSFORMER, thingType.getCategory(), "Category shall match.");
+		assertEquals(ThingTypeProtocolVO.RMS, thingType.getProtocol(), "Protocol shall match.");
+		assertEquals(2, thingType.getConfigurations().size(), "Configurations shall be loaded.");
+		assertEquals(1, thingType.getMeasurands().size(), "Measurands shall be loaded.");
 	}
 
 	@Test

@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
 
 @Component({
@@ -6,7 +6,7 @@ import { DomSanitizer, SafeResourceUrl } from "@angular/platform-browser";
   templateUrl: "./ems-dashboard.component.html",
   styleUrl: "./ems-dashboard.component.css"
 })
-export class EmsDashboardComponent {
+export class EmsDashboardComponent implements OnInit {
   safeUrl: SafeResourceUrl | null = null;
   constructor(private sanitizer: DomSanitizer) { }
   

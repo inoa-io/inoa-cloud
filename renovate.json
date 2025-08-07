@@ -31,9 +31,6 @@
 			"matchUpdateTypes": ["major", "minor"],
 			"enabled": false
 		},{
-			"groupName": "@ngx-formly",
-			"matchPackageNames": ["@ngx-formly/**"]
-		},{
 			"groupName": "monaco",
 			"matchPackageNames": ["monaco-editor", "ngx-monaco-editor"]
 		}

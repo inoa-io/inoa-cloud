@@ -54,73 +54,45 @@
 }
 
 .mat-card-content-gateway-things {
-	padding-top: 15px;
-	overflow: auto;
-	display: flex;
+	overflow-x: hidden;
+	overflow-y: auto;
+	margin-top: 15px;
+	width: calc(100% - 30px);
 }
 
-.satellite-things-table {
-	.mat-column-actions {
-		/* 48px * icon count */
-		width: 48px;
-		min-width: 48px;
-		max-width: 48px;
-		text-align: center;
-		padding: 0 0;
-		margin: 0 0;
-	}
-}
-
-.mat-column-enabled {
-	width: 85px;
-	min-width: 85px;
-	max-width: 85px;
-	text-align: center;
+tr[mat-header-row] {
+	height: 32px;
 }
 
 .things-table {
 	width: 100%;
 }
 
-.mat-column-name {
-	flex: 1;
-	text-align: left;
+.action-button-container {
+	margin: 10px 0;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
 }
 
-.mat-column-thing_type {
-	flex: 1;
-	text-align: left;
+.action-button {
+	width: 52px;
+	min-width: 52px;
+	max-width: 52px;
+	height: 32px;
 }
 
-.mat-column-thing_type_id {
-	width: 200px;
-	text-align: left;
+.action-button-icon {
+	font-size: 18px;
+    transform: translateX(5px);
 }
 
-.mat-column-config {
-	width: 50px;
-	text-align: left;
-}
-
-.mat-column-type {
-	width: 200px;
-	text-align: left;
-}
-
-.element-row {
-	cursor: pointer;
-}
-
-.element-row:hover {
-	background: #f5f5f5;
-}
-
-.element-row-selected {
-	background: #e5e5e5;
-}
-
-.element-row-selected:hover {
-	background: #d5d5d5;
+.things-table-container {
+	width: 100%;
+	overflow-y: auto;
+	padding-right: 20px;
 }
 
 .thing-config-element-detail {
@@ -139,16 +111,64 @@
 	height: 0;
 }
 
+.normal-row {
+    cursor: pointer;
+}
+
+.normal-row:hover {
+	background-color: whitesmoke;
+}
+
+.thing-config-row {
+	height: 0px;
+	min-height: 0px;
+}
+
+.thing-config-expanded-row {
+	height: auto;
+}
+
 .thing-config-row:hover {
 	background: whitesmoke;
 }
 
-.satellite-things-table {
-	width: 100%;
+.mat-column-measurands {
+	width: 500px;
+	min-width: 500px;
+	max-width: 500px;
+	vertical-align: top;
 }
 
-.mat-column-expanded_detail {
-	border: none;
+.mat-column-actions {
+	text-align: center;
+	padding: 0 0;
+	margin: 0 0;
+	vertical-align: top;
+}
+
+.mat-column-expanded-detail {
+	border-bottom: none;
+}
+
+.expanded {
+	border-bottom: 1px solid #dedede;
+	background-color: #fbfbfb;
+}
+
+.mat-column-name {
+	flex: 1;
+	text-align: left;
+	vertical-align: top;
+}
+
+.mat-column-type {
+	flex: 1;
+	text-align: left;
+}
+
+.mat-column-category {
+	flex: 1;
+	text-align: left;
 }
 
 .mat-column-match {
@@ -166,6 +186,66 @@
 }
 
 .card-actions {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
 	margin-top: auto;
 	margin-bottom: 0;
+}
+
+.thing-identity-container {
+    display: flex;
+    align-items: center;
+	margin: 15px 0;
+}
+
+.thing-avatar {
+    width: 40px;
+    height: 40px;
+    margin-right: 16px;
+}
+
+.thing-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.thing-name {
+    font-weight: bold;
+}
+
+.thing-type {
+    font-style: italic;
+}
+
+.thing-category {
+    color: gray;
+}
+
+.measurands-container {
+    display: flex;
+    flex-direction: column;
+	margin: 10px 0;
+}
+
+.measurand-item-container {
+    display: flex;
+	flex-direction: row;
+	gap: 10px;
+	align-items: center;
+}
+
+.measurand-item-icon {
+    margin: 0 0;
+}
+
+.measurand-item-name {
+	font-size: 14px;
+	color: black;
+    margin: 2px 0;
+}
+
+.measurand-item-obis {
+	font-size: 12px;
+    color: gray;
 }

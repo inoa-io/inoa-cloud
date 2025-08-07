@@ -1,0 +1,83 @@
+mat-form-field {
+	width: 100%;
+}
+
+.toolbar-icon {
+	height: 32px;
+	margin-right: 10px;
+	background-color: white;
+	border-radius: 50%;
+	padding: 5px;
+}
+
+.thing-header {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 15px;
+	margin-bottom: 25px;
+}
+
+.thing-header-image {
+	width: 60px;
+	height: 60px;
+}
+
+.thing-header-text {
+	height: 60px;
+	display: flex;
+	flex-direction: column;
+	padding-bottom: 15px;
+}
+
+.thing-title {
+	margin-top: 15px;
+	color: #151515;
+	font-size: 18px;
+	font-weight: 500;
+}
+
+.thing-description {
+	margin: 0 0;
+	margin-bottom: 35px;
+}
+
+.measurand-label {
+	display: flex;
+	flex-direction: row;
+	width: 100%;
+}
+
+.measurand-label-name {
+	width: 200px;
+	font-weight: 500;
+	max-height: 20px;
+	/* background-color: aqua; */
+}
+
+.measurand-label-obis {
+	flex: 1;
+	max-height: 20px;
+	font-size: 10px;;
+	/* background-color: lightcoral; */
+}
+
+.measurand-label-description {
+	font-size: 14px;
+	color: #666;
+	flex: 1;
+	max-height: 15px;
+	/* background-color: lime; */
+}
+
+.measurand-label-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	transform: translateY(7px);
+}
+
+.measurand-checkbox {
+	width: 100%;
+	margin-bottom: 10px;
+}

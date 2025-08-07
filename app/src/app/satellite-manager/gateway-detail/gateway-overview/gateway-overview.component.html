@@ -63,7 +63,7 @@
 						</div>
 					</div>
 					<!-- TODO: Find a better way to this (condition is like this so the component gets loaded at the start and the map can be initialized) -->
-					<div *ngIf="(mapService.checkSelectedGatewayLocationValid()) || !intercomService.selectedGateway" [class]="intercomService.viewModes[1].active ? 'invisible-map' : 'tiny-map'" #mapRef></div>
+					<div [hidden]="!mapService.checkSelectedGatewayLocationValid() && intercomService.selectedGateway" [class]="intercomService.viewModes[1].active ? 'invisible-map' : 'tiny-map'" #mapRef></div>
 				</div>
 
 				<!-- hardware info -->

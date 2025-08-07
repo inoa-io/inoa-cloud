@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { AfterContentChecked, ChangeDetectorRef, Component } from "@angular/core";
 import { InternalCommunicationService } from "./services/internal-communication-service";
 import { RoutingService } from "./services/routing-service";
 
@@ -7,13 +7,23 @@ import { RoutingService } from "./services/routing-service";
 	templateUrl: "./app.component.html",
 	styleUrls: ["./app.component.sass"]
 })
-export class AppComponent {
+export class AppComponent implements AfterContentChecked {
 	title = "INOA Ground Control";
 	sideNavOpen = false;
+	httpDataLoading = false;
+
+	constructor(
+		public routingService: RoutingService,
+		public intercomService: InternalCommunicationService,
+		private cdr: ChangeDetectorRef
+	) {}
+
+	ngAfterContentChecked(): void {
+		this.httpDataLoading = this.intercomService.httpDataLoading;
+		this.cdr.detectChanges();
+	}
 
 	toggleSideBar() {
 		this.sideNavOpen = !this.sideNavOpen;
 	}
-
-	constructor(public routingService: RoutingService, public intercomService: InternalCommunicationService) {}
 }

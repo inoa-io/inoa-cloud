@@ -51,7 +51,7 @@ dive: build
 [group('groundcontrol')]
 [working-directory: 'app']
 ui:
-  yarn start
+  export IP=$IP && yarn start
 
 # ensure all tools are present to launch GroundControl locally.
 [group('groundcontrol')]

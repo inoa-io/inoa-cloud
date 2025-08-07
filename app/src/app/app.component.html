@@ -19,7 +19,7 @@
 
 				<!-- http loading indicator -->
 				<div class="http-bar-container">
-					<mat-progress-bar *ngIf="!intercomService.httpDataLoading" color="accent" mode="determinate" value="100"></mat-progress-bar>
+					<mat-progress-bar *ngIf="httpDataLoading" color="accent" mode="determinate" value="100"></mat-progress-bar>
 				</div>
 			</div>
 

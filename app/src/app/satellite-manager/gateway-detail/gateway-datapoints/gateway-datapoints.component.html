@@ -1,357 +1,366 @@
 <ng-template #loadingSpinner>
-	<mat-progress-spinner diameter="100" mode="indeterminate"></mat-progress-spinner>
+    <mat-progress-spinner
+        diameter="100"
+        mode="indeterminate"></mat-progress-spinner>
 </ng-template>
 
 <div class="gateway-card-container">
-	<div class="loading-overlay-container-db">
-		<!-- database things card -->
-		<mat-card class="card-gateway-things-db card-gateway-shadow">
-			<mat-card-header>
-				<div mat-card-avatar style="background-image: url('assets/inoa/fleet-color.png'); background-size: cover"></div>
-				<mat-card-title>Database things connected to</mat-card-title>
-				<mat-card-subtitle>
-					<span>{{ intercomService.selectedGateway?.gateway_id }} ({{ intercomService.selectedGateway?.name }})</span>
-				</mat-card-subtitle>
-			</mat-card-header>
+    <div class="loading-overlay-container-db">
+        <!-- database things card -->
+        <mat-card class="card-gateway-things-db card-gateway-shadow">
+            <mat-card-header>
+                <div
+                    mat-card-avatar
+                    style="background-image: url('assets/inoa/fleet-color.png'); background-size: cover"></div>
+                <mat-card-title>Things in Database connected to Satellite</mat-card-title>
+                <mat-card-subtitle>
+                    <span>{{ intercomService.selectedGateway?.gateway_id }} ({{ intercomService.selectedGateway?.name }})</span>
+                </mat-card-subtitle>
+            </mat-card-header>
 
-			<mat-card-content class="mat-card-content-gateway-things">
-				<div class="things-table" tabindex="0">
-					<!-- things table -->
-					<table mat-table class="satellite-things-table" [dataSource]="dataSourceThingsDatabase" multiTemplateDataRows>
-						<!-- ID Column -->
-						<ng-container matColumnDef="id">
-							<th mat-header-cell *matHeaderCellDef>
-								Thing ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.id }}
-							</td>
-						</ng-container>
+            <mat-card-content class="mat-card-content-gateway-things">
+                <div
+                    class="things-table-container">
+                    <!-- things table -->
+                    <table
+                        mat-table
+                        class="things-table"
+                        [dataSource]="dataSourceThingsDatabase"
+                        multiTemplateDataRows>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Thing
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                <div class="thing-identity-container">
+                                    <img
+                                        class="thing-avatar"
+                                        [src]="utilityService.getThingImageFromThingCategory(utilityService.getThingCategoryFromId(element.thing_type_id))"
+                                        alt="Thing Avatar"/>
+                                    <div class="thing-details">
+                                        <span class="thing-name">{{ element.name }}</span>
+                                        <span class="thing-type">{{ utilityService.getThingTypeName(element.thing_type_id) }}</span>
+                                        <span class="thing-category">{{ utilityService.getThingCategoryFromId(element.thing_type_id).title }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
 
-						<!-- Name Column -->
-						<ng-container matColumnDef="name">
-							<th mat-header-cell *matHeaderCellDef>
-								Name
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.name }}
-							</td>
-						</ng-container>
+                        <!-- Measurands Column -->
+                        <ng-container matColumnDef="measurands">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Enabled Measurands
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                <div class="measurands-container">
+                                    <div
+                                        *ngFor="let measurand of getEnabledMeasurands(element.measurands)"
+                                        class="measurand-item-container">
+                                        <mat-icon class="measurand-item-icon">arrow_right</mat-icon>
+                                        <span class="measurand-item-name">{{ getMeasurandName(measurand.measurand_type) }}</span>
+                                        <span class="measurand-item-obis">({{ measurand.measurand_type }})</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
 
-						<!-- Thing Category -->
-						<ng-container matColumnDef="category">
-							<th mat-header-cell *matHeaderCellDef>
-								Category
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ utilityService.getThingCategory(element.thing_type_id).title }}
-							</td>
-						</ng-container>
+                        <!-- Actions Column -->
+                        <ng-container matColumnDef="actions">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                style="text-align: center"></th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element; let rowIndex = index"
+                                style="width: 50px">
+                                <div class="action-button-container">
+                                    <!-- edit thing button -->
+                                    <button
+                                        class="action-button"
+                                        mat-raised-button
+                                        color="primary"
+                                        matTooltip="Edit Thing in Database"
+                                        matTooltipPosition="above"
+                                        (click)="editThingDatabaseClick(element, $event)">
+                                        <mat-icon class="action-button-icon">edit</mat-icon>
+                                    </button>
 
-						<!-- Thing Type -->
-						<ng-container matColumnDef="thing_type">
-							<th mat-header-cell *matHeaderCellDef>
-								Type
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ utilityService.getThingType(element.thing_type_id) }}
-							</td>
-						</ng-container>
+                                    <!-- delete thing button -->
+                                    <button
+                                        class="action-button"
+                                        mat-raised-button
+                                        color="warn"
+                                        matTooltip="Remove Thing from Database"
+                                        matTooltipPosition="above"
+                                        (click)="removeThingDatabaseClick(element, $event)">
+                                        <mat-icon class="action-button-icon">delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
 
-						<!-- Gateway ID Column -->
-						<ng-container matColumnDef="gateway_id">
-							<th mat-header-cell *matHeaderCellDef>
-								Gateway ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.gateway_id }}
-							</td>
-						</ng-container>
+                        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                        <ng-container matColumnDef="expanded-detail">
+                            <td
+                                mat-cell
+                                *matCellDef="let element"
+                                [attr.colspan]="displayedColumnsThingsTableDatabase.length"
+                                [class.expanded]="expandedElementDatabase === element">
+                                <div
+                                    class="thing-config-element-detail"
+                                    [@detailExpand]="expandedElementDatabase === element ? 'expanded' : 'collapsed'">
+                                    <!-- show config if there is any -->
+                                    <div *ngIf="element.configurations">
+                                        <p>Config:</p>
+                                        <pre><code class="config-code">{{ element.configurations | json }}</code></pre>
+                                        <p>Measurands:</p>
+                                        <pre><code class="config-code">{{ element.measurands | json }}</code></pre>
+                                    </div>
 
-						<!-- Enabled Column -->
-						<ng-container matColumnDef="enabled">
-							<th mat-header-cell *matHeaderCellDef>
-								Enabled
-							</th>
-							<td mat-cell *matCellDef="let element" class="mat-cell-center">
-								<button mat-icon-button [matTooltip]="element.config.enabled ? 'Thing is enabled' : 'Thing is disabled'" matTooltipPosition="above">
-									<mat-icon *ngIf="element.config.enabled" fontIcon="toggle_on"></mat-icon>
-									<mat-icon *ngIf="!element.config.enabled" fontIcon="toggle_off"></mat-icon>
-								</button>
-							</td>
-						</ng-container>
+                                    <!-- show no config if there is none yet -->
+                                    <div *ngIf="!element.configurations">
+                                        <p>No config</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
 
-						<!-- Match Column -->
-						<ng-container matColumnDef="match">
-							<th mat-header-cell *matHeaderCellDef>
-								Match
-							</th>
-							<td mat-cell *matCellDef="let element" class="mat-cell-center">
-								<ng-container *ngIf="findMatchOnSatelliteByAllProperties(element); else noMatch">
-									<mat-icon fontIcon="check" style="color: green"></mat-icon>
-								</ng-container>
-								<ng-template #noMatch>
-									<mat-icon fontIcon="clear" style="color: red"></mat-icon>
-								</ng-template>
-							</td>
-						</ng-container>
+                        <tr
+                            mat-header-row
+                            *matHeaderRowDef="displayedColumnsThingsTableDatabase; sticky: true"></tr>
+                        <tr
+                            mat-row
+                            *matRowDef="let row; columns: displayedColumnsThingsTableDatabase"
+                            class="normal-row"
+                            [class.expanded-row]="expandedElementDatabase === row"
+                            (click)="toggleDb(row)"></tr>
+                        <tr
+                            mat-row
+                            *matRowDef="let row; columns: ['expanded-detail']"
+                            class="thing-config-detail-row"></tr>
+                    </table>
+                </div>
+            </mat-card-content>
 
-						<!-- Thing ID Column -->
-						<ng-container matColumnDef="thing_config_id">
-							<th mat-header-cell *matHeaderCellDef>
-								Config ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.config.id }}
-							</td>
-						</ng-container>
+            <mat-card-actions
+                class="card-actions"
+                align="end">
+                <!-- add button -->
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="openCreateThingDialog()">
+                    <mat-icon>add</mat-icon>
+                    <span>Add thing</span>
+                </button>
+                
+                <!-- sync button -->
+                <button
+                    mat-raised-button
+                    color="primary"
+                    (click)="syncThings()">
+                    <mat-icon>double_arrow</mat-icon>
+                    <span>Sync things to Satellite</span>
+                </button>
+            </mat-card-actions>
+        </mat-card>
 
-						<!-- Thing Type ID Column -->
-						<ng-container matColumnDef="thing_type_id">
-							<th mat-header-cell *matHeaderCellDef>
-								Thing Type ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.thing_type_id }}
-							</td>
-						</ng-container>
+        <!-- loading indicator overlay -->
+        <div
+            class="loading-overlay"
+            *ngIf="intercomService.isLoadingDB">
+            <ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
+        </div>
+    </div>
 
-						<!-- Actions Column -->
-						<ng-container matColumnDef="actions">
-							<th mat-header-cell *matHeaderCellDef style="text-align: center"></th>
-							<td mat-cell *matCellDef="let element; let rowIndex = index" style="width: 50px">
-								<div style="display: flex">
-									<button mat-icon-button matTooltip="Remove Thing from Database" matTooltipPosition="above" (click)="removeThingDatabaseClick(element, $event)">
-										<mat-icon>delete</mat-icon>
-									</button>
-								</div>
-							</td>
-						</ng-container>
+    <div class="loading-overlay-container-sat">
+        <!-- satellite things card -->
+        <mat-card class="card-gateway-things-sat card-gateway-shadow">
+            <mat-card-header>
+                <div
+                    mat-card-avatar
+                    style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
+                <mat-card-title>Datapoints found on Satellite</mat-card-title>
+                <mat-card-subtitle>{{ intercomService.selectedGateway?.gateway_id }}</mat-card-subtitle>
+            </mat-card-header>
 
-						<!-- Sync Column -->
-						<ng-container matColumnDef="sync">
-							<th mat-header-cell *matHeaderCellDef style="text-align: center">
-								<button mat-icon-button matTooltip="Sync All to Satellite" matTooltipPosition="above" (click)="syncAllThingsDatabaseClick($event)">
-									<mat-icon>keyboard_double_arrow_right</mat-icon>
-								</button>
-							</th>
-							<td mat-cell *matCellDef="let element; let rowIndex = index">
-								<button mat-icon-button matTooltip="Sync to Satellite" matTooltipPosition="above" (click)="syncThingDatabaseClick(element, $event, true)">
-									<mat-icon>keyboard_arrow_right</mat-icon>
-								</button>
-							</td>
-						</ng-container>
+            <mat-card-content class="mat-card-content-gateway-things">
+                <div
+                    class="things-table-container"
+                    tabindex="0">
+                    <!-- things table -->
+                    <table
+                        mat-table
+                        class="things-table"
+                        [dataSource]="dataSourceThingsSatellite"
+                        multiTemplateDataRows>
+                        <!-- ID Column -->
+                        <ng-container matColumnDef="id">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Thing ID
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                {{ element.id }}
+                            </td>
+                        </ng-container>
 
-						<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-						<ng-container matColumnDef="expanded_detail">
-							<td mat-cell *matCellDef="let element" [attr.colspan]="3">
-								<div class="thing-config-element-detail" [@detailExpand]="element === expandedElementDatabase ? 'expanded' : 'collapsed'">
-									<!-- show config if there is any -->
-									<div *ngIf="element.config">
-										<p>Config:</p>
-										<pre><code class="config-code">{{ element.config | json }}</code></pre>
-									</div>
+                        <!-- Name Column -->
+                        <ng-container matColumnDef="name">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Name
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                {{ element.name }}
+                            </td>
+                        </ng-container>
 
-									<!-- show no config if there is none yet -->
-									<div *ngIf="!element.config">
-										<p>No config</p>
-									</div>
-								</div>
-							</td>
-						</ng-container>
+                        <!-- Thing Category -->
+                        <ng-container matColumnDef="category">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Category
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                {{ utilityService.getThingCategoryFromId(element.thing_type_id).title }}
+                            </td>
+                        </ng-container>
 
-						<tr mat-header-row *matHeaderRowDef="displayedColumnsThingsTableDatabase; sticky: true"></tr>
-						<tr
-							mat-row
-							*matRowDef="let row; columns: displayedColumnsThingsTableDatabase"
-							class="thing-config-row"
-							[class.thing-config-expanded-row]="expandedElementDatabase === row"
-							(click)="cellClickThings(row); expandedElementDatabase = expandedElementDatabase === row ? null : row"
-							class="element-row"
-						></tr>
-						<tr mat-row *matRowDef="let row; columns: ['expanded_detail']" class="thing-config-detail-row"></tr>
-					</table>
-				</div>
-			</mat-card-content>
-		</mat-card>
+                        <!-- Gateway ID Column -->
+                        <ng-container matColumnDef="gateway_id">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Gateway ID
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                {{ element.gateway_id }}
+                            </td>
+                        </ng-container>
 
-		<!-- loading indicator overlay -->
-		<div class="loading-overlay" *ngIf="intercomService.isLoadingDB">
-			<ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
-		</div>
-	</div>
+                        <!-- Thing ID Column -->
+                        <ng-container matColumnDef="thing_config_id">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Config ID
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                {{ element.id }}
+                            </td>
+                        </ng-container>
 
-	<div class="loading-overlay-container-sat">
-		<!-- satellite things card -->
-		<mat-card class="card-gateway-things-sat card-gateway-shadow">
-			<mat-card-header>
-				<div mat-card-avatar style="background-image: url('assets/inoa/satellite-color.png'); background-size: cover"></div>
-				<mat-card-title>Satellite things connected to</mat-card-title>
-				<mat-card-subtitle>{{ intercomService.selectedGateway?.gateway_id }}</mat-card-subtitle>
-			</mat-card-header>
+                        <!-- Thing Type ID Column -->
+                        <ng-container matColumnDef="thing_type_id">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef>
+                                Thing Type ID
+                            </th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element">
+                                {{ element.thing_type_id }}
+                            </td>
+                        </ng-container>
 
-			<mat-card-content class="mat-card-content-gateway-things">
-				<div class="things-table" tabindex="0">
-					<!-- things table -->
-					<table mat-table class="satellite-things-table" [dataSource]="dataSourceThingsSatellite" multiTemplateDataRows>
-						<!-- Sync Column -->
-						<ng-container matColumnDef="sync">
-							<th mat-header-cell *matHeaderCellDef style="text-align: center">
-								<button mat-icon-button matTooltip="Sync All to Database" matTooltipPosition="above" (click)="syncAllThingsSatelliteClick($event)">
-									<mat-icon>keyboard_double_arrow_left</mat-icon>
-								</button>
-							</th>
-							<td mat-cell *matCellDef="let element; let rowIndex = index">
-								<button mat-icon-button matTooltip="Sync to Database" matTooltipPosition="above" (click)="syncThingSatelliteClick(element, $event, true)">
-									<mat-icon>keyboard_arrow_left</mat-icon>
-								</button>
-							</td>
-						</ng-container>
+                        <!-- Actions Column -->
+                        <ng-container matColumnDef="actions">
+                            <th
+                                mat-header-cell
+                                *matHeaderCellDef
+                                style="text-align: center"></th>
+                            <td
+                                mat-cell
+                                *matCellDef="let element; let rowIndex = index"
+                                style="width: 50px">
+                                <div style="display: flex">
+                                    <button
+                                        mat-icon-button
+                                        matTooltip="Remove Thing from Satellite"
+                                        matTooltipPosition="above"
+                                        (click)="removeThingSatelliteClick(element, $event)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </ng-container>
 
-						<!-- ID Column -->
-						<ng-container matColumnDef="id">
-							<th mat-header-cell *matHeaderCellDef>
-								Thing ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.id }}
-							</td>
-						</ng-container>
+                        <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+                        <ng-container matColumnDef="expanded-detail">
+                            <td
+                                mat-cell
+                                *matCellDef="let element"
+                                [attr.colspan]="displayedColumnsThingsTableSatellite.length">
+                                <div
+                                    class="thing-config-element-detail"
+                                    [@detailExpand]="expandedElementSatellite === element ? 'expanded' : 'collapsed'">
+                                    <!-- show config if there is any -->
+                                    <div *ngIf="element">
+                                        <p>Config:</p>
+                                        <pre><code class="config-code">{{ element | json }}</code></pre>
+                                    </div>
 
-						<!-- Name Column -->
-						<ng-container matColumnDef="name">
-							<th mat-header-cell *matHeaderCellDef>
-								Name
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.name }}
-							</td>
-						</ng-container>
+                                    <!-- show no config if there is none yet -->
+                                    <div *ngIf="!element">
+                                        <p>No config</p>
+                                    </div>
+                                </div>
+                            </td>
+                        </ng-container>
 
-						<!-- Thing Category -->
-						<ng-container matColumnDef="category">
-							<th mat-header-cell *matHeaderCellDef>
-								Category
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ utilityService.getThingCategory(element.thing_type_id).title }}
-							</td>
-						</ng-container>
+                        <tr
+                            mat-header-row
+                            *matHeaderRowDef="displayedColumnsThingsTableSatellite; sticky: true"></tr>
+                        <tr
+                            mat-row
+                            *matRowDef="let row; columns: displayedColumnsThingsTableSatellite"
+                            class="thing-config-row"
+                            [class.thing-config-expanded-row]="expandedElementSatellite === row"
+                            (click)="toggleSat(row)"></tr>
+                        <tr
+                            mat-row
+                            *matRowDef="let row; columns: ['expanded-detail']"
+                            class="thing-config-detail-row"></tr>
+                    </table>
+                </div>
+            </mat-card-content>
 
-						<!-- Gateway ID Column -->
-						<ng-container matColumnDef="gateway_id">
-							<th mat-header-cell *matHeaderCellDef>
-								Gateway ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.gateway_id }}
-							</td>
-						</ng-container>
+            <mat-card-actions
+                class="card-actions"
+                align="end">
+            </mat-card-actions>
+        </mat-card>
 
-						<!-- Enabled Column -->
-						<ng-container matColumnDef="enabled">
-							<th mat-header-cell *matHeaderCellDef>
-								Enabled
-							</th>
-							<td mat-cell *matCellDef="let element" class="mat-cell-center">
-								<button mat-icon-button [matTooltip]="element.enabled ? 'Thing is enabled' : 'Thing is disabled'" matTooltipPosition="above">
-									<mat-icon *ngIf="element.enabled" fontIcon="toggle_on"></mat-icon>
-									<mat-icon *ngIf="!element.enabled" fontIcon="toggle_off"></mat-icon>
-								</button>
-							</td>
-						</ng-container>
-
-						<!-- Match Column -->
-						<ng-container matColumnDef="match">
-							<th mat-header-cell *matHeaderCellDef>
-								Match
-							</th>
-							<td mat-cell *matCellDef="let element" class="mat-cell-center">
-								<ng-container *ngIf="findMatchInDatabaseByAllProperties(element); else noMatch">
-									<mat-icon fontIcon="check" style="color: green"></mat-icon>
-								</ng-container>
-								<ng-template #noMatch>
-									<mat-icon fontIcon="clear" style="color: red"></mat-icon>
-								</ng-template>
-							</td>
-						</ng-container>
-
-						<!-- Thing ID Column -->
-						<ng-container matColumnDef="thing_config_id">
-							<th mat-header-cell *matHeaderCellDef>
-								Config ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.id }}
-							</td>
-						</ng-container>
-
-						<!-- Thing Type ID Column -->
-						<ng-container matColumnDef="thing_type_id">
-							<th mat-header-cell *matHeaderCellDef>
-								Thing Type ID
-							</th>
-							<td mat-cell *matCellDef="let element">
-								{{ element.thing_type_id }}
-							</td>
-						</ng-container>
-
-						<!-- Actions Column -->
-						<ng-container matColumnDef="actions">
-							<th mat-header-cell *matHeaderCellDef style="text-align: center"></th>
-							<td mat-cell *matCellDef="let element; let rowIndex = index" style="width: 50px">
-								<div style="display: flex">
-									<button mat-icon-button matTooltip="Remove Thing from Satellite" matTooltipPosition="above" (click)="removeThingSatelliteClick(element, $event)">
-										<mat-icon>delete</mat-icon>
-									</button>
-								</div>
-							</td>
-						</ng-container>
-
-						<!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
-						<ng-container matColumnDef="expanded_detail">
-							<td mat-cell *matCellDef="let element" [attr.colspan]="3">
-								<div class="thing-config-element-detail" [@detailExpand]="element === expandedElementSatellite ? 'expanded' : 'collapsed'">
-									<!-- show config if there is any -->
-									<div *ngIf="element">
-										<p>Config:</p>
-										<pre><code class="config-code">{{ element | json }}</code></pre>
-									</div>
-
-									<!-- show no config if there is none yet -->
-									<div *ngIf="!element">
-										<p>No config</p>
-									</div>
-								</div>
-							</td>
-						</ng-container>
-
-						<tr mat-header-row *matHeaderRowDef="displayedColumnsThingsTableSatellite; sticky: true"></tr>
-						<tr
-							mat-row
-							*matRowDef="let row; columns: displayedColumnsThingsTableSatellite"
-							class="thing-config-row"
-							[class.thing-config-expanded-row]="expandedElementSatellite === row"
-							(click)="cellClickThings(row); expandedElementSatellite = expandedElementSatellite === row ? null : row"
-							class="element-row"
-						></tr>
-						<tr mat-row *matRowDef="let row; columns: ['expanded_detail']" class="thing-config-detail-row"></tr>
-					</table>
-				</div>
-			</mat-card-content>
-
-			<mat-card-actions class="card-actions" align="end">
-				<!-- add button -->
-				<button mat-raised-button color="primary" (click)="openCreateThingDialog()">
-					<mat-icon>add</mat-icon>
-					<span>Add thing</span>
-				</button>
-			</mat-card-actions>
-		</mat-card>
-
-		<!-- loading indicator overlay -->
-		<div class="loading-overlay" *ngIf="this.intercomService.isLoadingSat">
-			<ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
-		</div>
-	</div>
+        <!-- loading indicator overlay -->
+        <div
+            class="loading-overlay"
+            *ngIf="this.intercomService.isLoadingSat">
+            <ng-container *ngTemplateOutlet="loadingSpinner"></ng-container>
+        </div>
+    </div>
 </div>
