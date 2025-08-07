@@ -76,10 +76,18 @@ spec:
             httpGet:
               path: /health
               port: management
-            initialDelaySeconds: 3
+            initialDelaySeconds: 30
             periodSeconds: 1
             successThreshold: 1
             failureThreshold: 60
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: management
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 120
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
