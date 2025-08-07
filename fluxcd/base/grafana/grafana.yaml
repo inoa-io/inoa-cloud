@@ -93,7 +93,6 @@ spec:
       annotations:
         kubernetes.io/tls-acme: "true"
         traefik.ingress.kubernetes.io/router.tls: "true"
-        traefik.ingress.kubernetes.io/router.middlewares: auth-grayc-de@file
     spec:
       ingressClassName: traefik
       rules:
