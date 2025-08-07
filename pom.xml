@@ -70,7 +70,7 @@
 		<image.influxdb>docker.io/library/influxdb:2.7.12</image.influxdb>
 		<image.traefik>docker.io/library/traefik:v2.11.28</image.traefik>
 		<image.hawkbit>docker.io/hawkbit/hawkbit-update-server:0.3.0M8</image.hawkbit>
-		<image.keycloak>docker.io/kokuwaio/keycloak:26.2.5</image.keycloak>
+		<image.keycloak>docker.io/kokuwaio/keycloak:26.3.2</image.keycloak>
 		<image.kafka>docker.io/kokuwaio/kafka:3.8.0</image.kafka>
 
 		<!-- ===================================================================== -->
