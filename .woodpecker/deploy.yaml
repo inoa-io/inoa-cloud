@@ -13,7 +13,7 @@ steps:
         MAVEN_MIRROR_CENTRAL: ${MAVEN_MIRROR_CENTRAL}
         YARN_NPM_REGISTRY_SERVER: ${YARN_NPM_REGISTRY_SERVER}
         YARN_UNSAFE_HTTP_WHITELIST: ${YARN_UNSAFE_HTTP_WHITELIST}
-      name: ghcr.io/inoa-io/inoa
+      name: ghcr.io/inoa-io/inoa:snapshot
       auth:
         ghcr.io:
           username: {from_secret: GHCR_USERNAME}
