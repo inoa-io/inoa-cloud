@@ -110,7 +110,7 @@
 		<version.org.bouncycastle>1.81</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
-		<version.org.openapitools.jackson.databind.nullable>0.2.6</version.org.openapitools.jackson.databind.nullable>
+		<version.org.openapitools.jackson.databind.nullable>0.2.7</version.org.openapitools.jackson.databind.nullable>
 		<version.org.projectlombok>1.18.38</version.org.projectlombok>
 
 	</properties>
