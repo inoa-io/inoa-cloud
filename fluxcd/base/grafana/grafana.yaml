@@ -70,12 +70,12 @@ spec:
                   value: "1"
                 - name: PGHOST
                   valueFrom:
-                    configMapKeyRef:
+                    secretKeyRef:
                       name: grafana-env
                       key: GF_DATABASE_HOST
                 - name: PGUSER
                   valueFrom:
-                    configMapKeyRef:
+                    secretKeyRef:
                       name: grafana-env
                       key: GF_DATABASE_USER
                 - name: PGPASSWORD
