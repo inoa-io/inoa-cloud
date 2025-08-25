@@ -4,13 +4,54 @@ metadata:
   name: grafana
 spec:
   config:
-    log:
-      level: info
+    analytics:
+      check_for_plugin_updates: "false"
+      check_for_updates: "false"
+      enable_feedback_links: "false"
+      reporting_enabled: "false"
     auth:
       disable_login_form: "false"
+      oauth:
+        auto_login: "false"
+      generic_oauth:
+        allow_sign_ip: "false"
+        api_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/userinfo
+        auth_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/auth
+        client_id: grafana
+        enabled: "true"
+        name: keycloak
+        scopes: openid
+        token_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/token
+    database:
+      host: postgres
+      type: postgres
+      name: grafana
+    log:
+      level: info
+    help:
+      enabled: "true"
+    metrics:
+      enabled: "true"
+    plugins:
+      plugin_admin_enabled: "true"
+    security:
+      content_security_policy: "false"
+      cookie_samesite: lax
+      cookie_secure: "false"
+      disable_gravatar: "true"
+      disable_initial_admin_creation: "true"
+      strict_transport_security: "true"
     server:
+      enable_gzip: "false"
+      enforce_domain: "false"
+      http_port: "3000"
       root_url: https://grafana.${inoa_domain}
-
+      router_logging: "false"
+    unified_alerting:
+      enabled: "false"
+    users:
+      allow_sign_up: "false"
+      auto_assign_org_role: Admin
   deployment:
     spec:
       replicas: 1
@@ -46,8 +87,6 @@ spec:
             - name: grafana
               image: grafana/grafana
               envFrom:
-                - configMapRef:
-                    name: grafana-env
                 - secretRef:
                     name: grafana-env
               ports:
