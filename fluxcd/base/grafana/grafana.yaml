@@ -11,17 +11,17 @@ spec:
       reporting_enabled: "false"
     auth:
       disable_login_form: "false"
-      oauth:
-        auto_login: "false"
-      generic_oauth:
-        allow_sign_ip: "false"
-        api_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/userinfo
-        auth_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/auth
-        client_id: grafana
-        enabled: "true"
-        name: keycloak
-        scopes: openid
-        token_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/token
+    auth.oauth:
+      auto_login: "false"
+    auth.generic_oauth:
+      allow_sign_ip: "false"
+      api_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/userinfo
+      auth_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/auth
+      client_id: grafana
+      enabled: "true"
+      name: keycloak
+      scopes: openid
+      token_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/token
     database:
       host: postgres
       type: postgres
