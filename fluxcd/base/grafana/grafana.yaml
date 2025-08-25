@@ -14,7 +14,7 @@ spec:
     auth.oauth:
       auto_login: "false"
     auth.generic_oauth:
-      allow_sign_ip: "false"
+      allow_sign_up: "false"
       api_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/userinfo
       auth_url: https://auth.${inoa_domain}/realms/inoa/protocol/openid-connect/auth
       client_id: grafana
