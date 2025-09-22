@@ -39,7 +39,7 @@
 		{
 			"customType": "regex",
 			"managerFilePatterns": ["pom.xml"],
-			"matchStrings": ["<image\\.[a-z]+>(?<packageName>[a-z\\.\\-\\/]+):(?<currentValue>[a-zA-Z0-9\\.\\-]+)</image\\.[a-z]+>"],
+			"matchStrings": ["<image\\.[a-z]+>(?<packageName>[a-z\\.\\-\\/]+):(?<currentValue>[a-zA-Z0-9\\.\\-]+)@(?<currentDigest>sha256:[a-f0-9]+)</image\\.[a-z]+>"],
 			"datasourceTemplate": "docker"
 		}
 	]
