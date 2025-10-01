@@ -67,7 +67,7 @@
 		<image.inoa>ghcr.io/inoa-io/inoa:snapshot</image.inoa>
 		<image.mcnoize>ghcr.io/inoa-io/mcnoize:0.0.5@sha256:d6b05bac60ed1ec71e1178053430d786f2e34d0f085ae43bd9268bee3bd205b9</image.mcnoize>
 		<image.postgresql>postgres:17.6@sha256:e6a4209d1a4893f2df3bdcde58f8926c3c929c4d51df90990ed1b36d83c1382a</image.postgresql>
-		<image.influxdb>influxdb:2.7.12@sha256:4b420bab57e838178886bacf70de8a6da398497718511da1e637780eeee41106</image.influxdb>
+		<image.influxdb>influxdb:2.7.12@sha256:674911452ada77ca762662d50dd0594c8823312f59b376500623a4f82c44f9be</image.influxdb>
 		<image.traefik>traefik:v2.11.29@sha256:7590a0dbb5ca6af50936b50406f70b4cddd17f6ffdf36aa1fcac0a3b1f7e3113</image.traefik>
 		<image.hawkbit>hawkbit/hawkbit-update-server:0.3.0@sha256:b2f6443e9983544f413a9c79097aa515571e9085c6bffd4f1f28ab4fde8047c7</image.hawkbit>
 		<image.keycloak>kokuwaio/keycloak:26.4.0@sha256:750ff856a4e3732036ff785efe478107e3d17e01139d70f3051aef18ebe64642</image.keycloak>
