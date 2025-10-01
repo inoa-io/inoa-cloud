@@ -6,7 +6,7 @@ when:
 steps:
 
   deploy:
-    image: kokuwaio/buildctl:v0.24.0
+    image: kokuwaio/buildctl:v0.25.0
     settings:
       platform: linux/amd64
       build-args:
