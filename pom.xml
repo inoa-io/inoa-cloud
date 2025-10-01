@@ -70,7 +70,7 @@
 		<image.influxdb>influxdb:2.7.12@sha256:23bc959dcb97f85e1fbc3a739805203eb3bcb779afede002cb205a37e14442bb</image.influxdb>
 		<image.traefik>traefik:v2.11.29@sha256:7590a0dbb5ca6af50936b50406f70b4cddd17f6ffdf36aa1fcac0a3b1f7e3113</image.traefik>
 		<image.hawkbit>hawkbit/hawkbit-update-server:0.3.0@sha256:b2f6443e9983544f413a9c79097aa515571e9085c6bffd4f1f28ab4fde8047c7</image.hawkbit>
-		<image.keycloak>kokuwaio/keycloak:26.3.4@sha256:92047537b485bd744ecb710e40e66c0681835a956982fd4a5a05697c247f1c6a</image.keycloak>
+		<image.keycloak>kokuwaio/keycloak:26.3.5@sha256:a11eec87bfa350b9f57705c50b2feba140661c179db180ab2a2b67d4f387ed99</image.keycloak>
 		<image.kafka>kokuwaio/kafka:3.8.0@sha256:00b3af29afe174fc2733c86c94d77c1785bb559fb27feaca0ee5c54b52ab090e</image.kafka>
 
 		<!-- ===================================================================== -->
