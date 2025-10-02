@@ -28,7 +28,7 @@ steps:
             --build-arg=YARN_UNSAFE_HTTP_WHITELIST
 
   maven:
-    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:9a0ddbd2c643948ad2969044d0e0542e9f66b6a5f138676c6cc902947538dbc9
+    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:9311699b501f3bad9643f5dd58365eadf7377eeacaa449f19851b087f144a019
     depends_on: []
     commands: mvn install --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml
     when: [path: {exclude: [app/**]}]
@@ -45,14 +45,14 @@ steps:
     when: [path: [.woodpecker/verify.yaml, app/**]]
 
   integration-prepare:
-    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:9a0ddbd2c643948ad2969044d0e0542e9f66b6a5f138676c6cc902947538dbc9
+    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:9311699b501f3bad9643f5dd58365eadf7377eeacaa449f19851b087f144a019
     depends_on: []
     directory: test
     commands: mvn --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml k3s:run k3s:image -Dk3s.dockerImages=
     when: [path: {exclude: [app/**, api/src/test/**, service/src/test/**]}]
 
   integration-test:
-    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:9a0ddbd2c643948ad2969044d0e0542e9f66b6a5f138676c6cc902947538dbc9
+    image: docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:9311699b501f3bad9643f5dd58365eadf7377eeacaa449f19851b087f144a019
     depends_on: [image, integration-prepare]
     directory: test
     commands: mvn --settings=$CI_WORKSPACE/.woodpecker/maven/settings.xml verify -Dip=$(getent hosts dockerd|awk '{print $1}')
