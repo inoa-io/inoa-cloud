@@ -13,5 +13,7 @@ configMapGenerator:
       - KC_LOG_CONSOLE_OUTPUT=default
 
 images:
-  - name: docker.io/kokuwaio/keycloak
-    newTag: 26.4.0-distroless
+  - name: docker.io/library/postgres:<patched>
+    newTag: 17.6@sha256:e6a4209d1a4893f2df3bdcde58f8926c3c929c4d51df90990ed1b36d83c1382a
+  - name: docker.io/kokuwaio/keycloak:<patched>
+    newTag: 26.4.0-distroless@sha256:91f7a348c8e15651490fc3b0e17b8ef9aabd9f479ccee26bce475b3876f9d55b

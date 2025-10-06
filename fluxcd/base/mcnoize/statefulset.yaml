@@ -22,7 +22,7 @@ spec:
         - name: dockerconfigjson-ghcr-io
       containers:
         - name: mcnoize
-          image: ghcr.io/inoa-io/mcnoize
+          image: ghcr.io/inoa-io/mcnoize:<patched>
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:

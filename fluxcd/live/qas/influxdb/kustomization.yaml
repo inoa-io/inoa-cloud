@@ -3,5 +3,5 @@ resources:
   - secrets.yaml
 
 images:
-  - name: docker.io/library/influxdb
-    newTag: 2.7.12
+  - name: docker.io/library/influxdb:<patched>
+    newTag: 2.7.12@sha256:674911452ada77ca762662d50dd0594c8823312f59b376500623a4f82c44f9be

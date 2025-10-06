@@ -3,5 +3,5 @@ resources:
   - secrets.yaml
 
 images:
-  - name: ghcr.io/inoa-io/mcnoize
-    newTag: 0.0.5
+  - name: ghcr.io/inoa-io/mcnoize:<patched>
+    newTag: 0.0.5@sha256:d6b05bac60ed1ec71e1178053430d786f2e34d0f085ae43bd9268bee3bd205b9

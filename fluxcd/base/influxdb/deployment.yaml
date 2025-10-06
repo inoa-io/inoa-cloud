@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: influxdb
-          image: docker.io/library/influxdb
+          image: docker.io/library/influxdb:<patched>
           imagePullPolicy: IfNotPresent
           command: [influxd]
           args:

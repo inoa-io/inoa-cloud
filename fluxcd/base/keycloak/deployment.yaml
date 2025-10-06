@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-postgres
-          image: docker.io/library/postgres
+          image: docker.io/library/postgres:<patched>
           imagePullPolicy: IfNotPresent
           command:
             [
@@ -57,7 +57,7 @@ spec:
               drop: [ALL]
       containers:
         - name: keycloak
-          image: docker.io/kokuwaio/keycloak
+          image: docker.io/kokuwaio/keycloak:<patched>
           imagePullPolicy: IfNotPresent
           args: [start, --import-realm]
           envFrom:

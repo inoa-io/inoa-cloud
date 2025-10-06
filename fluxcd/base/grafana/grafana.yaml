@@ -59,7 +59,7 @@ spec:
         spec:
           initContainers:
             - name: wait-for-postgres
-              image: docker.io/library/postgres
+              image: docker.io/library/postgres:17.6
               command:
                 - sh
                 - -c
