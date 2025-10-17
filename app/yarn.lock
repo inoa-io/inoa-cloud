@@ -3442,10 +3442,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jasmine@npm:5.1.11":
-  version: 5.1.11
-  resolution: "@types/jasmine@npm:5.1.11"
-  checksum: 10c0/59dfe0cef530ef738dd12d1a23cd417e983b693c3832fbb6ef54f40367dcb0e29a7855945d1553d7eae7529b2d686b0d5343ae3bfb89d411425d0f713df85b65
+"@types/jasmine@npm:5.1.12":
+  version: 5.1.12
+  resolution: "@types/jasmine@npm:5.1.12"
+  checksum: 10c0/707c4eabc01f1be06a580868e044f7ee1aa2abfe0e59cd344c93d3c71916b54233d2745d107ddfbb9afecaf6faebea1784dd9c0763c354e723aa8a5d8098c605
   languageName: node
   linkType: hard
 
@@ -6237,7 +6237,7 @@ __metadata:
     "@angular/platform-browser-dynamic": "npm:18.2.14"
     "@angular/router": "npm:18.2.14"
     "@types/crypto-js": "npm:4.2.2"
-    "@types/jasmine": "npm:5.1.11"
+    "@types/jasmine": "npm:5.1.12"
     "@types/leaflet": "npm:1.9.21"
     "@types/uuid": "npm:10.0.0"
     "@typescript-eslint/eslint-plugin": "npm:8.46.1"
