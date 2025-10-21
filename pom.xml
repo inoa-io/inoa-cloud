@@ -66,7 +66,7 @@
 
 		<image.inoa>ghcr.io/inoa-io/inoa:snapshot</image.inoa>
 		<image.mcnoize>ghcr.io/inoa-io/mcnoize:0.0.5@sha256:d6b05bac60ed1ec71e1178053430d786f2e34d0f085ae43bd9268bee3bd205b9</image.mcnoize>
-		<image.postgresql>docker.io/library/postgres:17.6@sha256:603395c235c99984271a59a6476eed9db4f584e85ba64f9f49a65ba835882f33</image.postgresql>
+		<image.postgresql>docker.io/library/postgres:17.6@sha256:5fb46253e1013a88b275458e753cdb174fdb3ab4bf10a997c8ee8c16b31d8c81</image.postgresql>
 		<image.influxdb>docker.io/library/influxdb:2.7.12@sha256:674911452ada77ca762662d50dd0594c8823312f59b376500623a4f82c44f9be</image.influxdb>
 		<image.traefik>docker.io/traefik:v2.11.29@sha256:20be0efb184e9ef56927aa52c3c4b14783314d0da1515a15796e60877399dc2a</image.traefik>
 		<image.hawkbit>docker.io/hawkbit/hawkbit-update-server:0.3.0M8@sha256:c8d75245f9bb5c757a6f60b39467b4c45c6fbabf3d8e9e2496368937a9976431</image.hawkbit>
