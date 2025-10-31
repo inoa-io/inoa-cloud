@@ -97,7 +97,7 @@
 		<version.io.kokuwa.maven.k3s>2.0.2</version.io.kokuwa.maven.k3s>
 
 		<version.com.influxdb.client>7.3.0</version.com.influxdb.client>
-		<version.com.jayway.jsonpath>2.9.0</version.com.jayway.jsonpath>
+		<version.com.jayway.jsonpath>2.10.0</version.com.jayway.jsonpath>
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.micronaut.codegen>4.5.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>5.0.0</version.io.kokuwa.micronaut.logging>
