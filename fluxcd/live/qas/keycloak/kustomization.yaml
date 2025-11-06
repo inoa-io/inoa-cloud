@@ -16,4 +16,4 @@ images:
   - name: docker.io/library/postgres:<patched>
     newTag: 17.6@sha256:00bc86618629af00d2937fdc5a5d63db3ff8450acf52f0636ec813c7f4902929
   - name: docker.io/kokuwaio/keycloak:<patched>
-    newTag: 26.4.2-distroless@sha256:42dcbdb179d8d8ded36bf1b260be02b7401d3ee39e0ee1ce8231326b66cc9b6c
+    newTag: 26.4.2-distroless@sha256:5f32fdab310f72b391e7b1628faaed509701441f6ad70f9364ccd98dbfe712be
