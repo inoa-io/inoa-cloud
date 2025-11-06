@@ -104,7 +104,7 @@
 		<version.io.micronaut.platform>4.10.1</version.io.micronaut.platform>
 		<!-- Annotation processors. Do not remove. IntelliJ needs explicit versions to build properly -->
 		<version.io.micronaut.core>4.10.8</version.io.micronaut.core>
-		<version.io.micronaut.data>4.14.0</version.io.micronaut.data>
+		<version.io.micronaut.data>4.14.1</version.io.micronaut.data>
 		<version.io.micronaut.validation>4.12.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
 		<version.org.bouncycastle>1.82</version.org.bouncycastle>
