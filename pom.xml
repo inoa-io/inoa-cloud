@@ -70,7 +70,7 @@
 		<image.influxdb>docker.io/library/influxdb:2.7.12@sha256:674911452ada77ca762662d50dd0594c8823312f59b376500623a4f82c44f9be</image.influxdb>
 		<image.traefik>docker.io/traefik:v2.11.30@sha256:badb2650cbabae8263ebed0a979475c66c31edc92b24535a519b1ebe5cd1c877</image.traefik>
 		<image.hawkbit>docker.io/hawkbit/hawkbit-update-server:0.3.0M8@sha256:c8d75245f9bb5c757a6f60b39467b4c45c6fbabf3d8e9e2496368937a9976431</image.hawkbit>
-		<image.keycloak>docker.io/kokuwaio/keycloak:26.4.4@sha256:2e5e2abae276b1bed5cae6ccd7fa09670dc7e8c33188226166a10ac225fd4694</image.keycloak>
+		<image.keycloak>docker.io/kokuwaio/keycloak:26.4.5@sha256:0573615ec667d496aca97e84eeaa5686bc458b8b5888ca94988d67e5f88573ae</image.keycloak>
 		<image.kafka>docker.io/kokuwaio/kafka:3.8.0@sha256:00b3af29afe174fc2733c86c94d77c1785bb559fb27feaca0ee5c54b52ab090e</image.kafka>
 
 		<!-- ===================================================================== -->
