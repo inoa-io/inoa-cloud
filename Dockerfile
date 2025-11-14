@@ -14,7 +14,7 @@ RUN --mount=type=cache,target=/app/.angular \
 	--mount=type=cache,target=/tmp \
 	yarn build --no-progress --configuration=production
 
-FROM docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:13cc0ed97cfbfd879737ae3d13a0a39d6a7d86edd51fcd89892ee89b84ca534e AS mvn
+FROM docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:d848907c31892a45e49972f3b61d5207b3c47050b350faadda27367b5c9515e9 AS mvn
 WORKDIR /app
 ARG MAVEN_ARGS="--batch-mode --color=always --no-transfer-progress -DskipTests -P=-dev"
 ARG MAVEN_MIRROR_CENTRAL=https://mirror.grayc.io/maven2
