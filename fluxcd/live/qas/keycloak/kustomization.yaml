@@ -14,6 +14,6 @@ configMapGenerator:
 
 images:
   - name: docker.io/library/postgres:<patched>
-    newTag: 17.7@sha256:46fd7ee75065e6ddd1949d332289c589269c92701d572e7bc373c15c6c153267
+    newTag: 17.7@sha256:2b6239f32680c308921cf212902f881355c31ae92da0795b4fef29d8f0033021
   - name: docker.io/kokuwaio/keycloak:<patched>
     newTag: 26.4.5-distroless@sha256:f887093a9827ba423c16be18f980ef4df5513ac7cbba5e637ef0fed91870bbae
