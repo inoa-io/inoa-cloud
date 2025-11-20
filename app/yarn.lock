@@ -6264,7 +6264,7 @@ __metadata:
     karma-jasmine-html-reporter: "npm:2.1.0"
     leaflet: "npm:1.9.4"
     leaflet-control-geocoder: "npm:2.4.0"
-    monaco-editor: "npm:0.55.0"
+    monaco-editor: "npm:0.55.1"
     ngx-monaco-editor: "npm:12.0.0"
     rxjs: "npm:7.8.2"
     tslib: "npm:2.8.1"
@@ -7832,13 +7832,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monaco-editor@npm:0.55.0":
-  version: 0.55.0
-  resolution: "monaco-editor@npm:0.55.0"
+"monaco-editor@npm:0.55.1":
+  version: 0.55.1
+  resolution: "monaco-editor@npm:0.55.1"
   dependencies:
     dompurify: "npm:3.2.7"
     marked: "npm:14.0.0"
-  checksum: 10c0/fb79c02b21819cb3f00523e7d9f15b62dee0803bed61523ad4030eade7adae69556bb6b33102ac4671e95dfa0289dd748e97021ed2fb82a445d271ebb1a48857
+  checksum: 10c0/c1a0cf887657b42c8996518bc5ee96bbd39c977f862d2a2b2018427c45f14b0dd25d1452278202056f6b1ead97981282ccacd7d7ad918d8f0ef084159f974a25
   languageName: node
   linkType: hard
 
