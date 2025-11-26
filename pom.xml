@@ -107,7 +107,7 @@
 		<version.io.micronaut.data>4.14.1</version.io.micronaut.data>
 		<version.io.micronaut.validation>4.12.0</version.io.micronaut.validation>
 		<version.io.moquette>0.17</version.io.moquette>
-		<version.org.bouncycastle>1.82</version.org.bouncycastle>
+		<version.org.bouncycastle>1.83</version.org.bouncycastle>
 		<version.org.eclipse.paho>1.2.5</version.org.eclipse.paho>
 		<version.org.mapstruct>1.6.3</version.org.mapstruct>
 		<version.org.openapitools.jackson.databind.nullable>0.2.8</version.org.openapitools.jackson.databind.nullable>
