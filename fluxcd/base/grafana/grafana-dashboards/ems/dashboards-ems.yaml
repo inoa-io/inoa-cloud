@@ -6,5 +6,5 @@ spec:
   folderUID: d02099f1-c64f-48f2-b1f5-f848915ed506
   allowCrossNamespaceImport: false
   configMapRef:
-    name: fleet-dashboards
+    name: ems-dashboards
     key: gateway-count.json
