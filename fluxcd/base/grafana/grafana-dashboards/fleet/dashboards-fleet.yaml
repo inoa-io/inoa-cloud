@@ -8,3 +8,25 @@ spec:
   configMapRef:
     name: fleet-dashboards
     key: gateway-count.json
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: fleet-satellite-fleet
+spec:
+  folderUID: 8932c242-7e14-4d76-8715-d7a97bf361fc
+  allowCrossNamespaceImport: false
+  configMapRef:
+    name: fleet-dashboards
+    key: inoa-fleet-iot.json
+---
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDashboard
+metadata:
+  name: fleet-temperature-date
+spec:
+  folderUID: 8932c242-7e14-4d76-8715-d7a97bf361fc
+  allowCrossNamespaceImport: false
+  configMapRef:
+    name: fleet-dashboards
+    key: inoa-fleet-temperature.json

@@ -1,0 +1,9 @@
+resources:
+  - dashboards-ems.yaml
+
+configMapGenerator:
+  - name: ems-dashboards
+    options:
+      disableNameSuffixHash: true
+    files:
+      - files/inoa-ems-power-data.json
