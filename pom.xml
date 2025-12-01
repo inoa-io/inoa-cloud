@@ -101,7 +101,7 @@
 		<version.io.cloudevents>2.5.0</version.io.cloudevents>
 		<version.io.kokuwa.micronaut.codegen>4.5.0</version.io.kokuwa.micronaut.codegen>
 		<version.io.kokuwa.micronaut.logging>5.0.0</version.io.kokuwa.micronaut.logging>
-		<version.io.micronaut.platform>4.10.2</version.io.micronaut.platform>
+		<version.io.micronaut.platform>4.10.3</version.io.micronaut.platform>
 		<!-- Annotation processors. Do not remove. IntelliJ needs explicit versions to build properly -->
 		<version.io.micronaut.core>4.10.9</version.io.micronaut.core>
 		<version.io.micronaut.data>4.14.1</version.io.micronaut.data>
