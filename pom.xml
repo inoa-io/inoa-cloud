@@ -68,7 +68,7 @@
 		<image.mcnoize>ghcr.io/inoa-io/mcnoize:0.0.5@sha256:d6b05bac60ed1ec71e1178053430d786f2e34d0f085ae43bd9268bee3bd205b9</image.mcnoize>
 		<image.postgresql>docker.io/library/postgres:17.7@sha256:f337b026cb1fb954a93f2e33a62bf9ea7fffc1dafc1586c53b93922a8d6ee018</image.postgresql>
 		<image.influxdb>docker.io/library/influxdb:2.7.12@sha256:674911452ada77ca762662d50dd0594c8823312f59b376500623a4f82c44f9be</image.influxdb>
-		<image.traefik>docker.io/traefik:v2.11.32@sha256:79f8665f38c397ee91c7398208117561dbe1b519ce2e2a1c32ebea7855a6c49e</image.traefik>
+		<image.traefik>docker.io/traefik:v2.11.32@sha256:c8e1ab3984e75521b4a7ba01fa964e7ed9d527bb5c375582786f2b282fa4cc68</image.traefik>
 		<image.hawkbit>docker.io/hawkbit/hawkbit-update-server:0.3.0M8@sha256:c8d75245f9bb5c757a6f60b39467b4c45c6fbabf3d8e9e2496368937a9976431</image.hawkbit>
 		<image.keycloak>docker.io/kokuwaio/keycloak:26.4.7@sha256:325de45ae027ac7afb5eb1af128db5657936409e9d6a9b231a5de7d662f4780d</image.keycloak>
 		<image.kafka>docker.io/kokuwaio/kafka:3.8.0@sha256:00b3af29afe174fc2733c86c94d77c1785bb559fb27feaca0ee5c54b52ab090e</image.kafka>
