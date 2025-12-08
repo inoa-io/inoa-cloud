@@ -1,6 +1,5 @@
 resources:
   - grafana.yaml
-  - grafana-dashboards
   - folders
 
 labels:
