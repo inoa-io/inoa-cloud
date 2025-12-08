@@ -2,11 +2,11 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 import { Component, OnInit } from "@angular/core";
 import { MatTableDataSource } from "@angular/material/table";
 import { ThingsService } from "@inoa/api";
+import { RemoteService } from "@inoa/api";
 import { GatewayVO, MeasurandTypeVO, MeasurandVO, ThingCreateVO, ThingUpdateVO, ThingVO } from "@inoa/model";
 import { ThingDialogData } from "src/app/dialogs/thing-dialog/thing-dialog.component";
 import { DialogService } from "src/app/services/dialog-service";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
-import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
 import { UtilityService } from "src/app/services/utility-service";
 
 export interface ConfigData {
@@ -35,10 +35,10 @@ export class GatewayDatapointsComponent implements OnInit {
     dataSourceThingsSatellite = new MatTableDataSource<object>();
 
     constructor(
-        private rpcMqttService: RpcMqttService,
         public intercomService: InternalCommunicationService,
         public utilityService: UtilityService,
         private thingsService: ThingsService,
+        private remotingService: RemoteService,
         private dialogService: DialogService
     ) {}
 
@@ -56,18 +56,7 @@ export class GatewayDatapointsComponent implements OnInit {
         // clear old data
         this.dataSourceThingsSatellite.data = [];
 
-        parsedResponse.forEach((urn: string) => {
-            this.rpcMqttService.sendRpcCommand(gateway_id, { method: "dp.get", params: { id: urn } }).subscribe((data) => {
-                // parse the response data
-                const thingData = JSON.parse(data.response);
-
-                // remove the 'type' property from thingData
-                delete thingData.type;
-
-                // add the thingData to the data source
-                this.dataSourceThingsSatellite.data = [...this.dataSourceThingsSatellite.data, thingData];
-            });
-        });
+        // TODO: Use: this.remotingService.getThingsFromGateway()
     }
 
     findIdMatchInDatabase(thingData: any): ThingVO | undefined {
@@ -119,7 +108,7 @@ export class GatewayDatapointsComponent implements OnInit {
             id: thing.id
         };
 
-        this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "dp.delete", params: deleteParams }).subscribe();
+        // TODO: Use: this.gatewaysService.syncThingsToGateway()
         this.refreshThingsListSatellite(this.intercomService.selectedGateway);
     }
 
@@ -199,15 +188,7 @@ export class GatewayDatapointsComponent implements OnInit {
         }
 
         // if there is an id match on the satellite, update the thing (updating for now means deleting and recreating)
-        this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "dp.delete", params: { id: "TODO" } }).subscribe(() => {
-            this.addThingToSatellite(thing).then(() => {
-                if (updateLists) {
-                    this.refreshThingsListDatabase(this.intercomService.selectedGateway);
-                    this.refreshThingsListSatellite(this.intercomService.selectedGateway);
-                }
-                if (callback) callback();
-            });
-        });
+        // TODO: Use: this.gatewaysService.syncThingsToGateway()
     }
 
     syncAllThingsDatabaseClick(event: Event) {
@@ -260,12 +241,8 @@ export class GatewayDatapointsComponent implements OnInit {
         this.intercomService.isLoadingSat = true;
         this.expandedElementSatellite = null;
 
-        //get things from satellite
-        this.rpcMqttService.sendRpcCommand(satellite.gateway_id, { method: "dp.list" }).subscribe((data) => {
-            this.dataSourceThingsSatellite.data = [];
-            this.storeSatelliteThingsData(satellite.gateway_id, data.response);
-            this.intercomService.isLoadingSat = false;
-        });
+        // get things from satellite
+        // TODO: Use: this.gatewaysService.getThingsFromGateway()
     }
 
     addThingToSatellite(thing: ThingVO): Promise<void> {
@@ -286,9 +263,7 @@ export class GatewayDatapointsComponent implements OnInit {
             }
 
             if (thing.configurations && methodName !== "") {
-                this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: methodName, params: thing.configurations }).subscribe(() => {
-                    resolve();
-                });
+              // TODO: Use: this.gatewaysService.syncThingsToGateway()
             } else {
                 resolve();
             }
@@ -297,7 +272,8 @@ export class GatewayDatapointsComponent implements OnInit {
 
     syncThings() {
         console.log("Trying to synch to " + this.intercomService.selectedGateway!.gateway_id + " now...");
-        this.thingsService.syncThingsToGateway(this.intercomService.selectedGateway!.gateway_id).subscribe((returnData) => {
+
+        this.remotingService.syncThingsToGateway(this.intercomService.selectedGateway!.gateway_id).subscribe((returnData) => {
             console.log(JSON.stringify(returnData, null, 4));
         });
     }

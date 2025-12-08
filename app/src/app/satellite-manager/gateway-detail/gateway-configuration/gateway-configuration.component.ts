@@ -2,7 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { GatewayVO } from "@inoa/model";
 import { DialogService } from "src/app/services/dialog-service";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
-import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
+import { RemoteService } from '@inoa/api';
+import { ConfigurationService } from '@inoa/api';
 
 export interface ConfigData {
 	[key: string]: any;
@@ -39,7 +40,7 @@ export class GatewayConfigurationComponent implements OnInit {
 		loggingMqttConsole: false
 	};
 
-	constructor(private rpcService: RpcMqttService, public intercomService: InternalCommunicationService, private dialogService: DialogService) {}
+	constructor(private remotingService: RemoteService, private configurationService: ConfigurationService, public intercomService: InternalCommunicationService, private dialogService: DialogService) {}
 
 	ngOnInit(): void {
 		//sub to selected gateway changes
@@ -53,11 +54,7 @@ export class GatewayConfigurationComponent implements OnInit {
 
 		this.intercomService.isLoadingConfig = true;
 
-		this.rpcService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "config.read" }).subscribe((rpcResponse) => {
-			this.configData = this.parseRpcConfigResponse(rpcResponse.response);
-
-			this.intercomService.isLoadingConfig = false;
-		});
+		// TODO: Use: this.configurationService.findConfigurationsByGateway()
 	}
 
 	parseRpcConfigResponse(rpcResponse: string): ConfigData {
@@ -94,8 +91,7 @@ export class GatewayConfigurationComponent implements OnInit {
 	updateConfigurationClicked() {
 		if (!this.intercomService.selectedGateway) return;
 
-		// write the config data to the gateway
-		this.rpcService.sendRpcCommand(this.intercomService.selectedGateway.gateway_id, { method: "config.write", params: this.createRpcConfigRequest(this.configData) }).subscribe(() => {});
+		// TODO: Use: this.configurationService.setConfigurationByGateway()
 	}
 
 	formatMillisecTimeToSec(millisecTime: number): string {
@@ -174,7 +170,7 @@ export class GatewayConfigurationComponent implements OnInit {
 	restartClick(gateway: GatewayVO | undefined) {
 		if (!gateway) return;
 
-		this.rpcService.sendRpcReboot(gateway.gateway_id);
+		this.remotingService.reboot(gateway.gateway_id);
 
 		gateway.status!.mqtt!.connected = false;
 	}

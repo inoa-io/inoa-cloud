@@ -3,7 +3,7 @@ import { GatewaysService } from "@inoa/api";
 import { GatewayUpdateVO, GatewayVO, RpcCommandVO } from "@inoa/model";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
 import { RoutingService } from "src/app/services/routing-service";
-import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
+import { RemoteService } from "@inoa/api"
 
 @Component({
 	selector: "gc-gateway-detail",
@@ -26,10 +26,10 @@ export class GatewayDetailComponent {
 
 	constructor(
 		public intercomService: InternalCommunicationService,
-		private rpcMqttService: RpcMqttService,
 		private changeDetector: ChangeDetectorRef,
 		private routingService: RoutingService,
-		private gatewaysService: GatewaysService
+		private gatewaysService: GatewaysService,
+		private remoteService: RemoteService
 	) {}
 
 	restartClick(gateway: GatewayVO | undefined, event: Event) {
@@ -37,7 +37,7 @@ export class GatewayDetailComponent {
 
 		if (!gateway) return;
 
-		this.rpcMqttService.sendRpcReboot(gateway.gateway_id);
+		this.remoteService.reboot(gateway.gateway_id);
 
 		gateway.status!.mqtt!.connected = false;
 	}
@@ -46,7 +46,7 @@ export class GatewayDetailComponent {
 		if (this.intercomService.selectedGateway) {
 			const rpcCommand: RpcCommandVO = JSON.parse(this.jsonCode);
 
-			this.rpcMqttService.sendRpcCommand(this.intercomService.selectedGateway.gateway_id, rpcCommand).subscribe();
+			// TODO: This will not work anymore. We currently cannot send free-from commands. Only dedicated REST methods are allowed!
 			this.changeDetector.detectChanges();
 		}
 	}

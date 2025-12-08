@@ -9,7 +9,7 @@ import { interval, of, Subscription, switchMap } from "rxjs";
 import { DialogService } from "src/app/services/dialog-service";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
 import { RoutingService } from "src/app/services/routing-service";
-import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
+import { RemoteService } from "@inoa/api";
 
 @Component({
 	selector: "gc-gateway-table",
@@ -34,9 +34,9 @@ export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 		public intercomService: InternalCommunicationService,
 		private gatewaysService: GatewaysService,
 		private dialogService: DialogService,
-		private rpcMqttService: RpcMqttService,
 		private tenantService: TenantsService,
-		private routingService: RoutingService
+		private routingService: RoutingService,
+		private remotingService: RemoteService,
 	) {}
 
 	ngOnDestroy() {
@@ -213,15 +213,15 @@ export class GatewayTableComponent implements AfterViewInit, OnInit, OnDestroy {
 	winkClick(gateway: GatewayVO, event: Event) {
 		event.stopPropagation();
 
-		this.rpcMqttService.sendRpcWink(gateway.gateway_id);
+		if (!gateway) return;
+		this.remotingService.wink(gateway.gateway_id);
 	}
 
 	restartClick(gateway: GatewayVO | undefined, event: Event) {
 		event.stopPropagation();
 
 		if (!gateway) return;
-
-		this.rpcMqttService.sendRpcReboot(gateway.gateway_id);
+		this.remotingService.reboot(gateway.gateway_id);
 
 		gateway.status!.mqtt!.connected = false;
 		// this.refreshThingsListDatabase(gateway);

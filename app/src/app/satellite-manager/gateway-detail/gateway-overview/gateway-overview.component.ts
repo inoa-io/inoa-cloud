@@ -4,7 +4,7 @@ import { GatewayUpdateVO, GatewayVO } from "@inoa/model";
 import { DialogService } from "src/app/services/dialog-service";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
 import { MapService } from "src/app/services/map-service";
-import { RpcMqttService } from "src/app/services/rpc-mqtt-service";
+import { PropertiesService } from '@inoa/api';
 import * as L from "leaflet";
 
 export interface SysInfo {
@@ -32,10 +32,10 @@ export class GatewayOverviewComponent implements AfterViewInit {
 
     constructor(
         public mapService: MapService,
-        private rpcService: RpcMqttService,
         public intercomService: InternalCommunicationService,
         private dialogService: DialogService,
-        private gatewaysService: GatewaysService
+        private gatewaysService: GatewaysService,
+        private propertiesService: PropertiesService
     ) {}
 
     ngAfterViewInit(): void {
@@ -89,11 +89,7 @@ export class GatewayOverviewComponent implements AfterViewInit {
 
         this.intercomService.isLoadingSysInfo = true;
 
-        this.rpcService.sendRpcCommand(this.intercomService.selectedGateway!.gateway_id, { method: "sys.version" }).subscribe((rpcResponse) => {
-            this.sysData = this.parseRpcConfigResponse(rpcResponse.response);
-
-            this.intercomService.isLoadingSysInfo = false;
-        });
+      // TODO: Use: this.propertiesService.getProperties()
     }
 
     parseRpcConfigResponse(rpcResponse: string): SysInfo {
