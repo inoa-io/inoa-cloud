@@ -1,7 +1,6 @@
 package io.inoa.fleet.remoting;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -10,6 +9,7 @@ import jakarta.inject.Singleton;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.inoa.fleet.mqtt.MqttBroker;
+import io.inoa.rest.RpcCommandVO;
 import io.inoa.rest.RpcResponseVO;
 import io.moquette.interception.AbstractInterceptHandler;
 import io.moquette.interception.messages.InterceptPublishMessage;
@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RemotingHandler extends AbstractInterceptHandler {
 
 	private final ObjectMapper mapper;
-	private final Map<String, RpcResponseVO> commandResponses = new HashMap<>();
+	private final Map<String, RpcMessage> commandBuffer = new HashMap<>();
 
 	@Override
 	public void onPublish(InterceptPublishMessage message) {
@@ -51,30 +51,40 @@ public class RemotingHandler extends AbstractInterceptHandler {
 		message.getPayload().release();
 	}
 
-	public List<RpcResponseVO> getCommandResponses() {
-		return commandResponses.values().stream().toList();
-	}
-
 	public Optional<RpcResponseVO> getCommandResponse(String commandId) {
-		if (!commandResponses.containsKey(commandId) || commandResponses.get(commandId) == null) {
+		if (!commandBuffer.containsKey(commandId) || commandBuffer.get(commandId) == null) {
 			return Optional.empty();
 		}
-		return Optional.of(commandResponses.get(commandId));
+		return commandBuffer.get(commandId).rpcResponse;
 	}
 
 	private void putCommandResponse(String commandId, RpcResponseVO response) {
-		if (commandResponses.put(commandId, response) != null) {
+		if (!commandBuffer.containsKey(commandId)) {
+			log.warn("Got response of command that was never sent: {}", response);
+			// We will not stack "dead letters" here, because housekeeping will be hard
+			return;
+		}
+		var message = commandBuffer.get(commandId);
+		if (message.rpcResponse.isPresent()) {
 			log.warn("Got more than one RPC response for command ID: {}", commandId);
 		}
+		commandBuffer.put(commandId,
+				new RpcMessage(message.sentAt, message.ttl, message.rpcCommand, Optional.of(response)));
+	}
+
+	public void putCommandMessage(String commandId, RpcMessage message) {
+		commandBuffer.put(commandId, message);
 	}
 
 	@Override
 	public String getID() {
-		return RemotingHandler.class.getName();
+		return this.getClass().getName();
 	}
 
 	@Override
 	public void onSessionLoopError(Throwable error) {
 		log.warn("Got session loop error", error);
 	}
+
+	record RpcMessage(long sentAt, long ttl, RpcCommandVO rpcCommand, Optional<RpcResponseVO> rpcResponse) {};
 }

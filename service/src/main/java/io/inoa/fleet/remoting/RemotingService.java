@@ -2,6 +2,9 @@ package io.inoa.fleet.remoting;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,7 +25,11 @@ import io.netty.handler.codec.mqtt.MqttQoS;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** Service for sending RPC commands to gateways. */
+/**
+ * Service for sending RPC commands to gateways.
+ * TODO: Buffer Housekeeping
+ * TODO: Single shot per gateway
+ */
 @Slf4j
 @Singleton
 @RequiredArgsConstructor
@@ -81,27 +88,52 @@ public class RemotingService {
 	public static final String COMMAND_TOPIC_FORMAT_STRING = MqttBroker.COMMAND_TOPIC_LONG_NAME
 			+ "/%s/%s/req/%s/cloudEventRpc";
 
+	private final static long DEFAULT_TTL = 60000;
+	private final static long DEFAULT_TIMEOUT = 30000;
+
 	private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-	private final RemotingHandler remotingHandler;
 	private final ObjectMapper mapper;
 	private final MqttBroker mqttBroker;
+	private final RemotingHandler remotingHandler;
 
-	public RpcResponseVO sendRpcCommandSync(String tenantId, String gatewayId, RpcCommandVO command, long timeout)
+	public RpcResponseVO sendRpcCommand(String tenantId, String gatewayId, String method)
 			throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
-		sendRpcCommandInternal(tenantId, gatewayId, command);
-		// Wait for RPC response with 20s timeout
+		return sendRpcCommand(tenantId, gatewayId, method, DEFAULT_TIMEOUT);
+	}
+
+	public RpcResponseVO sendRpcCommand(String tenantId, String gatewayId, String method, long timeout)
+			throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+		return sendRpcCommand(tenantId, gatewayId, method, new HashMap<>(), timeout);
+	}
+
+	public RpcResponseVO sendRpcCommand(String tenantId, String gatewayId, String method, Object params)
+			throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+		return sendRpcCommand(tenantId, gatewayId, method, params, DEFAULT_TIMEOUT);
+	}
+
+	public RpcResponseVO sendRpcCommand(String tenantId, String gatewayId, String method, Object params, long timeout)
+			throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+		var command = sendCommand(tenantId, gatewayId, method, params, timeout);
+		// Wait for RPC response with timeout
 		Future<RpcResponseVO> rpcResponseFuture = waitForRpcResponse(command.getId());
 		return rpcResponseFuture.get(timeout, TimeUnit.MILLISECONDS);
 	}
 
-	public void sendRpcCommandAsync(String tenantId, String gatewayId, RpcCommandVO command)
-			throws JsonProcessingException {
-		sendRpcCommandInternal(tenantId, gatewayId, command);
+	public RpcCommandVO sendRpcCommandAsync(String tenantId, String gatewayId, String method)
+			throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+		return sendCommand(tenantId, gatewayId, method, new HashMap<>(), DEFAULT_TIMEOUT);
 	}
 
-	private void sendRpcCommandInternal(String tenantId, String gatewayId, RpcCommandVO command)
-			throws JsonProcessingException {
+	public RpcCommandVO sendRpcCommandAsync(String tenantId, String gatewayId, String method, Object params)
+			throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+		return sendCommand(tenantId, gatewayId, method, params, DEFAULT_TIMEOUT);
+	}
+
+	private RpcCommandVO sendCommand(String tenantId, String gatewayId, String method, Object params, long timeout)
+			throws JsonProcessingException, ExecutionException, InterruptedException, TimeoutException {
+
+		var command = new RpcCommandVO().id(UUID.randomUUID().toString()).method(method).params(params);
 
 		log.trace(
 				"Sending command on tenant '{}' for gateway '{}' with message: {}",
@@ -112,19 +144,25 @@ public class RemotingService {
 		// Create RPC message
 		var commandJson = mapper.writeValueAsString(command);
 		var topic = COMMAND_TOPIC_FORMAT_STRING.formatted(tenantId, gatewayId, command.getId());
+		// We use QoS 2 here, because commanding is critical. See:
+		// http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718102
 		var message = MqttMessageBuilders.publish()
 				.topicName(topic)
 				.retained(true)
-				.qos(MqttQoS.AT_LEAST_ONCE)
+				.qos(MqttQoS.EXACTLY_ONCE)
 				.payload(Unpooled.copiedBuffer(commandJson.getBytes(UTF_8)))
 				.build();
 
-		// Send internal message
+		// Send message
 		var routingResults = mqttBroker.internalPublish(message, RemotingService.class.toString());
 		if (routingResults.isAllFailed()) {
 			log.error("Error sending command: {}", routingResults);
 			throw new IllegalStateException("All MQTT routes failed.");
+		} else {
+			remotingHandler.putCommandMessage(command.getId(),
+					new RemotingHandler.RpcMessage(System.currentTimeMillis(), DEFAULT_TTL, command, Optional.empty()));
 		}
+		return command;
 	}
 
 	private Future<RpcResponseVO> waitForRpcResponse(String commandId) {

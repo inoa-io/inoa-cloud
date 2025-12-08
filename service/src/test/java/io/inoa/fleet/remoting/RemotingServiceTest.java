@@ -2,12 +2,10 @@ package io.inoa.fleet.remoting;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.util.Collections;
 
 import jakarta.inject.Inject;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +16,7 @@ import io.inoa.rest.RpcCommandVO;
 import io.inoa.rest.RpcResponseVO;
 import io.inoa.test.AbstractUnitTest;
 import io.inoa.test.Await;
+import lombok.SneakyThrows;
 
 public class RemotingServiceTest extends AbstractUnitTest {
 
@@ -28,9 +27,10 @@ public class RemotingServiceTest extends AbstractUnitTest {
 	@Inject
 	RemotingHandler remotingHandler;
 
-	@DisplayName("Successful RPC command")
 	@Test
-	void rpcCommand(TestMqttListener mqttListener) throws MqttException, IOException {
+	@SneakyThrows
+	@DisplayName("Successful RPC command")
+	void rpcCommand(TestMqttListener mqttListener) {
 
 		var tenant = data.tenant("test");
 		var gateway = data.gateway(tenant, true);
@@ -52,8 +52,7 @@ public class RemotingServiceTest extends AbstractUnitTest {
 		mqttListener.clear();
 
 		// Send our RPC command
-		remotingService.sendRpcCommandAsync(
-				tenantId, gatewayId, new RpcCommandVO().id("blub").method("rpc.list"));
+		remotingService.sendRpcCommandAsync(tenantId, gatewayId, "rpc.list");
 
 		// Wait until our fake gateway "sees" the command
 		var record = mqttListener.await();

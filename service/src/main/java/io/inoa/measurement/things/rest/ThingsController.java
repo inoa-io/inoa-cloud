@@ -1,43 +1,19 @@
 package io.inoa.measurement.things.rest;
 
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_ADC;
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_HTTPGET;
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_MBUS;
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_RMS;
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_RS485;
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_S0;
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_TCP;
-import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_WMBUS;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.ADC;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.JSON_REST_HTTP;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.MBUS;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.MODBUS_RS458;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.MODBUS_TCP;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.RMS;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.S0;
-import static io.inoa.measurement.things.domain.MeasurandProtocol.WMBUS;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import jakarta.validation.Valid;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.registry.domain.TenantRepository;
-import io.inoa.fleet.remoting.RemotingService;
-import io.inoa.measurement.things.builder.DatapointBuilderException;
-import io.inoa.measurement.things.builder.DatapointService;
 import io.inoa.measurement.things.domain.Measurand;
-import io.inoa.measurement.things.domain.MeasurandProtocol;
 import io.inoa.measurement.things.domain.MeasurandRepository;
 import io.inoa.measurement.things.domain.MeasurandTypeRepository;
 import io.inoa.measurement.things.domain.Thing;
@@ -49,11 +25,11 @@ import io.inoa.measurement.things.domain.ThingTypeRepository;
 import io.inoa.measurement.things.rest.mapper.MeasurandMapper;
 import io.inoa.measurement.things.rest.mapper.ThingMapper;
 import io.inoa.rest.MeasurandVO;
-import io.inoa.rest.RpcCommandVO;
 import io.inoa.rest.ThingCreateVO;
 import io.inoa.rest.ThingUpdateVO;
 import io.inoa.rest.ThingVO;
 import io.inoa.rest.ThingsApi;
+import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
@@ -76,8 +52,6 @@ public class ThingsController implements ThingsApi {
 	private final ThingMapper thingMapper;
 	private final MeasurandMapper measurandMapper;
 	private final Security security;
-	private final DatapointService datapointService;
-	private final RemotingService remotingService;
 
 	@Override
 	public HttpResponse<ThingVO> createThing(@Valid ThingCreateVO thingCreateVO) {
@@ -366,32 +340,6 @@ public class ThingsController implements ThingsApi {
 	}
 
 	@Override
-	public HttpResponse<Object> syncThingsToGateway(String gatewayId) {
-		var gateway = checkGateway(gatewayId);
-		var things = thingRepository.findByGateway(gateway);
-		try {
-			syncThingsByProtocol(things, gatewayId, JSON_REST_HTTP);
-			syncThingsByProtocol(things, gatewayId, MODBUS_RS458);
-			syncThingsByProtocol(things, gatewayId, MODBUS_TCP);
-			syncThingsByProtocol(things, gatewayId, S0);
-			syncThingsByProtocol(things, gatewayId, MBUS);
-			syncThingsByProtocol(things, gatewayId, WMBUS);
-			syncThingsByProtocol(things, gatewayId, ADC);
-			syncThingsByProtocol(things, gatewayId, RMS);
-			var datapointsJson = datapointService.getDatapointsJson(things);
-			return HttpResponse.ok(datapointsJson);
-		} catch (DatapointBuilderException e) {
-			return HttpResponse.status(500, e.toString());
-		} catch (ExecutionException | InterruptedException e) {
-			return HttpResponse.status(500, e.getLocalizedMessage());
-		} catch (JsonProcessingException e) {
-			return HttpResponse.status(500, "Unprocessable Json: " + e.getMessage());
-		} catch (TimeoutException e) {
-			return HttpResponse.status(504, "No response from device within timeout.");
-		}
-	}
-
-	@Override
 	public HttpResponse<Object> deleteThing(UUID thingId) {
 		thingRepository.delete(checkThing(thingId));
 		return HttpResponse.status(HttpStatus.NO_CONTENT);
@@ -440,39 +388,6 @@ public class ThingsController implements ThingsApi {
 							+ "' does not match regex '"
 							+ thingConfiguration.getValidationRegex()
 							+ "'");
-		}
-	}
-
-	private List<Thing> getThingsByProtocol(List<Thing> things, MeasurandProtocol protocol) {
-		return things.stream().filter(thing -> protocol.equals(thing.getThingType().getProtocol()))
-				.collect(Collectors.toList());
-	}
-
-	private String getRpcCommandByProtocol(MeasurandProtocol protocol) {
-		return switch (protocol) {
-			case JSON_REST_HTTP -> COMMAND_DATAPOINTS_ADD_HTTPGET;
-			case MODBUS_RS458 -> COMMAND_DATAPOINTS_ADD_RS485;
-			case MODBUS_TCP -> COMMAND_DATAPOINTS_ADD_TCP;
-			case S0 -> COMMAND_DATAPOINTS_ADD_S0;
-			case MBUS -> COMMAND_DATAPOINTS_ADD_MBUS;
-			case WMBUS -> COMMAND_DATAPOINTS_ADD_WMBUS;
-			case ADC -> COMMAND_DATAPOINTS_ADD_ADC;
-			case RMS -> COMMAND_DATAPOINTS_ADD_RMS;
-		};
-	}
-
-	private void syncThingsByProtocol(List<Thing> things, String gatewayId, MeasurandProtocol protocol)
-			throws DatapointBuilderException, ExecutionException, JsonProcessingException, InterruptedException,
-			TimeoutException {
-		var thingsForProtocol = things.stream().filter(thing -> protocol.equals(thing.getThingType().getProtocol()))
-				.toList();
-		for (var thing : thingsForProtocol) {
-			remotingService.sendRpcCommandSync("inoa", gatewayId,
-					new RpcCommandVO()
-							.id(UUID.randomUUID().toString())
-							.method(getRpcCommandByProtocol(protocol))
-							.params(datapointService.getDatapointsJson(List.of(thing))),
-					5000);
 		}
 	}
 }
