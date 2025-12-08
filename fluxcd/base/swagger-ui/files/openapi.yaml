@@ -11,29 +11,32 @@ info:
     url: https://github.com/inoa-io
 servers:
   - url: https://api.qas.inoa.io
+  - url: https://api.inoa.io
 security:
   - Keycloak: []
   - BearerAuth: []
 tags:
-  - name: tenants
+  - name: Auth
+    description: Authentication
+  - name: Tenants
     description: Tenants can be used to divide INOA resources for different groups of interest.
-  - name: groups
+  - name: Groups
     description: Groups are a logical structure to arrange gateways and their configuration.
-  - name: gateways
-    description: Gateways are representations of IoT devices.
-  - name: credentials
+  - name: Gateways
+    description: Manage Gateways (representations of IoT devices).
+  - name: Credentials
     description: Credential definitions, types and values.
-  - name: configuration
+  - name: Configuration
     description: Gateway configuration for system setup.
-  - name: gateway
+  - name: Gateway
     description: Resources accessible by the physical gateway.
-  - name: properties
+  - name: Properties
     description: Gateway properties.
-  - name: remote
+  - name: Remote
     description: Remote control of gateways.
-  - name: things
+  - name: Things
     description: Thing definitions and assignments.
-  - name: thing-types
+  - name: ThingTypes
     description: Thing type management.
 paths:
   /whoami:
@@ -41,7 +44,7 @@ paths:
       summary: Current User
       description: Gives Information about the current user.
       operationId: whoami
-      tags: [auth]
+      tags: [Auth]
       responses:
         200:
           description: Current User.
@@ -82,7 +85,7 @@ paths:
           description: Unauthorized
   /tenants:
     get:
-      tags: [tenants]
+      tags: [Tenants]
       summary: Find tenants
       description: Returns all tenants ordered by name.
       operationId: findTenants
@@ -98,7 +101,7 @@ paths:
         401:
           description: Unauthorized
     post:
-      tags: [tenants]
+      tags: [Tenants]
       summary: Create tenant
       description: Create tenant.
       operationId: createTenant
@@ -125,7 +128,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/TenantId"
     get:
-      tags: [tenants]
+      tags: [Tenants]
       summary: Find tenant
       description: Find tenant by id.
       operationId: findTenant
@@ -141,7 +144,7 @@ paths:
         404:
           description: Tenant not found
     patch:
-      tags: [tenants]
+      tags: [Tenants]
       summary: Update tenant
       description: Update tenant name.
       operationId: updateTenant
@@ -165,7 +168,7 @@ paths:
         404:
           description: Tenant not found
     delete:
-      tags: [tenants]
+      tags: [Tenants]
       summary: Delete tenant
       description: Delete tenant by id.
       operationId: deleteTenant
@@ -180,7 +183,7 @@ paths:
           description: Tenant not found
   /groups:
     get:
-      tags: [groups]
+      tags: [Groups]
       summary: Find groups
       description: Returns all groups ordered by name.
       operationId: findGroups
@@ -196,7 +199,7 @@ paths:
         401:
           description: Unauthorized
     post:
-      tags: [groups]
+      tags: [Groups]
       summary: Create group
       description: Create group.
       parameters:
@@ -225,7 +228,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GroupId"
     get:
-      tags: [groups]
+      tags: [Groups]
       summary: Find group
       description: Find group by id.
       parameters:
@@ -245,7 +248,7 @@ paths:
         404:
           description: Group not found
     patch:
-      tags: [groups]
+      tags: [Groups]
       summary: Update group
       description: Update group name.
       parameters:
@@ -273,7 +276,7 @@ paths:
         409:
           description: Group with name already exists
     delete:
-      tags: [groups]
+      tags: [Groups]
       summary: Delete group
       description: Delete group by id.
       parameters:
@@ -290,7 +293,7 @@ paths:
           description: Group not found
   /gateways:
     get:
-      tags: [gateways]
+      tags: [Gateways]
       summary: Find gateways
       description: Returns all gateways ordered by name.
       operationId: findGateways
@@ -317,7 +320,7 @@ paths:
         401:
           description: Unauthorized
     post:
-      tags: [gateways]
+      tags: [Gateways]
       summary: Create gateway
       description: Create gateway.
       parameters:
@@ -343,7 +346,7 @@ paths:
         409:
           description: Gateway with id already exists.
     patch:
-      tags: [gateways]
+      tags: [Gateways]
       summary: Update gateway-to-tenant association
       description: Moves the gateway from one tenant to another. One would need to have access grants for the source and the target tenant
       operationId: moveGateway
@@ -376,7 +379,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GatewayId"
     get:
-      tags: [gateways]
+      tags: [Gateways]
       summary: Find gateway
       description: Find gateway by id.
       parameters:
@@ -396,7 +399,7 @@ paths:
         404:
           description: Gateway not found
     patch:
-      tags: [gateways]
+      tags: [Gateways]
       summary: Update gateway
       description: Update gateway by id.
       parameters:
@@ -422,7 +425,7 @@ paths:
         404:
           description: Gateway not found
     delete:
-      tags: [gateways]
+      tags: [Gateways]
       summary: Delete gateway
       description: Delete gateway by id.
       parameters:
@@ -437,11 +440,32 @@ paths:
           description: Unauthorized
         404:
           description: Gateway not found.
+  /gateways/{gateway_id}/status:
+    parameters:
+      - $ref: "#/components/parameters/GatewayId"
+    get:
+      tags: [Gateways]
+      summary: Get status of gateway
+      description: Get current state of the given gateway.
+      operationId: getStatus
+      responses:
+        200:
+          description: Returns status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GatewayStatus"
+        400:
+          description: Ambiguous tenant. Please specify tenant as query parameter.
+        401:
+          description: Unauthorized
+        404:
+          description: Gateway not found
   /gateways/{gateway_id}/credentials:
     parameters:
       - $ref: "#/components/parameters/GatewayId"
     get:
-      tags: [credentials]
+      tags: [Credentials]
       summary: Get credentials
       description: Get credentials for gateway.
       parameters:
@@ -463,7 +487,7 @@ paths:
         404:
           description: Gateway not found
     post:
-      tags: [credentials]
+      tags: [Credentials]
       summary: Create credential
       description: Create credential.
       parameters:
@@ -495,7 +519,7 @@ paths:
       - $ref: "#/components/parameters/GatewayId"
       - $ref: "#/components/parameters/CredentialId"
     get:
-      tags: [credentials]
+      tags: [Credentials]
       summary: Find credential
       description: Find credential.
       parameters:
@@ -515,7 +539,7 @@ paths:
         404:
           description: Gateway or credential not found
     patch:
-      tags: [credentials]
+      tags: [Credentials]
       summary: Update credential
       description: Update credential.
       parameters:
@@ -543,7 +567,7 @@ paths:
         409:
           description: Name for credential already exists
     delete:
-      tags: [credentials]
+      tags: [Credentials]
       summary: Delete credential
       description: Delete credential.
       parameters:
@@ -560,7 +584,7 @@ paths:
           description: Gateway or credential not found
   /configuration/definition:
     get:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Find configuration definitions
       description: Find configurations definitions.
       operationId: findConfigurationDefinitions
@@ -580,7 +604,7 @@ paths:
       - $ref: "#/components/parameters/ConfigurationKey"
       - $ref: "#/components/parameters/TenantSpecification"
     post:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Save configuration definition
       description: Save configuration definition.
       operationId: createConfigurationDefinition
@@ -604,8 +628,7 @@ paths:
         409:
           description: Key already in use
     delete:
-      tags:
-        - configuration
+      tags: [Configuration]
       summary: Delete configuration definition
       description: Delete configuration definition.
       parameters:
@@ -622,7 +645,7 @@ paths:
           description: Configuration definition not found
   /configuration:
     get:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Find configurations
       description: Find configurations on tenant level ordered by key.
       operationId: findConfigurations
@@ -641,7 +664,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/ConfigurationKey"
     put:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Save configuration
       description: Save configuration.
       parameters:
@@ -663,7 +686,7 @@ paths:
         404:
           description: Configuration not found
     delete:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Delete configuration
       description: Delete configuration.
       parameters:
@@ -682,7 +705,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GroupId"
     get:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Find configuration.
       description: Find configurations on group level ordered by key.
       parameters:
@@ -708,7 +731,7 @@ paths:
       - $ref: "#/components/parameters/GroupId"
       - $ref: "#/components/parameters/ConfigurationKey"
     put:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Save configuration value
       description: Save configuration value.
       parameters:
@@ -730,7 +753,7 @@ paths:
         404:
           description: Group of configuration key not found
     delete:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Delete configuration
       description: Delete configuration.
       parameters:
@@ -749,7 +772,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GatewayId"
     get:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Find configuration
       description: Find configurations on gateway level ordered by key.
       operationId: findConfigurationsByGateway
@@ -771,7 +794,7 @@ paths:
       - $ref: "#/components/parameters/GatewayId"
       - $ref: "#/components/parameters/ConfigurationKey"
     put:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Save configuration value
       description: Save configuration value.
       parameters:
@@ -793,7 +816,7 @@ paths:
         404:
           description: Gateway of configuration key not found
     delete:
-      tags: [configuration]
+      tags: [Configuration]
       summary: Delete configuration
       description: Delete configuration.
       operationId: resetConfigurationByGateway
@@ -806,7 +829,7 @@ paths:
           description: Gateway of configuration key not found
   /gateway:
     post:
-      tags: [gateway]
+      tags: [Gateway]
       summary: Register gateway
       description: Self register as gateway.
       operationId: register
@@ -825,7 +848,7 @@ paths:
           description: Gateway already registered
   /gateway/configuration:
     get:
-      tags: [gateway]
+      tags: [Gateway]
       summary: Get gateway configuration
       description: Get gateway configuration.
       operationId: getConfiguration
@@ -841,7 +864,7 @@ paths:
           description: Unauthorized
   /gateway/properties:
     get:
-      tags: [properties]
+      tags: [Properties]
       summary: Get gateway properties
       description: TODO
       operationId: getProperties
@@ -855,7 +878,7 @@ paths:
         401:
           description: Unauthorized
     put:
-      tags: [properties]
+      tags: [Properties]
       summary: Set multiple gateway properties.
       description: TODO
       operationId: setProperties
@@ -882,7 +905,7 @@ paths:
         schema:
           $ref: "#/components/schemas/PropertyKey"
     put:
-      tags: [properties]
+      tags: [Properties]
       summary: Set gateway property
       description: Set gateway property.
       operationId: setProperty
@@ -898,7 +921,7 @@ paths:
         401:
           description: Unauthorized
     delete:
-      tags: [properties]
+      tags: [Properties]
       summary: Delete gateway property
       description: Delete gateway property.
       operationId: deleteProperty
@@ -909,33 +932,10 @@ paths:
           description: Unauthorized
         404:
           description: Key not found
-  /gateways/{gateway_id}/rpc:
-    parameters:
-      - $ref: "#/components/parameters/GatewayId"
-    post:
-      tags: [remote]
-      summary: Send RPC commands.
-      description: Send RPC commands.
-      operationId: sendRpcCommand
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/RpcCommand"
-      responses:
-        200:
-          description: RPC command response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/RpcResponse"
-        401:
-          description: Unauthorized
 
   /measurand-types:
     get:
-      tags: [thing-types]
+      tags: [ThingTypes]
       summary: Find measurand types.
       description: Find all defined measurand types.
       operationId: findMeasurandTypes
@@ -952,7 +952,7 @@ paths:
           description: Unauthorized.
   /thing-types:
     get:
-      tags: [thing-types]
+      tags: [ThingTypes]
       summary: Find thing types.
       description: Find all thing types.
       operationId: getThingTypes
@@ -968,7 +968,7 @@ paths:
         401:
           description: Unauthorized.
     post:
-      tags: [thing-types]
+      tags: [ThingTypes]
       summary: Create thing type.
       description: Creates a new thing type.
       operationId: createThingType
@@ -996,7 +996,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/ThingTypeId"
     get:
-      tags: [thing-types]
+      tags: [ThingTypes]
       summary: Find Thing type.
       description: return a single thing type
       operationId: findThingType
@@ -1012,7 +1012,7 @@ paths:
         404:
           description: Thing Type not found.
     patch:
-      tags: [thing-types]
+      tags: [ThingTypes]
       summary: Update Thing type.
       description: Updates existing thing type.
       operationId: updateThingType
@@ -1036,7 +1036,7 @@ paths:
         404:
           description: Thing type not found.
     delete:
-      tags: [thing-types]
+      tags: [ThingTypes]
       summary: Delete thing type.
       description: Deletes a thing type and corresponding things.
       operationId: deleteThingType
@@ -1050,7 +1050,7 @@ paths:
 
   /things:
     post:
-      tags: [things]
+      tags: [Things]
       summary: Create thing.
       description: Creates a new thing.
       operationId: createThing
@@ -1078,7 +1078,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/ThingId"
     get:
-      tags: [things]
+      tags: [Things]
       summary: Find Thing.
       description: Find thing by its Id.
       operationId: findThing
@@ -1094,7 +1094,7 @@ paths:
         404:
           description: Thing not found.
     patch:
-      tags: [things]
+      tags: [Things]
       summary: Update Thing.
       description: Updates an existing thing.
       operationId: updateThing
@@ -1118,7 +1118,7 @@ paths:
         404:
           description: Thing not found.
     delete:
-      tags: [things]
+      tags: [Things]
       summary: Delete thing.
       description: Deletes an existing thing.
       operationId: deleteThing
@@ -1134,7 +1134,7 @@ paths:
     parameters:
       - $ref: "#/components/parameters/GatewayId"
     get:
-      tags: [things]
+      tags: [Things]
       summary: Find all things for a gateway.
       description: Returns all things of given gateway.
       operationId: findThingsByGatewayId
@@ -1152,25 +1152,129 @@ paths:
         404:
           description: No matching things found.
 
-  /gateways/{gateway_id}/things/upload:
+  /rpc/{gateway_id}/config:
     parameters:
       - $ref: "#/components/parameters/GatewayId"
-    get:
-      tags: [things]
-      summary: Sync things to gateway.
-      description: Uploads the things and measurands to the given gateway
-      operationId: syncThingsToGateway
+    post:
+      tags: [Remote]
+      summary: Sync config to gateway.
+      description: Uploads config to the given gateway.
+      operationId: syncConfigToGateway
       responses:
         200:
-          description: accepted sync request.
-          content:
-            application/json:
-              schema:
-                type: object
+          description: Config successfully synced to gateway.
         401:
           description: Unauthorized.
         404:
           description: Gateway does not exist.
+        409:
+          description: RPC to this gateway already running.
+        504:
+          description: Gateway did not respond (timeout).
+    get:
+      tags: [Remote]
+      summary: Reads config from gateway.
+      description: Reads config from the given gateway.
+      operationId: getConfigFromGateway
+      responses:
+        200:
+          description: Config successfully read from gateway.
+          content:
+            application/json:
+              schema:
+                description: The config as JSON
+                type: object
+                example: '{"wifi": {"sid": "grayc", "password": "unsafe"}, "eth": {"enabled": true}, "buffering": {"enabled": false}, "telnet": {"enabled": false}, "ntp": {"host": "pool.ntp.org"}, "registry": {"url": "https://registry.qas.inoa.io/gateway"}, "mqtt": {"url": "mqtts://mqtt.qas.inoa.io", "port": 443}, "hawkbit": {"host": "hawkbit.qas.inoa.io", "basepath": "/update/inoa/controller/v1"}, "interfaces": {"uart1": { "baud": 9600, "dataBitMode": 3, "parityMode": 0, "stopBitMode": 1}, "uart2": { "baud": 9600, "dataBitMode": 3, "parityMode": 0, "stopBitMode": 1}}, "metering": {"cycleDuration": 60000}, "logging": {"mqttLogging": false, "mqttConsole": false}}'
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway does not exist.
+        409:
+          description: RPC to this gateway already running.
+        504:
+          description: Gateway did not respond (timeout).
+
+  /rpc/{gateway_id}/things:
+    parameters:
+      - $ref: "#/components/parameters/GatewayId"
+    post:
+      tags: [Remote]
+      summary: Sync things to gateway.
+      description: Uploads datapoints to the given gateway.
+      operationId: syncThingsToGateway
+      responses:
+        200:
+          description: Things successfully synced to gateway.
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway does not exist.
+        409:
+          description: RPC to this gateway already running.
+        504:
+          description: Gateway did not respond (timeout).
+    get:
+      tags: [Remote]
+      summary: Reads things from gateway.
+      description: Reads things from the given gateway.
+      operationId: getThingsFromGateway
+      responses:
+        200:
+          description: Things successfully read from gateway.
+          content:
+            application/json:
+              schema:
+                description: The datapoints as JSON
+                type: object
+                example: '[{"interface":1,"id":"urn:mdvh4006:39000984:0x0002","name":"39000984","enabled":true,"interval":30000,"type":"RS485","timeout":1000,"frame":"8503000200027b8f"},{"interface":1,"id":"urn:mdvh4006:39000984:0x4100","name":"39000984","enabled":true,"interval":30000,"type":"RS485","timeout":1000,"frame":"850341000002ce73"}]'
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway does not exist.
+        409:
+          description: RPC to this gateway already running.
+        504:
+          description: Gateway did not respond (timeout).
+
+  /rpc/{gateway_id}/wink:
+    parameters:
+      - $ref: "#/components/parameters/GatewayId"
+    post:
+      tags: [Remote]
+      summary: Wink with status LED
+      description: Status LED of the given gateway blinks once.
+      operationId: wink
+      responses:
+        200:
+          description: Wink sent.
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway does not exist.
+        409:
+          description: RPC to this gateway already running.
+        504:
+          description: Gateway did not respond (timeout).
+
+  /rpc/{gateway_id}/reboot:
+    parameters:
+      - $ref: "#/components/parameters/GatewayId"
+    post:
+      tags: [Remote]
+      summary: Reboots the gateway
+      description: Reboots the given gateway.
+      operationId: reboot
+      responses:
+        200:
+          description: Reboot sent.
+        401:
+          description: Unauthorized.
+        404:
+          description: Gateway does not exist.
+        409:
+          description: RPC to this gateway already running.
+        504:
+          description: Gateway did not respond (timeout).
 
 components:
   schemas:
