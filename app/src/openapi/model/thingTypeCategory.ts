@@ -12,13 +12,12 @@
 /**
  * Category for logical grouping.
  */
-export type ThingTypeCategoryVO = 'NONE' | 'ELECTRIC_METER' | 'GAS_METER' | 'CURRENT_TRANSFORMER' | 'SMART_PLUG';
-
 export const ThingTypeCategoryVO = {
-    None: 'NONE' as ThingTypeCategoryVO,
-    ElectricMeter: 'ELECTRIC_METER' as ThingTypeCategoryVO,
-    GasMeter: 'GAS_METER' as ThingTypeCategoryVO,
-    CurrentTransformer: 'CURRENT_TRANSFORMER' as ThingTypeCategoryVO,
-    SmartPlug: 'SMART_PLUG' as ThingTypeCategoryVO
-};
+    None: 'NONE',
+    ElectricMeter: 'ELECTRIC_METER',
+    GasMeter: 'GAS_METER',
+    CurrentTransformer: 'CURRENT_TRANSFORMER',
+    SmartPlug: 'SMART_PLUG'
+} as const;
+export type ThingTypeCategoryVO = typeof ThingTypeCategoryVO[keyof typeof ThingTypeCategoryVO];
 

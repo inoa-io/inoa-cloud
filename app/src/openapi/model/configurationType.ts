@@ -12,12 +12,11 @@
 /**
  * Possible types of configuration values.
  */
-export type ConfigurationTypeVO = 'INTEGER' | 'BOOLEAN' | 'STRING' | 'URL';
-
 export const ConfigurationTypeVO = {
-    Integer: 'INTEGER' as ConfigurationTypeVO,
-    Boolean: 'BOOLEAN' as ConfigurationTypeVO,
-    String: 'STRING' as ConfigurationTypeVO,
-    Url: 'URL' as ConfigurationTypeVO
-};
+    Integer: 'INTEGER',
+    Boolean: 'BOOLEAN',
+    String: 'STRING',
+    Url: 'URL'
+} as const;
+export type ConfigurationTypeVO = typeof ConfigurationTypeVO[keyof typeof ConfigurationTypeVO];
 

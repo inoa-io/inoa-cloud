@@ -38,14 +38,6 @@ public interface ThingsApiTestSpec {
 
 	void findThingsByGatewayId404() throws java.lang.Exception;
 
-	// syncThingsToGateway
-
-	void syncThingsToGateway200() throws java.lang.Exception;
-
-	void syncThingsToGateway401() throws java.lang.Exception;
-
-	void syncThingsToGateway404() throws java.lang.Exception;
-
 	// updateThing
 
 	void updateThing200() throws java.lang.Exception;

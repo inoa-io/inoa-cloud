@@ -48,12 +48,12 @@ export interface DatapointVO {
     uri?: string;
 }
 export namespace DatapointVO {
-    export type TypeEnum = 'RS485' | 'S0' | 'HTTP_GET';
     export const TypeEnum = {
-        Rs485: 'RS485' as TypeEnum,
-        S0: 'S0' as TypeEnum,
-        HttpGet: 'HTTP_GET' as TypeEnum
-    };
+        Rs485: 'RS485',
+        S0: 'S0',
+        HttpGet: 'HTTP_GET'
+    } as const;
+    export type TypeEnum = typeof TypeEnum[keyof typeof TypeEnum];
 }
 
 

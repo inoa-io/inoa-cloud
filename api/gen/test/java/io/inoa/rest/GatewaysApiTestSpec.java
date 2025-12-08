@@ -42,6 +42,16 @@ public interface GatewaysApiTestSpec {
 
 	void findGateways401() throws java.lang.Exception;
 
+	// getStatus
+
+	void getStatus200() throws java.lang.Exception;
+
+	void getStatus400() throws java.lang.Exception;
+
+	void getStatus401() throws java.lang.Exception;
+
+	void getStatus404() throws java.lang.Exception;
+
 	// moveGateway
 
 	void moveGateway200() throws java.lang.Exception;

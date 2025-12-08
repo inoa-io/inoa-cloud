@@ -31,12 +31,12 @@ export interface ThingConfigurationVO {
     validation_regex?: string;
 }
 export namespace ThingConfigurationVO {
-    export type TypeEnum = 'STRING' | 'NUMBER' | 'BOOLEAN';
     export const TypeEnum = {
-        String: 'STRING' as TypeEnum,
-        Number: 'NUMBER' as TypeEnum,
-        Boolean: 'BOOLEAN' as TypeEnum
-    };
+        String: 'STRING',
+        Number: 'NUMBER',
+        Boolean: 'BOOLEAN'
+    } as const;
+    export type TypeEnum = typeof TypeEnum[keyof typeof TypeEnum];
 }
 
 

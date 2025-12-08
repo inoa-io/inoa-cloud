@@ -24,11 +24,11 @@ export interface PropertyDefinitionVO {
     input_type?: PropertyDefinitionVO.InputTypeEnum;
 }
 export namespace PropertyDefinitionVO {
-    export type InputTypeEnum = 'text' | 'number';
     export const InputTypeEnum = {
-        Text: 'text' as InputTypeEnum,
-        Number: 'number' as InputTypeEnum
-    };
+        Text: 'text',
+        Number: 'number'
+    } as const;
+    export type InputTypeEnum = typeof InputTypeEnum[keyof typeof InputTypeEnum];
 }
 
 

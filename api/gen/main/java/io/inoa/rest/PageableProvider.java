@@ -25,7 +25,6 @@ import io.micronaut.http.exceptions.HttpStatusException;
  * @see io.micronaut.data.runtime.http.PageableRequestArgumentBinder
  */
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
-
 @jakarta.inject.Singleton
 @Requires(beans = PageableConfiguration.class)
 public class PageableProvider {

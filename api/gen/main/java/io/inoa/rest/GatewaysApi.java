@@ -7,6 +7,7 @@ public interface GatewaysApi {
 	java.lang.String PATH_DELETE_GATEWAY = "/gateways/{gateway_id:20}";
 	java.lang.String PATH_FIND_GATEWAY = "/gateways/{gateway_id:20}";
 	java.lang.String PATH_FIND_GATEWAYS = "/gateways";
+	java.lang.String PATH_GET_STATUS = "/gateways/{gateway_id:20}/status";
 	java.lang.String PATH_MOVE_GATEWAY = "/gateways";
 	java.lang.String PATH_UPDATE_GATEWAY = "/gateways/{gateway_id:20}";
 
@@ -60,6 +61,15 @@ public interface GatewaysApi {
 			@io.micronaut.core.annotation.NonNull
 			@io.micronaut.http.annotation.QueryValue(value = "filter")
 			java.util.Optional<java.lang.@jakarta.validation.constraints.Size(max = 100) String> filter);
+
+	@io.micronaut.http.annotation.Get(PATH_GET_STATUS)
+	@io.micronaut.http.annotation.Produces({ "application/json" })
+	io.micronaut.http.HttpResponse<GatewayStatusVO> getStatus(
+			@io.micronaut.core.annotation.NonNull
+			@io.micronaut.http.annotation.PathVariable(value = "gateway_id")
+			@jakarta.validation.constraints.Pattern(regexp = "^[A-Z][A-Z0-9\\-_]{3,19}$")
+			@jakarta.validation.constraints.Size(min = 4, max = 20)
+			java.lang.String gatewayId);
 
 	@io.micronaut.http.annotation.Patch(PATH_MOVE_GATEWAY)
 	@io.micronaut.http.annotation.Consumes({ "application/json" })

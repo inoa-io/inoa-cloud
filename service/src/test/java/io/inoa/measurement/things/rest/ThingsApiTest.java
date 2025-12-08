@@ -7,7 +7,6 @@ import static io.inoa.test.HttpAssertions.assert400;
 import static io.inoa.test.HttpAssertions.assert401;
 import static io.inoa.test.HttpAssertions.assert404;
 import static io.inoa.test.HttpAssertions.assert409;
-import static io.inoa.test.HttpAssertions.assert504;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Comparator;
@@ -17,7 +16,6 @@ import java.util.UUID;
 
 import jakarta.inject.Inject;
 
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -174,31 +172,8 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 		assert409(() -> client.createThing(auth(tenant), thingCreateVO));
 	}
 
-	@Order(5)
 	@Test
-	@Override
-	public void syncThingsToGateway200() throws MqttException {
-		// TODO: Write better test with fake gateway reacting to RPC commands, so no 504 is caused!
-		// TODO: Or, mock the RemoteService, since we already have a remoting test in place...
-		assert504(() -> client.syncThingsToGateway(auth(tenant), gateway.getGatewayId()));
-	}
-
-	@Test
-	@Order(6)
-	@Override
-	public void syncThingsToGateway401() {
-		assert401(() -> client.syncThingsToGateway(null, "unknown"));
-	}
-
-	@Test
-	@Order(7)
-	@Override
-	public void syncThingsToGateway404() {
-		assert404(() -> client.syncThingsToGateway(auth(tenant), data.gatewayId()));
-	}
-
-	@Test
-	@Order(8)
+	@Order(9)
 	@Override
 	public void updateThing200() {
 		updatedGateway = data.gateway(tenant);
@@ -263,7 +238,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(9)
+	@Order(10)
 	@Override
 	public void updateThing400() {
 		var thingUpdateVO = new ThingUpdateVO();
@@ -304,14 +279,14 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(10)
+	@Order(11)
 	@Override
 	public void updateThing401() {
 		assert401(() -> client.updateThing(null, UUID.randomUUID(), new ThingUpdateVO()));
 	}
 
 	@Test
-	@Order(11)
+	@Order(12)
 	@Override
 	public void updateThing404() {
 		var thingUpdateVO = new ThingUpdateVO();
@@ -323,7 +298,7 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(12)
+	@Order(13)
 	@Override
 	public void findThing200() {
 		var thing = assert200(() -> client.findThing(auth(tenant), thingId));
@@ -358,21 +333,21 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(13)
+	@Order(14)
 	@Override
 	public void findThing401() {
 		assert401(() -> client.findThing(null, UUID.randomUUID()));
 	}
 
 	@Test
-	@Order(14)
+	@Order(15)
 	@Override
 	public void findThing404() {
 		assert404(() -> client.findThing(auth(tenant), UUID.randomUUID()));
 	}
 
 	@Test
-	@Order(15)
+	@Order(16)
 	@Override
 	public void findThingsByGatewayId200() {
 		var result = assert200(() -> client.findThingsByGatewayId(auth(tenant), updatedGateway.getGatewayId()));
@@ -381,35 +356,35 @@ public class ThingsApiTest extends AbstractUnitTest implements ThingsApiTestSpec
 	}
 
 	@Test
-	@Order(16)
+	@Order(17)
 	@Override
 	public void findThingsByGatewayId401() {
 		assert401(() -> client.findThingsByGatewayId(null, data.gatewayId()));
 	}
 
 	@Test
-	@Order(17)
+	@Order(18)
 	@Override
 	public void findThingsByGatewayId404() {
 		assert404(() -> client.findThingsByGatewayId(auth(tenant), data.gatewayId()));
 	}
 
 	@Test
-	@Order(18)
+	@Order(19)
 	@Override
 	public void deleteThing204() {
 		assert204(() -> client.deleteThing(auth(tenant), thingId));
 	}
 
 	@Test
-	@Order(19)
+	@Order(20)
 	@Override
 	public void deleteThing401() {
 		assert401(() -> client.deleteThing(null, UUID.randomUUID()));
 	}
 
 	@Test
-	@Order(20)
+	@Order(21)
 	@Override
 	public void deleteThing404() {
 		assert404(() -> client.deleteThing(auth(tenant), UUID.randomUUID()));

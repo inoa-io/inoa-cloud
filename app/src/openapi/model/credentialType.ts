@@ -12,10 +12,9 @@
 /**
  * Types of supported credentials.
  */
-export type CredentialTypeVO = 'psk' | 'rsa';
-
 export const CredentialTypeVO = {
-    Psk: 'psk' as CredentialTypeVO,
-    Rsa: 'rsa' as CredentialTypeVO
-};
+    Psk: 'psk',
+    Rsa: 'rsa'
+} as const;
+export type CredentialTypeVO = typeof CredentialTypeVO[keyof typeof CredentialTypeVO];
 

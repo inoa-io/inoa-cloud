@@ -4,11 +4,11 @@ package io.inoa.rest;
 @io.micronaut.serde.annotation.Serdeable
 public enum CloudEventTypeVO {
 
-	LOG_EMITTED("io.inoa.log.emitted"),
-	MEASUREMENT_TELEMETRY("io.inoa.measurement.telemetry");
+	IO_INOA_LOG_EMITTED("io.inoa.log.emitted"),
+	IO_INOA_MEASUREMENT_TELEMETRY("io.inoa.measurement.telemetry");
 
-	public static final java.lang.String LOG_EMITTED_VALUE = "io.inoa.log.emitted";
-	public static final java.lang.String MEASUREMENT_TELEMETRY_VALUE = "io.inoa.measurement.telemetry";
+	public static final java.lang.String IO_INOA_LOG_EMITTED_VALUE = "io.inoa.log.emitted";
+	public static final java.lang.String IO_INOA_MEASUREMENT_TELEMETRY_VALUE = "io.inoa.measurement.telemetry";
 
 	private final java.lang.String value;
 

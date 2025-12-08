@@ -12,9 +12,8 @@
 /**
  * Subject for cloud events.
  */
-export type CloudEventSubjectVO = 'telemetry';
-
 export const CloudEventSubjectVO = {
-    Telemetry: 'telemetry' as CloudEventSubjectVO
-};
+    Telemetry: 'telemetry'
+} as const;
+export type CloudEventSubjectVO = typeof CloudEventSubjectVO[keyof typeof CloudEventSubjectVO];
 

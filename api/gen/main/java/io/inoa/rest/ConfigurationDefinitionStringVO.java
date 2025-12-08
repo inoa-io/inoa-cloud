@@ -2,6 +2,7 @@ package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 @io.micronaut.serde.annotation.Serdeable
+@com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = ConfigurationDefinitionStringVO.class)
 public final class ConfigurationDefinitionStringVO implements ConfigurationDefinitionVO {
 
 	public static final java.lang.String JSON_PROPERTY_MIN_LENGTH = "minLength";

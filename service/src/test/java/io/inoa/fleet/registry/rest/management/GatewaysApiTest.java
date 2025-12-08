@@ -11,6 +11,7 @@ import static io.inoa.test.HttpAssertions.assert409;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Comparator;
 import java.util.List;
@@ -113,6 +114,26 @@ public class GatewaysApiTest extends AbstractUnitTest implements GatewaysApiTest
 	@Override
 	public void findGateways401() {
 		assert401(() -> client.findGateways(null, null, null, null, null));
+	}
+
+	@Override
+	public void getStatus200() throws Exception {
+		fail("Not implemented yet!");
+	}
+
+	@Override
+	public void getStatus400() throws Exception {
+		fail("Not implemented yet!");
+	}
+
+	@Override
+	public void getStatus401() throws Exception {
+		fail("Not implemented yet!");
+	}
+
+	@Override
+	public void getStatus404() throws Exception {
+		fail("Not implemented yet!");
 	}
 
 	@Override

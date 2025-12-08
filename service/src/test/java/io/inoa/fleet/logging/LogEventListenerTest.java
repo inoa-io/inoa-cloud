@@ -86,7 +86,7 @@ public class LogEventListenerTest extends AbstractUnitTest {
 		var countIgnoreBefore = metrics.counterIgnore(tenantId).count();
 		var counterFailMessageReadBefore = metrics.counterFailMessageRead(tenantId).count();
 		send(
-				CloudEventTypeVO.LOG_EMITTED_VALUE,
+				CloudEventTypeVO.IO_INOA_LOG_EMITTED_VALUE,
 				tenantId,
 				gatewayId,
 				Map.of("tag", "METERING", "level", 3, "time", 123456789, "msg", "OK"));
@@ -153,7 +153,7 @@ public class LogEventListenerTest extends AbstractUnitTest {
 		var countSuccessBefore = metrics.counterSuccess(tenantId).count();
 		var countIgnoreBefore = metrics.counterIgnore(tenantId).count();
 		var counterFailMessageReadBefore = metrics.counterFailMessageRead(tenantId).count();
-		send(CloudEventTypeVO.LOG_EMITTED_VALUE, tenantId, gatewayId, List.of("nope"));
+		send(CloudEventTypeVO.IO_INOA_LOG_EMITTED_VALUE, tenantId, gatewayId, List.of("nope"));
 		assertEquals(
 				countSuccessBefore, metrics.counterSuccess(tenantId).count(), "success metrics increased");
 		assertEquals(countIgnoreBefore, metrics.counterIgnore(tenantId).count(), "metrics ignore");

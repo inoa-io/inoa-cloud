@@ -12,10 +12,9 @@
 /**
  * Subject for cloud events.
  */
-export type CloudEventTypeVO = 'io.inoa.log.emitted' | 'io.inoa.measurement.telemetry';
-
 export const CloudEventTypeVO = {
-    LogEmitted: 'io.inoa.log.emitted' as CloudEventTypeVO,
-    MeasurementTelemetry: 'io.inoa.measurement.telemetry' as CloudEventTypeVO
-};
+    IoInoaLogEmitted: 'io.inoa.log.emitted',
+    IoInoaMeasurementTelemetry: 'io.inoa.measurement.telemetry'
+} as const;
+export type CloudEventTypeVO = typeof CloudEventTypeVO[keyof typeof CloudEventTypeVO];
 

@@ -2,6 +2,7 @@ package io.inoa.rest;
 
 @jakarta.annotation.Generated("org.openapitools.codegen.languages.MicronautCodegen")
 @io.micronaut.serde.annotation.Serdeable
+@com.fasterxml.jackson.databind.annotation.JsonDeserialize(as = ConfigurationDefinitionBooleanVO.class)
 public final class ConfigurationDefinitionBooleanVO implements ConfigurationDefinitionVO {
 
 	/** Key for configuration. */

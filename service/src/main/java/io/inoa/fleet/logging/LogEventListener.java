@@ -70,7 +70,7 @@ public class LogEventListener {
 
 			// check if we are in charge
 
-			if (!CloudEventTypeVO.LOG_EMITTED_VALUE.equals(event.getType())) {
+			if (!CloudEventTypeVO.IO_INOA_LOG_EMITTED_VALUE.equals(event.getType())) {
 				log.trace("Not in charge for event type: {}", event.getType());
 				metrics.counterIgnore(tenantId).increment();
 				return;
