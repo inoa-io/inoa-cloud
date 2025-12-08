@@ -7,3 +7,5 @@ configMapGenerator:
       disableNameSuffixHash: true
     files:
       - files/gateway-count.json
+      - files/inoa-fleet-iot.json
+      - files/inoa-fleet-temperature.json
