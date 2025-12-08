@@ -15,6 +15,7 @@ import io.inoa.rest.CredentialCreateVO;
 import io.inoa.rest.CredentialUpdateVO;
 import io.inoa.rest.CredentialVO;
 import io.inoa.rest.CredentialsApi;
+import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;

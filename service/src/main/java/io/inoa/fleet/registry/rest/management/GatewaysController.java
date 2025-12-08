@@ -16,11 +16,13 @@ import io.inoa.fleet.registry.rest.mapper.LocationMapper;
 import io.inoa.rest.GatewayCreateVO;
 import io.inoa.rest.GatewayDetailVO;
 import io.inoa.rest.GatewayPageVO;
+import io.inoa.rest.GatewayStatusVO;
 import io.inoa.rest.GatewayUpdateVO;
 import io.inoa.rest.GatewayVO;
 import io.inoa.rest.GatewaysApi;
 import io.inoa.rest.MoveGatewayRequestVO;
 import io.inoa.rest.PageableProvider;
+import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
@@ -66,6 +68,11 @@ public class GatewaysController extends AbstractManagementController implements 
 		var pageable = pageableProvider.getPageable(SORT_ORDER_PROPERTIES, GatewayVO.JSON_PROPERTY_NAME);
 		var gatewayPage = gatewayRepository.findByTenantInList(security.getGrantedTenants(), filter, pageable);
 		return HttpResponse.ok(gatewayMapper.toGatewayPage(gatewayPage));
+	}
+
+	@Override
+	public HttpResponse<GatewayStatusVO> getStatus(String gatewayId) {
+		return HttpResponse.status(500, "Not yet implemented!");
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import io.inoa.fleet.registry.service.ConfigurationService;
 import io.inoa.rest.CredentialTypeVO;
 import io.inoa.rest.GatewayApi;
 import io.inoa.rest.RegisterVO;
+import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;

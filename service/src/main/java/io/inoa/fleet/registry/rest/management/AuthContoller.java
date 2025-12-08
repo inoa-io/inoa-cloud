@@ -1,8 +1,8 @@
 package io.inoa.fleet.registry.rest.management;
 
-import io.inoa.measurement.things.rest.Security;
 import io.inoa.rest.AuthApi;
 import io.inoa.rest.UserVO;
+import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Controller;
 import lombok.RequiredArgsConstructor;

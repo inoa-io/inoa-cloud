@@ -26,6 +26,7 @@ import io.inoa.rest.ConfigurationApi;
 import io.inoa.rest.ConfigurationDefinitionVO;
 import io.inoa.rest.ConfigurationSetVO;
 import io.inoa.rest.ConfigurationVO;
+import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;

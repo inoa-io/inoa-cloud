@@ -12,6 +12,7 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import io.inoa.shared.Security;
 import io.inoa.test.AbstractUnitTest;
 import io.micronaut.http.HttpMethod;
 import io.micronaut.http.HttpRequest;

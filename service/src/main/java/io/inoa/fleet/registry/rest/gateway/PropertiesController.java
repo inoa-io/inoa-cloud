@@ -11,6 +11,7 @@ import io.inoa.fleet.registry.domain.GatewayProperty;
 import io.inoa.fleet.registry.domain.GatewayPropertyRepository;
 import io.inoa.fleet.registry.rest.mapper.GatewayMapper;
 import io.inoa.rest.PropertiesApi;
+import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.annotation.Controller;
