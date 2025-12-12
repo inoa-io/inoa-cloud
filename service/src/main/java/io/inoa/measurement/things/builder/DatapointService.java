@@ -40,7 +40,7 @@ public class DatapointService {
 		datapointBuilders.put("s0", new S0Builder(objectMapper));
 	}
 
-	public String getDatapointsJson(List<Thing> things) throws DatapointBuilderException {
+	public ArrayNode getDatapointsJson(List<Thing> things) throws DatapointBuilderException {
 		ArrayNode datapoints = objectMapper.createArrayNode();
 		for (Thing thing : things) {
 			DatapointBuilder builder = datapointBuilders.get(thing.getThingType().getIdentifier());
@@ -52,6 +52,6 @@ public class DatapointService {
 			}
 			datapoints.addAll(builder.build(thing));
 		}
-		return datapoints.toString();
+		return datapoints;
 	}
 }

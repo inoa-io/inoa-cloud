@@ -19,6 +19,7 @@ import static io.inoa.measurement.things.domain.MeasurandProtocol.WMBUS;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -129,7 +130,7 @@ public class RemotingController implements RemoteApi {
 				.toList();
 		for (var thing : thingsForProtocol) {
 			remotingService.sendRpcCommand("inoa", gatewayId, getRpcCommandByProtocol(protocol),
-					datapointService.getDatapointsJson(List.of(thing)));
+					Optional.of(datapointService.getDatapointsJson(List.of(thing))));
 		}
 	}
 
