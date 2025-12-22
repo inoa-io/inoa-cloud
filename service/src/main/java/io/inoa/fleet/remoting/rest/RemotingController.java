@@ -25,6 +25,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import io.inoa.fleet.registry.domain.Gateway;
 import io.inoa.fleet.registry.domain.GatewayRepository;
 import io.inoa.fleet.remoting.RemotingService;
@@ -129,8 +130,10 @@ public class RemotingController implements RemoteApi {
 		var thingsForProtocol = things.stream().filter(thing -> protocol.equals(thing.getThingType().getProtocol()))
 				.toList();
 		for (var thing : thingsForProtocol) {
-			remotingService.sendRpcCommand("inoa", gatewayId, getRpcCommandByProtocol(protocol),
-					Optional.of(datapointService.getDatapointsJson(List.of(thing))));
+			for (JsonNode datapoint : datapointService.getDatapointsJson(List.of(thing))) {
+				remotingService.sendRpcCommand("inoa", gatewayId, getRpcCommandByProtocol(protocol),
+						Optional.of(datapoint));
+			}
 		}
 	}
 
