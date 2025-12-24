@@ -224,3 +224,5 @@ endpoints:
     enabled: true
   kafka:
     enabled: true
+  broker:
+    enabled: true

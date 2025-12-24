@@ -47,8 +47,9 @@ public class RemotingHandler extends AbstractInterceptHandler {
 			putCommandResponse(rpcResponse.getId(), rpcResponse);
 		} catch (JsonProcessingException e) {
 			log.error("Dropping unparsable command response: {}", new String(payload));
+		} finally {
+			message.getPayload().release();
 		}
-		message.getPayload().release();
 	}
 
 	public Optional<RpcResponseVO> getCommandResponse(String commandId) {

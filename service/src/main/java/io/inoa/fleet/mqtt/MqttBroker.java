@@ -3,11 +3,11 @@ package io.inoa.fleet.mqtt;
 import java.io.IOException;
 import java.util.List;
 
-import io.moquette.broker.ClientDescriptor;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
 import io.micronaut.context.annotation.Context;
+import io.moquette.broker.ClientDescriptor;
 import io.moquette.broker.ISslContextCreator;
 import io.moquette.broker.RoutingResults;
 import io.moquette.broker.Server;

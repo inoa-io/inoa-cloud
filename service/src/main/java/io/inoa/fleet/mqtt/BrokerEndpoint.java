@@ -1,11 +1,12 @@
 package io.inoa.fleet.mqtt;
 
+import jakarta.inject.Inject;
+
 import io.micronaut.http.HttpStatus;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.exceptions.HttpStatusException;
 import io.micronaut.management.endpoint.annotation.Endpoint;
 import io.micronaut.management.endpoint.annotation.Read;
-import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -17,7 +18,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BrokerEndpoint {
 
-	@Inject MqttBroker mqttBroker;
+	@Inject
+	MqttBroker mqttBroker;
 
 	/**
 	 * Trigger consumption calculation
