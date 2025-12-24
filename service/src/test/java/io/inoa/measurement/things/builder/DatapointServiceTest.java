@@ -58,7 +58,7 @@ public class DatapointServiceTest extends AbstractBuilderTest {
 		assertEquals(
 				"""
 						[{"interface":1,"id":"urn:dvh4013:100022:0x4101","name":"dvh4013","enabled":false,"interval":60000,"type":"RS485","timeout":1000,"frame":"2303410100028775"},{"interface":1,"id":"urn:dvh4013:100022:0x0000","name":"dvh4013","enabled":false,"interval":60000,"type":"RS485","timeout":1000,"frame":"230300000002C289"},{"interface":1,"id":"urn:dvh4013:100022:0x4001","name":"dvh4013","enabled":false,"interval":60000,"type":"RS485","timeout":1000,"frame":"2303400100028689"},{"interface":1,"id":"urn:dvh4013:100022:0x0002","name":"dvh4013","enabled":false,"interval":60000,"type":"RS485","timeout":1000,"frame":"2303000200026349"},{"id":"urn:shplg-s:e465b85e2900:status","name":"shplg-s","type":"HTTP_GET","interval":30000,"enabled":true,"uri":"1"}]""",
-				result,
+				result.toString(),
 				"Expected correct datapoint JSON");
 	}
 }
