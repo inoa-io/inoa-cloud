@@ -459,7 +459,7 @@ paths:
           content:
             application/json:
               schema:
-                  $ref: "#/components/schemas/GatewayStatus"
+                $ref: "#/components/schemas/GatewayStatus"
         400:
           description: Ambiguous tenant. Please specify tenant as query parameter.
         401:
@@ -1189,7 +1189,7 @@ paths:
               schema:
                 description: The config as JSON
                 type: object
-                example: '{"wifi": {"sid": "grayc", "password": "unsafe"}, "eth": {"enabled": true}, "buffering": {"enabled": false}, "telnet": {"enabled": false}, "ntp": {"host": "pool.ntp.org"}, "registry": {"url": "https://registry.qas.inoa.io/gateway"}, "mqtt": {"url": "mqtts://mqtt.qas.inoa.io", "port": 443}, "hawkbit": {"host": "hawkbit.qas.inoa.io", "basepath": "/update/inoa/controller/v1"}, "interfaces": {"uart1": { "baud": 9600, "dataBitMode": 3, "parityMode": 0, "stopBitMode": 1}, "uart2": { "baud": 9600, "dataBitMode": 3, "parityMode": 0, "stopBitMode": 1}}, "metering": {"cycleDuration": 60000}, "logging": {"mqttLogging": false, "mqttConsole": false}}'
+                example: "{\"wifi\": {\"sid\": \"grayc\", \"password\": \"unsafe\"}, \"eth\": {\"enabled\": true}, \"buffering\": {\"enabled\": false}, \"telnet\": {\"enabled\": false}, \"ntp\": {\"host\": \"pool.ntp.org\"}, \"registry\": {\"url\": \"https://registry.qas.inoa.io/gateway\"}, \"mqtt\": {\"url\": \"mqtts://mqtt.qas.inoa.io\", \"port\": 443}, \"hawkbit\": {\"host\": \"hawkbit.qas.inoa.io\", \"basepath\": \"/update/inoa/controller/v1\"}, \"interfaces\": {\"uart1\": {\"baud\": 9600, \"dataBitMode\": 3, \"parityMode\": 0, \"stopBitMode\": 1}, \"uart2\": {\"baud\": 9600, \"dataBitMode\": 3, \"parityMode\": 0, \"stopBitMode\": 1}}, \"metering\": {\"cycleDuration\": 60000}, \"logging\": {\"mqttLogging\": false, \"mqttConsole\": false}}"
         401:
           description: Unauthorized.
         404:
@@ -1231,7 +1231,7 @@ paths:
               schema:
                 description: The datapoints as JSON
                 type: object
-                example: '[{"interface":1,"id":"urn:mdvh4006:39000984:0x0002","name":"39000984","enabled":true,"interval":30000,"type":"RS485","timeout":1000,"frame":"8503000200027b8f"},{"interface":1,"id":"urn:mdvh4006:39000984:0x4100","name":"39000984","enabled":true,"interval":30000,"type":"RS485","timeout":1000,"frame":"850341000002ce73"}]'
+                example: "[{\"interface\":1,\"id\":\"urn:mdvh4006:39000984:0x0002\",\"name\":\"39000984\",\"enabled\":true,\"interval\":30000,\"type\":\"RS485\",\"timeout\":1000,\"frame\":\"8503000200027b8f\"},{\"interface\":1,\"id\":\"urn:mdvh4006:39000984:0x4100\",\"name\":\"39000984\",\"enabled\":true,\"interval\":30000,\"type\":\"RS485\",\"timeout\":1000,\"frame\":\"850341000002ce73\"}]"
         401:
           description: Unauthorized.
         404:
