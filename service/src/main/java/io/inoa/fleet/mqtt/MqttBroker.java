@@ -3,6 +3,7 @@ package io.inoa.fleet.mqtt;
 import java.io.IOException;
 import java.util.List;
 
+import io.moquette.broker.ClientDescriptor;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 
@@ -56,5 +57,9 @@ public class MqttBroker {
 
 	public static boolean matchesTopic(String topicName, String topicExpression) {
 		return new Topic(topicName).match(new Topic(topicExpression));
+	}
+
+	public List<ClientDescriptor> getConnectedClients() {
+		return server.listConnectedClients().stream().toList();
 	}
 }
