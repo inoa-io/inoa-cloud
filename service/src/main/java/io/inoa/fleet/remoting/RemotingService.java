@@ -142,9 +142,11 @@ public class RemotingService {
 		var topic = COMMAND_TOPIC_FORMAT_STRING.formatted(tenantId, gatewayId, command.getId());
 		// We use QoS 2 here, because commanding is critical. See:
 		// http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718102
+		// We also avoid using retained messages here, otherwise clients that subscribe will receive
+		// the last sent command.
 		var message = MqttMessageBuilders.publish()
 				.topicName(topic)
-				.retained(true)
+				.retained(false)
 				.qos(MqttQoS.EXACTLY_ONCE)
 				.payload(Unpooled.copiedBuffer(commandJson.getBytes(UTF_8)))
 				.build();
