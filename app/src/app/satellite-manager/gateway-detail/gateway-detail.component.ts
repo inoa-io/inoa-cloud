@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { GatewaysService } from "@inoa/api";
-import { GatewayUpdateVO, GatewayVO, RpcCommandVO } from "@inoa/model";
+import { GatewayUpdateVO, GatewayVO } from "@inoa/model";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
 import { RoutingService } from "src/app/services/routing-service";
 import { RemoteService } from "@inoa/api"
