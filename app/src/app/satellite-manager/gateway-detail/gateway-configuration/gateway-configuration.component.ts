@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { GatewayVO } from "@inoa/model";
 import { DialogService } from "src/app/services/dialog-service";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
-import { RemoteService } from '@inoa/api';
-import { ConfigurationService } from '@inoa/api';
+import { RemoteService } from "@inoa/api";
+import { ConfigurationService } from "@inoa/api";
 
 export interface ConfigData {
 	[key: string]: any;

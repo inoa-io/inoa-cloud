@@ -51,12 +51,8 @@ export class GatewayDatapointsComponent implements OnInit {
     }
 
     storeSatelliteThingsData(gateway_id: string, response: string) {
-        const parsedResponse = JSON.parse(response);
-
-        // clear old data
-        this.dataSourceThingsSatellite.data = [];
-
-        // TODO: Use: this.remotingService.getThingsFromGateway()
+        // TODO: Do not grab things from gateway anymore, the backend cares about syncing when things are sent
+        console.log("Ignoring RPC call to gateway " + gateway_id + " with parameters " + response);
     }
 
     findIdMatchInDatabase(thingData: any): ThingVO | undefined {
@@ -103,12 +99,8 @@ export class GatewayDatapointsComponent implements OnInit {
 
     removeThingSatelliteClick(thing: any, event: Event) {
         event.stopPropagation();
-
-        const deleteParams = {
-            id: thing.id
-        };
-
-        // TODO: Use: this.gatewaysService.syncThingsToGateway()
+        console.log("Ignoring removal of thing " + thing);
+        // TODO: We do not remove things directly on gateway anymore, backend cares to sync
         this.refreshThingsListSatellite(this.intercomService.selectedGateway);
     }
 

@@ -4,7 +4,7 @@ import { GatewayUpdateVO, GatewayVO } from "@inoa/model";
 import { DialogService } from "src/app/services/dialog-service";
 import { InternalCommunicationService } from "src/app/services/internal-communication-service";
 import { MapService } from "src/app/services/map-service";
-import { PropertiesService } from '@inoa/api';
+import { PropertiesService } from "@inoa/api";
 import * as L from "leaflet";
 
 export interface SysInfo {

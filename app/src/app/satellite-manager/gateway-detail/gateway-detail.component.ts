@@ -44,9 +44,7 @@ export class GatewayDetailComponent {
 
 	sendRPC() {
 		if (this.intercomService.selectedGateway) {
-			const rpcCommand: RpcCommandVO = JSON.parse(this.jsonCode);
-
-			// TODO: This will not work anymore. We currently cannot send free-from commands. Only dedicated REST methods are allowed!
+			// TODO: We do not send RPCs directly to gateways anymore
 			this.changeDetector.detectChanges();
 		}
 	}
