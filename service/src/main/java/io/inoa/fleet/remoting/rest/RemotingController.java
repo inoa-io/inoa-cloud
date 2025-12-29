@@ -8,6 +8,8 @@ import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_RS48
 import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_S0;
 import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_TCP;
 import static io.inoa.fleet.remoting.RemotingService.COMMAND_DATAPOINTS_ADD_WMBUS;
+import static io.inoa.fleet.remoting.RemotingService.COMMAND_SYSTEM_REBOOT;
+import static io.inoa.fleet.remoting.RemotingService.COMMAND_SYSTEM_WINK;
 import static io.inoa.measurement.things.domain.MeasurandProtocol.ADC;
 import static io.inoa.measurement.things.domain.MeasurandProtocol.JSON_REST_HTTP;
 import static io.inoa.measurement.things.domain.MeasurandProtocol.MBUS;
@@ -38,6 +40,7 @@ import io.inoa.rest.RemoteApi;
 import io.inoa.shared.Security;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.HttpStatus;
+import io.micronaut.http.MutableHttpResponse;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.exceptions.HttpStatusException;
 import lombok.RequiredArgsConstructor;
@@ -67,7 +70,7 @@ public class RemotingController implements RemoteApi {
 
 	@Override
 	public HttpResponse<Object> reboot(String gatewayId) {
-		return null;
+		return doRpcAsRestCall("inoa", checkGateway(gatewayId).getGatewayId(), COMMAND_SYSTEM_REBOOT, Optional.empty());
 	}
 
 	@Override
@@ -103,7 +106,7 @@ public class RemotingController implements RemoteApi {
 
 	@Override
 	public HttpResponse<Object> wink(String gatewayId) {
-		return null;
+		return doRpcAsRestCall("inoa", checkGateway(gatewayId).getGatewayId(), COMMAND_SYSTEM_WINK, Optional.empty());
 	}
 
 	private List<Thing> getThingsByProtocol(List<Thing> things, MeasurandProtocol protocol) {
@@ -144,5 +147,22 @@ public class RemotingController implements RemoteApi {
 			throw new HttpStatusException(HttpStatus.NOT_FOUND, "Gateway not found: " + gatewayId);
 		}
 		return gateway.get();
+	}
+
+	private MutableHttpResponse<Object> doRpcAsRestCall(String tenant, String gatewayId, String command,
+			Optional<Object> parameters) {
+		try {
+			var result = remotingService.sendRpcCommand(tenant, gatewayId, command, parameters);
+			if (result.getError() != null) {
+				throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, result.getError().toString());
+			}
+			return HttpResponse.ok(result.getResult());
+		} catch (ExecutionException | InterruptedException e) {
+			throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+		} catch (JsonProcessingException e) {
+			throw new HttpStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unprocessable Json: " + e.getMessage());
+		} catch (TimeoutException e) {
+			throw new HttpStatusException(HttpStatus.GATEWAY_TIMEOUT, "No response from device within timeout.");
+		}
 	}
 }
