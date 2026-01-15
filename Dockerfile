@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/app/.angular \
 FROM docker.io/library/maven:3.9.11-eclipse-temurin-21@sha256:6fdc855a6ed81d288ca7ca37ac6ff5e9308b612485c0801d70b25a858c83d237 AS mvn
 WORKDIR /app
 ARG MAVEN_ARGS="--batch-mode --color=always --no-transfer-progress -DskipTests -P=-dev"
-ARG MAVEN_MIRROR_CENTRAL=https://mirror.grayc.io/maven2
+ARG MAVEN_MIRROR_CENTRAL=https://mirror.grayc.dev/maven2
 RUN mkdir "$HOME/.m2" && printf "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\
 <settings>\n\
 	<localRepository>/tmp/mvn-repo</localRepository>\n\

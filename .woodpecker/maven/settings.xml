@@ -14,7 +14,7 @@
 
 	<mirrors>
 		<mirror>
-			<url>http://mirror.woodpecker.svc/maven2</url>
+			<url>https://mirror.grayc.dev/maven2</url>
 			<mirrorOf>central</mirrorOf>
 		</mirror>
 	</mirrors>
@@ -26,7 +26,7 @@
 				<activeByDefault>true</activeByDefault>
 			</activation>
 			<properties>
-				<k3s.registries>${env.CI_WORKSPACE}/.woodpecker/maven/registries-ci.yaml</k3s.registries>
+				<k3s.registries>${env.CI_WORKSPACE}/.woodpecker/maven/registries.yaml</k3s.registries>
 				<k3s.skipRm>true</k3s.skipRm>
 				<k3s.failIfExists>false</k3s.failIfExists>
 			</properties>
