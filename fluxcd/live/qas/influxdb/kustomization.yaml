@@ -4,4 +4,4 @@ resources:
 
 images:
   - name: docker.io/library/influxdb:<patched>
-    newTag: 2.7.12@sha256:674911452ada77ca762662d50dd0594c8823312f59b376500623a4f82c44f9be
+    newTag: 2.8.0@sha256:47d5ee97ca868e0d669db8ec37bdb72373d11a1fdd16e6ee712447a865d4d119
